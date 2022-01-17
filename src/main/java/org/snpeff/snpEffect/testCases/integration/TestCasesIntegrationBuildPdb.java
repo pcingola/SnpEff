@@ -2,12 +2,12 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdPdb;
 import org.snpeff.util.Log;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for annotation of protein interaction loci
@@ -42,7 +42,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 			if (verbose) Log.debug("INTERACTION:\t" + dr);
 		}
 
-		Assert.assertTrue("Interaction not found!", ok);
+		assertTrue(ok, "Interaction not found!");
 	}
 
 	/**
@@ -84,7 +84,6 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 			if (verbose) Log.debug(dr);
 		}
 
-		Assert.assertTrue("Interaction not found!", ok);
+		assertTrue(ok, "Interaction not found!");
 	}
-
 }

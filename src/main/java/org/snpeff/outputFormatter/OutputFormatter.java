@@ -57,7 +57,7 @@ public abstract class OutputFormatter {
 		OutputFormatter newOutputFormatter = null;
 		try {
 			// Create a new formatter. We cannot use the same output formatter for all workers
-			newOutputFormatter = this.getClass().newInstance();
+			newOutputFormatter = this.getClass().getConstructor().newInstance();
 			newOutputFormatter.supressOutput = supressOutput;
 			newOutputFormatter.showHeader = showHeader;
 			newOutputFormatter.useHgvs = useHgvs;

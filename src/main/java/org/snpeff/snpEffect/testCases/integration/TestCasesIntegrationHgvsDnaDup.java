@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.snpEffect.Hgvs;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Log;
@@ -10,10 +10,11 @@ import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
- *
  * Test case
  */
 public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
@@ -30,8 +31,6 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 	//		initRand();
 	//	}
 
-	/**
-	 */
 	@Test
 	public void test_01_dup() {
 		Log.debug("Test");
@@ -40,7 +39,7 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 		String vcf = path("hgvs_dup.vcf");
 
 		// Create SnpEff
-		String args[] = { genome, vcf };
+		String[] args = { genome, vcf };
 		SnpEffCmdEff snpeff = new SnpEffCmdEff();
 		snpeff.parseArgs(args);
 		snpeff.setDebug(debug);
@@ -86,18 +85,18 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 
 				// Compare results
 				if (trId != null && trId.equals(trIdC)) {
-					Assert.assertEquals(hgvsCexp, hgvsCactual);
+					assertEquals(hgvsCexp, hgvsCactual);
 					okC = true;
 				}
 
 				if (trId != null && trId.equals(trIdP)) {
-					Assert.assertEquals(hgvsPexp, hgvsPactual);
+					assertEquals(hgvsPexp, hgvsPactual);
 					okP = true;
 				}
 			}
 
-			Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
-			if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+			assertTrue(okC, "HGVS (DNA) not found: '" + hgvsCexp + "'");
+			if (!hgvsPexp.isEmpty()) assertTrue(okP, "HGVS (Protein) not found: '" + hgvsPexp + "'");
 		}
 	}
 

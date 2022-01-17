@@ -1,8 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.*;
@@ -21,6 +20,9 @@ import org.snpeff.vcf.VcfEntry;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Base class: Provides common methods used for testing
@@ -74,7 +76,7 @@ public class TestCasesIntegrationBase {
         throw new RuntimeException("Could not apply any variant!");
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         Log.reset();
     }
@@ -107,7 +109,7 @@ public class TestCasesIntegrationBase {
         // Compare result
         String result = showTranscripts(sep.getGenome(), hideProtein).trim();
         if (verbose) Log.info(result);
-        Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
+        assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
         return sep;
     }
@@ -134,8 +136,7 @@ public class TestCasesIntegrationBase {
         SnpEffPredictorFactoryGenBank sepfg = new SnpEffPredictorFactoryGenBank(config, genBankFile);
         sepfg.setVerbose(verbose);
         sepfg.setCircularCorrectLargeGap(circularCorrectlargeGap);
-        SnpEffectPredictor sep = sepfg.create();
-        return sep;
+        return sepfg.create();
     }
 
     /**
@@ -181,7 +182,7 @@ public class TestCasesIntegrationBase {
                 System.out.println("Expected (" + resultFile + "):\n----------\n" + expectedResult + "\n----------\n");
                 System.out.println(new Diff(expectedResult, result));
             }
-            Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
+            assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
         }
 
         return sep;
@@ -208,7 +209,7 @@ public class TestCasesIntegrationBase {
         // Compare result
         String result = showTranscripts(sep.getGenome(), true).trim();
         if (verbose) Log.info(result);
-        Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
+        assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
     }
 
     Marker cdsMarker(Transcript tr) {
@@ -225,9 +226,9 @@ public class TestCasesIntegrationBase {
             VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
             if (verbose) Log.info("\t" + vcfEff);
 
-            Assert.assertEquals(hgvsP, vcfEff.getHgvsProt());
-            Assert.assertEquals(hgvsC, vcfEff.getHgvsDna());
-            Assert.assertEquals(eff, vcfEff.getEffectsStrSo());
+            assertEquals(hgvsP, vcfEff.getHgvsProt());
+            assertEquals(hgvsC, vcfEff.getHgvsDna());
+            assertEquals(eff, vcfEff.getEffectsStrSo());
         }
     }
 
@@ -255,14 +256,14 @@ public class TestCasesIntegrationBase {
                     String expectedHgvsC = ve.getInfo("HGVSC");
                     if (expectedHgvsC != null) {
                         String actualHgvsC = veff.getHgvsC();
-                        Assert.assertEquals("HGVS.c mismatch", expectedHgvsC, actualHgvsC);
+                        assertEquals(expectedHgvsC, actualHgvsC, "HGVS.c mismatch");
                         countCheck++;
                     }
 
                     String expectedHgvsP = ve.getInfo("HGVSP");
                     if (expectedHgvsP != null) {
                         String actualHgvsP = veff.getHgvsP();
-                        Assert.assertEquals("HGVS.p mismatch", expectedHgvsP, actualHgvsP);
+                        assertEquals(expectedHgvsP, actualHgvsP, "HGVS.p mismatch");
                         countCheck++;
                     }
                 }
@@ -270,7 +271,7 @@ public class TestCasesIntegrationBase {
         }
 
         if (verbose) Log.info("Total checked: " + countCheck);
-        Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
+        assertTrue(countCheck >= minCheck, "Too few variants checked: " + countCheck);
     }
 
     // Check variant's HGVS.c nomenclature
@@ -289,13 +290,13 @@ public class TestCasesIntegrationBase {
                     // Compare against expected result
                     String expectedHgvsC = ve.getInfo("HGVSC");
                     String actualHgvsC = veff.getHgvsC();
-                    Assert.assertEquals(expectedHgvsC, actualHgvsC);
+                    assertEquals(expectedHgvsC, actualHgvsC);
                     found = true;
                 }
             }
         }
 
-        Assert.assertTrue("No annotations found for transcript " + trId, found);
+        assertTrue(found, "No annotations found for transcript " + trId);
     }
 
     void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
@@ -310,7 +311,7 @@ public class TestCasesIntegrationBase {
         cmdEff.setVerbose(verbose);
         cmdEff.setSupressOutput(!verbose);
         List<VcfEntry> vcfEntries = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         // Check results
         int numNextProt = 0;
@@ -335,7 +336,7 @@ public class TestCasesIntegrationBase {
             }
         }
 
-        Assert.assertEquals(1, numNextProt);
+        assertEquals(1, numNextProt);
     }
 
     void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
@@ -354,7 +355,7 @@ public class TestCasesIntegrationBase {
         // Run
         SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
         List<VcfEntry> vcfEntries = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         // Check results
         int numNextProt = 0;
@@ -366,7 +367,7 @@ public class TestCasesIntegrationBase {
                         && ((trId == null) || trId.equals(veff.getFeatureId()) || trId.equals(veff.getTranscriptId())) // Filter by transcript ID
                 ) {
                     // Are details OK?
-                    if (useAnn)  matchDetails = effectDetails.equals(veff.getFeatureType());
+                    if (useAnn) matchDetails = effectDetails.equals(veff.getFeatureType());
                     else matchDetails = effectDetails.equals(veff.getEffectDetails());
 
                     if (matchDetails) numNextProt++;
@@ -390,7 +391,7 @@ public class TestCasesIntegrationBase {
             }
         }
 
-        Assert.assertEquals(1, numNextProt);
+        assertEquals(1, numNextProt);
     }
 
     /**
@@ -458,8 +459,8 @@ public class TestCasesIntegrationBase {
             if (debug) System.err.println("\tPoints: " + points + "\n\tPlus :" + plus);
 
             // Check
-            Assert.assertEquals(0, points.replace('.', ' ').trim().length());
-            Assert.assertEquals(0, plus.replace('+', ' ').trim().length());
+            assertEquals(0, points.replace('.', ' ').trim().length());
+            assertEquals(0, plus.replace('+', ' ').trim().length());
         }
     }
 
@@ -475,7 +476,7 @@ public class TestCasesIntegrationBase {
             for (VcfEffect veff : ve.getVcfEffects()) {
                 EffectImpact imp = veff.getImpact();
                 if (verbose) Log.info("\t" + imp + "\t" + veff);
-                Assert.assertEquals(EffectImpact.MODIFIER, imp);
+                assertEquals(EffectImpact.MODIFIER, imp);
             }
         }
     }
@@ -503,7 +504,7 @@ public class TestCasesIntegrationBase {
             }
         }
 
-        Assert.assertEquals(true, hasWarning);
+        assertTrue(hasWarning);
     }
 
     public void compareHgvs(String genome, String vcfFileName) {
@@ -561,7 +562,7 @@ public class TestCasesIntegrationBase {
                 if (trId != null && trId.equals(trIdC)) {
                     trFound = true;
                     if (!hgvsCexp.equals(hgvsCactual)) {
-                        if (!ignoreErrors) Assert.assertEquals(hgvsCexp, hgvsCactual);
+                        if (!ignoreErrors) assertEquals(hgvsCexp, hgvsCactual);
                         countErrC++;
                     } else {
                         okC = foundC = true;
@@ -572,7 +573,7 @@ public class TestCasesIntegrationBase {
                 // Compare results for HGVS_PROT
                 if (compareProt && trId != null && trId.equals(trIdP)) {
                     if (!hgvsPexp.equals(hgvsPactual)) {
-                        if (!ignoreErrors) Assert.assertEquals(hgvsPexp, hgvsPactual);
+                        if (!ignoreErrors) assertEquals(hgvsPexp, hgvsPactual);
                         countErrP++;
                     } else {
                         okP = foundP = true;
@@ -597,8 +598,8 @@ public class TestCasesIntegrationBase {
             }
 
             if (!ignoreErrors) {
-                Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
-                if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+                assertTrue(okC, "HGVS (DNA) not found: '" + hgvsCexp + "'");
+                if (!hgvsPexp.isEmpty()) assertTrue(okP, "HGVS (Protein) not found: '" + hgvsPexp + "'");
             } else {
                 // Show errors
                 if (!okC) System.err.println("HGVS (DNA) not found : '" + hgvsCexp + "', vcf entry:\t" + ve);
@@ -625,7 +626,7 @@ public class TestCasesIntegrationBase {
         cmdEff.setSupressOutput(!verbose);
 
         List<VcfEntry> vcfEnties = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         for (VcfEntry ve : vcfEnties) {
 
@@ -671,7 +672,7 @@ public class TestCasesIntegrationBase {
         cmdEff.setSupressOutput(!verbose);
 
         List<VcfEntry> vcfEnties = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         for (VcfEntry ve : vcfEnties) {
             // Create a set of found variants
@@ -788,9 +789,6 @@ public class TestCasesIntegrationBase {
 
     /**
      * Used to migrate test files in old path
-     *
-     * @param fileName
-     * @return
      */
     public String pathMigrate(String fileName) {
         String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
@@ -894,7 +892,7 @@ public class TestCasesIntegrationBase {
 
         // Run command
         List<VcfEntry> list = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         return list;
     }
@@ -923,7 +921,7 @@ public class TestCasesIntegrationBase {
 
         // Run command
         List<VcfEntry> list = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         // Find AA change for a genotype
         boolean found = false;
@@ -934,8 +932,8 @@ public class TestCasesIntegrationBase {
                     System.err.println("\t" + eff + "\n\t\tHGVS.p : " + eff.getHgvsProt() + "\n\t\tHGVS.c : " + eff.getHgvsDna() + "\n\t\tGenotype: " + eff.getGenotype());
                 if (trId != null && !trId.equals(eff.getTranscriptId())) continue;
                 if (genotype.equals(eff.getGenotype())) {
-                    if (hgsvP != null) Assert.assertEquals(hgsvP, eff.getHgvsP());
-                    if (hgvsC != null) Assert.assertEquals(hgvsC, eff.getHgvsDna());
+                    if (hgsvP != null) assertEquals(hgsvP, eff.getHgvsP());
+                    if (hgvsC != null) assertEquals(hgvsC, eff.getHgvsDna());
                     found = true;
                 }
             }

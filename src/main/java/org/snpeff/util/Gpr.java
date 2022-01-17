@@ -3,8 +3,6 @@
  */
 package org.snpeff.util;
 
-import java.awt.Color;
-import java.awt.Paint;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

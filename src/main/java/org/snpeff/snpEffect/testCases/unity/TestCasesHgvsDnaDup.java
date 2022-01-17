@@ -1,13 +1,14 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Log;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  *
@@ -45,7 +46,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.1dupT", hgvsDna);
+		assertEquals("c.1dupT", hgvsDna);
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.3dupA", hgvsDna);
+		assertEquals("c.3dupA", hgvsDna);
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.5dupT", hgvsDna);
+		assertEquals("c.5dupT", hgvsDna);
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.7dupT", hgvsDna);
+		assertEquals("c.7dupT", hgvsDna);
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.7_8dupTG", hgvsDna);
+		assertEquals("c.7_8dupTG", hgvsDna);
 	}
 
 	@Test
@@ -183,7 +184,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.6_8dupGTG", hgvsDna);
+		assertEquals("c.6_8dupGTG", hgvsDna);
 	}
 
 	/**
@@ -209,7 +210,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.3dupA", hgvsDna);
+		assertEquals("c.3dupA", hgvsDna);
 	}
 
 	/**
@@ -235,7 +236,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.7dupC", hgvsDna);
+		assertEquals("c.7dupC", hgvsDna);
 	}
 
 	/**
@@ -265,7 +266,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.49+3_49+4dupTA", hgvsDna);
+		assertEquals("c.49+3_49+4dupTA", hgvsDna);
 	}
 
 	/**
@@ -296,7 +297,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.48_49+2dupTATA", hgvsDna);
+		assertEquals("c.48_49+2dupTATA", hgvsDna);
 	}
 
 	/**
@@ -327,7 +328,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'" + "\nEffects:" + effs);
-		Assert.assertEquals("c.50-2_51dupAAAG", hgvsDna);
+		assertEquals("c.50-2_51dupAAAG", hgvsDna);
 	}
 
 }

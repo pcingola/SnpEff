@@ -3,13 +3,14 @@ package org.snpeff.snpEffect.testCases.integration;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case
@@ -42,18 +43,18 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 		//---
 		// Build regulatory region database
 		//---
-		String argsBuild[] = { "build", "-onlyReg", "-noLog", genome };
+		String[] argsBuild = { "build", "-onlyReg", "-noLog", genome };
 		SnpEff snpeffBuild = new SnpEff(argsBuild);
 		snpeffBuild.setDebug(debug);
 		snpeffBuild.setVerbose(verbose);
 		snpeffBuild.setSupressOutput(!verbose);
 		boolean ok = snpeffBuild.run();
-		Assert.assertTrue("Error building regulatory regions", ok);
+		assertTrue(ok, "Error building regulatory regions");
 
 		//---
 		// Annotate using the regulatory region database we've just created
 		//---
-		String argsRun[] = { genome, vcfFileName };
+		String[] argsRun = { genome, vcfFileName };
 		SnpEffCmdEff snpeffRun = new SnpEffCmdEff();
 		snpeffRun.parseArgs(argsRun);
 		snpeffRun.setDebug(debug);
@@ -71,7 +72,7 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 			}
 		}
 
-		Assert.assertTrue("Error annotating regulatory regions", ok);
+		assertTrue(ok, "Error annotating regulatory regions");
 
 	}
 }

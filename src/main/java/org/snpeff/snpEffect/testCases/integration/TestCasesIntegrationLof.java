@@ -3,8 +3,8 @@ package org.snpeff.snpEffect.testCases.integration;
 import java.util.LinkedList;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
@@ -21,7 +21,9 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Test Loss of Function prediction
@@ -39,7 +41,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		super();
 	}
 
-	@After
+	@AfterEach
 	public void after() {
 		config = null;
 	}
@@ -90,7 +92,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		// Calculate LOF
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
-		Assert.assertEquals(true, islof);
+		assertTrue(islof);
 	}
 
 	/**
@@ -125,7 +127,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(delIsLof, islof);
+				assertEquals(delIsLof, islof);
 			}
 		}
 	}
@@ -169,7 +171,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Is LOF as expected?
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(isFsLof, islof);
+				assertEquals(isFsLof, islof);
 			}
 		}
 	}
@@ -201,7 +203,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.START_LOST, exon);
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
-		Assert.assertEquals(true, islof);
+		assertEquals(true, islof);
 	}
 
 	/**
@@ -232,7 +234,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(true, islof);
+				assertEquals(true, islof);
 			}
 		}
 
@@ -267,7 +269,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(true, islof);
+				assertEquals(true, islof);
 			}
 		}
 
@@ -300,12 +302,12 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", path("test_lof_02.bed") };
+		String[] args = { "testHg3775Chr22", "-noLog", "-i", "bed", path("test_lof_02.bed") };
 		SnpEff snpeff = new SnpEff(args);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		boolean ok = snpeff.run();
-		Assert.assertEquals(true, ok);
+		assertTrue(ok);
 	}
 
 	/**
@@ -315,7 +317,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	LinkedList<VariantEffect> variantEffects(Variant variant, EffectType effectType, Marker marker) {
 		VariantEffect changeEffect = new VariantEffect(variant);
 		changeEffect.set(marker, effectType, effectType.effectImpact(), "");
-		LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
+		LinkedList<VariantEffect> changeEffects = new LinkedList<>();
 		changeEffects.add(changeEffect);
 		return changeEffects;
 

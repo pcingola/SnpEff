@@ -20,7 +20,6 @@ distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
 make	 			:= false		help Make (build JAR files)
 test	 			:= false		help Run SnpEff / SnpSift test cases
-testHgvs 			:= false		help Run SnpEff HGVS test cases
 
 help Data download options
 download 			:= false		help Download all genomes
@@ -515,6 +514,7 @@ void downloadAll() {
 # Download one dataset
 #-------------------------------------------------------------------------------
 void downloadOneSet(string setToDownload) {
+    println "Download set '$setToDownload'"
 	switch( setToDownload ) {
 		case 'clinvar':
 			downloadClinvar()
@@ -630,19 +630,6 @@ void runTestsSnpSiftAll() {
 			org.snpsift.testCases.TestSuiteAll \
 			2>&1 \
 			| tee $dirSnpEff/testcases.snpsift.all.txt
-}
-
-#-------------------------------------------------------------------------------
-# Run test cases: SnpEff-HGVS
-#-------------------------------------------------------------------------------
-void runTestsSnpEffHgvs() {
-	task cd $HOME/workspace/SnpEff/ ; \
-		java -Xmx4g \
-			-cp $dirSnpEff/snpEff.jar \
-			org.junit.runner.JUnitCore \
-			org.snpeff.snpEffect.testCases.TestSuiteHgvs \
-			2>&1 \
-			| tee $dirSnpEff/testcases.snpeff.hgvs.txt
 }
 
 #-------------------------------------------------------------------------------
@@ -887,7 +874,6 @@ if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCS
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)
 if( test )						runTests()									# Run test cases 
-if( testHgvs )					runTestsSnpEffHgvs()						# Run test cases (SnpEff HGVS)
 if( uploadCore )				uploadCore2Azure()							# Upload 'core' files
 if( uploadDbs )					uploadDbs2Azure()							# Upload all database files in 'zip' dir
 if( uploadDbNsfp )				uploadDbNsfp2Azure()						# Upload dbNsfp database files 

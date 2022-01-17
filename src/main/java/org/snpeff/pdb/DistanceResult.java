@@ -189,17 +189,19 @@ public class DistanceResult {
 	}
 
 	public void setAa1(AminoAcid aa) {
-		setPdbId(aa.getChain().getStructure().getPDBCode());
+		String pdbId = aa.getChain().getStructure().getPDBHeader().getPdbId().toString();
+		setPdbId(pdbId);
 		pdbChainId1 = aa.getChainId();
 		aaPos1 = aa.getResidueNumber().getSeqNum() - 1;
-		aa1 = aa.getChemComp().getOne_letter_code().charAt(0);
+		aa1 = aa.getChemComp().getOneLetterCode().charAt(0);
 	}
 
 	public void setAa2(AminoAcid aa) {
-		setPdbId(aa.getChain().getStructure().getPDBCode());
+		String pdbId = aa.getChain().getStructure().getPDBHeader().getPdbId().toString();
+		setPdbId(pdbId);
 		pdbChainId2 = aa.getChainId();
 		aaPos2 = aa.getResidueNumber().getSeqNum() - 1;
-		aa2 = aa.getChemComp().getOne_letter_code().charAt(0);
+		aa2 = aa.getChemComp().getOneLetterCode().charAt(0);
 	}
 
 	void setPdbId(String pdbId) {

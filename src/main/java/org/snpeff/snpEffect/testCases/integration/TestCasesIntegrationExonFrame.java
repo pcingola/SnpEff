@@ -1,7 +1,6 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
@@ -14,6 +13,9 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for exon frames
@@ -43,7 +45,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         snpEff.setDebug(debug);
         snpEff.setSupressOutput(!verbose);
         boolean ok = snpEff.run();
-        Assert.assertTrue(ok);
+        assertTrue(ok);
 
         //---
         // Load database and check some numbers
@@ -62,8 +64,8 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         if (verbose) Log.debug("Trasncript:" + transcript);
 
         // Check parameters
-        Assert.assertEquals(454127, transcript.getCdsStart());
-        Assert.assertEquals(450599, transcript.getCdsEnd());
+        assertEquals(454127, transcript.getCdsStart());
+        assertEquals(450599, transcript.getCdsEnd());
 
         //---
         // Check annotations
@@ -77,7 +79,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         cmdEff.setVerbose(verbose);
         cmdEff.setSupressOutput(!verbose);
         List<VcfEntry> vcfEntries = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
         // Analyze annotations
         ok = false;
@@ -110,7 +112,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
             if (!found)
                 throw new RuntimeException("Cannot find expected effect '" + expectedEffect + "', amino acid change '" + expectedAa + "' and codon change '" + expectedCodon + "'");
         }
-        Assert.assertTrue("No match found", ok);
+        assertTrue(ok, "No match found");
     }
 
     /**
@@ -128,6 +130,6 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         snpEff.setVerbose(verbose);
         snpEff.setSupressOutput(!verbose);
         boolean ok = snpEff.run();
-        Assert.assertTrue(ok);
+        assertTrue(ok);
     }
 }

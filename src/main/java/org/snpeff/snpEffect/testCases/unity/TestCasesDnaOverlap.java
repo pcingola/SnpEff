@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.unity;
 import java.util.HashSet;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.binseq.BinarySequence;
 import org.snpeff.binseq.DnaAndQualitySequence;
 import org.snpeff.binseq.DnaSequence;
@@ -14,7 +14,7 @@ import org.snpeff.fastq.FastqVariant;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCasesDnaOverlap {
 
@@ -22,13 +22,10 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Create random changes in a sequence
-	 * @param overlap
-	 * @param overlapChanges
-	 * @return
 	 */
 	String change(String sequence, int numChanges, Random rand) {
-		HashSet<Integer> changedPos = new HashSet<Integer>();
-		char chars[] = sequence.toCharArray();
+		HashSet<Integer> changedPos = new HashSet<>();
+		char[] chars = sequence.toCharArray();
 
 		for (int i = 0; i < numChanges;) {
 			int pos = rand.nextInt(chars.length);
@@ -50,9 +47,6 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Perform a test of DnaCode.copyBases() method
-	 * @param seqLenSrc
-	 * @param seqLenDst
-	 * @param rand
 	 */
 	void dnaCoderCopyBases(int seqLenSrc, int seqLenDst, Random rand) {
 		String srcStr = randSeq(seqLenSrc, rand);
@@ -88,10 +82,6 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Overlap two sequences
-	 * @param seq1
-	 * @param seq2
-	 * @param start
-	 * @param result
 	 */
 	void overlap(String seq1, String seq2, int start, String result, String resultQ) {
 		overlapDnaSequence(seq1, seq2, start, result);
@@ -107,8 +97,8 @@ public class TestCasesDnaOverlap {
 		DnaAndQualitySequence s2 = new DnaAndQualitySequence(seq2, q(seq2.length(), 3), FastqVariant.FASTQ_SANGER);
 		DnaAndQualitySequence s3 = s1.overlap(s2, start);
 
-		Assert.assertEquals(result, s3.getSequence());
-		if (resultQ != null) Assert.assertEquals(resultQ, s3.getQuality());
+		assertEquals(result, s3.getSequence());
+		if (resultQ != null) assertEquals(resultQ, s3.getQuality());
 	}
 
 	/**
@@ -119,14 +109,11 @@ public class TestCasesDnaOverlap {
 		DnaSequence s1 = new DnaSequence(seq1);
 		DnaSequence s2 = new DnaSequence(seq2);
 		BinarySequence s3 = s1.overlap(s2, start);
-		Assert.assertEquals(result, s3.getSequence());
+		assertEquals(result, s3.getSequence());
 	}
 
 	/**
 	 * Create random sequences and overlap them
-	 * @param maxLen
-	 * @param minLen
-	 * @param rand
 	 */
 	void overlapRandTest(int maxLen, int minLen, Random rand) {
 		// First sequence
@@ -159,8 +146,6 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Create a quality string 'len' bases long
-	 * @param len
-	 * @return
 	 */
 
 	String q(int len, int quality) {
@@ -172,9 +157,6 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Create a random sequence of length 'len'
-	 * @param len
-	 * @param rand
-	 * @return
 	 */
 	String randSeq(int len, Random rand) {
 		StringBuilder sb = new StringBuilder();
@@ -201,7 +183,7 @@ public class TestCasesDnaOverlap {
 		int idx2 = (start >= 0 ? 0 : -start);
 		int score = compartor.score(s1, idx1, s2, idx2);
 
-		Assert.assertEquals(result, score);
+		assertEquals(result, score);
 	}
 
 	void scoreDnaSequence(String seq1, String seq2, int start, int threshold, int result) {
@@ -214,17 +196,11 @@ public class TestCasesDnaOverlap {
 		int idx2 = (start >= 0 ? 0 : -start);
 		int score = compartor.score(s1, idx1, s2, idx2);
 
-		Assert.assertEquals(result, score);
+		assertEquals(result, score);
 	}
 
 	/**
 	 * Test DnaCoder.score() method
-	 *
-	 * @param maxLen
-	 * @param minLen
-	 * @param rand
-	 * @param dnaCoder
-	 * @param comparator
 	 */
 	void scoreRandTest(int maxLen, int minLen, Random rand, DnaCoder dnaCoder, DnaSubsequenceComparator<DnaSequence> comparator) {
 		// First sequence
@@ -275,9 +251,6 @@ public class TestCasesDnaOverlap {
 
 	/**
 	 * Create random sequences and calculate score (using a threshold)
-	 * @param maxLen
-	 * @param minLen
-	 * @param rand
 	 */
 	void scoreRandTestThreshold(int maxLen, int minLen, Random rand, int threshold, int overlapChanges) {
 		// First sequence

@@ -1,6 +1,5 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.Test;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.HgvsDna;
@@ -9,7 +8,9 @@ import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test cases for HGVS's 'dup' on the negative strand
@@ -52,7 +53,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.1dupG", hgvsDna);
+		assertEquals("c.1dupG", hgvsDna);
 	}
 
 	@Test
@@ -79,7 +80,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.5dupC", hgvsDna);
+		assertEquals("c.5dupC", hgvsDna);
 	}
 
 	/**
@@ -110,7 +111,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.5_6dupCG", hgvsDna);
+		assertEquals("c.5_6dupCG", hgvsDna);
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 
 		// Check result
 		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.16_18dupATG", hgvsDna);
+		assertEquals("c.16_18dupATG", hgvsDna);
 	}
 
 }
