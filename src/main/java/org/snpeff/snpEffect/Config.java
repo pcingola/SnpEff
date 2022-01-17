@@ -33,9 +33,21 @@ public class Config implements Serializable, Iterable<String> {
     public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
     public static final String KEY_REFERENCE_SUFIX = ".reference";
     public static final String KEY_VERSIONS_URL = "versions.url";
+
+    // Database versions compatibility
+    //
+    //     SnpEff version | Compatible
+    //     ---------------+-----------
+    //                5.1 | 5.0
+    //     ---------------+-----------
+    public static final String[] COMPATIBLE_WITH_5_1 = {"5.0"};
+    public static final Map<String, String[]> DATABASE_COMPATIBLE_VERSIONS = Map.of("5.1", COMPATIBLE_WITH_5_1);
+
     private static final long serialVersionUID = 877453207407217465L;
+
     public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
     public static String DEFAULT_COORDINATES = "GRCh37";
+
     private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
 
     boolean debug = false; // Debug mode?
@@ -186,15 +198,26 @@ public class Config implements Serializable, Iterable<String> {
     }
 
     /**
+     * Get a list of URLs that can be used to download a database
+     * Use compatible versions from 'getDatabaseCompatibilityVersions()'
+     */
+    public List<URL> downloadUrl(String genomeVer) {
+        List<String> versions = getDatabaseCompatibilityVersions();
+        List<URL> urls = new LinkedList<>();
+        for (String version : versions) {
+            urls.add(downloadUrl(genomeVer, version));
+        }
+        return urls;
+    }
+
+    /**
      * Build the URL for downloading a database file
      * <p>
      * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
      * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
      */
-    public URL downloadUrl(String genomeVer) {
+    public URL downloadUrl(String genomeVer, String version) {
         try {
-            String version = SnpEff.VERSION_MAJOR;
-
             // Replace '.' by '_'
             version = version.replace('.', '_');
 
@@ -260,6 +283,23 @@ public class Config implements Serializable, Iterable<String> {
         // Not found? Try genome name without version (e.g. 'GRCh38.85' => 'GRCh38')
         coords = genomeVersion.split("\\.")[0];
         return coords.isEmpty() ? DEFAULT_COORDINATES : coords;
+    }
+
+    /**
+     * Return a list of databases that are compatible with this SnpEff version number
+     */
+    List<String> getDatabaseCompatibilityVersions() {
+        // A list with at least this version number
+        List<String> dcv = new LinkedList<>();
+        dcv.add(SnpEff.VERSION_MAJOR);
+
+        // Retrieve more compatible versions
+        var moreVersions = DATABASE_COMPATIBLE_VERSIONS.get(SnpEff.VERSION_MAJOR);
+        if (moreVersions != null) {
+            for (String v : moreVersions) dcv.add(v);
+        }
+
+        return dcv;
     }
 
     /**
@@ -490,6 +530,8 @@ public class Config implements Serializable, Iterable<String> {
         genome = genomeById.get(genomeVersion); // Set a genome
         if (!genomeVersion.isEmpty() && (genome == null))
             throw new RuntimeException("No such genome '" + genomeVersion + "'");
+
+        // Make this the current singleton instance
         configInstance = this;
     }
 
