@@ -86,6 +86,11 @@ pip install mkdocs-material
 
 # Databases sources updates details
 
+### Database compatible versions
+
+Update `make.bds`, variable `dbCompatibleVersions`. 
+Add list of all database versions that are compatible with this release
+
 ### ENSEMBL vertebrates release number
 
 1) Go to ENSEMBL's site and check the latest release number: http://ftp.ensembl.org/pub/
@@ -109,6 +114,20 @@ jq -r '.ucscGenomes | keys[] ucscGenomes.json'
 
 ### ENSEMBL vertebrates release number
 
+1) Check latest release number from http://ftp.ensemblgenomes.org/pub/ 
+2) Update release number on `make.bds`, variable `ensemblBfmppRelease`
+3) Create an empty config file `config/snpEff.ENSEMBL_BFMPP_{RELEASE_NUMBER}.config`
+4) Run `./make.bds -download` will create the appropriate line for the config file `config/snpEff.ENSEMBL_BFMPP_{RELEASE_NUMBER}.config`
+
+### FlyBase
+
+**Note:** It looks like FlyBase is not providing any GTF files for other than 'dmel', this is really weird, they used to have them in the past (maybe the project is dead/dying?)
+
+1) Check latest release from http://ftp.flybase.net/releases/
+2) Update `make.bds`, variable `flybaseRelease`
+3) Update the list of genomes, variable `flybaseGenomes`
+4) Check which genomes have GTF files (right click on each link and look for `gtf` subdir)
+5) Create / Update the config file `config/snpEff.FLYBASE_{FLYBASE_RELEASE}.config`
 
 ### MANE Genome
 
