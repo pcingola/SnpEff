@@ -2,18 +2,12 @@
 
 # Release process
 
-0) Install required libraries
-
-```
-# ANTRL
-wget http://www.antlr.org/download/antlr-4.5.1-complete.jar
-mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -DartifactId=antlr -Dversion=4.5.1 -Dpackaging=jar
-```
-
 1) Change version numbers:
 - Update SnpEff pom.xml
 - Update SnpSift pom.xml
-
+- Update `scripts_build/make.sh`, line `export VERSION=5.1`
+- Check `Config.DATABASE_COMPATIBLE_VERSIONS` for new version compatibilities added 
+ 
 2) Build JAR files, download databases, build databases, etc.
 ```
 ./make.bds
@@ -39,12 +33,11 @@ mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -Da
 ```
 ./make.bds -uploadCore		# Upload core files
 ./make.bds -uploadDbs		# Upload databases files
-./make.bds -uploadHtml		# Upload web pages and manual
 ```
 
-7) Update documentation
+7) Update documentation: See next section for details
 ```
-
+./make.bds -createDocs
 ```
 
 # SnpEff's Documentation
