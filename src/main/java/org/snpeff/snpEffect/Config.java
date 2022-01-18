@@ -288,7 +288,7 @@ public class Config implements Serializable, Iterable<String> {
     /**
      * Return a list of databases that are compatible with this SnpEff version number
      */
-    List<String> getDatabaseCompatibilityVersions() {
+    public List<String> getDatabaseCompatibilityVersions() {
         // A list with at least this version number
         List<String> dcv = new LinkedList<>();
         dcv.add(SnpEff.VERSION_MAJOR);

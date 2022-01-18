@@ -1,7 +1,6 @@
 package org.snpeff.interval;
 
 import org.snpeff.fileIterator.BedFileIterator;
-import org.snpeff.fileIterator.BigBedFileIterator;
 import org.snpeff.fileIterator.Gff3FileIterator;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.tree.IntervalForest;
@@ -59,7 +58,7 @@ public class Markers implements Serializable, Collection<Marker> {
         else if (flLower.endsWith(".bed")) return new BedFileIterator(fileName).loadMarkers();
         else if (flLower.endsWith(".vcf")) return new VcfFileIterator(fileName).loadMarkers();
         else if (flLower.endsWith(".gff")) return new Gff3FileIterator(fileName).loadMarkers();
-        // else if (flLower.endsWith(".bb")) return new BigBedFileIterator(fileName).loadMarkers();
+            // else if (flLower.endsWith(".bb")) return new BigBedFileIterator(fileName).loadMarkers();
         else throw new RuntimeException("Unrecognized genomig interval file type '" + fileName + "'");
     }
 
@@ -164,7 +163,7 @@ public class Markers implements Serializable, Collection<Marker> {
 
     /**
      * Perform the intersection of all overlapping sub-intervals
-     *
+     * <p>
      * For each marker, calculate all overlapping markers and create a new marker that contains them all.
      * Return a set of those new markers.
      */
@@ -329,7 +328,7 @@ public class Markers implements Serializable, Collection<Marker> {
 
     /**
      * Returns the result of this set minus 'intervals'
-     *
+     * <p>
      * WARNING: This method should only be used for debugging (or in very small collections) since it is extremely inefficient.
      */
     public Markers minus(Markers intervals) {

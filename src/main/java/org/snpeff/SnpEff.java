@@ -721,7 +721,7 @@ public class SnpEff implements CommandLine {
 		// Read motifs
 		if (verbose) Log.info("Loading Motifs from file '" + motifBinFileName + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers motifsDb = markerSerializer.load(motifBinFileName);
 
 		// Add (only) motif markers. The original motifs has to be serialized with
@@ -760,7 +760,7 @@ public class SnpEff implements CommandLine {
 		}
 		if (verbose) Log.info("Reading NextProt database from file '" + nextProtBinFile + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
 
 		// Create a collection of (only) NextProt markers. The original nextProtDb has
@@ -830,7 +830,7 @@ public class SnpEff implements CommandLine {
 		HashMap<String, Integer> chrs = new HashMap<>();
 		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();
-			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
+			int max = chrs.getOrDefault(chr, 0);
 			max = Math.max(max, r.getEnd());
 			chrs.put(chr, max);
 		}
@@ -903,7 +903,7 @@ public class SnpEff implements CommandLine {
 				case "-configoption":
 					if ((i + 1) < args.length) {
 						String nameValue = args[++i];
-						String nv[] = nameValue.split("=", 2);
+						String[] nv = nameValue.split("=", 2);
 						if (nv.length > 0) configOverride.put(nv[0], nv[1]);
 						else usage("Cannot parse config option (expected format 'name=value'): " + nameValue);
 					} else usage("Option '-configOption' without argument");

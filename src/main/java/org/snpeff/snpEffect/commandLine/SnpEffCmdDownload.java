@@ -27,12 +27,13 @@ public class SnpEffCmdDownload extends SnpEff {
         super();
     }
 
-    boolean downloadAndInstall(URL url, String localFile) {
+    boolean downloadAndInstall(URL url, String localFile, boolean maskDownloadExceptions) {
         // Download and UnZIP
         Download download = new Download();
         download.setVerbose(verbose);
         download.setDebug(debug);
         download.setUpdate(update);
+        download.setMaskDownloadException(maskDownloadExceptions);
 
         if (verbose) Log.info("Downloading from '" + url + "' to local file '" + localFile + "'");
 
@@ -54,9 +55,10 @@ public class SnpEffCmdDownload extends SnpEff {
      */
     boolean downloadAndInstall(List<URL> urls) {
         // Download and UnZIP
+        var maskExceptions = (urls.size() > 1);
         for (URL url : urls) {
             String localFile = System.getProperty("java.io.tmpdir") + "/" + Download.urlBaseName(url.toString());
-            if (downloadAndInstall(url, localFile)) return true;
+            if (downloadAndInstall(url, localFile, maskExceptions)) return true;
         }
         Log.fatalError("Failed to download database from " + urls);
         return false;
@@ -68,13 +70,13 @@ public class SnpEffCmdDownload extends SnpEff {
     @Override
     public void parseArgs(String[] args) {
         this.args = args;
-        for (int i = 0; i < args.length; i++) {
+        for (String arg : args) {
 
             // Argument starts with '-'?
-            if (isOpt(args[i]))
-                usage("Unknown option '" + args[i] + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
-            else if (genomeVer.length() <= 0) genomeVer = args[i];
-            else usage("Unknown parameter '" + args[i] + "'");
+            if (isOpt(arg))
+                usage("Unknown option '" + arg + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
+            else if (genomeVer.length() <= 0) genomeVer = arg;
+            else usage("Unknown parameter '" + arg + "'");
         }
 
         // Check: Do we have all required parameters?
@@ -145,7 +147,7 @@ public class SnpEffCmdDownload extends SnpEff {
             throw new RuntimeException(e);
         }
         String localFile = System.getProperty("java.io.tmpdir") + "/" + Gpr.baseName(url.toString());
-        downloadAndInstall(url, localFile); // Download and unzip
+        downloadAndInstall(url, localFile, false); // Download and unzip
 
         if (verbose) Log.info("Done");
         return true;

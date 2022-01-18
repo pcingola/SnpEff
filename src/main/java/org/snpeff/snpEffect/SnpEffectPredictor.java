@@ -103,8 +103,7 @@ public class SnpEffectPredictor implements Serializable {
      * Add a set of markers
      */
     public void addAll(Markers markersToAdd) {
-        for (Marker marker : markersToAdd)
-            markers.add(marker);
+        markers.addAll(markersToAdd);
     }
 
     /**
@@ -180,15 +179,13 @@ public class SnpEffectPredictor implements Serializable {
         Markers markers = new Markers();
 
         // Add up-down stream intervals
-        for (Marker upDownStream : genome.getGenes().createUpDownStream(upDownStreamLength))
-            markers.add(upDownStream);
+        markers.addAll(genome.getGenes().createUpDownStream(upDownStreamLength));
 
         // Add splice site intervals
         genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 
         // Intergenic markers
-        for (Intergenic intergenic : genome.getGenes().createIntergenic())
-            markers.add(intergenic);
+        markers.addAll(genome.getGenes().createIntergenic());
 
         return markers;
     }
@@ -329,8 +326,6 @@ public class SnpEffectPredictor implements Serializable {
      * ii) If more than one coding gene has the
      * same 'closet distance', a random gene
      * is returned.
-     *
-     * @param inputInterval
      */
     public Gene queryClosestGene(Marker inputInterval) {
         int initialExtension = 1000;
@@ -540,8 +535,7 @@ public class SnpEffectPredictor implements Serializable {
         }
 
         // Remove non-canonical transcripts
-        Set<String> done = new HashSet<>();
-        done.addAll(geneCanonTr.keySet());
+        Set<String> done = new HashSet<>(geneCanonTr.keySet());
         for (Gene g : genome.getGenes()) {
             String geneId = g.getId();
             String trId = geneCanonTr.get(geneId);
