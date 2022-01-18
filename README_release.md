@@ -141,6 +141,8 @@ Usually nothing to update, there is a stable link to the latest version
 
 ### dbSnp
 
+Usually nothing to update
+
 1) Check release vresion from https://ftp.ncbi.nih.gov/snp/latest_release/VCF/
 2) Update `src/bds/download/downloadHumanDb.bds`
     1) GRCh37: Variable `urlDbSnpGrch37`
@@ -153,6 +155,8 @@ Usually nothing to update, there is a stable link to the latest version
 
 ### Gwas-Catalog
 
+Usually nothing to update
+
 1) Check the page https://www.ebi.ac.uk/gwas/docs/file-downloads
 2) WARNING: If there are changes in the format, Java code might need to change
 
@@ -163,6 +167,8 @@ Usually nothing to update, there is a stable link to the latest version
 3) Update `src/bds/download/downloadHumanDb.bds`, variable `urlJaspar` 
  
 ### NextProt
+
+Usually nothing to update
 
 1) Check release from https://download.nextprot.org/pub/current_release/
 2) Update link in `src/bds/download/downloadHumanDb.bds`, variable `urlNextProt`
