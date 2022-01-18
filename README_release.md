@@ -131,11 +131,46 @@ jq -r '.ucscGenomes | keys[] ucscGenomes.json'
 
 ### MANE Genome
 
-### PDB
+1) Check latest version from https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/
+2) Update `make.bds`, variable `maneRelease`
+3) Update file `config/snpEff.dbs.config`, look for `GRCh38.mane.*` entries
 
-### ClinVar
+### Clinvar
+
+Usually nothing to update, there is a stable link to the latest version
+
+### dbSnp
+
+1) Check release vresion from https://ftp.ncbi.nih.gov/snp/latest_release/VCF/
+2) Update `src/bds/download/downloadHumanDb.bds`
+    1) GRCh37: Variable `urlDbSnpGrch37`
+    2) GRCh38: Variable `urlDbSnpGrch38`
 
 ### dbNSFP
+
+1) Check latest version from https://sites.google.com/site/jpopgen/dbNSFP
+2) Update `make.bds`, variable `dbNsfpVersion` (use the version ending in "a")
+
+### Gwas-Catalog
+
+1) Check the page https://www.ebi.ac.uk/gwas/docs/file-downloads
+2) WARNING: If there are changes in the format, Java code might need to change
+
+### Jaspar
+
+1) Check the download page https://jaspar.genereg.net/downloads/
+2) Download link from https://jaspar.genereg.net/download/data/2022/CORE/JASPAR2022_CORE_non-redundant_pfms_jaspar.txt 
+3) Update `src/bds/download/downloadHumanDb.bds`, variable `urlJaspar` 
+ 
+### NextProt
+
+1) Check release from https://download.nextprot.org/pub/current_release/
+2) Update link in `src/bds/download/downloadHumanDb.bds`, variable `urlNextProt`
+
+### PDB
+
+1) Check download page for change https://www.rcsb.org/docs/programmatic-access/file-download-services
+2) Check rsyn script
 
 ### AlphaFold
 
