@@ -18,12 +18,12 @@
 ./make.bds -test
 ```
 
-4) Download databases: ENSEMBL, NCBI, dbSnp, ClinVar, dbNSFP, PDB, Jaspar, etc.
+4) Download databases: ENSEMBL, NCBI, dbSnp, ClinVar, dbNSFP, PDB, Jaspar, etc.  
 ```
 ./make.bds -download
 ```
 
-5) Build databases
+5) Build databases: See section "Databases sources updates details" for details
 ```
 ./make.bds -db
 ```
@@ -83,4 +83,42 @@ cd ~/snpEff; source ./bin/activate
 
 pip install mkdocs-material
 ```
+
+# Databases sources updates details
+
+### ENSEMBL vertebrates release number
+
+1) Go to ENSEMBL's site and check the latest release number: http://ftp.ensembl.org/pub/
+2) Update `make.bds` variable `ensemblRelease`
+3) Create an empty config file `config/snpEff.ENSEMBL_{RELEASE_NUMBER}.config`
+4) Run `./make.bds -download` will create the appropriate line for the config file `config/snpEff.ENSEMBL_{RELEASE_NUMBER}.config`
+5) 
+
+### UCSC genomes list updates
+
+1) Download list of UCSC genomes from API
+```
+curl https://api.genome.ucsc.edu/list/ucscGenomes > ucscGenomes.json
+```
+2) Check UCSC genomes (API call + jq):
+``` 
+jq -r '.ucscGenomes | keys[] ucscGenomes.json'
+```
+3) Use the list of genomes to update `make.bds`, variable `ucscGenomes`
+4) WARNING: You need to filter out repeated genomes and use the latest versions for each (maybe except `hg` and `mm`)
+
+### ENSEMBL vertebrates release number
+
+
+### MANE Genome
+
+### PDB
+
+### ClinVar
+
+### dbNSFP
+
+### AlphaFold
+
+
 

@@ -6,9 +6,9 @@
 #
 #-------------------------------------------------------------------------------
 
-void downloadEnsemblGenome(string genome) {
-	if( downloadEnsemblSpecies.isEmpty() ) error "Missing parameter 'downloadEnsemblSpecies'"
-	dg := new DownloadEnsembl(genome, downloadEnsemblSpecies)
+void downloadEnsemblGenome(string genome, string species) {
+	if( species.isEmpty() ) error "Missing parameter 'downloadEnsemblSpecies'?"
+	dg := new DownloadEnsembl(genome, species)
 	dg.download()
 }
 

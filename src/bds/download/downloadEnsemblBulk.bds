@@ -153,10 +153,16 @@ void downloadEnsemblFtp(int ensemblRelease) {
 	downloadEnsemblUrl(ensemblRelease, "ftp://$ensemblFtp/pub/release-$ensemblRelease")
 }
 
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes via http
+#-------------------------------------------------------------------------------
 void downloadEnsemblHttp(int ensemblRelease) {
 	downloadEnsemblUrl(ensemblRelease, "$ensemblHttp/pub/release-$ensemblRelease")
 }
 
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes 
+#-------------------------------------------------------------------------------
 void downloadEnsemblUrl(int ensemblRelease, string baseUrl) {
 	println "Downloading ENSEMBL (http) $ensemblRelease: '$baseUrl'"
 
