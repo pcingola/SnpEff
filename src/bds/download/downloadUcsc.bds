@@ -24,14 +24,17 @@ void downloadUcscGenome(string genome) {
 }
 
 
-# Class to downoad files and query MySql database from UCSC
+# Class to download files and query MySql database from UCSC
 class DownloadUcsc extends DownloadGenome {
 	string fastaTarUrl
 	string cytoBandUrl
+	string cdsUrlAlt
+
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
 		cdsUrl = "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
+		cdsUrlAlt = "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"
 		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
 		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
 		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
@@ -39,30 +42,19 @@ class DownloadUcsc extends DownloadGenome {
 		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
 
-	string downloadCytoBand() {
-		cytoBandFile := "$downloadDir/cytoBand.txt.gz"
-		if( !cytoBandFile.exists() ) wget(cytoBandUrl, cytoBandFile)
-		return cytoBandFile
+	string downloadCdsFasta() {
+	    if( cdsUrl.exists() ) return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
+	    if( cdsUrlAlt.exists() ) return downloadFile(cdsUrlAlt, cdsLocal, "CDS FASTA", false)
+	    error "Could not find CDS / mRNA FASTA file"
 	}
 
-	
-	# Download mRNA file and create a 'cds.fa.gz'
-	string downloadCdsFasta() {
-		if( cdsUrl.isEmpty() ) {
-			log("Downloading '$genome' (UCSC): CDS FASTA file. Empty URL, skipping")
-			return ''
+	string downloadCytoBand() {
+		cytoBandFile := "$downloadDir/cytoBand.txt.gz"
+		if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
+			wget(cytoBandUrl, cytoBandFile)
+			return cytoBandFile
 		}
-		log("Downloading '$genome' (UCSC): CDS FASTA file")
-		wget(cdsUrl, cdsLocal)
-		wait
-
-		cds := "$downloadDir/cds.fa.gz"
-		task(cds <- cdsLocal) {
-			sys echo 'Creating CDS FASTA from "$cdsLocal"'
-			sys gunzip -c '$cdsLocal' | tr " " "." | gzip -c > '$cds'
-		}
-
-		return cds
+		return '';
 	}
 
 	# Download FASTA geome from UCSC
@@ -103,8 +95,10 @@ class DownloadUcsc extends DownloadGenome {
 
 	# Download other files
 	string[] downloadOther() {
+		string[] files
 		cyto := downloadCytoBand()
-		return [cyto]
+		if( !cyto.isEmpty() ) files += cyto
+		return files
 	}
 
 	# Create a single fasta file from a set of fasta in a tar
@@ -123,6 +117,16 @@ class DownloadUcsc extends DownloadGenome {
 		}
 
 		return fasta
+	}
+
+	# Download mRNA file and create a 'cds.fa.gz'
+	string processCds(string cdsLocal) {
+		cds := "$downloadDir/cds.fa.gz"
+		task(cds <- cdsLocal) {
+			sys echo 'Creating CDS FASTA from "$cdsLocal"'
+			sys gunzip -c '$cdsLocal' | tr " " "." | gzip -c > '$cds'
+		}
+		return cds
 	}
 
 	string query() {

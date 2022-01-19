@@ -121,8 +121,8 @@ class DownloadGenome {
 			return localFile
 		}
 
-		wget(url, localFile, doWait, false)
-		return localFile
+		if( wget(url, localFile, doWait, false) ) return localFile
+		error "Could not download remote file '$url'";
 	}
 
 	# Download (and build) 'genes' file to local download dir

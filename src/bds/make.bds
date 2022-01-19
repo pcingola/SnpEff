@@ -205,7 +205,7 @@ void buildConfig() {
 
 	println "Building config file '$conf'"
 
-	sys rm '$conf'
+	conf.rm()
 	for(string c: ["snpEff.core.config", "snpEff.dbs.config", "snpEff.test.config"] ) {
 		println("Adding config '$c'")
 		sys cat '$confDir/$c' >> '$conf'
