@@ -87,6 +87,11 @@ class DownloadGenome {
 	}
 
 	# Download (and build) reference genome FASTA file to local download dir
+	string downloadFasta() {
+		return downloadFile(fastaUrl, fastaLocal, "FASTA reference", false)
+	}
+
+	# Download (and build) reference genome FASTA file to local download dir
 	# Returns: Path to fasta file or empty if no download is needed
 	string downloadFastaCheck() {
 		if( fastaData.exists() ) {
@@ -98,11 +103,6 @@ class DownloadGenome {
 			return fastaLocal
 		}
 		return downloadFasta()
-	}
-
-	# Download (and build) reference genome FASTA file to local download dir
-	string downloadFasta() {
-		return downloadFile(fastaUrl, fastaLocal, "FASTA reference", false)
 	}
 
 	# Download a file
@@ -126,6 +126,11 @@ class DownloadGenome {
 	}
 
 	# Download (and build) 'genes' file to local download dir
+	string downloadGenes() {
+		return downloadFile(genesUrl, genesLocal, "Genes", false)
+	}
+
+	# Download (and build) 'genes' file to local download dir
 	# Returns: Path to file (GTF, GFF, RefSeq, GeneBank, etc.)
 	string downloadGenesCheck() {
 		if( genesData.exists() ) {
@@ -140,17 +145,17 @@ class DownloadGenome {
 		return downloadGenes()
 	}
 
-	# Download (and build) 'genes' file to local download dir
-	string downloadGenes() {
-		return downloadFile(genesUrl, genesLocal, "Genes", false)
-	}
-
 	# Download 'other' files
 	# Returns: A list of all paths
 	string[] downloadOther() {
 		string[] files
 		# Override this method if you need to download "other" files
 		return files
+	}
+
+	# Download (and build) 'protein' FASTA file to local download dir
+	string downloadProteinFasta() {
+		return downloadFile(protUrl, protLocal, "Protein FASTA", false)
 	}
 
 	# Download (and build) 'protein' FASTA file to local download dir
@@ -165,11 +170,6 @@ class DownloadGenome {
 			return protLocal
 		}
 		return downloadProteinFasta()
-	}
-
-	# Download (and build) 'protein' FASTA file to local download dir
-	string downloadProteinFasta() {
-		return downloadFile(protUrl, protLocal, "Protein FASTA", false)
 	}
 
 	# Initialize default values

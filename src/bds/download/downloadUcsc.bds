@@ -29,7 +29,7 @@ class DownloadUcsc extends DownloadGenome {
 	string fastaTarUrl
 	string cytoBandUrl
 	string cdsUrlAlt
-
+	string genesUrlAlt
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
@@ -38,6 +38,7 @@ class DownloadUcsc extends DownloadGenome {
 		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
 		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
 		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
+		genesUrlAlt = "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"
 		cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
 		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
@@ -85,7 +86,9 @@ class DownloadUcsc extends DownloadGenome {
 	# Download geome from UCSC, ony if it has a GTF file
 	string downloadGtf() {
 		log("Downloading '$genome' (UCSC): GTF file")
-		return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
+		if( genesUrl.exists() ) return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
+		if( genesUrlAlt.exists() ) return wgetTask(genesUrlAlt, genesLocal) ? genesLocal : ''
+		error "Could not download genes from '$genesUrl' or '$genesUrlAlt'"
 	}
 
 	string downloadProteinFasta() {
