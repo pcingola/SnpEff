@@ -6,7 +6,6 @@
 #
 #-------------------------------------------------------------------------------
 
-clinvar            := "clinvar.vcf.gz"
 urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/$clinvar"
 urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/$clinvar"
 urlDbSnpGrch37     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.25.gz"
@@ -25,14 +24,14 @@ void downloadClinvar() {
 	# GRCh37
 	dir := "$dirDb/GRCh37/clinvar/"
 	dir.mkdir()
-	dir.chdir()
-	if( !clinvar.exists() ) wgetTask(urlClinVarGrch37)
+    clinvar := "$dir/clinvar.vcf.gz"
+	wgetTask(urlClinVarGrch37, clinvar)
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/clinvar/"
 	dir.mkdir()
-	dir.chdir()
-	if( !clinvar.exists() ) wgetTask(urlClinVarGrch38)
+    clinvar := "$dir/clinvar.vcf.gz"
+	if( !clinvar.exists() ) wgetTask(urlClinVarGrch38, clinvar)
 
 	wait
 }
