@@ -63,12 +63,12 @@ void downloadDbSnp() {
 	# GRCh37
 	dir := "$dirDb/GRCh37/dbSnp/"
 	dir.mkdir()
-    wget(urlDbSnpGrch37, "$dir/$dbdnp")
+    wget(urlDbSnpGrch37, "$dir/$dbsnp")
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/dbSnp/"
 	dir.mkdir()
-    wget(urlDbSnpGrch38, "$dir/$dbdnp")
+    wget(urlDbSnpGrch38, "$dir/$dbsnp")
 
 	wait
 }
