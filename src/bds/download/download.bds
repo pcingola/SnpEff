@@ -20,13 +20,13 @@ include 'downloadUcsc'
 # Fetch (wget) a file to current dir
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
-bool wget(string url) return wget(url, '', true, false)
+bool wget(string url) return wget(url, '', true, false, false)
 
-bool wgetTask(string url) return wget(url, '', false, false)
+bool wgetTask(string url) return wget(url, '', false, false, false)
 
-bool wget(string url, string localPath) return wget(url, localPath, true, false)
+bool wget(string url, string localPath) return wget(url, localPath, true, false, false)
 
-bool wgetTask(string url, string localPath) return wget(url, localPath, false, false)
+bool wgetTask(string url, string localPath) return wget(url, localPath, false, false, false)
 
 #-------------------------------------------------------------------------------
 # Fetch (wget) a list of files to current dir
@@ -35,7 +35,7 @@ bool wgetTask(string url, string localPath) return wget(url, localPath, false, f
 bool wgetTask(string[] urls) {
 	oks := true
 	for(string url: urls) {
-		ok := wget(url, '', false, false)
+		ok := wget(url, '', false, false, false)
 		oks &= ok
 	}
 	return oks
@@ -45,7 +45,7 @@ bool wgetTask(string[] urls) {
 # Fetch (wget) a file, provide local file path
 # Returns true if download command is executed (or task created)
 #-------------------------------------------------------------------------------
-bool wget(string url, string localPath, bool doWait, bool canFail) {
+bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemoteCheck) {
 	log("Downloading '$url'")
 
 	canFailStr := (canFail ? '|| true' : '')
@@ -59,7 +59,7 @@ bool wget(string url, string localPath, bool doWait, bool canFail) {
 		localStr = "-O '$localPath'"
 	}
 
-	if( !url.exists() ) {
+	if( !skipRemoteCheck && !url.exists() ) {
 		log("Cannot find remote file '$url'")
 		return false
 	}

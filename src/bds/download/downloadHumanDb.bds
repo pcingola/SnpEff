@@ -25,13 +25,13 @@ void downloadClinvar() {
 	dir := "$dirDb/GRCh37/clinvar/"
 	dir.mkdir()
     clinvar := "$dir/clinvar.vcf.gz"
-	wgetTask(urlClinVarGrch37, clinvar)
+	wget(urlClinVarGrch37, clinvar, false, false, true)
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/clinvar/"
 	dir.mkdir()
     clinvar = "$dir/clinvar.vcf.gz"
-	if( !clinvar.exists() ) wgetTask(urlClinVarGrch38, clinvar)
+	wget(urlClinVarGrch38, clinvar, false, false, true)
 
 	wait
 }

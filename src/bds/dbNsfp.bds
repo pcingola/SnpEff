@@ -83,10 +83,8 @@ class DbNsfp {
 		zip := dbNsfpDir + '/' + urlDbNsfp.baseName()
 
 		# Download
-		if( !zip.exists() ) {
-			dbNsfpDir.chdir()
-			wget(urlDbNsfp)
-		} else logd "File '$dbNsfp' exists, skipping"
+        dbNsfpDir.chdir()
+        wget(urlDbNsfp, zip, true, false, true)
 
 		unzip(zip)
 	}
