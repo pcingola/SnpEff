@@ -17,21 +17,6 @@ urlNextProt        := "https://download.nextprot.org/pub/current_release/xml/nex
 urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
 
 #-------------------------------------------------------------------------------
-# Download and build dbNsfp
-#-------------------------------------------------------------------------------
-void downloadDbNsfp() {
-	# Download and create
-	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
-	dbNsfp38.download()
-	dbNsfp38File := dbNsfp38.create('')
-	wait
-
-	# Create dbNsfp37 using 'dbNsfp38File'
-	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
-	dbNsfp37.create(dbNsfp38File)
-}
-
-#-------------------------------------------------------------------------------
 # Download ClinVar
 #-------------------------------------------------------------------------------
 void downloadClinvar() {
@@ -53,6 +38,21 @@ void downloadClinvar() {
 }
 
 #-------------------------------------------------------------------------------
+# Download and build dbNsfp
+#-------------------------------------------------------------------------------
+void downloadDbNsfp() {
+	# Download and create
+	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
+	dbNsfp38.download()
+	dbNsfp38File := dbNsfp38.create('')
+	wait
+
+	# Create dbNsfp37 using 'dbNsfp38File'
+	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
+	dbNsfp37.create(dbNsfp38File)
+}
+
+#-------------------------------------------------------------------------------
 # Download dbSnp
 #-------------------------------------------------------------------------------
 void downloadDbSnp() {
@@ -63,22 +63,12 @@ void downloadDbSnp() {
 	# GRCh37
 	dir := "$dirDb/GRCh37/dbSnp/"
 	dir.mkdir()
-	dir.chdir()
-	if( !dbsnp.exists() ) {
-		if( wget(urlDbSnpGrch37) ) {
-			sys cp 00-All.vcf.gz $dbsnp
-		}
-	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
+    wget(urlDbSnpGrch37, "$dir/$dbdnp")
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/dbSnp/"
 	dir.mkdir()
-	dir.chdir()
-	if( !dbsnp.exists() ) {
-		if( wget(urlDbSnpGrch38) ) {
-			sys cp 00-All.vcf.gz $dbsnp
-		}
-	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
+    wget(urlDbSnpGrch38, "$dir/$dbdnp")
 
 	wait
 }

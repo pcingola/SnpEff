@@ -535,10 +535,6 @@ void downloadOneSet(string setToDownload) {
 			downloadClinvar()
 			break
 
-		case 'cytobands':
-			error "REFACTORED TO CLASS" #downloadCytoBands()
-			break
-
 		case 'dbnsfp':
 			downloadDbNsfp()
 			break
