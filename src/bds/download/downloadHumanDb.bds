@@ -6,8 +6,8 @@
 #
 #-------------------------------------------------------------------------------
 
-urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/$clinvar"
-urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/$clinvar"
+urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz"
+urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"
 urlDbSnpGrch37     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.25.gz"
 urlDbSnpGrch38     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.39.gz"
 urlGwasCatalog     := "https://www.ebi.ac.uk/gwas/api/search/downloads/alternative"
@@ -30,7 +30,7 @@ void downloadClinvar() {
 	# GRCh38
 	dir = "$dirDb/GRCh38/clinvar/"
 	dir.mkdir()
-    clinvar := "$dir/clinvar.vcf.gz"
+    clinvar = "$dir/clinvar.vcf.gz"
 	if( !clinvar.exists() ) wgetTask(urlClinVarGrch38, clinvar)
 
 	wait
