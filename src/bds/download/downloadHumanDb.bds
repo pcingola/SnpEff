@@ -81,11 +81,11 @@ void downloadGwasCatalog() {
 
 	dir := "$dirDb/gwasCatalog"
 	dir.mkdir()
-	dir.chdir()
+	gwasTxt := "$dir/gwasCatalog.txt"
+	gwasVcf := "$dir/gwasCatalog.vcf"
 
-	if( wget(urlGwasCatalog) ) {
-		localFile := urlGwasCatalog.baseName()
-		sys cat $localFile | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
+	if( wget(urlGwasCatalog, gwasTxt) ) {
+		sys cat '$gwasTxt' | '$dirScriptsBuild/gwascatalog2vcf.pl' > '$gwasVcf'
 	}
 
 	wait
@@ -99,10 +99,10 @@ void downloadJaspar() {
 
 	dir := "$dirDb/jaspar"
 	dir.mkdir()
-	dir.chdir()
+	jaspar := "$dir/jaspar.pwm"
 
-	if( wget(urlJaspar) ) {
-		sys gzip -c pfm_all.txt > pwms.bin
+	if( wget(urlJaspar, jaspar) ) {
+		sys gzip -c '$jaspar' > '$dir/pwms.bin'
 		println "Jaspar: File $dir/pwms.bin created"
 	}
 }
