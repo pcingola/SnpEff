@@ -52,7 +52,7 @@ class DownloadUcsc extends DownloadGenome {
 	string downloadCytoBand() {
 		cytoBandFile := "$downloadDir/cytoBand.txt.gz"
 		if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
-			wget(cytoBandUrl, cytoBandFile)
+			wget(cytoBandUrl, cytoBandFile, true, true, false)
 			return cytoBandFile
 		}
 		return '';
