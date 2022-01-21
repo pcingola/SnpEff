@@ -8,8 +8,9 @@
 2) Build JAR files: `./make.bds`
 3) Run tests: `./make.bds -test`
 4) Run `SnpEff/git/reelease` and `SnpSift/git/reelease`
-5) Upload core files to Azure: `./make.bds -uploadCore`
-6) Update web page and documentation: `./make.bds -createDocs`, see [Documentation section](#documentation)
+5) Create distro ZIP files: `./make.bds -distroCore`
+6) Upload core files to Azure: `./make.bds -uploadCore`
+7) Update web page and documentation: `./make.bds -createDocs`, see [Documentation section](#documentation)
 
 # Release process: Databases
 
