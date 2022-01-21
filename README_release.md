@@ -7,8 +7,9 @@
    - Check `Config.DATABASE_COMPATIBLE_VERSIONS` for new version compatibilities added
 2) Build JAR files: `./make.bds`
 3) Run tests: `./make.bds -test`
-4) Upload core files to Azure: `./make.bds -uploadCore`
-5) Update web page and documentation: `./make.bds -createDocs`, see [Documentation section](#documentation)
+4) Run `SnpEff/git/reelease` and `SnpSift/git/reelease`
+5) Upload core files to Azure: `./make.bds -uploadCore`
+6) Update web page and documentation: `./make.bds -createDocs`, see [Documentation section](#documentation)
 
 # Release process: Databases
 
