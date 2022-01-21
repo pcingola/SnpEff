@@ -1,46 +1,29 @@
-
-
-# Release process
+# Release process: Core package
 
 1) Change version numbers:
-- Update SnpEff pom.xml
-- Update SnpSift pom.xml
-- Update `scripts_build/make.sh`, line `export VERSION=5.1`
-- Check `Config.DATABASE_COMPATIBLE_VERSIONS` for new version compatibilities added 
- 
-2) Build JAR files, download databases, build databases, etc.
-```
-./make.bds
-```
+   - Update SnpEff pom.xml
+   - Update SnpSift pom.xml
+   - Update `scripts_build/make.sh`, line `export VERSION=5.1`
+   - Check `Config.DATABASE_COMPATIBLE_VERSIONS` for new version compatibilities added
+2) Build JAR files: `./make.bds`
+3) Run tests: `./make.bds -test`
+4) Upload core files to Azure: `./make.bds -uploadCore`
+5) Update web page and documentation: `./make.bds -createDocs`, see [Documentation section](#documentation)
 
-3) Run JUnit tests and integration tests
-```
-./make.bds -test
-```
+# Release process: Databases
 
-4) Download databases: ENSEMBL, NCBI, dbSnp, ClinVar, dbNSFP, PDB, Jaspar, etc.  
-```
-./make.bds -download
-```
+1) Download databases: `./make.bds -download`, (see [Download Database sources](#download_database_sources)
+2) Build databases: `./make.bds -db`, see section "Databases sources updates details" for details
+3) Upload files to Azure: `./make.bds -uploadDbs`
 
-5) Build databases: See section "Databases sources updates details" for details
-```
-./make.bds -db
-```
+**AWS instance notes**:
+Downloading database sources: Can be done in a small instance (4 cores)
+- Disk: 2 TB
+- Memory: 32 GB (building dbNSFP loads large files in memory to sort by chr:pos)
 
-6) Upload files to sourceForge
+Building databases: 64 cores recommended
 
-```
-./make.bds -uploadCore		# Upload core files
-./make.bds -uploadDbs		# Upload databases files
-```
-
-7) Update documentation: See next section for details
-```
-./make.bds -createDocs
-```
-
-# SnpEff's Documentation
+# Documentation
 
 - **NOTES**:
 	- GitHub pages are published from `/docs` directory (main project's directory). This is configured in GitHub's project settings.
@@ -84,7 +67,7 @@ cd ~/snpEff; source ./bin/activate
 pip install mkdocs-material
 ```
 
-# Databases sources updates details
+# Download Database sources
 
 ### Database compatible versions
 
