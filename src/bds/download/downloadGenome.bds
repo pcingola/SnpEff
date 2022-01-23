@@ -28,7 +28,7 @@ class DownloadGenome {
 		setGenomeAndVersion()
 	}
 
-	# If the referce FASTA file 'fastaDataEq' exists, create a link
+	# If the reference FASTA file 'fastaDataEq' exists, create a link
 	void checkRefrenceFasta() {
 		if( !fastaDataEq.exists() || fastaData.exists() ) return
 		log("Download '$genome': FASTA refernce file '$fastaDataEq' exists, linking")
@@ -75,11 +75,11 @@ class DownloadGenome {
 	# Download (and build) 'cds' FASTA file to local download dir
 	# Returns: Path to file
 	string downloadCdsFastaCheck() {
-		if( cdsData.exists() ) {
+		if( isDownloaded(cdsData) ) {
 			log("Download CDS FASTA: Data file '$cdsData' already exists, skipping")
 			return ''
 		}
-		if( cdsLocal.exists() ) {
+		if( isDownloaded(cdsLocal) ) {
 			log("Download CDS FASTA: Data file '$cdsLocal' already exists, skipping")
 			return cdsLocal
 		}
@@ -94,11 +94,11 @@ class DownloadGenome {
 	# Download (and build) reference genome FASTA file to local download dir
 	# Returns: Path to fasta file or empty if no download is needed
 	string downloadFastaCheck() {
-		if( fastaData.exists() ) {
+		if( isDownloaded(fastaData) ) {
 			log("Download Reference FASTA: Data file '$fastaData' already exists, skipping")
 			return ''
 		}
-		if( fastaLocal.exists() ) {
+		if( isDownloaded(fastaLocal) ) {
 			log("Download Reference FASTA: Data file '$fastaLocal' already exists, skipping")
 			return fastaLocal
 		}
@@ -113,10 +113,10 @@ class DownloadGenome {
 			return ''
 		}
 		if( localFile.isEmpty() ) {
-			log("Downloading '$genome' $title: Empty local file, skipping")
+			log("Downloading '$genome' $title: Empty local file name, skipping")
 			return ''
 		}
-		if( localFile.exists() ) {
+		if( isDownloaded(localFile) ) {
 			println "Local file '$localFile' exists, skipping download"
 			return localFile
 		}
@@ -133,11 +133,11 @@ class DownloadGenome {
 	# Download (and build) 'genes' file to local download dir
 	# Returns: Path to file (GTF, GFF, RefSeq, GeneBank, etc.)
 	string downloadGenesCheck() {
-		if( genesData.exists() ) {
+		if( isDownloaded(genesData) ) {
 			log("Download Genes: Data file '$genesData' already exists, skipping")
 			return ''
 		}
-		if( genesLocal.exists() ) {
+		if( isDownloaded(genesLocal) ) {
 			log("Download Genes: Data file '$genesLocal' already exists, skipping")
 			return genesLocal
 		}
@@ -161,11 +161,11 @@ class DownloadGenome {
 	# Download (and build) 'protein' FASTA file to local download dir
 	# Returns: Path to file
 	string downloadProteinFastaCheck() {
-		if( protData.exists() ) {
+		if( isDownloaded(protData) ) {
 			log("Download Protein FASTA: Data file '$protData' already exists, skipping")
 			return ''
 		}
-		if( protLocal.exists() ) {
+		if( isDownloaded(protLocal) ) {
 			log("Download Protein FASTA: Data file '$protLocal' already exists, skipping")
 			return protLocal
 		}
@@ -199,6 +199,11 @@ class DownloadGenome {
 		dst.dirName().mkdir()
 		task( dst <- src ) sys cp -vf '$src' '$dst'
 	}
+
+    # Retrun true if the (local) file has already been downloaded (exists and non-empty)
+    bool isDownloaded(string path) {
+        return path.exists() && (path.size() > 0)
+    }
 
 	# Pre-Process (default, do nothing)
 	void preProcess()	return 

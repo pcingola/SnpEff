@@ -87,7 +87,7 @@ class DownloadUcsc extends DownloadGenome {
 	string downloadGtf() {
 		log("Downloading '$genome' (UCSC): GTF file")
 		for(string genesUrl: genesUrls) {
-		    if( genesUrl.exists() ) return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
+		    if( genesUrl.exists() ) return downloadFile(genesUrl, genesLocal, "Genes GTF", true)
 		}
 		log("Could not download genes from any of: $genesUrls")
 		return ''
