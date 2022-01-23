@@ -19,10 +19,11 @@ class DownloadGenome {
 		dirDataGenome = "$dirData/$genome"
 
 		# Get class (short) name to infer download dir (remove the 'Download' prefix to the class name)
-		#className = type(this).toLower()
-		#if( className.startsWith('download') ) className = className.substr('download'.length())
+		className = type(this).toLower()
+		if( className.startsWith('download') ) className = className.substr('download'.length())
 
 		downloadDir = "$dirDownload/$className/$genome"
+		log("Download dir: '$downloadDir'")
 
 		# Genome name without version number
 		setGenomeAndVersion()
@@ -138,7 +139,7 @@ class DownloadGenome {
 			return ''
 		}
 		if( isDownloaded(genesLocal) ) {
-			log("Download Genes: Data file '$genesLocal' already exists, skipping")
+			log("Download Genes: Data local file '$genesLocal' already exists, skipping")
 			return genesLocal
 		}
 

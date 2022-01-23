@@ -34,10 +34,12 @@ class DownloadUcsc extends DownloadGenome {
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
-		cdsUrls = ["$urlUcscSoe/$genome/bigZips/refMrna.fa.gz", "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"]
+		cdsUrl = "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
+		cdsUrls = [cdsUrl, "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"]
 		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
 		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
-		genesUrls = ["$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz", "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"]
+		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
+		genesUrls = [genesUrl, "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"]
 		cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
 		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
