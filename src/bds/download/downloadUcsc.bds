@@ -26,27 +26,27 @@ void downloadUcscGenome(string genome) {
 
 # Class to download files and query MySql database from UCSC
 class DownloadUcsc extends DownloadGenome {
+	string fastaUrl
 	string fastaTarUrl
 	string cytoBandUrl
-	string cdsUrlAlt
-	string genesUrlAlt
+	string[] cdsUrls
+	string[] genesUrls
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
-		cdsUrl = "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
-		cdsUrlAlt = "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"
+		cdsUrls = ["$urlUcscSoe/$genome/bigZips/refMrna.fa.gz", "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"]
 		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
 		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
-		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
-		genesUrlAlt = "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"
+		genesUrls = ["$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz", "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"]
 		cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
 		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
 
 	string downloadCdsFasta() {
-	    if( cdsUrl.exists() ) return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
-	    if( cdsUrlAlt.exists() ) return downloadFile(cdsUrlAlt, cdsLocal, "CDS FASTA", false)
-	    error "Could not find CDS / mRNA FASTA file"
+        for(string cdsUrl: cdsUrls) {
+            if( cdsUrl.exists() ) return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
+        }
+	    error "Could not find CDS / mRNA FASTA file from any of $cdsUrls"
 	}
 
 	string downloadCytoBand() {
@@ -86,9 +86,11 @@ class DownloadUcsc extends DownloadGenome {
 	# Download geome from UCSC, ony if it has a GTF file
 	string downloadGtf() {
 		log("Downloading '$genome' (UCSC): GTF file")
-		if( genesUrl.exists() ) return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
-		if( genesUrlAlt.exists() ) return wgetTask(genesUrlAlt, genesLocal) ? genesLocal : ''
-		error "Could not download genes from '$genesUrl' or '$genesUrlAlt'"
+		for(string genesUrl: genesUrls) {
+		    if( genesUrl.exists() ) return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
+		}
+		log("Could not download genes from any of: $genesUrls")
+		return ''
 	}
 
 	string downloadProteinFasta() {
@@ -202,7 +204,6 @@ class DownloadUcsc extends DownloadGenome {
 		return refSeq
 	}
 }
-
 
 # Download a 'knaownGenes' version of the genome
 class DownloadUcscKg extends DownloadUcsc {
