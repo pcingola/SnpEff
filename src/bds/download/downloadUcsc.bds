@@ -124,7 +124,7 @@ class DownloadUcsc extends DownloadGenome {
 			sys cd '$dirChr'
 			sys tar -xvzf '$tar'
 			sys rm -f '$fasta'
-			sys cat `find . -iname "*.fa"` | gzip -c > 'fasta'
+			sys cat `find . -iname "*.fa"` | gzip -c > '$fasta'
 		}
 
 		return fasta
