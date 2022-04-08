@@ -163,11 +163,11 @@ class DownloadGenome {
 	# Returns: Path to file
 	string downloadProteinFastaCheck() {
 		if( isDownloaded(protData) ) {
-			log("Download Protein FASTA: Data file '$protData' already exists, skipping")
+			log("Download Protein FASTA: Data file '$protData' already exists or empty, skipping")
 			return ''
 		}
 		if( isDownloaded(protLocal) ) {
-			log("Download Protein FASTA: Data file '$protLocal' already exists, skipping")
+			log("Download Protein FASTA: Local file '$protLocal' already exists or empty, skipping")
 			return protLocal
 		}
 		return downloadProteinFasta()
