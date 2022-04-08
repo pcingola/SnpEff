@@ -46,7 +46,9 @@ class DownloadUcsc extends DownloadGenome {
 
 	string downloadCdsFasta() {
         for(string cdsUrl: cdsUrls) {
+			log("Downloading CDS FASTA '$cdsUrl'")
             if( cdsUrl.exists() ) return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
+			else log("WARNING: Could not download CDS FASTA '$cdsUrl'")
         }
 	    error "Could not find CDS / mRNA FASTA file from any of $cdsUrls"
 	}
@@ -69,7 +71,7 @@ class DownloadUcsc extends DownloadGenome {
 			wgetTask(fastaTarUrl, localTar)
 			fastaLocal = fastaFromTar(localTar) # Create fasta from tar
 		} else {
-			println "Could not download FASTA reference genome file\n\tFASTA: '$fastaUrl'\n\tTAR: '$fastaTarUrl'"
+			log("Could not download FASTA reference genome file\n\tFASTA: '$fastaUrl'\n\tTAR: '$fastaTarUrl'")
 		}
 
 		return fastaLocal
@@ -89,7 +91,9 @@ class DownloadUcsc extends DownloadGenome {
 	string downloadGtf() {
 		log("Downloading '$genome' (UCSC): GTF file")
 		for(string genesUrl: genesUrls) {
+			log("Downloading Genes file '$genesUrl'")
 		    if( genesUrl.exists() ) return downloadFile(genesUrl, genesLocal, "Genes GTF", true)
+			else log("WARNING: Could not download Genes file '$genesUrl'")
 		}
 		log("Could not download genes from any of: $genesUrls")
 		return ''
