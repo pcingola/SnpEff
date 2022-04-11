@@ -269,11 +269,11 @@ void downloadEnsemblBfmpp() {
 	# Move files to propper structure in 'local data' dir
 	#---
 	# Copy files to local dir
-	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
+	log("ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir")
 	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 	# Move files
-	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
+	log("ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir")
 	string[] configLines
 	today := sys date +"%Y-%m-%d"
 	for( string gtf : ".".dir("*.gtf.gz") ) {
@@ -281,7 +281,7 @@ void downloadEnsemblBfmpp() {
 		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
 		name := longName
-		println "name: $name\tbase: $base"
+		log("ENSEMBL BFMPP $ensemblBfmppRelease: '$name'\tbase: '$base'")
 
 		if( name.isEmpty() ) continue
 		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
@@ -304,10 +304,10 @@ void downloadEnsemblBfmpp() {
 	}
 
 	# Create config file
-	if( configFile.exists() ) {
-		println "WARNING: Config file exists, skipping ('$configFile')"
+	if( configFile.exists() && configFile.size() > 0) {
+		warning("ENSEMBL BFMPP $ensemblBfmppRelease: Config file '$configFile' exists, skipping")
 	} else {
-		println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
+		log("ENSEMBL BFMPP $ensemblBfmppRelease: Creating config file '$configFile'")
 		configFile.write( configLines.join("\n") )
 	}
 
