@@ -76,7 +76,7 @@ humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 dbNsfpVersion		:= '4.2a'
 # UCSC full list of genomes from "curl ftp://hgdownload.cse.ucsc.edu/goldenPath/"
-ucscGenomes			:= ['ailMel1', 'allMis1', 'anoCar2', 'anoGam3', 'apiMel2', 'aplCal1', 'aptMan1', 'bisBis1', 'bosTau9', 'braFlo1', 'caeJap1', 'caePb2', 'caeRem3', 'calJac4', 'calMil1', 'cavPor3', 'cb3', 'ce11', 'ce2', 'ce4', 'ce6', 'cerSim1', 'chlSab2', 'choHof1', 'chrPic1', 'ci3', 'criGri1', 'criGriChoV1', 'criGriChoV2', 'danRer11', 'dasNov3', 'dipOrd1', 'dm6', 'dp3', 'droAna2', 'droEre1', 'droGri1', 'droMoj2', 'droPer1', 'droSec1', 'droSim1', 'droVir2', 'droYak2', 'eboVir3', 'echTel2', 'enhLutNer1', 'equCab3', 'eriEur2', 'felCat9', 'fr3', 'gadMor1', 'galGal6', 'galVar1', 'gasAcu1', 'geoFor1', 'gorGor6', 'hetGla2', 'hg19', 'hg38', 'latCha1', 'loxAfr3', 'macEug2', 'macFas5', 'manPen1', 'melGal5', 'melUnd1', 'micMur2', 'mm9', 'mm10', 'mm39', 'mm9', 'monDom5', 'musFur1', 'nanPar1', 'nasLar1', 'neoSch1', 'nomLeu3', 'ochPri3', 'oreNil2', 'ornAna2', 'oryCun2', 'oryLat2', 'otoGar3', 'oviAri4', 'panPan3', 'panTro6', 'papAnu4', 'papHam1', 'petMar3', 'ponAbe3', 'proCap1', 'pteVam1', 'rheMac10', 'rhiRox1', 'rn7', 'sacCer3', 'saiBol1', 'sarHar1', 'sorAra2', 'speTri2', 'strPur2', 'susScr11', 'taeGut2', 'tarSyr2', 'tetNig2', 'thaSir1', 'triMan1', 'tupBel1', 'turTru2', 'vicPac2', 'wuhCor1', 'xenLae2', 'xenTro10' ]
+ucscGenomes			:= ['ailMel1', 'allMis1', 'anoCar2', 'anoGam3', 'apiMel2', 'aplCal1', 'aptMan1', 'bisBis1', 'bosTau9', 'braFlo1', 'caeJap1', 'caePb2', 'caeRem3', 'calJac4', 'calMil1', 'cavPor3', 'cb3', 'ce11', 'ce2', 'ce4', 'ce6', 'cerSim1', 'chlSab2', 'choHof1', 'chrPic1', 'ci3', 'criGri1', 'criGriChoV1', 'criGriChoV2', 'danRer11', 'dasNov3', 'dipOrd1', 'dm6', 'dp3', 'droAna2', 'droEre1', 'droMoj2', 'droPer1', 'droSec1', 'droSim1', 'droVir2', 'droYak2', 'eboVir3', 'echTel2', 'enhLutNer1', 'equCab3', 'eriEur2', 'felCat9', 'fr3', 'gadMor1', 'galGal6', 'galVar1', 'gasAcu1', 'geoFor1', 'gorGor6', 'hetGla2', 'hg19', 'hg38', 'latCha1', 'loxAfr3', 'macEug2', 'macFas5', 'manPen1', 'melGal5', 'melUnd1', 'micMur2', 'mm9', 'mm10', 'mm39', 'mm9', 'monDom5', 'musFur1', 'nanPar1', 'nasLar1', 'neoSch1', 'nomLeu3', 'ochPri3', 'oreNil2', 'ornAna2', 'oryCun2', 'oryLat2', 'otoGar3', 'oviAri4', 'panPan3', 'panTro6', 'papAnu4', 'papHam1', 'petMar3', 'ponAbe3', 'proCap1', 'pteVam1', 'rheMac10', 'rhiRox1', 'rn7', 'sacCer3', 'saiBol1', 'sarHar1', 'sorAra2', 'speTri2', 'strPur2', 'susScr11', 'taeGut2', 'tarSyr2', 'tetNig2', 'thaSir1', 'triMan1', 'tupBel1', 'turTru2', 'vicPac2', 'wuhCor1', 'xenLae2', 'xenTro10']
 # Removed:
 #       aquChr2: Missing CDS fasta
 #       balAcu1: Missing CDS fasta
@@ -140,26 +140,29 @@ snpEffVersion := ""
 bool addBuildDb(string genome) {
 	dir := "$dirData/$genome"
 	db := "$dir/snpEffectPredictor.bin"
-	geneFiles := dir.dirPath("**/genes.*") 
+	geneFiles := dir.dirPath("**/genes.*")
+	logfile := "$dirBuild/build.$genome\.out"
 
 	# No 'genes' file? Error
 	if( geneFiles.isEmpty() ) {
-		warning("No genes file for $genome\n")
+		warning("No genes file for '$genome', skipping")
 		return( false );
 	}
 
 	geneFile := geneFiles.head()
 	if( built.hasKey(genome) ) {
-		log("Genome $genome already built\n")
+		log("DONE: Genome '$genome' already built, skipping")
+	} else if( logfile.exists() ) {
+		log("DONE: Genome '$genome', log file '$logfile' already exists, skipping")
 	} else if( db <- geneFile ) {
-		print("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
+		log("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 
 		# Use 'storeSeqs' for human and mouse genome
 		opt := ( genome.startsWith('GRC') || genome.startsWith('hg') ? "-storeSeqs" : "" )
 
-		task $snpeffBuild $opt $genome 2>&1 | tee $dirBuild/build.$genome\.out
+		task $snpeffBuild $opt $genome 2>&1 | tee '$logfile'
 	} else {
-		print("OK  :\t$genome\tgeneFile: $geneFile\tdb: $db\n")
+		log("DONE :\t$genome\tgeneFile: $geneFile\tdb: $db")
 	}
 
 	# Mark as built
