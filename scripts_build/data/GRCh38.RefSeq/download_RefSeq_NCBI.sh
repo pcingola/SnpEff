@@ -7,10 +7,19 @@ PROGRAM_DIR=$(cd $(dirname $0); pwd -P)
 # https://ftp.ncbi.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/annotation_releases/109.20200815/
 
 VER="GRCh38"
+
+# Previous version
 SUBVER="p13"
 ASSEMBLY_ID="GCF_000001405.39"
 RELEASE="109.20200815"
-GENOME="$VER.$SUBVER.RefSeq"
+RELEASE="109.20211119"
+
+# Latest version
+SUBVER="p14"
+ASSEMBLY_ID="GCF_000001405.40"
+RELEASE="110"
+
+GENOME="$VER.$SUBVER"
 
 # Path to scripts
 SNPEFF_DIR="$HOME/snpEff"
