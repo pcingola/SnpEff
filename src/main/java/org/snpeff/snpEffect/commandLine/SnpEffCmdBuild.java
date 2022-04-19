@@ -67,7 +67,11 @@ public class SnpEffCmdBuild extends SnpEff {
     boolean checkDbCds(SnpEffPredictorFactory snpEffectPredictorFactory) {
         var okCds = false;
         String cdsFile = config.getFileNameCds();
-        if (Gpr.canRead(cdsFile)) {
+        if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
+            // GenBank format
+            if (verbose) Log.info("CDS check: GenBank file format, skipping\n");
+            okCds = true;
+        } else if (Gpr.canRead(cdsFile)) {
             // Use FASTA format
             if (verbose) Log.info("CDS check (FASTA file): '" + cdsFile + "'\n");
             snpEffCmdCds = new SnpEffCmdCds(config);
