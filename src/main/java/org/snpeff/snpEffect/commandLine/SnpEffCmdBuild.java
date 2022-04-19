@@ -75,7 +75,7 @@ public class SnpEffCmdBuild extends SnpEff {
             snpEffCmdCds.setDebug(debug);
             snpEffCmdCds.setStoreAlignments(storeAlignments);
             snpEffCmdCds.setCheckNumOk(checkNumOk);
-            if( maxErrorRate >= 0) snpEffCmdProtein.setMaxErrorRate(maxErrorRate);
+            if( maxErrorRate >= 0) snpEffCmdCds.setMaxErrorRate(maxErrorRate);
             okCds = snpEffCmdCds.run();
             if (!okCds && verbose) Log.info("\tCDS sequences comparison failed!");
         } else Log.error("CDS check file '" + cdsFile + "' not found.");
