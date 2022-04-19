@@ -25,7 +25,6 @@ import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryEmbl;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Command line: Read protein sequences from a file and compare them to the ones calculated from our data structures
@@ -608,6 +607,8 @@ public class SnpEffCmdProtein extends SnpEff {
 	public void setProteinByTrId(Map<String, String> proteinByTrId) {
 		this.proteinByTrId = proteinByTrId;
 	}
+
+	public void setMaxErrorRate(double maxErrorRate) { this.maxErrorRate = maxErrorRate; }
 
 	public void setStoreAlignments(boolean storeAlignments) {
 		this.storeAlignments = storeAlignments;

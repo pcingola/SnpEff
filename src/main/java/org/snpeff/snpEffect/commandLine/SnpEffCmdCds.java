@@ -25,12 +25,12 @@ import java.util.List;
 public class SnpEffCmdCds extends SnpEff {
 
     public static boolean onlyOneError = false; // This is used in some test-cases
-    public static double MAX_ERROR_PERCENTAGE = 0.05; // Maximum allowed error is 5% (otherwise test fails)
+    public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 5% (otherwise test fails)
     public static int MAX_ALIGN_LENGTH = 33000;
 
     boolean storeAlignments; // Store alignments (used for some test cases)
     boolean checkNumOk = true; // Require transcripts to be checked (more than zero)
-    double maxErrorPercentage = MAX_ERROR_PERCENTAGE; // Maximum allowed error
+    double maxErrorRate = MAX_ERROR_RATE; // Maximum allowed error
     int totalErrors = 0;
     int totalOk = 0;
     int totalWarnings = 0;
@@ -360,7 +360,7 @@ public class SnpEffCmdCds extends SnpEff {
         var errorRate = cdsCompare();
         if (verbose) Log.info("done");
 
-        return errorRate <= maxErrorPercentage;
+        return errorRate <= maxErrorRate;
     }
 
     /**
@@ -393,6 +393,8 @@ public class SnpEffCmdCds extends SnpEff {
     public void setCheckNumOk(boolean checkNumOk) {
         this.checkNumOk = checkNumOk;
     }
+
+    public void setMaxErrorRate(double maxErrorRate) { this.maxErrorRate = maxErrorRate; }
 
     public void setStoreAlignments(boolean storeAlignments) {
         this.storeAlignments = storeAlignments;

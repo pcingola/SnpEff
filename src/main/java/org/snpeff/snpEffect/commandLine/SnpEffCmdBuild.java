@@ -38,6 +38,7 @@ public class SnpEffCmdBuild extends SnpEff {
     boolean storeSequences = true; // Store full sequences
     boolean regSortedByType = false;
     String cellType = null;
+    double maxErrorRate = -1;
     SnpEffCmdProtein snpEffCmdProtein;
     SnpEffCmdCds snpEffCmdCds;
 
@@ -74,6 +75,7 @@ public class SnpEffCmdBuild extends SnpEff {
             snpEffCmdCds.setDebug(debug);
             snpEffCmdCds.setStoreAlignments(storeAlignments);
             snpEffCmdCds.setCheckNumOk(checkNumOk);
+            if( maxErrorRate >= 0) snpEffCmdProtein.setMaxErrorRate(maxErrorRate);
             okCds = snpEffCmdCds.run();
             if (!okCds && verbose) Log.info("\tCDS sequences comparison failed!");
         } else Log.error("CDS check file '" + cdsFile + "' not found.");
@@ -109,6 +111,7 @@ public class SnpEffCmdBuild extends SnpEff {
             snpEffCmdProtein.setStoreAlignments(storeAlignments);
             snpEffCmdProtein.setCheckNumOk(checkNumOk);
             snpEffCmdProtein.setProteinByTrId(proteinByTrId);
+            if( maxErrorRate >= 0) snpEffCmdProtein.setMaxErrorRate(maxErrorRate);
             okProtein = snpEffCmdProtein.run();
             if (!okProtein) {
                 if (verbose) Log.info("\tProtein sequences comparison failed!");
@@ -254,6 +257,11 @@ public class SnpEffCmdBuild extends SnpEff {
 
                     case "-regsortedbytype":
                         regSortedByType = true;
+                        break;
+
+                    case "-maxerrorrate":
+                        if ((i + 1) < args.length) maxErrorRate = Gpr.parseDoubleSafe(args[++i]);
+                        else usage("Missing 'maxErrorPercentage' argument");
                         break;
 
                     default:
@@ -461,6 +469,7 @@ public class SnpEffCmdBuild extends SnpEff {
         System.err.println("\t-refseq                      : Use RefSeq table from UCSC.");
         System.err.println("\nDatabase build options:");
         System.err.println("\t-cellType <type>             : Only build regulation tracks for cellType <type>.");
+        System.err.println("\t-maxErrorRate <num>          : Maximum allowed error rate (number between 0.0 and 1.0). Default: 0.05");
         System.err.println("\t-noCheckCds                  : Skip CDS sequences check.");
         System.err.println("\t-noCheckProtein              : Skip Protein sequences check.");
         System.err.println("\t-noStoreSeqs                 : Do not store sequence in binary files. Default: " + !storeSequences);
