@@ -9,8 +9,10 @@
 urlMane := "https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/"
 
 void downloadManeGenome() {
-	dg := new DownloadMane(maneGenome, maneRelease, maneTrIdType)
-	dg.download()
+    for(string maneTrIdType: maneTrIdTypes) {
+        dg := new DownloadMane(maneGenome, maneRelease, maneTrIdType)
+        dg.download()
+	}
 }
 
 

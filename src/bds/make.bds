@@ -54,7 +54,7 @@ help MANE
 downloadMane			:= false		help Download MANE
 maneGenome				:= 'GRCh38'		help MANE genome
 maneRelease				:= '1.0'		help MANE release version
-maneTrIdType			:= 'ensembl'	help MANE release transcript ID type: {'ensembl', 'refseq'}
+maneTrIdTypes			:= ['ensembl', 'refseq']	help MANE release transcript ID type: {'ensembl', 'refseq'}
 
 help UCSC
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)

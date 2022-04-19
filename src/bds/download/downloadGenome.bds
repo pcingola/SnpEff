@@ -186,7 +186,7 @@ class DownloadGenome {
 		if( fastaData.isEmpty() )	fastaData = "$dirData/genomes/$genome\.fa.gz"
 		if( fastaDataEq.isEmpty() )	fastaDataEq = "$dirData/genomes/$genomeNoVer\.fa.gz"
 		if( cdsData.isEmpty() )	cdsData = dirDataGenome + "/cds.fa.gz"
-		if( protData.isEmpty() )	protData = dirDataGenome + "/proteing.fa.gz"
+		if( protData.isEmpty() )	protData = dirDataGenome + "/protein.fa.gz"
 
 		dirDataGenome.mkdir()
 		downloadDir.mkdir()
