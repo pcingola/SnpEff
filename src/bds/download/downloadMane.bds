@@ -29,10 +29,10 @@ class DownloadMane extends DownloadGenome {
 		log("Downloading MANE '$genome': release '$release', transcript type '$trType', to '$downloadDir'")
 
 		# Download from NCBI's MANE site
-		urlBase := "$urlMane/release_$release"
-		cdsUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_rna.fna.gz"
-		genesUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_genomic.gtf.gz"
-		protUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_protein.faa.gz"
+		urlBase := "$urlMane/release_$release/MANE.$genome\.v$release\." + (maneSelect ? "select_" : "") + trType
+		cdsUrl = "$urlBase\_rna.fna.gz"
+		genesUrl = "$urlBase\_genomic.gtf.gz"
+		protUrl = "$urlBase\_protein.faa.gz"
 
 		# Download genome reference from NCBI
 		urlEnsemblBase := "http://ftp.ensembl.org/pub/release-$ensemblRelease"
