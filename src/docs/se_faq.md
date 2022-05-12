@@ -344,7 +344,7 @@ $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 ```
 
 !!! warning
-	To make matters even worse, not only `NM_001135865.1` maps twice to regions in `chr16`, but also one is mapped in the forward strand and the other on the reverse strnad (notice the `+` and `-` signs)
+	To make matters even worse, not only `NM_001135865.1` maps twice to regions in `chr16`, but also one is mapped in the forward strand and the other on the reverse strand (notice the `+` and `-` signs)
 
 How do you know which of the four `NM_001135865.1` version is SnpEff refering to?
 When there are multiple mappings for a transcipt SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.
