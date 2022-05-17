@@ -1471,10 +1471,12 @@ So the comment is indicating that this is Ensembl's release 32.</p>
 <p>First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
 <p><strong>Counting variants / annotations</strong></p>
 <p>It is important to remember that the VCF format specification allows having multiple variants in a single line.
-Also, a single variant can have more than one annotation, due to:
-- Multiple transcripts (isoforms) of a gene.
-- Multiple (overlapping) genes in the genomic location of the variant.
-- A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</p>
+Also, a single variant can have more than one annotation, due to:</p>
+<ul>
+<li>Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)</li>
+<li>Multiple (overlapping) genes in the genomic location of the variant.</li>
+<li>A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</li>
+</ul>
 <p>When you count the number of variants, you must keep all these in mind to count them properly.
 Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.</p>
 <p><strong>Typical counting mistake</strong></p>

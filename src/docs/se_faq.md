@@ -284,7 +284,8 @@ First of all, SnpEff probably giving you the right numbers, the mismatch might n
 
 It is important to remember that the VCF format specification allows having multiple variants in a single line.
 Also, a single variant can have more than one annotation, due to:
-- Multiple transcripts (isoforms) of a gene.
+
+- Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)
 - Multiple (overlapping) genes in the genomic location of the variant.
 - A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)
 
