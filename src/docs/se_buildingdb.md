@@ -11,7 +11,7 @@ In the (unlikely?) event that you need to build one yourself, here we describe h
 
 !!! warning
     Most people do NOT need to build a database, and can safely use a pre-built one.
-    So unless you are working with an rare genome you most likely don't need to do it either.
+    So unless you are working with a rare genome you most likely don't need to do it either.
 
 ### Managing SnpEff databases manually
 
@@ -26,6 +26,36 @@ The easiest way to download and install a pre-built SnpEff database manually, is
 E.g. if you want to install the SnpEff database for the human genome, you can run the following command:
 
     $ java -jar snpEff.jar download -v GRCh37.75
+
+*Backwards compatible databases*
+In many cases the databases from previous SnpEff versions might be compatible with newer versions.
+So, SnpEff has a "fallback" mechanism for "compatible database formats".
+If database format version 5.1 is backward compatible with "5.0", then we can use the "old" (5.0) databases in SnpEff version 5.1
+
+For example, let's say GRCh38.99 was built for "SnpEff version 5.0".
+When I released version 5.1 I don't need to rebuild GRCh38.99 (or any of the other thousands of databases) again for 5.1, we can just use the "old" 5.0 versions.
+
+How does it work? SnpEff checks the database in "5.1" path, if it doesn't work it fallback to "5.0" path.
+If you take a look a SnpEff's download output using the `-v` command, you'll see that it tries two times:
+
+$ snpeff download -v GRCm38.99
+00:00:00 SnpEff version SnpEff 5.1d (build 2022-04-19 15:49), by Pablo Cingolani
+00:00:00 Command: 'download'
+00:00:00 Reading configuration file 'snpEff.config'. Genome: 'GRCm38.99'
+00:00:00 Reading config file: /Users/pcingola/snpEff/snpEff.config
+00:00:00 done
+00:00:00 Downloading database for 'GRCm38.99'
+00:00:00 Downloading from 'https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_1_GRCm38.99.zip'
+00:00:00 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip, using proxy: false
+00:00:01 ERROR while connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Downloading from 'https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
+00:00:01 Connecting to **https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip**
+00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip, using proxy: false
+00:00:02 Local file name: '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
+......
+So, it starts searching at `https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip`
+but it doesn't find it there, so it proceeds with the databse `5.0` path `https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.
 
 !!! info
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
