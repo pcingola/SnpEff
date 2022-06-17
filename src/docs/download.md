@@ -9,7 +9,7 @@ SnpEff and SnpSift are bundled together.
 
 ### License
 
-SnpEff is open source, released as "LGPLv3".
+SnpEff is open source, released as "MIT".
 
 ### System requirements
 

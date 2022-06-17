@@ -462,7 +462,7 @@ Here is a description of the errors and warnings:
 
 Error                         | Meaning and possible solutions
 ----------------------------- | ------------------------------
-ERROR_CHROMOSOME_NOT_FOUND    | Chromosome does not exits in reference database. See this [FAQ](faq.md#error-chromosome-not-found) for more details.
+ERROR_CHROMOSOME_NOT_FOUND    | Chromosome does not exits in reference database. See this [FAQ](se_faq.md#error-chromosome-not-found) for more details.
 ERROR_OUT_OF_CHROMOSOME_RANGE | This means that the position is higher than chromosome's length. Probably an indicator that your data is not from this reference genome.
 ERROR_OUT_OF_EXON             | Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database
 ERROR_MISSING_CDS_SEQUENCE    | Transcript has no CDS info. Indicates a problem (or even a bug?) in the database
