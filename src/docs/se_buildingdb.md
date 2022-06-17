@@ -27,9 +27,10 @@ E.g. if you want to install the SnpEff database for the human genome, you can ru
 
     $ java -jar snpEff.jar download -v GRCh37.75
 
-*Backwards compatible databases*
+###Backwards compatible databases
+
 In many cases the databases from previous SnpEff versions might be compatible with newer versions.
-So, SnpEff has a "fallback" mechanism for "compatible database formats".
+So, SnpEff has a *fallback* mechanism for *"backwards-compatible database formats"*.
 If database format version 5.1 is backward compatible with "5.0", then we can use the "old" (5.0) databases in SnpEff version 5.1
 
 For example, let's say GRCh38.99 was built for "SnpEff version 5.0".
@@ -38,6 +39,7 @@ When I released version 5.1 I don't need to rebuild GRCh38.99 (or any of the oth
 How does it work? SnpEff checks the database in "5.1" path, if it doesn't work it fallback to "5.0" path.
 If you take a look a SnpEff's download output using the `-v` command, you'll see that it tries two times:
 
+```
 $ snpeff download -v GRCm38.99
 00:00:00 SnpEff version SnpEff 5.1d (build 2022-04-19 15:49), by Pablo Cingolani
 00:00:00 Command: 'download'
@@ -54,8 +56,10 @@ $ snpeff download -v GRCm38.99
 00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip, using proxy: false
 00:00:02 Local file name: '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
 ......
+```
+
 So, it starts searching at `https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip`
-but it doesn't find it there, so it proceeds with the databse `5.0` path `https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.
+bu`t it doesn't find it there, so it proceeds with the databse `5.0` path `https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.
 
 !!! info
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
@@ -71,33 +75,32 @@ In order to build a database for a new genome, you need to:
     Most people do NOT need to build a database, and can safely use a pre-built one.
     So unless you are working with a rare genome you most likely don't need to do it either.
 
-1. Configure a new genome in SnpEff's config file `snpEff.config`.
+1. **Step 1:** [Configure a new genome](#step-1-configure-a-new-genome) in SnpEff's config file `snpEff.config`.
 
      1. [Add genome entry](#add-a-genome-to-the-configuration-file) to snpEff's configuration
      2. If the genome uses a non-standard codon table: [Add codon table parameter](#configuring-codon-tables-not-always-required)
 
-2. Get the reference genome sequence (e.g. in FASTA format).
-3. Get genome annotations. There are four different ways you can do this:
+2. **Step 2:** [Build using gene annotations and reference sequences](#step-2-build-using-gene-annotations-and-reference-sequences)
 
-    1. [Option 1:](#option-1-building-a-database-from-gtf-files) Building a database from GTF files (the easiest way)
-    2. [Option 2:](#option-2-building-a-database-from-gff-files) Building a database from GFF files
-    3. [Option 3:](#option-3-building-a-database-from-refseq-table-from-ucsc) Building a database from RefSeq table from UCSC
-    4. [Option 4:](#option-4-building-a-database-from-genbank-files) Building a database from GenBank files
+    1. [Option 1:](#step-2-option-1-building-a-database-from-gtf-files) Building a database from GTF files (**recommended for large genomes**)
+    2. [Option 2:](#step-2-option-2-building-a-database-from-genbank-files) Building a database from GenBank files (**recommended for small genomes**)
+    3. [Option 3:](#step-2-option-3-building-a-database-from-gff-files) Building a database from GFF files
+    4. [Option 4:](#step-2-option-4-building-a-database-from-refseq-table-from-ucsc) Building a database from RefSeq table from UCSC
 
-4. Run a command to create the database (i.e. `java -jar snpEff.jar build ...`)
-5. Checking the database: SnpEff will attempt to check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
+5. **Step 3:** [Checking the database](#step-3-checking-the-database): SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
 
     1. [Checking CDS sequences](#checking-cds-sequences)
     2. [Checking Protein sequences](#checking-protein-sequences)
 
-**Note:** All files can be compressed using gzip. E.g. the reference file 'hg19.fa' can be compressed to 'hg19.fa.gz', snpEff will automatically decompress the file.
+!!! info
+    All files can be compressed using `gzip`
+    E.g. the reference file 'hg19.fa' can be compressed to 'hg19.fa.gz', snpEff will automatically decompress the file.
 
 !!! warning
     Some files claimed to be compressed using GZIP are actually not or even use a block compression variant not supported by Java's gzip library.
     If you notice that your build process finishes abruptly for no apparent reason, try uncompressing the files.
-    This sometimes happens with ENSEMBL files.
 
-### Configuring a new genome
+### Step 1: Configure a new genome
 
 In order to tell SnpEff that there is a new genome available, you must update SnpEff's configuration file `snpEff.config`.
 
@@ -156,17 +159,16 @@ E.g. Here we say the chromosome 'M' from fly genome (dm3) uses Invertebrate_Mito
 
 ...of course, chromosome 'M' is not a real chromosome, it is just a way to mark the sequence as mitochondrial DNA in the reference genome.
 
-### Reference genome: GTF, GFF, RefSeq or GenBank
+### Step 2: Build using gene annotations and reference sequences
 
-As we previously mentioned, reference genome information can be in different formats: GTF, GFF, RefSeq or GenBank.
+To build a database, SnpEff needs:
 
-In the following sub-sections, we show how to build a database for each type of genomic information file.
+1. The reference genome sequence: This is the sequence of all chromosomes in the genome, typically in a FASTA file
+2. Gene annotations files: This is the information on where the genes, transcripts and exons are in the genome. Typically, from files in GTF, GeneBank, GFF, or RefSeq formats
+3. Sequences of CDS or Proteins from the genome. These are used to check that SnpEff's database is consistent and doesn't have errors  (see sections [Checking CDS sequences](#checking-cds-sequences) and [Checking Protein sequences](#checking-protein-sequences))
 
-!!! warning
-    You should always check the databases you build! See sections [Checking CDS sequences](#checking-cds-sequences) and [Checking Protein sequences](#checking-protein-sequences)
 
-
-#### Option 1: Building a database from GTF files
+#### Step 2, Option 1: Building a database from GTF files
 
 GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations in this format).
 
@@ -181,7 +183,7 @@ GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations 
         wget ftp://ftp.ensembl.org/pub/current/gtf/mus_musculus/Mus_musculus.NCBIM37.61.gtf.gz
         mv Mus_musculus.NCBIM37.61.gtf.gz genes.gtf.gz
 
-        # Get the genome
+        # Get the genome reference sequence file
         cd /path/to/snpEff/data/genomes
         wget ftp://ftp.ensembl.org/pub/current/fasta/mus_musculus/dna/Mus_musculus.NCBIM37.61.dna.toplevel.fa.gz
         mv Mus_musculus.NCBIM37.61.dna.toplevel.fa.gz mm37.61.fa.gz
@@ -193,10 +195,70 @@ GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations 
         cd /path/to/snpEff
         java -jar snpEff.jar build -gtf22 -v mm37.61
 
-#### Option 2: Building a database from GFF files
+#### Step 2, Option 2: Building a database from GenBank files
+
+In this section, we show how to build a genome database using GeneBank files.
+
+!!! info
+    Using GeneBank files is the recommended way for databases for small genomes, such as viruses or bacteria
+
+
+!!! info
+    For NCBI genomes, you can use the script `buildDbNcbi.sh` that downloads and builds the database.
+    See details in [this FAQ](se_faq.md#how-to-building-an-ncbi-genome-genbank-file)
+
+
+**Example:** This example shows how to create a database for a new genome.
+
+!!! info
+    GenBank files usually include genome sequence as well as CDS sequences.
+    If these sequences are NOT in the GeneBank file, you should provide separate FASTA files for genome reference and CDS (or Protein) sequences.
+
+
+For this example we'll use "Staphylococcus aureus":
+
+1. Go to NIH page for [CP000730](http://www.ncbi.nlm.nih.gov/nuccore/CP000730.1)
+2. Download the features in geneBank format, by clicking as shown in the following images (red arrows):
+
+   ![genBank0](images/genBank_0.png){: .center}
+
+   Make sure you click the "Update" button!
+
+   Then you go to the "Send" menu:
+
+   ![genBank1](images/genBank_1.png){: .center}
+
+   and then:
+
+   ![genBank2](images/genBank_2.png){: .center}
+
+3. Save the GenBank data to "/path/to/snpEff/data/CP000730/genes.gbk".
+
+   **Note:** If there are more than one genbank file for an organism (e.g. multiple chromosomes), then you can download each file and concatenate them.
+
+   E.g.: Vibrio Cholerae has two chromosomes with GenBank accessions: NC_002505.1 and NC_002506.1.
+   You can download both files and save them as snpEff/data/vibrio/NC_002505.1.gbk and snpEff/data/vibrio/NC_002506.1.gbk respectively, and then concatenate both files:
+
+        cat NC_002505.1.gbk NC_002506.1.gbk > genes.gbk
+
+   Add the following entries in the config file:
+
+        # Vibrio Cholerae
+        vibrio.genome : Vibrio Cholerae
+                vibrio.chromosomes : NC_002505.1, NC_002506.1
+                vibrio.NC_002505.1.codonTable : Bacterial_and_Plant_Plastid
+                vibrio.NC_002506.1.codonTable : Bacterial_and_Plant_Plastid
+
+4. Create database (note the `-genbank` flag):
+
+        cd /path/to/snpEff
+        java -jar snpEff.jar build -genbank -v CP000730
+
+
+#### Step 2, Option 3: Building a database from GFF files
 
 !!! warning
-    Using GFF is discouraged, we recommend you use GTF files instead (whenever possible).
+    Using GFF is highly discouraged, we recommend you use GTF files instead (whenever possible).
 
 This example shows how to create a database for a new genome using GFF file ((e.g. FlyBase, WormBase, BeeBase release GFF files).
 For this example we'll use the Drosophila melanogaster genome (dm5.31):
@@ -215,9 +277,9 @@ For this example we'll use the Drosophila melanogaster genome (dm5.31):
         cd /path/to/snpEff
         java -jar snpEff.jar build -gff3 -v dm5.31
 
-#### Option 3: Building a database from RefSeq table from UCSC
+#### Step 2, Option 4: Building a database from RefSeq table from UCSC
 
-This example shows how to create a database for a new genome.
+This example shows how to create a database for a new genome using UCSC's genome tables.
 For this example we'll use the Human genome (hg19).
 
 !!! warning
@@ -259,47 +321,132 @@ In order to build a genome using UCSC tables, you can follow these instructions:
         cd /path/to/snpEff
         java -jar snpEff.jar build -refSeq -v hg19
 
-#### Option 4: Building a database from GenBank files
+### Step 3: Checking the database
 
-This example shows how to create a database for a new genome.
-For this example we'll use "Staphylococcus aureus":
+SnpEff makes sure that the database is built correctly by comparing the internal representation with CDS and Protein sequences.
+The CDS and Protein sequences are obtained from the same source as the genome reference and gene annotation files.
 
-1. Go to NIH page for [CP000730](http://www.ncbi.nlm.nih.gov/nuccore/CP000730.1)
-2. Download the features in geneBank format, by clicking as shown in the following images (red arrows):
+!!! warning
+    If neither a "Protein" nor a "CDS" sequences are provided, SnpEff will not be able to check the database.
+    By default, SnpEff will refuse to save any unchecked database.
 
-    ![genBank0](images/genBank_0.png){: .center}
 
-    Make sure you click the "Update" button!
+#### Checking CDS sequences
 
-    Then you go to the "Send" menu:
+When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when
 
-    ![genBank1](images/genBank_1.png){: .center}
+- building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
+- building via GenBank file: CDS sequences are available within the GenBank file
 
-    and then:
+!!! info
+You can disable this check unsing command line option `-noCheckCds`
 
-    ![genBank2](images/genBank_2.png){: .center}
+FASTA cds file format:
 
-3. Save the GenBank data to "/path/to/snpEff/data/CP000730/genes.gbk".
+- The file name should be `cds.fa` (or `cds.fa.gz` if compressed)
+- Each transcript should have one CDS sequence
+- Each FASTA header has the transcript ID either:
+    - The header contains only the transcript ID
+    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
+    - Some example sequences with valid header examples:
+```
+>ENST00000448914
+ACTGGGGGATACG
 
-    **Note:** If there are more than one genbank file for an organism (e.g. multiple chromosomes), then you can download each file and concatenate them.
+>chromosome:GRCh38:14:22449113:22449125:1 transcript:ENST00000448914.1 cds gene:ENSG00000228985.1 gene_biotype:TR_D_gene transcript_biotype:TR_D_gene gene_symbol:TRDD3 description:T cell receptor delta diversity 3
+ACTGGGGGATACG
+```
 
-    E.g.: Vibrio Cholerae has two chromosomes with GenBank accessions: NC_002505.1 and NC_002506.1.
-    You can download both files and save them as snpEff/data/vibrio/NC_002505.1.gbk and snpEff/data/vibrio/NC_002506.1.gbk respectively, and then concatenate both files:
+CSD checking output.
+When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character
 
-        cat NC_002505.1.gbk NC_002506.1.gbk > genes.gbk
+- `+`: OK, the CDS sequence matches the one predicted by SnpEff
+- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
+- `*`: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.
 
-    Add the following entries in the config file:
+After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
 
-        # Vibrio Cholerae
-        vibrio.genome : Vibrio Cholerae
-                vibrio.chromosomes : NC_002505.1, NC_002506.1
-                vibrio.NC_002505.1.codonTable : Bacterial_and_Plant_Plastid
-                vibrio.NC_002506.1.codonTable : Bacterial_and_Plant_Plastid
+```
+CDS check:	GRCh38.86	OK: 94384	Warnings: 22766	Not found: 103618	Errors: 0	Error percentage: 0.0%
+```
 
-4. Create database (note the `-genbank` flag):
+!!! warning
+As a "rule of the thumb", you should not get more than 2% or 3% of errors.
 
-        cd /path/to/snpEff
-        java -jar snpEff.jar build -genbank -v CP000730
+!!! info
+**Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each CDS sequence comparison.
+The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.
+
+#### Checking Protein sequences
+
+This is very similar to the CDS checking in the previous sub-section.
+When building a database, SnpEff will also try to check Protein sequences for all transcripts when
+
+- building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
+- building via GenBank file: protein sequences are available within the GenBank file
+
+!!! info
+You can disable this check unsing command line option `-noCheckProtein`
+
+FASTA protein file:
+
+- The file name should be `protein.fa` (or `protein.fa.gz` if compressed)
+- Each transcript should have one protein sequence
+- Each FASTA header has the transcript ID either:
+    - The header contains only the transcript ID
+    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
+    - Some example sequences with valid header examples (sequences have been cut for readability):
+```
+>ENST00000382044
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+
+>ENSP00000371475 pep chromosome:GRCh38:15:43403061:43493171:-1 gene:ENSG00000067369 transcript:ENST00000382044 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:TP53BP1 description:tumor protein p53 binding protein
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+```
+
+**Protein checking output:**
+
+When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
+
+- `+`: OK, the protein sequence matches the one predicted by SnpEff
+- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
+- `*`: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
+
+After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+```
+Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
+```
+
+!!! warning
+As a "rule of the thumb", the errors should be below 2% or 3%.
+
+**How exactly protein sequences are compared**
+The rules used for protein sequence comparison are:
+
+- Comparison is case-insensitive
+- Trailing STOP codon (`'*'`) is removed
+- Trailing incomplete codon (`'?'`) is removed
+- Leading incomplete codons (`'?'`) are removed
+
+If these comparisons fails, further attempts are made:
+
+- Replace "unknown" codon characters: Codons using old `'X'` characters are replaced by newer `'?'` characters
+- If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)
+- Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace `'*'` by `'U'`
+- Try replacing unknown aminco acids (`'?'`) by the ones at the same position in the protein sequence from the FASTA file
+
+If after all these attempts the protein sequence still do not match, they are considered "not equal".
+
+!!! info
+**Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
+The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
+
 
 ### Example: Building the Human Genome database
 
@@ -357,122 +504,6 @@ gunzip GRCh37.70.fa.gz
 cd ~/snpeff
 java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2>&1 | tee GRCh37.70.build
 ```
-
-### Checking CDS sequences
-
-When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when
-
-- building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
-- building via GenBank file: CDS sequences are available within the GenBank file
-
-!!! info
-    You can disable this check unsing command line option `-noCheckCds`
-
-FASTA cds file format:
-
-- The file name should be `cds.fa` (or `cds.fa.gz` if compressed)
-- Each transcript should have one CDS sequence
-- Each FASTA header has the transcript ID either:
-    - The header contains only the transcript ID
-    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
-    - Some example sequences with valid header examples:
-```
->ENST00000448914
-ACTGGGGGATACG
-
->chromosome:GRCh38:14:22449113:22449125:1 transcript:ENST00000448914.1 cds gene:ENSG00000228985.1 gene_biotype:TR_D_gene transcript_biotype:TR_D_gene gene_symbol:TRDD3 description:T cell receptor delta diversity 3
-ACTGGGGGATACG
-```
-
-CSD checking output.
-When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character
-
-- `+`: OK, the CDS sequence matches the one predicted by SnpEff
-- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the 
-- `*`: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.
-
-After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
-
-```
-CDS check:	GRCh38.86	OK: 94384	Warnings: 22766	Not found: 103618	Errors: 0	Error percentage: 0.0%
-```
-
-!!! warning
-    As a "rule of the thumb", you should not get more than 2% or 3% of errors.
-
-!!! info
-    **Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each CDS sequence comparison.
-    The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  
-
-### Checking Protein sequences
-
-This is very similar to the CDS checking in the previous sub-section.
-When building a database, SnpEff will also try to check Protein sequences for all transcripts when
-
-- building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
-- building via GenBank file: protein sequences are available within the GenBank file
-
-!!! info
-    You can disable this check unsing command line option `-noCheckProtein`
-
-FASTA protein file:
-
-- The file name should be `protein.fa` (or `protein.fa.gz` if compressed)
-- Each transcript should have one protein sequence
-- Each FASTA header has the transcript ID either:
-    - The header contains only the transcript ID
-    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
-    - Some example sequences with valid header examples (sequences have been cut for readability):
-```
->ENST00000382044
-MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
-NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
-RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
-...
-
->ENSP00000371475 pep chromosome:GRCh38:15:43403061:43493171:-1 gene:ENSG00000067369 transcript:ENST00000382044 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:TP53BP1 description:tumor protein p53 binding protein
-MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
-NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
-RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
-...
-```
-
-**Protein checking output:**
-
-When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
-
-- `+`: OK, the protein sequence matches the one predicted by SnpEff
-- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
-- `*`: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
-
-After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
-```
-Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
-```
-
-!!! warning
-    As a "rule of the thumb", the errors should be below 2% or 3%.
-
-**How exactly protein sequences are compared**
-The rules used for protein sequence comparison are:
-
-- Comparison is case-insensitive
-- Trailing STOP codon (`'*'`) is removed
-- Trailing incomplete codon (`'?'`) is removed
-- Leading incomplete codons (`'?'`) are removed
-
-If these comparisons fails, further attempts are made:
-
-- Replace "unknown" codon characters: Codons using old `'X'` characters are replaced by newer `'?'` characters
-- If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)
-- Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace `'*'` by `'U'`
-- Try replacing unknown aminco acids (`'?'`) by the ones at the same position in the protein sequence from the FASTA file
-
-If after all these attempts the protein sequence still do not match, they are considered "not equal".
-
-!!! info
-    **Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
-    The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
 
 ### Troubleshooting Database builds
 
