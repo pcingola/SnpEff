@@ -87,7 +87,7 @@ In order to build a database for a new genome, you need to:
     3. [Option 3:](#step-2-option-3-building-a-database-from-gff-files) Building a database from GFF files
     4. [Option 4:](#step-2-option-4-building-a-database-from-refseq-table-from-ucsc) Building a database from RefSeq table from UCSC
 
-5. **Step 3:** [Checking the database](#step-3-checking-the-database): SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
+3. **Step 3:** [Checking the database](#step-3-checking-the-database): SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
 
     1. [Checking CDS sequences](#checking-cds-sequences)
     2. [Checking Protein sequences](#checking-protein-sequences)
@@ -171,6 +171,8 @@ To build a database, SnpEff needs:
 #### Step 2, Option 1: Building a database from GTF files
 
 GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations in this format).
+
+See a more detailed explanation about [SnpEff's requirements for GTF files here](se_build_db_gff_gtf.md)
 
 1. Get the genome and uncompress it:
 
@@ -259,6 +261,8 @@ For this example we'll use "Staphylococcus aureus":
 
 !!! warning
     Using GFF is highly discouraged, we recommend you use GTF files instead (whenever possible).
+
+See a more detailed explanation about [SnpEff's requirements for GFF files here](se_build_db_gff_gtf.md)
 
 This example shows how to create a database for a new genome using GFF file ((e.g. FlyBase, WormBase, BeeBase release GFF files).
 For this example we'll use the Drosophila melanogaster genome (dm5.31):

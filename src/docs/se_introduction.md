@@ -109,7 +109,7 @@ Currently, there are pre-built database for over 20,000 reference genomes.
 This means that most cases are covered.
 
 In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
-In most cases, this can be done and there is a [section](se_buildingdb.md) of this manual teaching how to build your own SnpEff database.
+In most cases, this can be done and there is a [section](se_build_db.md) of this manual teaching how to build your own SnpEff database.
 
 Which databases are supported? You can find out all the supported databases by running the `databases` command:
 
@@ -151,5 +151,5 @@ Again, this is an example of the version numbers at the time of writing this par
 should update to the corresponding version.
 
 **Unsupported reference genomes:** If your reference genome of interest is not supported yet (i.e. there is no database available),
-you can build a database yourself (see [Building databases](se_buildingdb.md)).
+you can build a database yourself (see [Building databases](se_build_db.md)).
 If you have problems adding you own organism, send the issue to SnpEff repository and I'll do my best to help you out.

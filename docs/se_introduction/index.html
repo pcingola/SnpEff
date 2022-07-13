@@ -607,7 +607,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../se_buildingdb/" title="Building databases" class="md-nav__link">
+    <a href="../se_build_db/" title="Building databases" class="md-nav__link">
       Building databases
     </a>
   </li>
@@ -619,7 +619,19 @@
 
 
   <li class="md-nav__item">
-    <a href="../se_buildingreg/" title="Building databases. Regulatory and Non-coding" class="md-nav__link">
+    <a href="../se_build_db_gff_gtf/" title="Build databses. GTF / GFF details" class="md-nav__link">
+      Build databses. GTF / GFF details
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_build_reg/" title="Building databases. Regulatory and Non-coding" class="md-nav__link">
       Building databases. Regulatory and Non-coding
     </a>
   </li>
@@ -1420,7 +1432,7 @@ We build these databases using information from trusted resources.</p>
 <p>Currently, there are pre-built database for over 20,000 reference genomes.
 This means that most cases are covered.</p>
 <p>In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
-In most cases, this can be done and there is a <a href="../se_buildingdb/">section</a> of this manual teaching how to build your own SnpEff database.</p>
+In most cases, this can be done and there is a <a href="../se_build_db/">section</a> of this manual teaching how to build your own SnpEff database.</p>
 <p>Which databases are supported? You can find out all the supported databases by running the <code>databases</code> command:</p>
 <pre><code>$ java -jar snpEff.jar databases | less
 </code></pre>
@@ -1455,7 +1467,7 @@ Since it is generally better to use the latest release, you should probably pick
 Again, this is an example of the version numbers at the time of writing this paragraph, in the future there will be other releases and you
 should update to the corresponding version.</p>
 <p><strong>Unsupported reference genomes:</strong> If your reference genome of interest is not supported yet (i.e. there is no database available),
-you can build a database yourself (see <a href="../se_buildingdb/">Building databases</a>).
+you can build a database yourself (see <a href="../se_build_db/">Building databases</a>).
 If you have problems adding you own organism, send the issue to SnpEff repository and I'll do my best to help you out.</p>
                 
               

@@ -19,7 +19,7 @@
     
     
       
-        <title>Output summary files - SnpEff & SnpSift Documentation</title>
+        <title>Build databses. GTF / GFF details - SnpEff & SnpSift Documentation</title>
       
     
     
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#output-summary-files" class="md-skip">
+        <a href="#building-databases-gtf-gff-details" class="md-skip">
           Skip to content
         </a>
       
@@ -91,7 +91,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Output summary files
+              Build databses. GTF / GFF details
             
           </span>
         </div>
@@ -504,60 +504,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Output summary files
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="./" title="Output summary files" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../se_outputsummary/" title="Output summary files" class="md-nav__link">
       Output summary files
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#html-summary-snpeff_summaryhtml" class="md-nav__link">
-    HTML summary (snpEff_summary.html)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gene-counts-summary-snpeff_genestxt" class="md-nav__link">
-    Gene counts summary (snpEff_genes.txt)
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -589,11 +540,205 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../se_build_db_gff_gtf/" title="Build databses. GTF / GFF details" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Build databses. GTF / GFF details
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Build databses. GTF / GFF details" class="md-nav__link md-nav__link--active">
       Build databses. GTF / GFF details
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gtf-format-example" class="md-nav__link">
+    GTF format example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gtf-format-details" class="md-nav__link">
+    GTF format details
+  </a>
+  
+    <nav class="md-nav" aria-label="GTF format details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gtf-file-name" class="md-nav__link">
+    GTF File name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-lines" class="md-nav__link">
+    GTF lines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-fields" class="md-nav__link">
+    GTF fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-field-requirements" class="md-nav__link">
+    GTF field requirements
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-feature" class="md-nav__link">
+    GTF Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-frame" class="md-nav__link">
+    GTF Frame
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attributes" class="md-nav__link">
+    GTF Attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-id" class="md-nav__link">
+    GTF Attribute: ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-parentid" class="md-nav__link">
+    GTF Attribute: ParentId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-transcriptid" class="md-nav__link">
+    GTF Attribute: TranscriptId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-genename" class="md-nav__link">
+    GTF Attribute: GeneName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-biotype" class="md-nav__link">
+    GTF Attribute: BioType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-genebiotype" class="md-nav__link">
+    GTF Attribute: GeneBioType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-transcriptbiotype" class="md-nav__link">
+    GTF Attribute: TranscriptBioType
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gff" class="md-nav__link">
+    GFF
+  </a>
+  
+    <nav class="md-nav" aria-label="GFF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gff-file-name" class="md-nav__link">
+    GFF File name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-lines-and-fields" class="md-nav__link">
+    GTF lines and fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gff-genome-sequence" class="md-nav__link">
+    GFF genome sequence
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -1156,16 +1301,161 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#html-summary-snpeff_summaryhtml" class="md-nav__link">
-    HTML summary (snpEff_summary.html)
+  <a href="#summary" class="md-nav__link">
+    Summary
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gene-counts-summary-snpeff_genestxt" class="md-nav__link">
-    Gene counts summary (snpEff_genes.txt)
+  <a href="#gtf-format-example" class="md-nav__link">
+    GTF format example
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gtf-format-details" class="md-nav__link">
+    GTF format details
+  </a>
+  
+    <nav class="md-nav" aria-label="GTF format details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gtf-file-name" class="md-nav__link">
+    GTF File name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-lines" class="md-nav__link">
+    GTF lines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-fields" class="md-nav__link">
+    GTF fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-field-requirements" class="md-nav__link">
+    GTF field requirements
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-feature" class="md-nav__link">
+    GTF Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-frame" class="md-nav__link">
+    GTF Frame
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attributes" class="md-nav__link">
+    GTF Attributes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-id" class="md-nav__link">
+    GTF Attribute: ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-parentid" class="md-nav__link">
+    GTF Attribute: ParentId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-transcriptid" class="md-nav__link">
+    GTF Attribute: TranscriptId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-genename" class="md-nav__link">
+    GTF Attribute: GeneName
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-biotype" class="md-nav__link">
+    GTF Attribute: BioType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-genebiotype" class="md-nav__link">
+    GTF Attribute: GeneBioType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-attribute-transcriptbiotype" class="md-nav__link">
+    GTF Attribute: TranscriptBioType
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gff" class="md-nav__link">
+    GFF
+  </a>
+  
+    <nav class="md-nav" aria-label="GFF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gff-file-name" class="md-nav__link">
+    GFF File name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gtf-lines-and-fields" class="md-nav__link">
+    GTF lines and fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gff-genome-sequence" class="md-nav__link">
+    GFF genome sequence
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1185,173 +1475,382 @@
                   
                 
                 
-                <h1 id="output-summary-files">Output summary Files</h1>
-<p>SnpEff creates an additional output file showing overall statistics.
-This "stats" file is an HTML file which can be opened using a web browser.
-You can find an example of a 'stats' file <a href="../adds/1kg.html">here</a>.</p>
-<h3 id="html-summary-snpeff_summaryhtml">HTML summary (snpEff_summary.html)</h3>
-<p>The program performs some statistics and saves them to the file 'snpEff_summary.html' on the
-directory where snpEff is being executed. You can see the file, by opening it in your browser.</p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can change the default location by using the <code>-stats</code> command line option. This also changes the location of the TXT summary file.</p>
+                <h1 id="building-databases-gtf-gff-details">Building databases: GTF / GFF details</h1>
+<p>In this section we show some specific details on the GTF and GFF file format required by SnpEff to build databases.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Most people do NOT need to build a database, and can safely use a pre-built one.
+So unless you are working with a rare, custom, or new genomes you most likely don't need to do it either.</p>
 </div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Summary can be create in CSV format using command line option <code>-csvStats</code>. This allows easy downstream processing.</p>
-</div>
-<p>E.g.: In the stats file, you can see coverage histogram plots like this one:</p>
-<p><img alt="" src="http://chart.apis.google.com/chart?cht=bvg&amp;chbh=8,4,2&amp;chs=800x300&amp;chxt=y,y,x,x&amp;chg=11.0,40.0,3,2&amp;chxp=1,50.0|3,50.0&amp;chtt=Coverage+histogram&amp;chxr=0,1.0,409.0|1,0.0,100.0|3,0.0,100.0&amp;chxl=1:|Count|2:|1||||||||||11||||||||||21||||||||||31||||||||||41||||||||||51||||||||||61||||||||||76||||||||||3:|Coverage&amp;chd=e:DNBSEfGaI9MKRSWZfXnrlwmZuE1wvW630e6O..638y3r7g8JsKxRlHgAkeZmY9XCR7PXRSOuOFMzNcIUJmHrHrFIFIFxEfCkDNDNBSBSB7BSB7BSApApApBSBSApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></p>
-<p><strong>"Effects by type" vs "Effects by region"</strong></p>
-<p>SnpEff annotates variants.
-Variants produce effect of difference "types" (e.g. NON_SYNONYMOUS_CODING, STOP_GAINED).
-These variants affect regions of the genome (e.g. EXON, INTRON).
-The two tables count how many effects for each type and for each region exists.</p>
-<p>E.g.: In an EXON region, you can have all the following effect types: NON_SYNONYMOUS_CODING, SYNONYMOUS_CODING, FRAME_SHIFT, STOP_GAINED, etc.</p>
-<p>The complicated part is that some effect types affect a region that has the same name (yes, I know, this is confusing).</p>
-<p>E.g.: In a UTR_5_PRIME region you can have UTR_5_PRIME and START_GAINED effect type.</p>
-<p>This means that the number of both tables are not exactly the same, because the labels don't mean the same.
-See the next figure as an example:</p>
-<p><img alt="type_vs_region" class="center" src="../images/type_vs_region.png" /></p>
-<p>So the number of effects that affect a UTR_5_PRIME <em>region</em> is 206. Of those, 57 are effects <em>type</em> START_GAINED and 149 are effects <em>type</em> UTR_5_PRIME.</p>
-<p>How exactly are effect <em>type</em> and effect <em>region</em> related? See the following table:</p>
-<table>
-<thead>
-<tr>
-<th>Effect Type</th>
-<th>Region</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NONE<br>CHROMOSOME<br>CUSTOM<br>CDS</td>
-<td>NONE</td>
-</tr>
-<tr>
-<td>INTERGENIC<br>INTERGENIC_CONSERVED</td>
-<td>INTERGENIC</td>
-</tr>
-<tr>
-<td>UPSTREAM</td>
-<td>UPSTREAM</td>
-</tr>
-<tr>
-<td>UTR_5_PRIME<br>UTR_5_DELETED<br>START_GAINED</td>
-<td>UTR_5_PRIME</td>
-</tr>
-<tr>
-<td>SPLICE_SITE_ACCEPTOR</td>
-<td>SPLICE_SITE_ACCEPTOR</td>
-</tr>
-<tr>
-<td>SPLICE_SITE_DONOR</td>
-<td>SPLICE_SITE_DONOR</td>
-</tr>
-<tr>
-<td>SPLICE_SITE_REGION</td>
-<td>SPLICE_SITE_REGION</td>
-</tr>
-<tr>
-<td>INTRAGENIC<br>START_LOST<br>SYNONYMOUS_START<br>NON_SYNONYMOUS_START<br>GENE<br>TRANSCRIPT</td>
-<td>EXON or NONE</td>
-</tr>
-<tr>
-<td>EXON<br>EXON_DELETED<br>NON_SYNONYMOUS_CODING<br>SYNONYMOUS_CODING<br>FRAME_SHIFT<br>CODON_CHANGE<br>CODON_INSERTION<br>CODON_CHANGE_PLUS_CODON_INSERTION<br>CODON_DELETION<br>CODON_CHANGE_PLUS_CODON_DELETION<br>STOP_GAINED<br>SYNONYMOUS_STOP<br> STOP_LOST<br>RARE_AMINO_ACID</td>
-<td>EXON</td>
-</tr>
-<tr>
-<td>INTRON<br>INTRON_CONSERVED</td>
-<td>INTRON</td>
-</tr>
-<tr>
-<td>UTR_3_PRIME<br>UTR_3_DELETED</td>
-<td>UTR_3_PRIME</td>
-</tr>
-<tr>
-<td>DOWNSTREAM</td>
-<td>DOWNSTREAM</td>
-</tr>
-<tr>
-<td>REGULATION</td>
-<td>REGULATION</td>
-</tr>
-</tbody>
-</table>
-<h3 id="gene-counts-summary-snpeff_genestxt">Gene counts summary (snpEff_genes.txt)</h3>
-<p>SnpEff also generates a TXT (tab separated) file having counts of number of variants affecting each transcript and gene.
-By default, the file name is <code>snpEff_genes.txt</code>, but it can be changed using the <code>-stats</code> command line option.</p>
-<p>Here is an example of this file:</p>
-<pre><code>$ head snpEff_genes.txt
-# The following table is formatted as tab separated values.
-#GeneName   GeneId  TranscriptId    BioType variants_impact_HIGH    variants_impact_LOW variants_impact_MODERATE    variants_impact_MODIFIER    variants_effect_3_prime_UTR_variant variants_effect_5_prime_UTR_premature_start_codon_gain_variant  variants_effect_5_prime_UTR_variant variants_effect_downstream_gene_variant variants_effect_intron_variant  variants_effect_missense_variant    variants_effect_non_coding_exon_variant variants_effect_splice_acceptor_variant variants_effect_splice_donor_variant    variants_effect_splice_region_variant   variants_effect_start_lost  variants_effect_stop_gained variants_effect_stop_lost   variants_effect_synonymous_variant  variants_effect_upstream_gene_variant   bases_affected_DOWNSTREAM   total_score_DOWNSTREAM  length_DOWNSTREAM   bases_affected_EXON total_score_EXON    length_EXON bases_affected_INTRON   total_score_INTRON  length_INTRON   bases_affected_SPLICE_SITE_ACCEPTOR total_score_SPLICE_SITE_ACCEPTOR    length_SPLICE_SITE_ACCEPTOR bases_affected_SPLICE_SITE_DONOR    total_score_SPLICE_SITE_DONOR   length_SPLICE_SITE_DONOR    bases_affected_SPLICE_SITE_REGION   total_score_SPLICE_SITE_REGION  length_SPLICE_SITE_REGION   bases_affected_TRANSCRIPT   total_score_TRANSCRIPT  length_TRANSCRIPT   bases_affected_UPSTREAM total_score_UPSTREAM    length_UPSTREAM bases_affected_UTR_3_PRIME  total_score_UTR_3_PRIME length_UTR_3_PRIME  bases_affected_UTR_5_PRIME  total_score_UTR_5_PRIME length_UTR_5_PRIME
-AC000029.1  ENSG00000221069 ENST00000408142 miRNA   0   0   0   2   0   0   0   2   0   0   0   0   0   0   0   0   5000    0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
-AC000068.5  ENSG00000185065 ENST00000431090 antisense   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   5000    0   0   0   0   0   0
-AC000081.2  ENSG00000230194 ENST00000433141 processed_pseudogene    0   0   0   8   0   0   0   3   0   0   0   0   0   0   5000    0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   5   0   5000    0   0
-AC000089.3  ENSG00000235776 ENST00000424559 processed_pseudogene    0   0   0   1   0   0   0   0   0   0   0   0   0   0   5000    0   0   0   0   0   0
-AC002472.1  ENSG00000269103 ENST00000547793 protein_coding  0   0   0   6   0   0   0   5   0   0   0   0   0   0   0   5000    0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   5000    0   0
-AC002472.11 ENSG00000226872 ENST00000450652 antisense   0   0   0   13  0   0   0   5   2   0   0   0   0   0   0   5000    0   0   0   2   0   11199   0   0   0   0   0   0   0   0   0   0   0   0   6   0   5000    0   0
-AC002472.13 ENSG00000187905 ENST00000342608 protein_coding  0   1   6   1   0   0   0   0   1   6   0   0   0   1   0   116 1   0   934 0   0   0   0   0   0   1   0   3   0   0   0   0   0   0   0   0   0   0   0
-AC002472.13 ENSG00000187905 ENST00000442047 protein_coding  0   1   6   1   0   0   0   0   1   6   0   0   0   1   0   116 1   0   934 0   0   0   0   0   0   1   0   3   0   0   0   0   0   0   0   0   0   0   0
+<h2 id="summary">Summary</h2>
+<p>As seen in the previous <a href="#building-databases">Building databases</a>, there are three main steps when building a database:</p>
+<ol>
+<li><strong>Step 1:</strong> <a href="#step-1-configure-a-new-genome">Configure a new genome</a> in SnpEff's config file <code>snpEff.config</code>.</li>
+<li><strong>Step 2:</strong> <a href="#step-2-build-using-gene-annotations-and-reference-sequences">Build using gene annotations and reference sequences</a></li>
+<li><strong>Step 3:</strong> <a href="#step-3-checking-the-database">Checking the database</a>: SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.</li>
+</ol>
+<p>In this section we'll go into the details of the GTF and GFF format requirements for <strong>Step 2</strong>.
+As a general rule, GTF format is preferred over GFF, so if your genome provides both GTF anf GFF, use GTF whenever possible.</p>
+<h2 id="gtf-format-example">GTF format example</h2>
+<p>This is a snippet example from a GTF file that fulfills SnpEff's requirements. 
+The example (from ENSEMBL's human genome GTF file) shows the definition of one gene, one transcript and it's exons, as well as the trancript's start codon, stop codon, and UTR regions.</p>
+<pre><code># Note that tabs have been replaced by spaces for readability
+chr1    ensembl  gene          10472288        10630758        .       +       .       gene_id &quot;ENSG00000142655.13&quot;; gene_type &quot;protein_coding&quot;; gene_name &quot;PEX14&quot;;
+chr1    ensembl  transcript    10474950        10630758        .       +       .       gene_id &quot;ENSG00000142655.13&quot;; transcript_id &quot;ENST00000356607.9&quot;; transcript_type &quot;protein_coding&quot;;
+chr1    ensembl  exon          10474950        10475002        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10474967        10475002        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  start_codon   10474967        10474969        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10495274        10495321        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10495274        10495321        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10536213        10536297        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10536213        10536297        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10599238        10599366        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10599238        10599366        .       +       2       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10618332        10618417        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10618332        10618417        .       +       2       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10623019        10623121        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10623019        10623121        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10624340        10624437        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10624340        10624437        .       +       2       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10627272        10627363        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10627272        10627363        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  exon          10629531        10630758        .       +       .       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  CDS           10629531        10629984        .       +       1       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  stop_codon    10629985        10629987        .       +       0       transcript_id &quot;ENST00000356607.9&quot;;
+chr1    ensembl  UTR           10474950        10474966        .       +       .       transcript_id &quot;ENST00000356607.9&quot;; 
+chr1    ensembl  UTR           10629985        10630758        .       +       .       transcript_id &quot;ENST00000356607.9&quot;; 
 </code></pre>
-<p>The columns in this table are:</p>
+<p>For a more detailed example, check ENSEMBL's GTF files, for instance <a href="http://ftp.ensembl.org/pub/release-107/gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz">this one for GRCh38.107</a>(the human genome)</p>
+<h2 id="gtf-format-details">GTF format details</h2>
+<p>The full GTF format specification is beyond the scope of this section, and it is assumed you are familiar with it.
+It's probably a good idea to take a look at the format specification before reading the rest of this section, here are some links:</p>
+<ul>
+<li><a href="https://useast.ensembl.org/info/website/upload/gff.html">ENSEMBL GTF format specification</a></li>
+<li><a href="https://mblab.wustl.edu/GTF22.html">Brent's lab GTF format</a></li>
+</ul>
+<h3 id="gtf-file-name">GTF File name</h3>
+<p>SnpEff expects the GTF file to be located at </p>
+<pre><code>$SNPEFF_HOME/data/GENOME_NAME/genes.gtf
+</code></pre>
+<p>where:</p>
+<ul>
+<li><code>$SNPEFF_HOME</code> is the directory where SnpEff is installed (usually <code>$HOME/snpEff</code>)</li>
+<li><code>GENOME_NAME</code> is the genome name of the genome you are trying to build, which MUST match the name you added in the config file <code>snpEff.config</code></li>
+</ul>
+<p>Note: The file name can be <code>genes.gff.gz</code> if it's compressed using <code>gzip</code>.</p>
+<h3 id="gtf-lines">GTF lines</h3>
+<p>In a nutshell, GTF files are text files and each line is parsed separately.</p>
+<p>Lines that start with <code>#</code> are treated as comments (i.e. ignored).</p>
+<p>Each (non-comment) line is parsed as a tab-separate list of fields, for example:</p>
+<pre><code>#!genome-build GRCh38.p13
+1       protein_coding  gene         69091   70008   .       +       .       gene_id &quot;ENSG00000186092&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;;
+1       protein_coding  transcript   69091   70008   .       +       .       gene_id &quot;ENSG00000186092&quot;; transcript_id &quot;ENST00000335137&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;; transcript_name &quot;OR4F5-001&quot;; transcript_source &quot;ensembl_havana&quot;; tag &quot;CCDS&quot;; ccds_id &quot;CCDS30547&quot;;
+1       protein_coding  exon         69091   70008   .       +       .       gene_id &quot;ENSG00000186092&quot;; transcript_id &quot;ENST00000335137&quot;; exon_number &quot;1&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;; transcript_name &quot;OR4F5-001&quot;; transcript_source &quot;ensembl_havana&quot;; tag &quot;CCDS&quot;; ccds_id &quot;CCDS30547&quot;; exon_id &quot;ENSE00002319515&quot;;
+1       protein_coding  CDS          69091   70005   .       +       0       gene_id &quot;ENSG00000186092&quot;; transcript_id &quot;ENST00000335137&quot;; exon_number &quot;1&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;; transcript_name &quot;OR4F5-001&quot;; transcript_source &quot;ensembl_havana&quot;; tag &quot;CCDS&quot;; ccds_id &quot;CCDS30547&quot;; protein_id &quot;ENSP00000334393&quot;;
+1       protein_coding  start_codon  69091   69093   .       +       0       gene_id &quot;ENSG00000186092&quot;; transcript_id &quot;ENST00000335137&quot;; exon_number &quot;1&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;; transcript_name &quot;OR4F5-001&quot;; transcript_source &quot;ensembl_havana&quot;; tag &quot;CCDS&quot;; ccds_id &quot;CCDS30547&quot;;
+1       protein_coding  stop_codon   70006   70008   .       +       0       gene_id &quot;ENSG00000186092&quot;; transcript_id &quot;ENST00000335137&quot;; exon_number &quot;1&quot;; gene_name &quot;OR4F5&quot;; gene_source &quot;ensembl_havana&quot;; gene_biotype &quot;protein_coding&quot;; transcript_name &quot;OR4F5-001&quot;; transcript_source &quot;ensembl_havana&quot;; tag &quot;CCDS&quot;; ccds_id &quot;CCDS30547&quot;;
+</code></pre>
+<p>It should be noted that lines do NOT have a specific order.
+Usually information defining a gene tends to be together, but this is not required by the GTF format.</p>
+<h3 id="gtf-fields">GTF fields</h3>
+<p>The nine tab-separated fields in each (non-comment) line are:</p>
+<ol>
+<li><strong>seqname:</strong> name of the chromosome or scaffold; chromosome names can be given with or without the 'chr' prefix. Important note: the seqname must be one used within Ensembl, i.e. a standard chromosome name or an Ensembl identifier such as a scaffold ID, without any additional content such as species or assembly. See the example GFF output below.</li>
+<li><strong>source:</strong> name of the program that generated this feature, or the data source (database or project name)</li>
+<li><strong>feature:</strong> feature type name, e.g. Gene, transcript, exon, etc.</li>
+<li><strong>start:</strong> Start position* of the feature, with sequence numbering starting at 1.</li>
+<li><strong>end:</strong> End position* of the feature, with sequence numbering starting at 1.</li>
+<li><strong>score:</strong> A floating point value.</li>
+<li><strong>strand:</strong> defined as + (forward), or - (reverse).</li>
+<li><strong>frame:</strong> One of '0', '1' or '2'. '0' indicates that the first base of the feature is the first base of a codon, '1' that the second base is the first base of a codon, and so on..</li>
+<li><strong>attribute:</strong> A semicolon-separated list of tag-value pairs, providing additional information about each feature.</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Also note that <code>'.'</code> denotes an empty field, you cannot just use an empty string to denote an empty field.</p>
+</div>
+<h3 id="gtf-field-requirements">GTF field requirements</h3>
+<p>SnpEff requires that the fields are:</p>
+<ol>
+<li><strong>seqname:</strong> Must match the name of the chromosome / scaffold in the reference genome sequence FASTA file (with or without a <code>chr</code> prepend).</li>
+<li><strong>source:</strong> This field is ignored by SnpEff.</li>
+<li><strong>feature:</strong> These feature types, such as <code>gene</code>, <code>exon</code>, <code>cds</code>, etc. See details in section <a href="gtf-feature">GTF Feature</a> </li>
+<li><strong>start:</strong> One-based chromosome position of feature start (base included).</li>
+<li><strong>end:</strong> One-based chromosome position of feature end (base included).</li>
+<li><strong>score:</strong> SnpEff ignores this field.</li>
+<li><strong>strand:</strong> Considered negative strand if <code>'-'</code>, otherwise interpreted as positive strand.</li>
+<li><strong>frame:</strong> Interpreted as 'phase', can be <code>{0, 1, 2}</code>. If empty (<code>'.'</code>) or <code>-1</code> is interpreted as "missing". See <a href="#gtf-frame-details">"GTF Frame details"</a> section below.</li>
+<li><strong>attribute:</strong> Attribute list, see <a href="#gtf-attributes">GTF Attributes</a> section below </li>
+</ol>
+<h3 id="gtf-feature">GTF Feature</h3>
+<p>These feature types will be translated to SnpEff entities the following way (case ignored):</p>
 <table>
 <thead>
 <tr>
-<th>Column name</th>
-<th>Meaning</th>
+<th>Feature Type</th>
+<th>Feature value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>GeneName</td>
-<td>Gene name (usually HUGO)</td>
+<td>GENE</td>
+<td>gene, protein</td>
 </tr>
 <tr>
-<td>GeneId</td>
-<td>Gene's ID</td>
+<td>TRANSCRIPT</td>
+<td>pseudogene, transcript, mrna, trna, snorna, rrna, ncrna, mirna, snrna, pseudogenic_transcript</td>
 </tr>
 <tr>
-<td>TranscriptId</td>
-<td>Transcript's ID</td>
+<td>EXON</td>
+<td>exon, pseudogenic_exon</td>
 </tr>
 <tr>
-<td>BioType</td>
-<td>Transcript's bio-type (if available)</td>
+<td>CDS</td>
+<td>cds</td>
 </tr>
 <tr>
-<td>&nbsp;</td>
-<td><strong>The following column is repeated for each impact {HIGH, MODERATE, LOW, MODIFIER}</strong></td>
+<td>START_CODON</td>
+<td>start_codon</td>
 </tr>
 <tr>
-<td>variants_impact_*</td>
-<td>Count number of variants for each impact category</td>
+<td>STOP_CODON</td>
+<td>stop_codon</td>
 </tr>
 <tr>
-<td>&nbsp;</td>
-<td><strong>The following column is repeated for each annotated effect (e.g. missense_variant, synonymous_variant, stop_lost, etc.)</strong></td>
+<td>UTR5</td>
+<td>five_prime_utr, 5'-utr, 5'utr, 5utr</td>
 </tr>
 <tr>
-<td>variants_effect_*</td>
-<td>Count number of variants for each effect type</td>
+<td>UTR3</td>
+<td>three_prime_utr, 3'-utr, 3'utr, 3utr</td>
 </tr>
 <tr>
-<td>&nbsp;</td>
-<td><strong>The following columns are repeated for several genomic regions (DOWNSTREAM, EXON, INTRON, UPSTREAM, etc.)</strong></td>
+<td>INTRON_CONSERVED</td>
+<td>intron_CNS, intron_cns</td>
 </tr>
 <tr>
-<td>bases_affected_*</td>
-<td>Number of bases that variants overlap genomic region</td>
-</tr>
-<tr>
-<td>total_score_*</td>
-<td>Sum of scores overlapping this genomic region. Note: Scores are only available when input files are type 'BED' (e.g. when annotating ChipSeq experiments)</td>
-</tr>
-<tr>
-<td>length_*</td>
-<td>Genomic region length</td>
+<td>INTERGENIC_CONSERVED</td>
+<td>inter_cns</td>
 </tr>
 </tbody>
 </table>
+<h3 id="gtf-frame">GTF Frame</h3>
+<p>The frame field indicates the number of bases that should be <strong>removed</strong> from the beginning of this feature to reach the first base of the next codon.
+This is typically used in <code>EXON</code> or <code>CDS</code> features within in coding genes.</p>
+<p>Possible values are:</p>
+<ul>
+<li><code>0</code>: indicates that the feature begins with a whole codon at the 5' most base.</li>
+<li><code>1</code>: means that there is one extra base (the third base of a codon) before the first whole codon and </li>
+<li><code>2</code>: means that there are two extra bases (the second and third bases of the codon) before the first codon</li>
+<li><code>.</code>: Missing value, SnpEff will inferr this value from the feature's coordinates</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Sometimes this is called 'phase' instead of frame, to distinguish form the <em>"coding base modulo 3"</em> definition. </p>
+</div>
+<p><strong>Frame correctio:n</strong>
+SnpEff performs a "frame correction".
+If the frame value calculated using the feature (exon) coordinates differs from the one given in the <code>start / end</code> coordinates, the coordinates will be corrected.</p>
+<p>This correction is performed in two stages, for each transcript:</p>
+<p>i) First exon is corrected by adding a fake 5'UTR
+ii) Other exons are corrected by changing the start (or end) coordinates. We drop bases from either the <code>start</code> coordinate (if the exon is on the positive strand) or <code>end</code> coordinate (if the exon is on the negative strand) until the frame matches the one from the GTF.</p>
+<p><strong> Check zero frames:</strong>
+If all frames are zero, there is a high chance that the frame values are incorrectly labeled as zero instead of "missing values" (i.e. '.').
+SnpEff will check if <strong>all</strong> frame values are zero. If there are more than <code>MIN_TOTAL_FRAME_COUNT</code> frmae values set (by default 10) and all of them are zero, it will show a warning.</p>
+<h3 id="gtf-attributes">GTF Attributes</h3>
+<p>The "attributes" field is parsed as a semicolon-separated list of key-value pairs, providing additional information about each feature.</p>
+<p>Required attributes are:</p>
+<table>
+<thead>
+<tr>
+<th>Feature type</th>
+<th>Required attributes</th>
+<th>Optional attributes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GENE</td>
+<td>ID / GeneID, GeneBioType,</td>
+<td>GeneName</td>
+</tr>
+<tr>
+<td>TRANSCRIPT</td>
+<td>ID / TranscriptID, TranscriptBioType, ParentID</td>
+<td><code>transcript_support_level</code>, <code>transcript_version</code></td>
+</tr>
+<tr>
+<td>CDS, EXON, STOP_CODON, START_CODON</td>
+<td>ID, ParentID / TranscriptID</td>
+<td></td>
+</tr>
+<tr>
+<td>UTR, UTR5, UTR3</td>
+<td>ID, ParentID / TranscriptID</td>
+<td></td>
+</tr>
+<tr>
+<td>INTRON_CONSERVED</td>
+<td>ID, TranscriptID / TranscriptID</td>
+<td></td>
+</tr>
+<tr>
+<td>INTERGENIC_CONSERVED</td>
+<td>ID</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gtf-attribute-id">GTF Attribute: ID</h3>
+<p>The attribute name can be (not case sensitive, in search order):</p>
+<ul>
+<li><code>id</code></li>
+<li><code>gene_id</code> (if feature type is <code>GENE</code>)</li>
+<li><code>transcript_id</code> (if feature type is <code>TRANSCRIPT</code>)</li>
+<li><code>exon_id</code> (if feature type is <code>EXON</code>),</li>
+<li><code>db_xref</code></li>
+<li><code>name</code></li>
+</ul>
+<p>GeneId value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make is unique.</p>
+<h3 id="gtf-attribute-parentid">GTF Attribute: ParentId</h3>
+<p>The attribute name can be (not case sensitive, in search order):</p>
+<ul>
+<li><code>parent</code></li>
+<li><code>gene</code> (if feature type is <code>TRANSCRIPT</code> or <code>INTRON_CONSERVED</code>)</li>
+<li>same as TranscriptId (if feature type is any of 'EXON', 'CDS', 'START_CODON', 'STOP_CODON', 'UTR3', or 'UTR5')</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The value of <code>ParentID</code> must match exactly the <code>ID</code> of the parent feature (e.g. the <code>ParentID</code> for a transcript, must match the ID of the parent gene).
+It is a common mistake in some GTF / GFF files to add or remove some characters.
+If the IDs don't match, the GTF/GFF file is invalid for SnpEff.</p>
+</div>
+<h3 id="gtf-attribute-transcriptid">GTF Attribute: TranscriptId</h3>
+<p>The attribute name can be (not case sensitive, in search order):</p>
+<ul>
+<li><code>transcript_id</code></li>
+<li><code>id</code> (if feature type is <code>TRANSCRIPT</code>)</li>
+<li>or the same as <code>ParentID</code> if feature type is <code>EXON</code></li>
+</ul>
+<h3 id="gtf-attribute-genename">GTF Attribute: GeneName</h3>
+<p>The attribute name can be (not case sensitive, in search order):</p>
+<ul>
+<li><code>gene_name</code></li>
+<li><code>name</code> (if feature type is <code>GENE</code>)</li>
+</ul>
+<h3 id="gtf-attribute-biotype">GTF Attribute: BioType</h3>
+<p>The attribute name can be (not case sensitive): <code>biotype</code></p>
+<p>Possible values are:</p>
+<table>
+<thead>
+<tr>
+<th>BioType</th>
+<th>Possible attribute values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>protein_coding</td>
+<td>mrna, protein, cds, trna, start_codon, stop_codon, five_prime_utr, 5'-utr, 5'utr, 5utr, three_prime_utr, 3'-utr, 3'utr, 3utr</td>
+</tr>
+<tr>
+<td>transcribed_processed_pseudogene</td>
+<td>pseudogenic_transcript, pseudogenic_exon</td>
+</tr>
+<tr>
+<td>lincRNA</td>
+<td>ncrna</td>
+</tr>
+<tr>
+<td>rRNA</td>
+<td>rrna</td>
+</tr>
+<tr>
+<td>miRNA</td>
+<td>mirna</td>
+</tr>
+<tr>
+<td>snRNA</td>
+<td>snrna</td>
+</tr>
+<tr>
+<td>snoRNA</td>
+<td>snorna</td>
+</tr>
+<tr>
+<td>prime3_overlapping_ncrna</td>
+<td>3prime_overlapping_ncrna</td>
+</tr>
+</tbody>
+</table>
+<p>If the BioType field is not found, the GTF <strong>source</strong> field will be parsed, otherwise the feature type will be parsed.</p>
+<h3 id="gtf-attribute-genebiotype">GTF Attribute: GeneBioType</h3>
+<p>This is similar to BioType, used specifically for feature type <code>GENE</code>
+The attribute name can be (not case sensitive, in search order):</p>
+<ul>
+<li><code>gene_biotype</code></li>
+<li><code>gene_type</code></li>
+<li><code>biotype</code></li>
+</ul>
+<p>Attribute values are parsed the same maner as <code>BioType</code>.</p>
+<p>If <code>GeneBioType</code> is <code>protein_coding</code>, then the gene is assumed to be a protein coding (all transcripts within will be also considered protein coding).</p>
+<h3 id="gtf-attribute-transcriptbiotype">GTF Attribute: TranscriptBioType</h3>
+<p>This is similar to BioType, used specifically for feature type <code>TRANSCRIPT</code></p>
+<p>The attribute name can be (not case sensitive, in search order): </p>
+<ul>
+<li><code>transcript_biotype</code></li>
+<li><code>transcript_type</code></li>
+<li><code>biotype</code></li>
+</ul>
+<p>Attribute values are parsed the same maner as <code>BioType</code>.</p>
+<p>If <code>TranscriptBioType</code> is <code>protein_coding</code>, then the transcript is assumed to be a protein coding transcript.</p>
+<h2 id="gff">GFF</h2>
+<p>SnpEff treats GFF files the same way as GTF files.</p>
+<p>The GFF format is more flexible / lax than GTF.
+Unfortunately, this extra flexibility also means that it is difficult to find GFF files that fulfill the requirements to build a genomic database, as many people add the information in different ways.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Generally GTF files are preferred to build databases</p>
+</div>
+<p><a href="http://gmod.org/wiki/GFF3">GFF3</a> is the currently supported version, the old GFF2 format is <a href="http://gmod.org/wiki/GFF2">deprecated</a></p>
+<h3 id="gff-file-name">GFF File name</h3>
+<p>SnpEff expects the GFF file to be located at </p>
+<pre><code>$SNPEFF_HOME/data/GENOME_NAME/genes.gff
+</code></pre>
+<p>where:</p>
+<ul>
+<li><code>$SNPEFF_HOME</code> is the directory where SnpEff is installed (usually <code>$HOME/snpEff</code>)</li>
+<li><code>GENOME_NAME</code> is the genome name of the genome you are trying to build, which MUST match the name you added in the config file <code>snpEff.config</code></li>
+</ul>
+<p>Note: The file name can be <code>genes.gff.gz</code> if it's compressed using <code>gzip</code>. </p>
+<h3 id="gtf-lines-and-fields">GTF lines and fields</h3>
+<p>GFF lines and fields are very similar to GTF ones.
+The main difference is that the attributes field is formatted as semi-colon separated <code>key=value</code> pairs (in GTF <code>key</code> and <code>value</code> are separated by a space instead of an <code>=</code> sign).</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Other than the minor difference in attributes formatting, SnpEff parses and interprets all the fields and attributes exactly the same way as in GTF files.</p>
+</div>
+<h3 id="gff-genome-sequence">GFF genome sequence</h3>
+<p>GFF files can have the reference genome sequence in the same file.
+After a special comment <code>##FASTA</code> you can concatenate the whole genome FASTA file.
+For example (see <a href="http://gmod.org/wiki/GFF3#GFF3_Sequence_Section">GFF3 Sequence Section</a>):</p>
+<pre><code>##gff-version 3
+ctg123 . exon            1300  1500  .  +  .  ID=exon00001
+ctg123 . exon            1050  1500  .  +  .  ID=exon00002
+ctg123 . exon            3000  3902  .  +  .  ID=exon00003
+ctg123 . exon            5000  5500  .  +  .  ID=exon00004
+ctg123 . exon            7000  9000  .  +  .  ID=exon00005
+##FASTA
+&gt;ctg123
+cttctgggcgtacccgattctcggagaacttgccgcaccattccgccttg
+tgttcattgctgcctgcatgttcattgtctacctcggctacgtgtggcta
+tctttcctcggtgccctcgtgcacggagtcgagaaaccaaagaacaaaaa
+aagaaattaaaatatttattttgctgtggtttttgatgtgtgttttttat
+aatgatttttgatgtgaccaattgtacttttcctttaaatgaaatgtaat
+cttaaatgtatttccgacgaattcgaggcctgaaaagtgtgacgccattc
+...
+</code></pre>
+<p>This makes it easier to distribute the genome reference toghether with the genome annotations in one file.</p>
                 
               
               
@@ -1370,7 +1869,7 @@ AC002472.13 ENSG00000187905 ENST00000442047 protein_coding  0   1   6   1   0   
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../se_additionalann/" title="Additional annotations" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../se_build_db/" title="Building databases" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -1379,19 +1878,19 @@ AC002472.13 ENSG00000187905 ENST00000442047 protein_coding  0   1   6   1   0   
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Additional annotations
+                Building databases
               </div>
             </div>
           </a>
         
         
-          <a href="../se_troubleshooting/" title="Troubleshooting" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../se_build_reg/" title="Building databases. Regulatory and Non-coding" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Troubleshooting
+                Building databases. Regulatory and Non-coding
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

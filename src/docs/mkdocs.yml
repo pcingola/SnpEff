@@ -25,6 +25,7 @@ theme:
 markdown_extensions:
   - admonition
   - attr_list
+  - tables
 
 extra:
   social:
@@ -52,8 +53,9 @@ nav:
      - Additional annotations: se_additionalann.md
      - Output summary files: se_outputsummary.md
      - Troubleshooting: se_troubleshooting.md
-     - Building databases: se_buildingdb.md
-     - Building databases. Regulatory and Non-coding: se_buildingreg.md
+     - Building databases: se_build_db.md
+     - Build databses. GTF / GFF details: se_build_db_gff_gtf.md
+     - Building databases. Regulatory and Non-coding: se_build_reg.md
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
      - Human Genomes: se_human_genomes.md

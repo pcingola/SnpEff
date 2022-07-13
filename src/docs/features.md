@@ -135,7 +135,7 @@ Features by version
 * Revision "2.1a" : Multi-thread race condition solved.
 * **Note** If you are using **hg19**, it is recommended to download the latest database (due to improved RefSeq parsing in 2.1b).
 * Added multi-threaded support (command line option '-t').
-* GenBank support for building databases. See details [here](se_buildingdb.md#option-4-building-a-database-from-genbank-files).
+* GenBank support for building databases. See details [here](se_build_db.md#option-4-building-a-database-from-genbank-files).
 * Config file simplified
 * E.Coli database added
 * Galaxy download database option added.

@@ -98,7 +98,7 @@ Please, don't be frustrated if I tell you I cannot implement your suggestion / i
 ## Asking for new database / genome
 
 I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).
-Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail [in the documentation](se_buildingdb.md).
+Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail [in the documentation](se_build_db.md).
 If you are unable to build the database, I can try to help you out. Please, create issue in repository: <https://github.com/pcingola/SnpEff>.
 
 In order to do so, I need you to send me the following information:
