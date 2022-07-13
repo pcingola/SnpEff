@@ -146,22 +146,19 @@ public class Config implements Serializable, Iterable<String> {
      * Extract and create codon tables
      */
     void createCodonTables(String genomeId, Properties properties) {
-        //---
         // Read codon tables
-        //---
         for (Object k : properties.keySet()) {
             String key = k.toString().trim();
             if (key.startsWith(KEY_CODON_PREFIX)) {
                 String name = key.substring(KEY_CODON_PREFIX.length());
                 String table = properties.getProperty(key);
+                if (debug) Log.debug("Reading codon table '" + name + "'");
                 CodonTable codonTable = new CodonTable(name, table);
                 CodonTables.getInstance().add(codonTable);
             }
         }
 
-        //---
         // Assign codon tables for different genome+chromosome
-        //---
         for (Object key : properties.keySet()) {
             String keyStr = key.toString();
             if (keyStr.endsWith(KEY_CODONTABLE_SUFIX) && keyStr.startsWith(genomeId + ".")) {
@@ -187,10 +184,13 @@ public class Config implements Serializable, Iterable<String> {
                     // Find chromosome
                     Chromosome chr = gen.getOrCreateChromosome(chromo);
 
+                    Log.info("Codon table '" + codonTableName + "' assigned to chromosome '" + chr + "'");
+
                     // Everything seems to be OK, go on
                     CodonTables.getInstance().set(genomeById.get(genomeId), chr, codonTable);
                 } else {
                     // Set genome-wide chromosome table
+                    Log.info("Codon table '" + codonTableName + "' for genome '" + genomeId + "'");
                     CodonTables.getInstance().set(genomeById.get(genomeId), codonTable);
                 }
             }
