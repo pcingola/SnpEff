@@ -50,7 +50,7 @@ chr1    ensembl  UTR           10474950        10474966        .       +       .
 chr1    ensembl  UTR           10629985        10630758        .       +       .       transcript_id "ENST00000356607.9"; 
 ```
 
-For a more detailed example, check ENSEMBL's GTF files, for instance [this one for GRCh38.107](http://ftp.ensembl.org/pub/release-107/gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz)(the human genome)
+For a more detailed example, check ENSEMBL's GTF files, for instance [this one for GRCh38.107](http://ftp.ensembl.org/pub/release-107/gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz) (the human genome)
 ## GTF format details
 
 The full GTF format specification is beyond the scope of this section, and it is assumed you are familiar with it.
