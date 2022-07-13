@@ -198,7 +198,12 @@ The attribute name can be (not case sensitive, in search order):
 - `db_xref`
 - `name`
 
-GeneId value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make is unique.
+If none is available, SnpEff will generate an ID as 
+```
+feature + "_" + chromosomeName + "_" + start + "_" + end
+```
+
+where `feature` is the parse "Feature type" .
 
 ### GTF Attribute: ParentId
 
@@ -213,6 +218,15 @@ The attribute name can be (not case sensitive, in search order):
     It is a common mistake in some GTF / GFF files to add or remove some characters.
     If the IDs don't match, the GTF/GFF file is invalid for SnpEff.
 
+
+### GTF Attribute: GeneId
+
+The attribute name can be (not case sensitive, in search order):
+
+- `gene_id`
+- `id` (if feature type is `GENE`)
+
+`GeneId` value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make is unique.
 
 ### GTF Attribute: TranscriptId
 
