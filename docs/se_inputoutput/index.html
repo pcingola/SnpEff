@@ -575,6 +575,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#functional-class" class="md-nav__link">
+    Functional class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#loss-of-function-lof-and-nonsense-mediated-decay-nmd-predictions" class="md-nav__link">
     Loss of function (LOF) and nonsense-mediated decay (NMD) predictions
   </a>
@@ -1317,6 +1324,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#functional-class" class="md-nav__link">
+    Functional class
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#loss-of-function-lof-and-nonsense-mediated-decay-nmd-predictions" class="md-nav__link">
     Loss of function (LOF) and nonsense-mediated decay (NMD) predictions
   </a>
@@ -1634,7 +1648,7 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 </tr>
 <tr>
 <td>Gene_Coding</td>
-<td><code>[CODING | NON_CODING]</code>. This field is 'CODING' if any transcript of the gene is marked as protein coding.</td>
+<td><code>[CODING                                                                                            | NON_CODING]</code>. This field is 'CODING' if any transcript of the gene is marked as protein coding.</td>
 </tr>
 <tr>
 <td>Transcript_ID</td>
@@ -2138,6 +2152,31 @@ Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <c
 <td>MODIFIER</td>
 <td>Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact.</td>
 <td>exon_variant, downstream_gene_variant</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functional-class">Functional class</h3>
+<p>When a variant is a single nucleotide (SNV) in a protein coding transcript, SnpEff will inferr the "Functional class".</p>
+<p>Functional class can be, which is inferred as:</p>
+<table>
+<thead>
+<tr>
+<th>Functional Class</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SILENT</td>
+<td>The condon remains the same after the variant change</td>
+</tr>
+<tr>
+<td>MISSENSE</td>
+<td>The codon changes after the variant change</td>
+</tr>
+<tr>
+<td>NONSENSE</td>
+<td>The codon changed into a STOP codon</td>
 </tr>
 </tbody>
 </table>
