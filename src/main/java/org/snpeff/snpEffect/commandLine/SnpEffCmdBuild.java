@@ -200,7 +200,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
             // It is an argument?
             if (isOpt(arg)) {
-
                 switch (arg.toLowerCase()) {
                     case "-gff3":
                         geneDatabaseFormat = GeneDatabaseFormat.GFF3;

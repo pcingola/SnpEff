@@ -892,7 +892,6 @@ public class SnpEff implements CommandLine {
 			// These options are available for allow all commands
 			// Is it a command line option?
 			if (isOpt(arg)) {
-
 				switch (arg.toLowerCase()) {
 				case "-c":
 				case "-config":
