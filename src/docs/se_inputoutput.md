@@ -360,7 +360,7 @@ be paid in these cases.
 
 ### Details about Protein interaction effects
 
-Protein interactions are calculated from [PDB](http://www.rcsb.org/). There are two main types of interactions:
+Protein interactions are calculated from [PDB](http://www.rcsb.org/) or [AlphaFold](https://alphafold.ebi.ac.uk/download). There are two main types of interactions:
 
 * **protein_protein_contact:** These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
   in different proteins that have atoms closer than 3 Angstrom from each other.

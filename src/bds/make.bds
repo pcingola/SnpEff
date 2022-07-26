@@ -9,7 +9,6 @@
 
 # Command line options
 help Build and test options
-bundleLists			:= false		help Create bundle lists and config entries. OBSOLETE
 createConfig		:= false		help Create config file
 createDocs			:= false		help Create documentation web pages from markdown
 db					:= false		help Build databases
@@ -179,28 +178,6 @@ void build() {
 
 	println("Building SnpEff & SnpSift")
 	sys ./scripts_build/make.sh
-}
-
-#-------------------------------------------------------------------------------
-# Build bundle lists
-#-------------------------------------------------------------------------------
-void buildBundleLists() {
-	println "Make bundle lists:"
-
-	for( string bundle : bundles ) {
-		conf := "config/snpEff.bundles.$bundle\.config"
-
-		if( conf.exists() ) {
-			print "Config file '$conf' exists, nothing done\n"
-		} else {
-			println "Creating bundles '$bundle' -> '$conf'"
-			sys cat config/snpEff.$bundle\.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle\.genomes.txt
-			sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle\.genomes.txt $bundle > $conf
-		}
-	}
-
-	# We must rebuild config file
-	buildConfig()
 }
 
 #-------------------------------------------------------------------------------
@@ -878,7 +855,6 @@ void zipDbs() {
 log("Building")
 
 if( args.isEmpty() )			build()										# No arguments? Build (create JAR files)
-if( bundleLists )				buildBundleLists()							# Create bundle list and config files
 if( createConfig )				buildConfig()								# Create config file
 if( createDocs )				buildDocs()									# Create documentation and web page
 if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes

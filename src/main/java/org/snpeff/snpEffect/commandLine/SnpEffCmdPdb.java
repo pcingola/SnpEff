@@ -22,6 +22,11 @@ import java.util.zip.GZIPOutputStream;
  * <p>
  * References: http://biojava.org/wiki/BioJava:CookBook:PDB:read
  *
+ *
+ * TODO: Change command from 'pdb' to 'buildProtein'
+ * TODO: Change DEFAULT_PDB_DIR to DEFAULT_PROTEIN_DIR
+ * TODO: Change DEFAULT_PDB_DIR to DEFAULT_PROTEIN_DIR
+ *
  * @author pcingola
  */
 public class SnpEffCmdPdb extends SnpEff {
@@ -38,8 +43,7 @@ public class SnpEffCmdPdb extends SnpEff {
 
     public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
     public static final double DEFAULT_MAX_MISMATCH_RATE = 0.1;
-    public static final int DEFAULT_PDB_MIN_AA_SEPARATION = 20; // Number of AA of distance within a sequence to
-    // consider them for distance analysis
+    public static final int DEFAULT_PDB_MIN_AA_SEPARATION = 20; // Number of AA of distance within a sequence to consider them for distance analysis
     public static final String DEFAULT_PDB_ORGANISM_COMMON = "HUMAN"; // PDB organism
     public static final String DEFAULT_PDB_ORGANISM_SCIENTIFIC = "HOMO SAPIENS";
     public static final double DEFAULT_PDB_RESOLUTION = 3.0; // PDB file resolution (in Angstrom)
