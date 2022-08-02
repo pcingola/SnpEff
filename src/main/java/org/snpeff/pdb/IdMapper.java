@@ -12,15 +12,13 @@ import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
 /**
- * Map IDs
+ * Map protein ID to transcript ID and vice versa
  *
- * @author pcingola
  */
 public class IdMapper {
 
 	boolean verbose;
 	int count;
-
 	AutoHashMap<String, ArrayList<IdMapperEntry>> byTrId, byPdbId;
 	HashSet<IdMapperEntry> entries;
 
@@ -96,6 +94,12 @@ public class IdMapper {
 
 	/**
 	 * Parse a line and add it to this map
+	 *
+	 * File format:
+	 *     proteinID \t transcriptID
+	 *
+	 * 	proteinId: The protein ID used in the protein files (e.g. pdbID, uniprotID, etc.)
+	 * 	transcriptId: The transcript ID from the genomic file (e.g. ENSEMBL transcript iD, RefSeq ID, etc.)
 	 */
 	void parseLine(String line) {
 		String fields[] = line.split("\t");
@@ -105,13 +109,6 @@ public class IdMapper {
 			add(ime);
 			count++;
 		}
-
-		if (fields.length > 2 && !fields[2].isEmpty()) {
-			IdMapperEntry ime = new IdMapperEntry(fields[0], fields[2]);
-			add(ime);
-			count++;
-		}
-
 	}
 
 	public void setVerbose(boolean verbose) {

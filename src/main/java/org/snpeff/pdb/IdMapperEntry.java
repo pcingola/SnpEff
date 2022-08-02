@@ -7,7 +7,6 @@ package org.snpeff.pdb;
  */
 public class IdMapperEntry implements Cloneable, Comparable<IdMapperEntry> {
 
-	//public String geneId, trId, geneName, refSeqId, pdbId, pdbChainId;
 	public String trId;
 	public String pdbId, pdbChainId;
 	public int pdbAaLen, trAaLen;

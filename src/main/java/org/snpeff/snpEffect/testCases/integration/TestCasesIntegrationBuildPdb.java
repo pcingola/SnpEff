@@ -15,7 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 
 	/**
-	 * Interaction within protein using PDB entry '1A12'
+	 * Interaction within protein using PDB entry '1A12' (Uniprot 'P18754')
+	 *
+	 * PDB Entry https://www.rcsb.org/structure/1a12
+	 * Uniprot entry: https://www.uniprot.org/uniprotkb/P18754/entry
 	 */
 	@Test
 	public void test_01() {
@@ -24,8 +27,9 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Command line arguments
 		String genome = "testHg19Pdb";
 		String pdbDir = path("pdb");
-		String idmap = path("pdb") + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
-		String args[] = { "-pdbDir", pdbDir, "-idmap", idmap, genome };
+		String idmap = path("pdb") + "/idMap_pdbId_refseqId.txt.gz";
+		Log.debug("idMap: " + idmap);
+		String args[] = {"-pdbDir", pdbDir, "-idmap", idmap, genome};
 
 		// Create command
 		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
@@ -49,10 +53,10 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 	 * Interaction between two proteins
 	 * PDB entry 4OVU should have an interaction between chains 'A'
 	 * and 'B' (Min distance :2.45 Angstrom)
-	 *
-	 *  	AA.pos	AA		chr:pos			transcript
-	 *  	22		E		3:178916679		NM_006218.2
-	 *  	533		R		5:67591006		NM_181523.2
+	 * <p>
+	 * AA.pos	AA		chr:pos			transcript
+	 * 22		E		3:178916679		NM_006218.2
+	 * 533		R		5:67591006		NM_181523.2
 	 */
 	@Test
 	public void test_02() {
@@ -61,8 +65,8 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Command line arguments
 		String genome = "testHg19Pdb";
 		String pdbDir = path("pdb");
-		String idmap = path("pdb") + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
-		String args[] = { "-pdbDir", pdbDir, "-idmap", idmap, genome };
+		String idmap = path("pdb") + "/idMap_pdbId_refseqId.txt.gz";
+		String args[] = {"-pdbDir", pdbDir, "-idmap", idmap, genome};
 
 		// Create command
 		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
@@ -85,5 +89,9 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		}
 
 		assertTrue(ok, "Interaction not found!");
+	}
+
+	public void test_03_build_alphafold() {
+		assertTrue(false, "UNIMPLEMENTED!!!");
 	}
 }

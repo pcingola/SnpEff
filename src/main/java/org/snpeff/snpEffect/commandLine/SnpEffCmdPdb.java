@@ -22,25 +22,19 @@ import java.util.zip.GZIPOutputStream;
  * <p>
  * References: http://biojava.org/wiki/BioJava:CookBook:PDB:read
  *
- *
- * TODO: Change command from 'pdb' to 'buildProtein'
- * TODO: Change DEFAULT_PDB_DIR to DEFAULT_PROTEIN_DIR
- * TODO: Change DEFAULT_PDB_DIR to DEFAULT_PROTEIN_DIR
- *
  * @author pcingola
  */
 public class SnpEffCmdPdb extends SnpEff {
 
     public static final String DEFAULT_PDB_DIR = "db/pdb";
     public static final String DEFAULT_ID_MAP_FILE = DEFAULT_PDB_DIR + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
-    public static final String DEFAULT_INTERACT_FILE = DEFAULT_PDB_DIR + "/pdbCompoundLines.txt";
+    public static final String PDB_ENT_EXT = ".pdb";
+    public static final String PDB_ENT_EXT_GZ = ".pdb.gz";
     public static final String PDB_EXT = ".ent";
     public static final String PDB_EXT_GZ = ".ent.gz";
-    public static final String[] PDB_EXTS = {PDB_EXT_GZ, PDB_EXT};
+    public static final String[] PDB_EXTS = {PDB_ENT_EXT_GZ, PDB_ENT_EXT, PDB_EXT_GZ, PDB_EXT};
     public static final String PROTEIN_INTERACTION_FILE = "interactions.bin";
-
     public static final String UNIPROT_DATABASE = "UNP";
-
     public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
     public static final double DEFAULT_MAX_MISMATCH_RATE = 0.1;
     public static final int DEFAULT_PDB_MIN_AA_SEPARATION = 20; // Number of AA of distance within a sequence to consider them for distance analysis
@@ -48,10 +42,7 @@ public class SnpEffCmdPdb extends SnpEff {
     public static final String DEFAULT_PDB_ORGANISM_SCIENTIFIC = "HOMO SAPIENS";
     public static final double DEFAULT_PDB_RESOLUTION = 3.0; // PDB file resolution (in Angstrom)
 
-    public static final ArrayList<DistanceResult> EMPTY_DISTANCES = new ArrayList<>();
-
     String idMapFile = DEFAULT_ID_MAP_FILE;
-    String interactListFile = DEFAULT_ID_MAP_FILE;
     String pdbDir = DEFAULT_PDB_DIR;
     String pdbOrganismCommon = DEFAULT_PDB_ORGANISM_COMMON; // PDB organism "common name"
     String pdbOrganismScientific = DEFAULT_PDB_ORGANISM_SCIENTIFIC; // PDB organism "scientific name"
@@ -62,10 +53,7 @@ public class SnpEffCmdPdb extends SnpEff {
     int aaMinSeparation = DEFAULT_PDB_MIN_AA_SEPARATION;
     int countFilesPass, countMapError, countMapOk;
     IdMapper idMapper;
-    IdMapper idMapperConfirmed;
     PDBFileReader pdbreader;
-    Set<String> confirmedPdbChainsMappings; // A Set of all 'pbdId:chainId' mappings that have been confirmed with the
-    // reference genome
     Map<String, Transcript> trancriptById; // Transcripts by id (trId without version number)
     Collection<String> pdbFileNames; // PDB files to porcess
     BufferedWriter outpufFile;
@@ -83,28 +71,14 @@ public class SnpEffCmdPdb extends SnpEff {
      * @return true if <code>s1</code> is not null and contains <code>s2</code>
      */
     private static boolean contains(String s1, String s2) {
-        return s1 != null && s1.indexOf(s2) >= 0;
-    }
-
-    /**
-     * Get AA sequence
-     */
-    String aaSequence(Chain chain) {
-        // AA sequence
-        List<AminoAcid> aas = aminoAcids(chain);
-        StringBuilder sb = new StringBuilder();
-
-        for (AminoAcid aa1 : aas)
-            sb.append(aa1.getAminoType());
-
-        return sb.toString();
+        return s1 != null && s1.contains(s2);
     }
 
     /**
      * Get all AAs in a chain
      */
     List<AminoAcid> aminoAcids(Chain chain) {
-        ArrayList<AminoAcid> aas = new ArrayList<AminoAcid>();
+        ArrayList<AminoAcid> aas = new ArrayList<>();
         for (Group group : chain.getAtomGroups())
             if (group instanceof AminoAcid) aas.add((AminoAcid) group);
         return aas;
@@ -114,7 +88,7 @@ public class SnpEffCmdPdb extends SnpEff {
      * Get NIPROT IDs from PDB structure
      */
     Map<String, String> chainUniprotIds(Structure pdbStruct) {
-        Map<String, String> chain2uniproId = new HashMap<String, String>();
+        Map<String, String> chain2uniproId = new HashMap<>();
         for (DBRef dbref : pdbStruct.getDBRefs()) {
             if (debug)
                 Log.debug("PDB_DBREF\tchain:" + dbref.getChainName() + "\tdb: " + dbref.getDatabase() + "\tID: " + dbref.getDbAccession());
@@ -192,7 +166,7 @@ public class SnpEffCmdPdb extends SnpEff {
      */
     List<IdMapperEntry> checkSequencePdbGenome(Structure pdbStruct, Set<String> trIds) {
         // Check idMaps. Only return those that match
-        ArrayList<IdMapperEntry> list = new ArrayList<IdMapperEntry>();
+        ArrayList<IdMapperEntry> list = new ArrayList<>();
         for (String trId : trIds)
             if (filterTranscript(trId)) {
                 list.addAll(checkSequencePdbGenome(pdbStruct, trId));
@@ -272,12 +246,29 @@ public class SnpEffCmdPdb extends SnpEff {
 
     /**
      * Parse PDB id from PDB file name
+     *
+     * @returns: A string with a PdbId / UniprotID parsed fomr the file's name, or null if it cannot be parsed
      */
     String fileName2PdbId(String pdbFileName) {
         String base = Gpr.baseName(pdbFileName);
-        if (base.startsWith("pdb")) base = base.substring(3);
-        base = Gpr.removeExt(base, PDB_EXTS);
-        return base.toUpperCase();
+
+        // PDB style file name, e.g. "pdb7daa.ent.gz"
+        // The format is 'pdb' + PdbID + ".ent.gz"
+        if (base.startsWith("pdb")) {
+            base = base.substring(3);
+            base = Gpr.removeExt(base, PDB_EXTS);
+            return base.toUpperCase();
+        }
+
+        // ALphaFold style filename: AF-Q9Y6V0-F9-model_v2.pdb.gz
+        // The format is 'AF-' + UniprotID + "-F" + foldNumber + "-model_v" + modelVersion + ".pdb.gz"
+        if (base.startsWith("AF-")) {
+            String[] segments = base.split("-");
+            return segments[1].toUpperCase();
+        }
+
+        if (debug) Log.debug("Could not parse protein ID for file '" + pdbFileName + "', base name '" + base + "'");
+        return null;
     }
 
     /**
@@ -330,7 +321,7 @@ public class SnpEffCmdPdb extends SnpEff {
     /**
      * Analyze interacting sites in a pdb structure
      */
-    List<DistanceResult> findInteractingCompound(Structure pdbStruct, Chain chain1, Chain chain2, String trId1, String trId2) {
+    List<DistanceResult> findInteractingCompound(Chain chain1, Chain chain2, String trId1, String trId2) {
         ArrayList<DistanceResult> results = new ArrayList<>();
 
         Transcript tr1 = getTranscript(trId1);
@@ -421,10 +412,10 @@ public class SnpEffCmdPdb extends SnpEff {
         if (!dir.isDirectory()) throw new RuntimeException("No such directory '" + dir + "'");
 
         for (File f : dir.listFiles()) {
-            String fileName = f.getName();
+
             if (f.isDirectory()) {
                 list.addAll(findPdbFiles(f));
-            } else if (f.isFile() && (fileName.endsWith(PDB_EXT) || fileName.endsWith(PDB_EXT_GZ))) {
+            } else if (isPdbFile(f)) {
                 list.add(f.getAbsolutePath());
                 if (debug) Log.debug("Found PDB file: " + f.getAbsolutePath());
             }
@@ -479,13 +470,10 @@ public class SnpEffCmdPdb extends SnpEff {
     }
 
     /**
-     * Load all data
+     * Initialize SNpEff. Load all data
      */
     public void initialize() {
-        // ---
-        // Initialize SnpEff
-        // ---
-        String argsSnpEff[] = {"eff", "-c", configFile, genomeVer};
+        String[] argsSnpEff = {"eff", "-c", configFile, genomeVer};
         args = argsSnpEff;
         setGenomeVer(genomeVer);
         parseArgs(argsSnpEff);
@@ -520,15 +508,23 @@ public class SnpEffCmdPdb extends SnpEff {
                 }
             }
 
-        // ---
         // Initialize reader
-        // ---
         pdbreader = new PDBFileReader();
     }
 
     boolean isCompound(Structure pdbStruct) {
         List<EntityInfo> compounds = pdbStruct.getEntityInfos();
         return compounds != null && !compounds.isEmpty();
+    }
+
+    boolean isPdbFile(File f) {
+        String fileName = f.getName();
+        return f.isFile() && ( //
+                fileName.endsWith(PDB_ENT_EXT) //
+                        || fileName.endsWith(PDB_ENT_EXT_GZ) //
+                        || fileName.endsWith(PDB_EXT) //
+                        || fileName.endsWith(PDB_EXT_GZ) //
+        );
     }
 
     public void loadIdMapper() {
@@ -544,7 +540,7 @@ public class SnpEffCmdPdb extends SnpEff {
     void openOuptut(String outputPdbFile) {
         try {
             if (verbose) Log.info("Saving results to database file '" + outputPdbFile + "'");
-            outpufFile = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(outputPdbFile)))));
+            outpufFile = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outputPdbFile))));
             saved = new HashSet<String>();
         } catch (IOException e) {
             throw new RuntimeEOFException("Error opening output file '" + outputPdbFile + "'", e);
@@ -564,9 +560,7 @@ public class SnpEffCmdPdb extends SnpEff {
             String arg = args[i];
 
             // Is it a command line option?
-            // Note: Generic options (such as config, verbose, debug, quiet, etc.) are
-            // parsed by SnpEff class
-            // ---
+            // Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class
             if (isOpt(arg)) {
                 arg = arg.toLowerCase();
 
@@ -579,11 +573,6 @@ public class SnpEffCmdPdb extends SnpEff {
                     case "-idmap":
                         if ((i + 1) < args.length) idMapFile = args[++i];
                         else usage("Missing parameter in '-idMap'");
-                        break;
-
-                    case "-interactlist":
-                        if ((i + 1) < args.length) idMapFile = args[++i];
-                        else usage("Missing parameter in '-interactList'");
                         break;
 
                     case "-maxdist":
@@ -622,13 +611,10 @@ public class SnpEffCmdPdb extends SnpEff {
             } else if (genomeVer == null || genomeVer.isEmpty()) genomeVer = arg;
         }
 
-        // ---
         // Sanity checks
-        // ---
 
         // Check: Do we have all required parameters?
         if (genomeVer == null || genomeVer.isEmpty()) usage("Missing genomer_version parameter");
-
         if (distanceThreshold <= 0) usage("Max distance in '-maxdist' command line option must be a positive number");
         if (maxMismatchRate <= 0) usage("Max mismatch rate in '-maxErr' command line option must be a positive number");
         if (pdbResolution <= 0) usage("Resoluton in '-res' command line option must be a positive number");
@@ -647,8 +633,7 @@ public class SnpEffCmdPdb extends SnpEff {
         // Create transcript map
         createTranscriptMap();
 
-        // Map IDs and confirm that amino acid sequence matches (within certain error
-        // rate)
+        // Map IDs and confirm that amino acid sequence matches (within certain error rate)
         if (verbose) Log.info("Analyzing PDB sequences");
         pdbAnalysis();
         closeOuptut();
@@ -679,6 +664,9 @@ public class SnpEffCmdPdb extends SnpEff {
     protected void pdbAnalysis(String pdbFileName) {
         // Get Pdb ID from file name
         String pdbId = fileName2PdbId(pdbFileName);
+        if (pdbId == null) return;
+
+        if (verbose) Log.info("Analysing PDB file '" + pdbFileName + "', protein ID '" + pdbId + "'");
 
         // Find transcript IDs
         Set<String> trIds = findTranscriptIds(pdbId);
@@ -742,7 +730,7 @@ public class SnpEffCmdPdb extends SnpEff {
                     for (IdMapperEntry im2 : idMapChain2) {
                         // Don't analyze same transcript (this is done in pdbAnalysisCompoundSingle)
                         if (!im1.trId.equals(im2.trId)) {
-                            List<DistanceResult> dres = findInteractingCompound(pdbStruct, chain1, chain2, im1.trId, im2.trId);
+                            List<DistanceResult> dres = findInteractingCompound(chain1, chain2, im1.trId, im2.trId);
                             save(dres);
                         }
                     }
@@ -755,6 +743,7 @@ public class SnpEffCmdPdb extends SnpEff {
      * Interaction analysis of PDB molecules (within molecule interactions)
      */
     void pdbAnalysisSingle(Structure pdbStruct, Set<String> trIds) {
+        if (debug) Log.debug("Protein structure analysis for " + pdbStruct.getIdentifier());
         // Check that entries map to the genome
         countFilesPass++;
         List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome(pdbStruct, trIds);
@@ -789,18 +778,14 @@ public class SnpEffCmdPdb extends SnpEff {
         loadIdMapper(); // Load ID map table
         loadConfig(); // Read config file
 
-        // Open output file (save to database)
-        // Note: We do this before opening the database, because it removes
-        // old interaction files (we don't want to try to load stale or old
-        // interactions).
+        // Delete output file
+        // Note: We do this before opening the database, because we don't want to try to load the old interactions (we are rebuilding them)
         String outputPdbFile = config.getDirDataGenomeVersion() + "/" + PROTEIN_INTERACTION_FILE;
         deleteOuptut(outputPdbFile);
 
         loadDb(); // Load database
-
-        // Run analysis
-        openOuptut(outputPdbFile);
-        pdb();
+        openOuptut(outputPdbFile); // Open output (database) file
+        pdb(); // Run analysis
 
         return true;
     }
@@ -817,7 +802,6 @@ public class SnpEffCmdPdb extends SnpEff {
     void save(List<DistanceResult> distResults) {
         for (DistanceResult d : distResults)
             try {
-
                 String dstr = d.toString();
 
                 if (!saved.contains(dstr)) {
@@ -845,8 +829,6 @@ public class SnpEffCmdPdb extends SnpEff {
 
     /**
      * Show 'usage;' message and exit with an error code '-1'
-     *
-     * @param message
      */
     @Override
     public void usage(String message) {
@@ -861,7 +843,6 @@ public class SnpEffCmdPdb extends SnpEff {
         System.err.println("\nOptions:");
         System.err.println("\t-aaSep <number>                 : Minimum number of AA of separation within the sequence. Default: " + aaMinSeparation);
         System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID). Default: " + idMapFile);
-        System.err.println("\t-interactList <file>            : A file containing protein-protein interations (from PDB co-srystalzed structures). Default: " + interactListFile);
         System.err.println("\t-maxDist <number>               : Maximum distance in Angtrom for any atom in a pair of amino acids to be considered 'in contact'. Default: " + distanceThreshold);
         System.err.println("\t-maxErr <number>                : Maximum amino acid sequence differece between PDB file and genome. Default: " + maxMismatchRate);
         System.err.println("\t-org <name>                     : Organism 'common name'. Default: " + pdbOrganismCommon);

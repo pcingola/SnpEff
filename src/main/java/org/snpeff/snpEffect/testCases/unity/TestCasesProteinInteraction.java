@@ -82,4 +82,8 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
         assertTrue((pil.getStart() == 900) && (pil.getEnd() == 900), "Interactions coordinates do not match: " + pil);
     }
 
+    public void test_03_split_codon_base_alphafold() {
+        Log.debug("Test");
+        assertTrue(false, "UNIMPLEMENTED!!!");
+    }
 }
