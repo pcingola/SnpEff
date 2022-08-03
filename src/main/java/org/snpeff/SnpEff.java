@@ -24,6 +24,7 @@ import org.snpeff.logStatsServer.VersionCheck;
 import org.snpeff.motif.Jaspar;
 import org.snpeff.motif.Pwm;
 import org.snpeff.pdb.DistanceResult;
+import org.snpeff.pdb.ProteinInteractions;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.ErrorWarningType;
@@ -618,7 +619,7 @@ public class SnpEff implements CommandLine {
 	 */
 	void loadInteractions() {
 		// Sanity checks
-		String intFileName = config.getDirDataGenomeVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
+		String intFileName = config.getDirDataGenomeVersion() + "/" + ProteinInteractions.PROTEIN_INTERACTION_FILE;
 		if (!Gpr.exists(intFileName)) {
 			if (debug) if (!Gpr.exists(intFileName)) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot open interactions file '" + intFileName + "'");
 			return;

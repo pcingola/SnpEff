@@ -45,6 +45,10 @@ Please check the documentation on how to [cite AlphaFold](https://alphafold.ebi.
 - The protein ID must be parsed from the file name. Currently accepted file name formats are "PDB-style" (e.g. `pdb7daa.ent.gz`, where PDBID is `7daa`) or AlphaFold-style (e.g. `AF-Q9Y6V0-F9-model_v2.pdb.gz`, where Uniprot-ID is `Q9Y6V0`)
 - The PDB file must have a resolution of at least 3 Angstrom. This value can be changed using the `-res` command line option
 
+!!! info
+    If the PDB file has a missing resolution value, or the resolution is over `99.0`, then it is assumed to be 'missing value' and not filtered.
+    for instance, AlphaFold PDB files usually don't have resolution values since they are predictions, not measurements.
+
 ## Mapping file
 
 Since SnpEff uses trasncript ID information, whereas proteins use PDB IDs (or Uniprot IDs in case of AlphaFold), we need a file to map across these different IDs.

@@ -155,7 +155,7 @@ public class Download {
             res = true;
         } catch (Exception e) {
             res = false;
-            Log.info("ERROR while connecting to " + url);
+            if (verbose) Log.info("ERROR while connecting to " + url);
             if (!maskDownloadException) throw new RuntimeException(e);
         }
 
