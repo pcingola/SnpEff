@@ -1,7 +1,6 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.jupiter.api.Test;
-import org.snpeff.align.StringDiff;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdPdb;
 import org.snpeff.util.Log;
@@ -41,7 +40,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
         // Check results for a specific interaction
         boolean ok = false;
         for (DistanceResult dr : distanceResults) {
-            ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
+            ok |= dr.proteinId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
             if (verbose) Log.debug("INTERACTION:\t" + dr);
         }
 

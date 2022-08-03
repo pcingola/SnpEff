@@ -129,10 +129,12 @@ public class PdbFile {
         if (debug) System.err.println("\tTranscript ID: " + tr.getId() + "\tProtein [" + prot.length() + "]: " + prot);
 
         // Compare sequence to each AA-Chain
-        StringBuilder sb = new StringBuilder();
+        StringBuilder protSeq = new StringBuilder();
+        StringBuilder trSeq = new StringBuilder();
+        StringBuilder diff = new StringBuilder();
         int countMatch = 0, countMismatch = 0;
 
-        // Count differences
+        // Count differences and create 'difference' string
         for (Group group : chain.getAtomGroups())
             if (group instanceof AminoAcid) {
                 AminoAcid aa = (AminoAcid) group;
@@ -142,16 +144,28 @@ public class PdbFile {
                 char aaLetter = aa.getChemComp().getOneLetterCode().charAt(0);
                 if (prot.length() > aaPos) {
                     char trAaLetter = prot.charAt(aaPos);
-                    if (aaLetter == trAaLetter) countMatch++;
-                    else countMismatch++;
-                } else countMismatch++;
-                sb.append(aa.getChemComp().getOneLetterCode());
+                    trSeq.append(trAaLetter);
+                    if (aaLetter == trAaLetter) {
+                        countMatch++;
+                        diff.append(' ');
+                    } else {
+                        countMismatch++;
+                        diff.append('|');
+                    }
+                } else {
+                    countMismatch++;
+                }
+                protSeq.append(aa.getChemComp().getOneLetterCode());
             }
 
         // Only use mappings that have low error rate
         if (countMatch + countMismatch > 0) {
             double err = countMismatch / ((double) (countMatch + countMismatch)); // Error rate: 1.0 means 100% difference (all AA in the chain differ from what we expect)
-            if (debug) Log.debug("\tChain: " + chain.getId() + "\terror: " + err + "\t" + sb);
+            if (debug) Log.debug("\tChain: " + chain.getId() + "\terror: " + err + "\n\t" //
+                    + "protein    : " + protSeq + "\n\t" //
+                    + " diff      : " + diff + "\n\t" //
+                    + "transcript : " + trSeq //
+            );
 
             if (err < proteinInteractions.getMaxMismatchRate()) {
                 if (debug) Log.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
@@ -249,7 +263,7 @@ public class PdbFile {
             for (AminoAcid aa2 : aas2) {
                 double dmin = distanceMin(aa1, aa2);
                 if (select(dmin)) {
-                    DistanceResult dres = new DistanceResult(aa1, aa2, tr1, tr2, dmin);
+                    DistanceResult dres = new DistanceResult(proteinId, aa1, aa2, tr1, tr2, dmin);
                     if (dres.hasValidCoords()) {
                         results.add(dres);
                         proteinInteractions.incCountMapOk();
@@ -298,7 +312,7 @@ public class PdbFile {
                 double d = distanceMin(aa1, aa2);
 
                 if (select(d)) {
-                    DistanceResult dres = new DistanceResult(aa1, aa2, tr, tr, d);
+                    DistanceResult dres = new DistanceResult(proteinId, aa1, aa2, tr, tr, d);
                     if (dres.hasValidCoords()) {
                         results.add(dres);
                         proteinInteractions.incCountMapOk();
@@ -326,7 +340,7 @@ public class PdbFile {
     List<IdMapperEntry> idMapChain(Chain chain, List<IdMapperEntry> idMaps) {
         List<IdMapperEntry> idMapChain = new ArrayList<>();
         for (IdMapperEntry idmap : idMaps) {
-            Log.debug("Protein ID: " + proteinId +", chainID: " + idmap.pdbChainId + ", " + chain.getId());
+            Log.debug("Protein ID: " + proteinId + ", chainID: " + idmap.pdbChainId + ", " + chain.getId());
             if (idmap.proteinId.equals(proteinId) && idmap.pdbChainId.equals(chain.getId())) {
                 idMapChain.add(idmap);
             }

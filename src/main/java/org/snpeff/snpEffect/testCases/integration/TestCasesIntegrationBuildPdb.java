@@ -42,7 +42,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Check results for a specific interaction
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
-			ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
+			ok |= dr.proteinId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
 			if (verbose) Log.debug("INTERACTION:\t" + dr);
 		}
 
@@ -79,7 +79,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Check results
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
-			ok |= dr.pdbId.equals("4OVU") //
+			ok |= dr.proteinId.equals("4OVU") //
 					&& dr.aaPos1 == 22 //
 					&& dr.aaPos2 == 533 //
 					&& dr.trId1.equals("NM_006218.2") //
