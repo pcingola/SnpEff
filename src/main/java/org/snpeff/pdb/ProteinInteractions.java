@@ -24,7 +24,7 @@ public class ProteinInteractions {
     public static final String DEFAULT_PDB_DIR = "db/pdb";
     public static final String DEFAULT_ID_MAP_FILE = DEFAULT_PDB_DIR + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
     public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
-    public static final double DEFAULT_MAX_MISMATCH_RATE = 0.1;
+    public static final double DEFAULT_MAX_MISMATCH_RATE = 0.05; // Maximum number of mismatches accepted in a protein chain
     public static final int DEFAULT_PDB_MIN_AA_SEPARATION = 20; // Number of AA of distance within a sequence to consider them for distance analysis
     public static final String DEFAULT_PDB_ORGANISM_COMMON = "HUMAN"; // PDB organism
     public static final String DEFAULT_PDB_ORGANISM_SCIENTIFIC = "HOMO SAPIENS";
@@ -162,8 +162,8 @@ public class ProteinInteractions {
         this.aaMinSeparation = aaMinSeparation;
     }
 
-    public List<IdMapperEntry> getByProteinId(String pdbId) {
-        return idMapper.getByPdbId(pdbId);
+    public List<IdMapperEntry> getByProteinId(String proteinId) {
+        return idMapper.getByPdbId(proteinId);
     }
 
     public List<DistanceResult> getDistanceResults() {

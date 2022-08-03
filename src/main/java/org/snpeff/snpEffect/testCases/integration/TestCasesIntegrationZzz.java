@@ -1,12 +1,14 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.jupiter.api.Test;
+import org.snpeff.align.StringDiff;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdPdb;
 import org.snpeff.util.Log;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -26,7 +28,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
         String genome = "testHg19Pdb";
         String pdbDir = path("pdb");
         String idmap = path("pdb") + "/idMap_uniprotId_refSeqId.txt";
-        String args[] = { "-pdbDir", pdbDir, "-idmap", idmap, genome };
+        String args[] = {"-pdbDir", pdbDir, "-idmap", idmap, genome};
 
         // Create command
         SnpEffCmdPdb cmd = new SnpEffCmdPdb();

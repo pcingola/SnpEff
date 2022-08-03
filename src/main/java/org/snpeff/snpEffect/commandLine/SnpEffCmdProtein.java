@@ -53,52 +53,24 @@ public class SnpEffCmdProtein extends SnpEff {
 	AutoHashMap<String, List<Transcript>> trByChromo;
 	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<>();
 
-	/**
-	 * Count number of differences between strings
-	 */
-	public static int diffCount(String s1, String s2) {
-		int minLen = Math.min(s1.length(), s2.length());
-		int count = 0;
-		for (int j = 0; j < minLen; j++)
-			if (s1.charAt(j) != s2.charAt(j)) count++;
-
-		return count;
-	}
-
-	/**
-	 * Show difference between two strings
-	 */
-	public static String diffStr(String s1, String s2) {
-		// Create a string indicating differences
-		int minLen = Math.min(s1.length(), s2.length());
-		char diff[] = new char[minLen];
-		for (int j = 0; j < minLen; j++) {
-			if (s1.charAt(j) != s2.charAt(j)) {
-				diff[j] = '|';
-			} else diff[j] = ' ';
-
-		}
-		return new String(diff);
-	}
-
 	public SnpEffCmdProtein() {
 	}
 
-	public SnpEffCmdProtein(Config config) {
-		this.config = config;
-		proteinFile = config.getFileNameProteins();
-	}
+//	public SnpEffCmdProtein(Config config) {
+//		this.config = config;
+//		proteinFile = config.getFileNameProteins();
+//	}
 
 	public SnpEffCmdProtein(Config config, String proteinFile) {
 		this.config = config;
 		this.proteinFile = proteinFile;
 	}
 
-	public SnpEffCmdProtein(String genomeVer, String configFile, String proteinFile) {
-		this.configFile = configFile;
-		this.genomeVer = genomeVer;
-		this.proteinFile = proteinFile;
-	}
+//	public SnpEffCmdProtein(String genomeVer, String configFile, String proteinFile) {
+//		this.configFile = configFile;
+//		this.genomeVer = genomeVer;
+//		this.proteinFile = proteinFile;
+//	}
 
 	void add(String trId, String seq, int lineNum, boolean check) {
 		// Repeated transcript Id? => Check that Protein is the same

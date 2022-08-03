@@ -51,7 +51,7 @@ public class IdMapper {
 
 	public void add(IdMapperEntry ime) {
 		if (ime.trId != null) byTrId.getOrCreate(ime.trId).add(ime);
-		if (ime.pdbId != null) byPdbId.getOrCreate(ime.pdbId).add(ime);
+		if (ime.proteinId != null) byPdbId.getOrCreate(ime.proteinId).add(ime);
 		entries.add(ime);
 	}
 

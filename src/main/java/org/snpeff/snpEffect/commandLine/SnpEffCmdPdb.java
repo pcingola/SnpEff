@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class SnpEffCmdPdb extends SnpEff {
 
-    ProteinInteractions pdbSet;
+    ProteinInteractions proteinInteractions;
 
     public SnpEffCmdPdb() {
     }
@@ -26,7 +26,7 @@ public class SnpEffCmdPdb extends SnpEff {
      * Get distance results. This method is used to implement test cases
      */
     public List<DistanceResult> getDistanceResults() {
-        return pdbSet.getDistanceResults();
+        return proteinInteractions.getDistanceResults();
     }
 
     /**
@@ -52,7 +52,10 @@ public class SnpEffCmdPdb extends SnpEff {
      */
     @Override
     public void parseArgs(String[] args) {
-        pdbSet = new ProteinInteractions();
+        proteinInteractions = new ProteinInteractions();
+        proteinInteractions.setVerbose(verbose);
+        proteinInteractions.setDebug(debug);
+
         if (args == null) return;
         this.args = args;
 
@@ -66,42 +69,42 @@ public class SnpEffCmdPdb extends SnpEff {
 
                 switch (arg.toLowerCase()) {
                     case "-aasep":
-                        if ((i + 1) < args.length) pdbSet.setAaMinSeparation(Gpr.parseIntSafe(args[++i]));
+                        if ((i + 1) < args.length) proteinInteractions.setAaMinSeparation(Gpr.parseIntSafe(args[++i]));
                         else usage("Missing parameter in '-aaSep'");
                         break;
 
                     case "-idmap":
-                        if ((i + 1) < args.length) pdbSet.setIdMapFile(args[++i]);
+                        if ((i + 1) < args.length) proteinInteractions.setIdMapFile(args[++i]);
                         else usage("Missing parameter in '-idMap'");
                         break;
 
                     case "-maxdist":
-                        if ((i + 1) < args.length) pdbSet.setDistanceThreshold(Gpr.parseDoubleSafe(args[++i]));
+                        if ((i + 1) < args.length) proteinInteractions.setDistanceThreshold(Gpr.parseDoubleSafe(args[++i]));
                         else usage("Missing parameter in '-maxDist'");
                         break;
 
                     case "-maxerr":
-                        if ((i + 1) < args.length) pdbSet.setMaxMismatchRate(Gpr.parseDoubleSafe(args[++i]));
+                        if ((i + 1) < args.length) proteinInteractions.setMaxMismatchRate(Gpr.parseDoubleSafe(args[++i]));
                         else usage("Missing parameter: '-maxErr'");
                         break;
 
                     case "-org":
-                        if ((i + 1) < args.length) pdbSet.setPdbOrganismCommon(args[++i].toUpperCase());
+                        if ((i + 1) < args.length) proteinInteractions.setPdbOrganismCommon(args[++i].toUpperCase());
                         else usage("Missing parameter in '-org'");
                         break;
 
                     case "-orgscientific":
-                        if ((i + 1) < args.length) pdbSet.setPdbOrganismScientific(args[++i].toUpperCase());
+                        if ((i + 1) < args.length) proteinInteractions.setPdbOrganismScientific(args[++i].toUpperCase());
                         else usage("Missing parameter in '-orgScientific'");
                         break;
 
                     case "-pdbdir":
-                        if ((i + 1) < args.length) pdbSet.setPdbDir(args[++i]);
+                        if ((i + 1) < args.length) proteinInteractions.setPdbDir(args[++i]);
                         else usage("Missing parameter in '-pdbDir'");
                         break;
 
                     case "-res":
-                        if ((i + 1) < args.length) pdbSet.setPdbResolution(Gpr.parseDoubleSafe(args[++i]));
+                        if ((i + 1) < args.length) proteinInteractions.setPdbResolution(Gpr.parseDoubleSafe(args[++i]));
                         else usage("Missing parameter: '-res'");
                         break;
 
@@ -110,13 +113,13 @@ public class SnpEffCmdPdb extends SnpEff {
                 }
             } else if (genomeVer == null || genomeVer.isEmpty()) {
                 genomeVer = arg;
-                pdbSet.setGenomeVer(genomeVer);
+                proteinInteractions.setGenomeVer(genomeVer);
             }
         }
 
 
         // Sanity check. Do we have all required parameters?
-        var check = pdbSet.checkParams();
+        var check = proteinInteractions.checkParams();
         if (check != null) usage(check);
     }
 
@@ -128,9 +131,9 @@ public class SnpEffCmdPdb extends SnpEff {
 
     public boolean run(boolean storeResults) {
         loadConfig(); // Read config file
-        pdbSet.initialize(config);
+        proteinInteractions.initialize(config);
         loadDb();
-        pdbSet.run(storeResults);
+        proteinInteractions.run(storeResults);
         return true;
     }
 
@@ -148,14 +151,14 @@ public class SnpEffCmdPdb extends SnpEff {
         System.err.println("Usage: snpEff pdb [options] genome_version");
         System.err.println("\n");
         System.err.println("\nOptions:");
-        System.err.println("\t-aaSep <number>                 : Minimum number of AA of separation within the sequence. Default: " + pdbSet.getAaMinSeparation());
-        System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID). Default: " + pdbSet.getIdMapFile());
-        System.err.println("\t-maxDist <number>               : Maximum distance in Angstrom for any atom in a pair of amino acids to be considered 'in contact'. Default: " + pdbSet.getDistanceThreshold());
-        System.err.println("\t-maxErr <number>                : Maximum amino acid sequence difference between PDB file and genome. Default: " + pdbSet.getMaxMismatchRate());
-        System.err.println("\t-org <name>                     : Organism 'common name'. Default: " + pdbSet.getPdbOrganismCommon());
-        System.err.println("\t-orgScientific <name>           : Organism 'scientific name'. Default: " + pdbSet.getPdbOrganismScientific());
+        System.err.println("\t-aaSep <number>                 : Minimum number of AA of separation within the sequence. Default: " + proteinInteractions.getAaMinSeparation());
+        System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID). Default: " + proteinInteractions.getIdMapFile());
+        System.err.println("\t-maxDist <number>               : Maximum distance in Angstrom for any atom in a pair of amino acids to be considered 'in contact'. Default: " + proteinInteractions.getDistanceThreshold());
+        System.err.println("\t-maxErr <number>                : Maximum amino acid sequence difference between PDB file and genome. Default: " + proteinInteractions.getMaxMismatchRate());
+        System.err.println("\t-org <name>                     : Organism 'common name'. Default: " + proteinInteractions.getPdbOrganismCommon());
+        System.err.println("\t-orgScientific <name>           : Organism 'scientific name'. Default: " + proteinInteractions.getPdbOrganismScientific());
         System.err.println("\t-pdbDir <path>                  : Path to PDB files (files in all sub-dirs are scanned).");
-        System.err.println("\t-res <number>                   : Maximum PDB file resolution. Default: " + pdbSet.getPdbResolution());
+        System.err.println("\t-res <number>                   : Maximum PDB file resolution. Default: " + proteinInteractions.getPdbResolution());
 
         usageGenericAndDb();
 

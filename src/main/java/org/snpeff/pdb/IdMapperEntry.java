@@ -8,12 +8,12 @@ package org.snpeff.pdb;
 public class IdMapperEntry implements Cloneable, Comparable<IdMapperEntry> {
 
 	public String trId;
-	public String pdbId, pdbChainId;
+	public String proteinId, pdbChainId;
 	public int pdbAaLen, trAaLen;
 
-	public IdMapperEntry(String pdbId, String trId) {
+	public IdMapperEntry(String proteinId, String trId) {
 		this.trId = trId;
-		this.pdbId = pdbId;
+		this.proteinId = proteinId;
 		pdbChainId = "";
 		pdbAaLen = trAaLen = 0;
 	}
@@ -38,7 +38,7 @@ public class IdMapperEntry implements Cloneable, Comparable<IdMapperEntry> {
 		int cmp = trId.compareTo(o.trId);
 		if (cmp != 0) return cmp;
 
-		cmp = pdbId.compareTo(o.pdbId);
+		cmp = proteinId.compareTo(o.proteinId);
 		if (cmp != 0) return cmp;
 
 		cmp = pdbChainId.compareTo(o.pdbChainId);
@@ -47,7 +47,7 @@ public class IdMapperEntry implements Cloneable, Comparable<IdMapperEntry> {
 
 	@Override
 	public String toString() {
-		return pdbId //
+		return proteinId //
 				+ "\t" + trId //
 				+ "\t" + pdbChainId //
 				+ "\t" + pdbAaLen //

@@ -38,15 +38,16 @@ public class PdbFile {
     boolean debug, verbose;
     String fileName;
     File file;
-    ProteinInteractions pdbSet;
+    String proteinId;
+    ProteinInteractions proteinInteractions;
     Structure pdbStructure;
     Set<String> trIds;
 
-    public PdbFile(ProteinInteractions pdbSet, String fileName) {
-        this.pdbSet = pdbSet;
+    public PdbFile(ProteinInteractions proteinInteractions, String fileName) {
+        this.proteinInteractions = proteinInteractions;
         this.fileName = fileName;
-        this.debug = pdbSet.isDebug();
-        this.verbose = pdbSet.isVerbose();
+        this.debug = proteinInteractions.isDebug();
+        this.verbose = proteinInteractions.isVerbose();
     }
 
     /**
@@ -79,7 +80,7 @@ public class PdbFile {
         // Check idMaps. Only return those that match
         ArrayList<IdMapperEntry> list = new ArrayList<>();
         for (String trId : trIds)
-            if (pdbSet.filterTranscript(trId)) {
+            if (proteinInteractions.filterTranscript(trId)) {
                 list.addAll(checkSequencePdbGenome(trId));
             }
 
@@ -93,9 +94,8 @@ public class PdbFile {
      * transcript)
      */
     List<IdMapperEntry> checkSequencePdbGenome(String trId) {
-        String pdbId = pdbStructure.getPDBHeader().getPdbId().toString();
-        if (debug) Log.debug("\nChecking '" + trId + "'\t<->\t'" + pdbId + "'");
-        List<IdMapperEntry> idmapsOri = pdbSet.getByProteinId(pdbId);
+        if (debug) Log.debug("\nChecking '" + trId + "'\t<->\t'" + proteinId + "'");
+        List<IdMapperEntry> idmapsOri = proteinInteractions.getByProteinId(proteinId);
         List<IdMapperEntry> idmapsNew = new ArrayList<>();
 
         // Compare each chain in the PDB structure
@@ -119,13 +119,12 @@ public class PdbFile {
      */
     List<IdMapperEntry> checkSequencePdbGenome(Chain chain, String trId, List<IdMapperEntry> idmapsOri) {
         List<IdMapperEntry> idmapsNew = new ArrayList<>();
-        String pdbId = pdbStructure.getPDBHeader().getPdbId().toString();
 
         // Does chain pass filter criteria?
         if (!filterPdbChain(chain)) return idmapsNew;
 
         // Transcript
-        Transcript tr = pdbSet.getTranscript(trId);
+        Transcript tr = proteinInteractions.getTranscript(trId);
         String prot = tr.protein();
         if (debug) System.err.println("\tTranscript ID: " + tr.getId() + "\tProtein [" + prot.length() + "]: " + prot);
 
@@ -151,17 +150,17 @@ public class PdbFile {
 
         // Only use mappings that have low error rate
         if (countMatch + countMismatch > 0) {
-            double err = countMismatch / ((double) (countMatch + countMismatch));
+            double err = countMismatch / ((double) (countMatch + countMismatch)); // Error rate: 1.0 means 100% difference (all AA in the chain differ from what we expect)
             if (debug) Log.debug("\tChain: " + chain.getId() + "\terror: " + err + "\t" + sb);
 
-            if (err < pdbSet.getMaxMismatchRate()) {
+            if (err < proteinInteractions.getMaxMismatchRate()) {
                 if (debug) Log.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
 
                 int trAaLen = tr.protein().length();
                 int pdbAaLen = chain.getAtomGroups(GroupType.AMINOACID).size();
 
                 for (IdMapperEntry idm : idmapsOri) {
-                    if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
+                    if (trId.equals(idm.trId) && proteinId.equals(idm.proteinId)) {
                         idmapsNew.add(idm.cloneAndSet(chain.getId(), pdbAaLen, trAaLen));
                         break;
                     }
@@ -173,11 +172,11 @@ public class PdbFile {
     }
 
     /**
-     * Parse PDB id from PDB file name
+     * Parse ProteinId from PDB file name
      *
-     * @returns: A string with a PdbId / UniprotID parsed fomr the file's name, or null if it cannot be parsed
+     * @returns: A string with a proteinId (PdbId or UniprotID) parsed fomr the file's name, or null if it cannot be parsed
      */
-    public String fileName2PdbId() {
+    public String fileName2ProteinId() {
         String base = Gpr.baseName(fileName);
 
         // PDB style file name, e.g. "pdb7daa.ent.gz"
@@ -207,7 +206,7 @@ public class PdbFile {
     boolean filterPdb() {
         // Within resolution limits? => Process
         double res = pdbStructure.getPDBHeader().getResolution();
-        if (res > pdbSet.getPdbResolution() && res < PDB_RESOLUTION_UNSET) {
+        if (res > proteinInteractions.getPdbResolution() && res < PDB_RESOLUTION_UNSET) {
             if (debug) Log.debug("PDB resolution is " + res + ", ignoring file");
             return false;
         }
@@ -226,7 +225,7 @@ public class PdbFile {
     boolean filterPdbChain(Chain chain) {
         // note: Compound is replaced by EntityInfo in biojava 5.x
         for (EntityInfo entityInfo : chain.getStructure().getEntityInfos()) {
-            if (contains(entityInfo.getOrganismCommon(), pdbSet.getPdbOrganismCommon()) || contains(entityInfo.getOrganismScientific(), pdbSet.getPdbOrganismScientific())) {
+            if (contains(entityInfo.getOrganismCommon(), proteinInteractions.getPdbOrganismCommon()) || contains(entityInfo.getOrganismScientific(), proteinInteractions.getPdbOrganismScientific())) {
                 return true;
             }
         }
@@ -240,8 +239,8 @@ public class PdbFile {
     List<DistanceResult> findInteractingCompound(Chain chain1, Chain chain2, String trId1, String trId2) {
         ArrayList<DistanceResult> results = new ArrayList<>();
 
-        Transcript tr1 = pdbSet.getTranscript(trId1);
-        Transcript tr2 = pdbSet.getTranscript(trId2);
+        Transcript tr1 = proteinInteractions.getTranscript(trId1);
+        Transcript tr2 = proteinInteractions.getTranscript(trId2);
         List<AminoAcid> aas1 = aminoAcids(chain1);
         List<AminoAcid> aas2 = aminoAcids(chain2);
 
@@ -253,11 +252,11 @@ public class PdbFile {
                     DistanceResult dres = new DistanceResult(aa1, aa2, tr1, tr2, dmin);
                     if (dres.hasValidCoords()) {
                         results.add(dres);
-                        pdbSet.incCountMapOk();
+                        proteinInteractions.incCountMapOk();
                         if (debug)
-                            Log.debug(((dmin <= pdbSet.getDistanceThreshold()) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
+                            Log.debug(((dmin <= proteinInteractions.getDistanceThreshold()) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
                     } else {
-                        pdbSet.incCountMapError();
+                        proteinInteractions.incCountMapError();
                     }
                 }
             }
@@ -291,7 +290,7 @@ public class PdbFile {
         List<AminoAcid> aas = aminoAcids(chain);
 
         for (int i = 0; i < aas.size(); i++) {
-            int minj = i + pdbSet.getAaMinSeparation();
+            int minj = i + proteinInteractions.getAaMinSeparation();
 
             for (int j = minj; j < aas.size(); j++) {
                 AminoAcid aa1 = aas.get(i);
@@ -302,11 +301,11 @@ public class PdbFile {
                     DistanceResult dres = new DistanceResult(aa1, aa2, tr, tr, d);
                     if (dres.hasValidCoords()) {
                         results.add(dres);
-                        pdbSet.incCountMapOk();
+                        proteinInteractions.incCountMapOk();
                         if (debug)
-                            Log.debug(((d <= pdbSet.getDistanceThreshold()) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
+                            Log.debug(((d <= proteinInteractions.getDistanceThreshold()) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
                     } else {
-                        pdbSet.incCountMapError();
+                        proteinInteractions.incCountMapError();
                     }
                 }
             }
@@ -325,10 +324,10 @@ public class PdbFile {
      * Filter IdMaps for a specific chain
      */
     List<IdMapperEntry> idMapChain(Chain chain, List<IdMapperEntry> idMaps) {
-        String pdbId = pdbStructure.getPDBHeader().getPdbId().toString();
         List<IdMapperEntry> idMapChain = new ArrayList<>();
         for (IdMapperEntry idmap : idMaps) {
-            if (idmap.pdbId.equals(pdbId) && idmap.pdbChainId.equals(chain.getId())) {
+            Log.debug("Protein ID: " + proteinId +", chainID: " + idmap.pdbChainId + ", " + chain.getId());
+            if (idmap.proteinId.equals(proteinId) && idmap.pdbChainId.equals(chain.getId())) {
                 idMapChain.add(idmap);
             }
         }
@@ -374,16 +373,16 @@ public class PdbFile {
      * Analyze a PDB file
      */
     public void pdbAnalysis() throws IOException {
-        // Get Pdb ID from file name
-        String pdbId = fileName2PdbId();
-        if (pdbId == null) return;
+        // Get ProteinId from file name
+        proteinId = fileName2ProteinId();
+        if (proteinId == null) return;
 
-        if (verbose) Log.info("Analysing PDB file '" + fileName + "', protein ID '" + pdbId + "'");
+        if (verbose) Log.info("Analysing PDB file '" + fileName + "', protein ID '" + proteinId + "'");
 
         // Find transcript IDs
-        Set<String> trIds = pdbSet.findTranscriptIds(pdbId);
+        trIds = proteinInteractions.findTranscriptIds(proteinId);
         if (trIds == null || trIds.isEmpty()) {
-            if (debug) Log.debug("No transcript IDs found for PDB entry '" + pdbId + "'");
+            if (debug) Log.debug("No transcript IDs found for PDB entry '" + proteinId + "'");
             return;
         }
 
@@ -402,7 +401,7 @@ public class PdbFile {
      * Interaction analysis of PDB compounds (co-crystalized molecules)
      */
     void pdbAnalysisCompound() {
-        pdbSet.incCountFilesPass();
+        proteinInteractions.incCountFilesPass();
         List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome();
         if (idMapConfirmed == null || idMapConfirmed.isEmpty()) return;
 
@@ -443,7 +442,7 @@ public class PdbFile {
                         // Don't analyze same transcript (this is done in pdbAnalysisCompoundSingle)
                         if (!im1.trId.equals(im2.trId)) {
                             List<DistanceResult> dres = findInteractingCompound(chain1, chain2, im1.trId, im2.trId);
-                            pdbSet.save(dres);
+                            proteinInteractions.save(dres);
                         }
                     }
                 }
@@ -457,16 +456,16 @@ public class PdbFile {
     void pdbAnalysisSingle() {
         if (debug) Log.debug("Protein structure analysis for " + pdbStructure.getIdentifier());
         // Check that entries map to the genome
-        pdbSet.incCountFilesPass();
+        proteinInteractions.incCountFilesPass();
         List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome();
         if (idMapConfirmed == null || idMapConfirmed.isEmpty()) return;
 
         // Calculate distances
         for (IdMapperEntry idmap : idMapConfirmed) {
             // Get full transcript ID including version (version numbers are removed in the IdMap)
-            Transcript tr = pdbSet.getTranscript(idmap.trId);
+            Transcript tr = proteinInteractions.getTranscript(idmap.trId);
             List<DistanceResult> dres = findInteractingSingle(tr);
-            pdbSet.save(dres);
+            proteinInteractions.save(dres);
         }
     }
 
@@ -474,10 +473,10 @@ public class PdbFile {
      * Should this pair of amino acids be selected?
      */
     boolean select(double d) {
-        if (!Double.isInfinite(pdbSet.getDistanceThreshold()))
-            return d <= pdbSet.getDistanceThreshold(); // Amino acids in close distance
-        if (!Double.isInfinite(pdbSet.getDistanceThresholdNon()))
-            return d > pdbSet.getDistanceThresholdNon();// Amino acids far apart
+        if (!Double.isInfinite(proteinInteractions.getDistanceThreshold()))
+            return d <= proteinInteractions.getDistanceThreshold(); // Amino acids in close distance
+        if (!Double.isInfinite(proteinInteractions.getDistanceThresholdNon()))
+            return d > proteinInteractions.getDistanceThresholdNon();// Amino acids far apart
         throw new RuntimeException("Neither distance is finite!");
     }
 }
