@@ -22,7 +22,6 @@ public class ProteinInteractions {
 
     public static final String PROTEIN_INTERACTION_FILE = "interactions.bin";
     public static final String DEFAULT_PDB_DIR = "db/pdb";
-    public static final String DEFAULT_ID_MAP_FILE = DEFAULT_PDB_DIR + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
     public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
     public static final double DEFAULT_MAX_MISMATCH_RATE = 0.05; // Maximum number of mismatches accepted in a protein chain
     public static final int DEFAULT_PDB_MIN_AA_SEPARATION = 20; // Number of AA of distance within a sequence to consider them for distance analysis
@@ -36,7 +35,7 @@ public class ProteinInteractions {
     List<DistanceResult> distanceResults;
     double distanceThreshold = DEFAULT_DISTANCE_THRESHOLD;
     double distanceThresholdNon = Double.POSITIVE_INFINITY; // Distance threshold for 'not in contact'
-    String idMapFile = DEFAULT_ID_MAP_FILE;
+    String idMapFile;
     int countFilesPass, countMapError, countMapOk;
     String genomeVer;
     IdMapper idMapper;
@@ -56,7 +55,8 @@ public class ProteinInteractions {
     }
 
     public String checkParams() {
-        if (genomeVer == null || genomeVer.isEmpty()) return "Missing genomer_version parameter";
+        if (genomeVer == null || genomeVer.isEmpty()) return "Missing genomer version parameter";
+        if(idMapFile==null || idMapFile.isEmpty()) return "Missing ID map file";
         if (distanceThreshold <= 0) return "Max distance in '-maxdist' command line option must be a positive number";
         if (maxMismatchRate <= 0)
             return "Max mismatch rate in '-maxErr' command line option must be a positive number";

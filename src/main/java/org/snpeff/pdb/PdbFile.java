@@ -340,7 +340,6 @@ public class PdbFile {
     List<IdMapperEntry> idMapChain(Chain chain, List<IdMapperEntry> idMaps) {
         List<IdMapperEntry> idMapChain = new ArrayList<>();
         for (IdMapperEntry idmap : idMaps) {
-            Log.debug("Protein ID: " + proteinId + ", chainID: " + idmap.pdbChainId + ", " + chain.getId());
             if (idmap.proteinId.equals(proteinId) && idmap.pdbChainId.equals(chain.getId())) {
                 idMapChain.add(idmap);
             }

@@ -91,7 +91,35 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		assertTrue(ok, "Interaction not found!");
 	}
 
+	/**
+	 * Interaction within protein intreaction using Uniprot entry 'P18754' from AlphaFold predictions
+	 */
+	@Test
 	public void test_03_build_alphafold() {
-		assertTrue(false, "UNIMPLEMENTED!!!");
+		Log.debug("Test");
+
+		// Command line arguments
+		String genome = "testHg19Pdb";
+		String pdbDir = path("pdb");
+		String idmap = path("pdb") + "/idMap_uniprotId_refSeqId.txt";
+		String args[] = {"-pdbDir", pdbDir, "-idmap", idmap, genome};
+
+		// Create command
+		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
+		cmd.setVerbose(verbose);
+		cmd.setDebug(debug);
+		cmd.parseArgs(args);
+		cmd.run(true);
+		List<DistanceResult> distanceResults = cmd.getDistanceResults();
+
+		// Check results for a specific interaction
+		boolean ok = false;
+		for (DistanceResult dr : distanceResults) {
+			ok |= dr.proteinId.equals("P18754") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
+			if (debug) Log.debug("INTERACTION:\t" + dr);
+		}
+
+		assertTrue(ok, "Interaction not found!");
 	}
+
 }

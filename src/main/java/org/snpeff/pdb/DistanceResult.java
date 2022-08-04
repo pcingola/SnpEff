@@ -10,18 +10,15 @@ public class DistanceResult {
 
     public static boolean debug = false;
 
-    // Pdb information
+    public char aa1, aa2; // Amino acis
+    public int aaPos1, aaPos2; // Amino acis position
+    public String chr1, chr2; // Chromosome
+    public int pos1, pos2; // Genomic possition
+    public double distance;
     public String proteinId;
     public String pdbChainId1;
     public String pdbChainId2;
-    public int aaPos1, aaPos2;
-    public char aa1, aa2;
-    public double distance;
-
-    // Genomic information
     public String trId1, trId2;
-    public String chr1, chr2;
-    public int pos1, pos2;
 
     public DistanceResult() {
         proteinId = pdbChainId1 = pdbChainId2 = trId1 = trId2 = chr1 = chr2 = "";
