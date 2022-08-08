@@ -12,16 +12,10 @@ import java.util.List;
 
 /**
  * A variant represents a change in a reference sequence
- * <p>
- * Notes:
- * This class was previously known as Variant.
- * <p>
- * As of version 4.0, variants in the negative strand
- * are NOT allowed any more (they just complicate the
- * code and bring no real benefit).
- * <p>
- * We are also storing much less information fields like quality,
- * score, coverage, etc. have been removed.
+ *
+ * As of version 4.0, variants have no strand, i.e. variants
+ * on the negative are NOT allowed because they just complicate the
+ * code and bring no real benefit.
  *
  * @author pcingola
  */
@@ -29,14 +23,15 @@ public class Variant extends Marker {
 
     public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
     public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
-    // Not a variant (ref=alt)
-    public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
+    public static final Variant NO_VARIANT = new Variant(null, 0, 0, ""); // Not a variant (ref=alt)
     private static final long serialVersionUID = -2928105165111400441L;
+
     protected VariantType variantType; // Variant type
     protected String ref; // Reference (i.e. original bases in the genome)
     protected String alt; // Changed bases
     protected String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
     protected boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
+
     public Variant() {
         super();
         ref = alt = "";

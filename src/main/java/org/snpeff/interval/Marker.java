@@ -16,7 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * An interval intended as a mark
+ * An interval intended as a mark (i.e. "genomic annotation")
+ * It is essentially an interval with an 'EffectType'
  *
  * @author pcingola
  */

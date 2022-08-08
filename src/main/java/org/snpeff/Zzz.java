@@ -1,301 +1,92 @@
 package org.snpeff;
 
-import org.snpeff.codons.CodonTable;
-import org.snpeff.interval.Gene;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.Transcript;
-import org.snpeff.interval.Variant;
-import org.snpeff.snpEffect.*;
-import org.snpeff.util.GprSeq;
+import org.biojava.nbio.core.util.InputStreamProvider;
+import org.biojava.nbio.structure.Chain;
+import org.biojava.nbio.structure.Group;
+import org.biojava.nbio.structure.Structure;
+import org.biojava.nbio.structure.align.util.AtomCache;
+import org.biojava.nbio.structure.align.util.UserConfiguration;
+import org.biojava.nbio.structure.io.FileParsingParameters;
+import org.biojava.nbio.structure.io.PDBFileParser;
+import org.biojava.nbio.structure.secstruc.SecStrucInfo;
 import org.snpeff.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Find an AA insert
+ * How to calculate hydrogen bonds:
+ * - https://en.wikipedia.org/wiki/Hydrogen_bond#:~:text=A%20hydrogen%20bond%20(or%20H,hydrogen%20bond%20acceptor%20(Ac).
+ * - https://www.biostars.org/p/16759/
+ * - DSSP: https://en.wikipedia.org/wiki/DSSP_(hydrogen_bond_estimation_algorithm)
+ * - DSSP: https://github.com/PDB-REDO/dssp
+ *
+ *
  */
-class FindIns {
-    Transcript transcript;
-    int aaPos;
-    String aaSequence;
-    Character aaBefore, aaAfter;
-    StringBuilder output;
-
-    public FindIns(Transcript transcript, int aaPos, String aaSequence, Character aaBefore, Character aaAfter) {
-        this.transcript = transcript;
-        this.aaPos = aaPos;
-        this.aaSequence = aaSequence;
-        this.aaBefore = aaBefore;
-        this.aaAfter = aaAfter;
-        output = new StringBuilder();
-    }
-
-    /**
-     * Get all bases that produce the AA sequence
-     *
-     * @param aaSeq
-     * @return List of bases that can produce aaSeq
-     */
-    List<String> aa2bases(String aaSeq) {
-        CodonTable codonTable = transcript.getChromosome().codonTable();
-
-        // Only one AA
-        if (aaSeq.length() == 1) codonTable.codon(aaSeq);
-
-        // Multiple AAs
-        List<List<String>> basesPerAa = new ArrayList<>();
-        var total = 1;
-        for (char aa : aaSeq.toCharArray()) {
-            var codons = codonTable.codon(aa + "");
-            basesPerAa.add(codons);
-            //			Log.debug("Added " + codons.size() + ", list: " + codons);
-            total *= codons.size();
-        }
-
-        // Outer product for each AA
-        List<String> bases = new ArrayList<>();
-        dnaSequences(basesPerAa, bases, 0, "");
-        //		Log.debug("Total " + bases.size() + " DNA ALT sequences");
-        if (total != bases.size()) Log.fatalError("Expecting " + total + " DNA sequences, but got " + bases.size());
-
-        return bases;
-    }
-
-    void dnaSequences(List<List<String>> basesPerAa, List<String> bases, int num, String basesPartial) {
-        for (String aaBases : basesPerAa.get(num)) {
-            var basesPartialNew = basesPartial + aaBases;
-            if (num == basesPerAa.size() - 1) {
-                bases.add(basesPartialNew);
-            } else dnaSequences(basesPerAa, bases, num + 1, basesPartialNew);
-        }
-    }
-
-    /**
-     * Find an insert of amino acids 'aas' at position aaPos
-     *
-     * @param aaPos
-     * @param aas
-     */
-    public void find() {
-        if (!transcript.isProteinCoding()) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + transcript.getId() + "' is not protein coding");
-            return;
-        }
-
-        // Convert AA position to genomic position
-        var protein = transcript.protein();
-        if (aaPos >= protein.length()) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + transcript.getId() + "' has length " + protein.length() + ", but AA position is " + aaPos);
-            return;
-        }
-
-        // Check AA before
-        if (aaPos > 0 && aaBefore != null) {
-            if (protein.charAt(aaPos - 1) != aaBefore) {
-                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + transcript.getId() + "' has amino acid '" + protein.charAt(aaPos - 1) + "' at possition " + aaPos + ", expecting '" + aaBefore + "'");
-                return;
-            }
-        }
-
-        // Check AA before
-        if (aaPos < protein.length() - 1 && aaAfter != null) {
-            if (protein.charAt(aaPos) != aaAfter) {
-                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + transcript.getId() + "' has amino acid '" + protein.charAt(aaPos) + "' at possition " + (aaPos + 1) + ", expecting '" + aaAfter + "'");
-                return;
-            }
-        }
-
-        // Get genomic coordinate
-        var pos = transcript.aaNumber2Pos(aaPos);
-        //		Log.debug("Genomic coordinate for transcript " + transcript.getId() + ", aa " + aaPos + " is " + transcript.getChromosomeName() + ":" + pos);
-
-        // List of bases
-        List<String> basesList = aa2bases(aaSequence);
-        Log.debug("Amino Acid sequence: " + aaSequence + ", DNA bases: " + basesList);
-
-        // Create all variants
-        var ref = "";
-        for (String alt : basesList) {
-            if (transcript.isStrandMinus()) alt = GprSeq.reverseWc(alt);
-            Variant variant = new Variant(transcript.getChromosome(), pos, ref, alt);
-            showLine(transcript, variant);
-        }
-    }
-
-    /**
-     * Show variant line with HGSV notation
-     */
-    void showLine(Transcript tr, Variant variant) {
-        VariantEffects veffs = new VariantEffects();
-        tr.variantEffect(variant, veffs);
-
-        // Show all HGVS notations for effects
-        for (VariantEffect veff : veffs) {
-            String hgsvProt = veff.getTranscript().getId() + ":" + veff.getHgvsProt();
-            String hgsvDna = veff.getTranscript().getId() + ":" + veff.getHgvsDna();
-            write(tr.getChromosomeName() //
-                    + "\t" + (variant.getStart() + 1) //
-                    + "\t" + variant.getReference() //
-                    + "\t" + variant.getAlt() //
-                    + "\t" + hgsvProt //
-                    + "\t" + hgsvDna);
-
-        }
-    }
-
-    void write(String line) {
-        output.append(line + '\n');
-        System.out.println(line);
-    }
-
-}
-
 public class Zzz {
-    Config config;
-    String genome;
-    String geneName;
-    SnpEffectPredictor snpEffectPredictor;
-    StringBuilder output;
 
-    public Zzz(String genome, String geneName) {
-        this.genome = genome;
-        this.geneName = geneName;
-        output = new StringBuilder();
+    String fileName;
+    Structure structure;
+
+    public Zzz(String fileName) {
+        this.fileName = fileName;
     }
 
-    public static void main(String[] args) throws Exception {
-        Zzz hgsvReverse = new Zzz("testHg3770Chr22", "ERBB2");
-        hgsvReverse.load();
+    public static void main(String args[]) throws Exception {
+        Log.info("Start");
+        Zzz zzz = new Zzz("tests/integration/zzz/pdb/pdb5pti.ent.gz");
+        zzz.load();
+        zzz.show();
+        Log.info("End");
+    }
 
-//        // Find genes in reverse strand
-//        for (Gene g : hgsvReverse.snpEffectPredictor.getGenome().getGenes()) {
-//            if (g.isStrandMinus()) {
-//                System.out.println(g.getGeneName() + '\t' + g.getId());
-//                for (Transcript tr : g) {
-//                    System.out.println('\t' + tr.getId());
-//                }
-//            }
-//        }
+    public Structure load() throws IOException {
+        Log.info("Reading PDB file: " + fileName);
+        var file = new File(fileName);
 
-        String trId = "ENST00000544786"; // "ENST00000544786" (strand -), "ENST00000390282" (strand +)
-        Transcript tr = hgsvReverse.findTranscript(trId);
-        System.out.println(tr);
-        var len = tr.protein().length();
-        for (int i = 0; i < len; i++) {
-            System.out.printf("Strand: %b, AA: %d, Pos: %s\n", tr.isStrandPlus(), i, Arrays.toString(tr.codonNumber2Pos(i)));
+        // Set property to avoid "Illegal reflective access"
+        //		WARNING: An illegal reflective access operation has occurred
+        //		WARNING: Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector (file:/Users/kqrw311/.m2/repository/com/sun/xml/bind/jaxb-impl/2.3.0/jaxb-impl-2.3.0.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
+        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+        // Setting system property so BioJava doesn't print 'PDB_DIR' missing warnings
+        System.setProperty(UserConfiguration.PDB_DIR, file.getParent());
+
+        // Create streams
+        InputStreamProvider isp = new InputStreamProvider();
+        InputStream inStream = isp.getInputStream(file);
+
+        // Parse and load file
+
+        FileParsingParameters params = new FileParsingParameters();
+        params.setParseSecStruc(true); //this is false as DEFAULT
+
+        //
+        AtomCache cache = new AtomCache();
+        cache.setFileParsingParams(params);
+
+        // Read, parse and load file
+        PDBFileParser pdbpars = new PDBFileParser();
+        pdbpars.setFileParsingParameters(params);
+        structure = pdbpars.parsePDBFile(inStream);
+
+
+        inStream.close();
+        return structure;
+    }
+
+    public void show() {
+        for (Chain c : structure.getChains()) {
+            for (Group g : c.getAtomGroups()) {
+                if (g.hasAminoAtoms()) { //Only AA store SS
+                    //Obtain the object that stores the SS
+                    SecStrucInfo ss = (SecStrucInfo) g.getProperty(Group.SEC_STRUC);
+                    //Print information: chain+resn+name+SS
+                    System.out.println(c.getId() + " " +
+                            g.getResidueNumber() + " " +
+                            g.getPDBName() + " -> " + ss);
+                }
+            }
         }
-
-//        Marker m = hgsvReverse.findTranscriptAa("ENST00000390282", 42);
-//        System.out.println(m);
-
-//		//		A775_G776insTVMA
-//		hgsvReverse.findInsAa("A775_G776insTVMA", "ERBB2", 775, "TVMA", 'A', 'G');
-//
-//		//		A775_G776insV
-//		hgsvReverse.findInsAa("A775_G776insV", "ERBB2", 775, "V", 'A', 'G');
-//
-//		//		A775_G776insYVMA
-//		hgsvReverse.findInsAa("A775_G776insYVMA", "ERBB2", 775, "YVMA", 'A', 'G');
-//
-//		//		G776_V777insL
-//		hgsvReverse.findInsAa("G776_V777insL", "ERBB2", 776, "L", 'G', 'V');
-//
-//		//		G776_V777insVC
-//		hgsvReverse.findInsAa("G776_V777insVC", "ERBB2", 776, "VC", 'G', 'V');
-//
-//		//		G776_V777insVGC
-//		hgsvReverse.findInsAa("G776_V777insVGC", "ERBB2", 776, "VGC", 'G', 'V');
-//
-//		//		G776>LC
-//		//		G776>VC
-//		//		G776delinsVC
-//		//		G778_P780dup
-//		//		G778_S779CVG
-//		//		G778_S779insCPG
-//		hgsvReverse.findInsAa("G778_S779insCPG", "ERBB2", 778, "CPG", 'G', 'S');
-//
-//		//		G778_S779insLPS
-//		hgsvReverse.findInsAa("G778_S779insLPS", "ERBB2", 778, "LPS", 'G', 'S');
-//
-//		//		G778dup
-//		//		L755_E757delinsS
-//		//		L755_T759delLRENT
-//		//		P780_Y781GSP
-//		//		S779_P780insVGS
-//		hgsvReverse.findInsAa("S779_P780insVGS", "ERBB2", 779, "VGS", 'S', 'P');
-//
-//		//		V777_G778insCG
-//		hgsvReverse.findInsAa("V777_G778insCG", "ERBB2", 777, "CG", 'V', 'G');
-//
-//		//		V777_G778insG
-//		hgsvReverse.findInsAa("V777_G778insG", "ERBB2", 777, "G", 'V', 'G');
-//
-//		//		V777_G778insGCP
-//		hgsvReverse.findInsAa("V777_G778insGCP", "ERBB2", 777, "GCP", 'V', 'G');
-//
-//		//		V777_G778insGSP
-//		hgsvReverse.findInsAa("V777_G778insGSP", "ERBB2", 777, "GSP", 'V', 'G');
-//
-//		//		Y772_A775dup
-//		//		Y772_V773VMAT
-//
-//		Gpr.toFile(Gpr.HOME + "/hgsvReverse.txt", hgsvReverse.output);
-
-        Log.debug("DONE!");
     }
-
-    Transcript findTranscript(String trId) {
-        for (Gene g : snpEffectPredictor.getGenome().getGenes())
-            for (Transcript tr : g)
-                if (trId.equals(tr.getId())) return tr;
-
-        return null;
-    }
-
-    Marker findTranscriptAa(String trId, int aaPos) {
-        var tr = findTranscript(trId);
-        int start, end;
-        if (tr.isStrandPlus()) {
-            start = tr.aaNumber2Pos(aaPos);
-            end = tr.aaNumber2Pos(aaPos + 1);
-        } else {
-            start = tr.aaNumber2Pos(aaPos + 1);
-            end = tr.aaNumber2Pos(aaPos);
-        }
-        return new Marker(tr.getChromosome(), start, end);
-    }
-
-    /**
-     * Find a list of genomic variants that produce an insertion in gene 'geneName', at position aaPos of amino acids "aas"
-     *
-     * @return List of genomic variants, null on error
-     */
-    List<Variant> findInsAa(String name, String geneName, int aaPos, String aaSequence, Character aaBefore, Character aaAfter) {
-        var title = name + "\nFind insertions in " + geneName + ", at AA possition " + aaPos + ", inserting AA sequence '" + aaSequence + "', having AA before '" + aaBefore + "', and AA after '" + aaAfter + "'";
-        output.append("\n\n" + title + "\n");
-        Log.info(title);
-
-        Gene gene = snpEffectPredictor.getGene(geneName);
-        if (gene == null) return null;
-        Log.info("Found gene '" + geneName + "', has " + gene.subIntervals().size() + " transcripts");
-        for (Transcript tr : gene) {
-            var f = new FindIns(tr, aaPos, aaSequence, aaBefore, aaAfter);
-            f.find();
-
-            output.append(f.output);
-        }
-        return null;
-    }
-
-    public void load() {
-        Log.info("Loading config");
-        System.out.println("genome = " + genome);
-        config = new Config(genome);
-
-        Log.info("Loading database");
-        snpEffectPredictor = config.loadSnpEffectPredictor();
-    }
-
 }

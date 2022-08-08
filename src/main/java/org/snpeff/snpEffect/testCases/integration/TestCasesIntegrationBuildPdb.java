@@ -24,6 +24,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 	public void test_01() {
 		Log.debug("Test");
 
+		verbose = true;
 		// Command line arguments
 		String genome = "testHg19Pdb";
 		String pdbDir = path("pdb");
@@ -43,7 +44,9 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
 			ok |= dr.proteinId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
-			if (verbose) Log.debug("INTERACTION:\t" + dr);
+
+			if(verbose && dr.proteinId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135) Log.debug("FOUND:\t" + dr);
+			if (debug) Log.debug("INTERACTION:\t" + dr);
 		}
 
 		assertTrue(ok, "Interaction not found!");
@@ -120,6 +123,36 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		}
 
 		assertTrue(ok, "Interaction not found!");
+	}
+
+	public void test_03_ion() {
+		// Test annotation of Ion interation
+		throw new RuntimeException("UNIMPLEMENTED");
+	}
+
+	public void test_04_non_covalent_bond() {
+		// Test annotation of Non-covalent bond (interaction?)
+		throw new RuntimeException("UNIMPLEMENTED");
+	}
+
+	public void test_05_covalent_bond() {
+		// Test annotation of covalent bond (interation?)
+		throw new RuntimeException("UNIMPLEMENTED");
+	}
+
+	public void test_06_ligand() {
+		// Test annotation of ligand
+		throw new RuntimeException("UNIMPLEMENTED");
+	}
+
+	public void test_07_small_molecues() {
+		// Test annotation of smalle molecules
+		throw new RuntimeException("UNIMPLEMENTED");
+	}
+
+	public void test_06_interaction_5A_range() {
+		// Test annotation of interaction at 5A range
+		throw new RuntimeException("UNIMPLEMENTED");
 	}
 
 }

@@ -5,9 +5,9 @@ import java.io.Serializable;
 /**
  * A genomic interval.
  * <p>
- * Note: Intervals are assumed to be zero-based and inclusive
- * i.e. an interval including the first base up to base X would
- * be [0,X] NOT [1,X]
+ * Note: Intervals are assumed to be zero-based and "closed"
+ * i.e. an interval includes the first and the last base.
+ * e.g.: an interval including the first base, up to base (and including) X would be [0,X]
  *
  * @author pcingola
  */
@@ -15,7 +15,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
     private static final long serialVersionUID = -3547434510230920403L;
 
-    protected int start, end;
+    protected int start, end; // This is a closed interval,
     protected boolean strandMinus;
     protected String id = ""; // Interval's ID (e.g. gene name, transcript ID)
     protected String chromosomeNameOri; // Original chromosome name (e.g. literal form a file)

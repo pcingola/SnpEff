@@ -1,0 +1,5 @@
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr7	117174327	.	T	A	.	.	.
+chr7	117174328	.	A	T	.	.	.
+chr7	117174329	.	G	T	.	.	.
+chr7	117174330	.	A	T	.	.	.
