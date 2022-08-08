@@ -944,6 +944,34 @@ public class TestCasesIntegrationBase {
     }
 
     /**
+     * Run SnpEff prediction and filter effects from results (VCF)
+     */
+    public List<EffectType> snpEffectFilter(String genome, String vcfInputFile, boolean useCanonical, int filterPos, EffectType filterEffType) {
+        String[] argsCanon = {"-canon"};
+        String[] args = (useCanonical ? argsCanon : null);
+
+        // Annotate
+        List<VcfEntry> vcfEntries = snpEffect(genome, vcfInputFile, args);
+        if (verbose) vcfEntries.forEach(v -> System.out.println("VcfEffect:" + v));
+
+        // Get variant effects at desired position
+        Optional<VcfEffect> oeff = vcfEntries.stream() //
+                .filter(v -> v.getStart() == filterPos) //
+                .flatMap(v -> v.getVcfEffects().stream()) //
+                .findFirst();
+
+        // Sanity check
+        if (verbose) Log.info("VcfEffect:" + oeff);
+        assertTrue(oeff.isPresent(), "Could not find any variant effect at position " + filterPos);
+
+        List<EffectType> effTypes = oeff.get().getEffectTypes();
+        if (verbose) Log.info("effTypes:" + effTypes);
+        assertTrue(effTypes.contains(filterEffType), "Effect type '" + filterEffType + "' not found");
+
+        return effTypes;
+    }
+
+    /**
      * Create change effects
      */
     LinkedList<VariantEffect> variantEffects(Variant variant, EffectType effectType, Marker marker) {
