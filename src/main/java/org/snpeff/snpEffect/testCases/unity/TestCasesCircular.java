@@ -28,8 +28,8 @@ public class TestCasesCircular {
         Genome genome = new Genome("test");
         Chromosome chr = new Chromosome(genome, 0, 999, "1");
         boolean strandMinus = false;
-        Gene gene = new Gene(chr, 0, chr.getEnd(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
-        Transcript tr = new Transcript(gene, 0, chr.getEnd(), strandMinus, "tr1");
+        Gene gene = new Gene(chr, 0, chr.getEndClosed(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
+        Transcript tr = new Transcript(gene, 0, chr.getEndClosed(), strandMinus, "tr1");
         tr.add(new Cds(tr, 800, 850, strandMinus, "cds1"));
         tr.add(new Cds(tr, 900, 950, strandMinus, "cds2"));
         tr.add(new Cds(tr, 10, 50, strandMinus, "cds3"));
@@ -56,8 +56,8 @@ public class TestCasesCircular {
         Genome genome = new Genome("test");
         Chromosome chr = new Chromosome(genome, 0, 999, "1");
         boolean strandMinus = true;
-        Gene gene = new Gene(chr, 0, chr.getEnd(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
-        Transcript tr = new Transcript(gene, 0, chr.getEnd(), strandMinus, "tr1");
+        Gene gene = new Gene(chr, 0, chr.getEndClosed(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
+        Transcript tr = new Transcript(gene, 0, chr.getEndClosed(), strandMinus, "tr1");
 
         tr.add(new Cds(tr, 200, 250, strandMinus, "ex1"));
         tr.add(new Cds(tr, 100, 150, strandMinus, "ex2"));
@@ -85,8 +85,8 @@ public class TestCasesCircular {
         Genome genome = new Genome("test");
         Chromosome chr = new Chromosome(genome, 0, 999, "1");
         boolean strandMinus = true;
-        Gene gene = new Gene(chr, 0, chr.getEnd(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
-        Transcript tr = new Transcript(gene, 0, chr.getEnd(), strandMinus, "tr1");
+        Gene gene = new Gene(chr, 0, chr.getEndClosed(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
+        Transcript tr = new Transcript(gene, 0, chr.getEndClosed(), strandMinus, "tr1");
 
         tr.add(new Cds(tr, 200, 250, strandMinus, "ex1"));
         tr.add(new Cds(tr, 100, 150, strandMinus, "ex2"));
@@ -105,8 +105,8 @@ public class TestCasesCircular {
         Genome genome = new Genome("test");
         Chromosome chr = new Chromosome(genome, 0, 999, "1");
         boolean strandMinus = true;
-        Gene gene = new Gene(chr, 0, chr.getEnd(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
-        Transcript tr = new Transcript(gene, 0, chr.getEnd(), strandMinus, "tr1");
+        Gene gene = new Gene(chr, 0, chr.getEndClosed(), strandMinus, "geneId1", "geneName1", BioType.protein_coding);
+        Transcript tr = new Transcript(gene, 0, chr.getEndClosed(), strandMinus, "tr1");
 
         tr.add(new Cds(tr, 800, 850, true, "ex1"));
         tr.add(new Cds(tr, 900, 950, true, "ex2"));

@@ -66,7 +66,7 @@ public class PosStats extends ChrPosStats {
 
 		int j = 0;
 		int start = Math.max(marker.getStart(), markerReference.getStart());
-		int end = Math.min(marker.getEnd(), markerReference.getEnd());
+		int end = Math.min(marker.getEndClosed(), markerReference.getEndClosed());
 
 		double step = ((double) markerReference.size()) / count.length;
 		if (step <= 0) step = 1; // This should never happen!
@@ -80,7 +80,7 @@ public class PosStats extends ChrPosStats {
 				count[j]++;
 		} else {
 			double pos = end;
-			int jmin = (int) Math.round((markerReference.getEnd() - end) / step);
+			int jmin = (int) Math.round((markerReference.getEndClosed() - end) / step);
 
 			for (j = jmin; (start <= pos) && (j < count.length); pos -= step, j++)
 				count[j]++;

@@ -168,8 +168,8 @@ public class CodonChange {
 					int firstvariantBaseInExon = Math.max(variant.getStart(), Math.max(exon.getStart(), cdsStart));
 					cdsBaseInExon = firstvariantBaseInExon - Math.max(exon.getStart(), cdsStart);
 				} else {
-					int lastvariantBaseInExon = Math.min(variant.getEnd(), Math.min(exon.getEnd(), cdsStart));
-					cdsBaseInExon = Math.min(exon.getEnd(), cdsStart) - lastvariantBaseInExon;
+					int lastvariantBaseInExon = Math.min(variant.getEndClosed(), Math.min(exon.getEndClosed(), cdsStart));
+					cdsBaseInExon = Math.min(exon.getEndClosed(), cdsStart) - lastvariantBaseInExon;
 				}
 
 				if (cdsBaseInExon < 0) cdsBaseInExon = 0;
@@ -191,8 +191,8 @@ public class CodonChange {
 				if (returnNow) return;
 			}
 
-			if (transcript.isStrandPlus()) firstCdsBaseInExon += Math.max(0, exon.getEnd() - Math.max(exon.getStart(), cdsStart) + 1);
-			else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, exon.getEnd()) - exon.getStart() + 1);
+			if (transcript.isStrandPlus()) firstCdsBaseInExon += Math.max(0, exon.getEndClosed() - Math.max(exon.getStart(), cdsStart) + 1);
+			else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, exon.getEndClosed()) - exon.getStart() + 1);
 		}
 
 		return;

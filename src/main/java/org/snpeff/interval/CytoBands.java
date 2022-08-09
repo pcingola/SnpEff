@@ -6,7 +6,6 @@ import org.snpeff.interval.tree.Itree;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Cytband definitions
@@ -79,7 +78,7 @@ public class CytoBands {
 
 		for (Itree tree : forest)
 			for (Marker m : tree)
-				sb.append("\t" + m.getChromosomeName() + "\t" + m.getStart() + "\t" + m.getEnd() + "\t" + m.getId() + "\n");
+				sb.append("\t" + m.getChromosomeName() + "\t" + m.getStart() + "\t" + m.getEndClosed() + "\t" + m.getId() + "\n");
 
 		return sb.toString();
 	}

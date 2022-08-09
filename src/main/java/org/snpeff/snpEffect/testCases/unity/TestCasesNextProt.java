@@ -31,7 +31,7 @@ public class TestCasesNextProt {
 
         // Check nextProt marker
         assertEquals(1000, nextProt.getStart());
-        assertEquals(1002, nextProt.getEnd());
+        assertEquals(1002, nextProt.getEndClosed());
         assertEquals("nextprot_name", nextProt.getName());
         assertEquals("nextprot_accession_1", nextProt.getId());
     }
@@ -49,7 +49,7 @@ public class TestCasesNextProt {
 
         // Check nextProt marker
         assertEquals(1003, nextProt.getStart());
-        assertEquals(1005, nextProt.getEnd());
+        assertEquals(1005, nextProt.getEndClosed());
         assertEquals("nextprot_name", nextProt.getName());
         assertEquals("nextprot_accession_1", nextProt.getId());
     }
@@ -69,9 +69,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1048, nextProt0.getStart());
-        assertEquals(1049, nextProt0.getEnd());
+        assertEquals(1049, nextProt0.getEndClosed());
         assertEquals(1100, nextProt1.getStart());
-        assertEquals(1100, nextProt1.getEnd());
+        assertEquals(1100, nextProt1.getEndClosed());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TestCasesNextProt {
 
         // Check nextProt marker
         assertEquals(1947, nextProt.getStart());
-        assertEquals(1949, nextProt.getEnd());
+        assertEquals(1949, nextProt.getEndClosed());
         assertEquals("nextprot_name", nextProt.getName());
         assertEquals("nextprot_accession_1", nextProt.getId());
     }
@@ -105,7 +105,7 @@ public class TestCasesNextProt {
 
         // Check nextProt marker
         assertEquals(1944, nextProt.getStart());
-        assertEquals(1946, nextProt.getEnd());
+        assertEquals(1946, nextProt.getEndClosed());
         assertEquals("nextprot_name", nextProt.getName());
         assertEquals("nextprot_accession_1", nextProt.getId());
     }
@@ -125,9 +125,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1849, nextProt0.getStart());
-        assertEquals(1849, nextProt0.getEnd());
+        assertEquals(1849, nextProt0.getEndClosed());
         assertEquals(1900, nextProt1.getStart());
-        assertEquals(1901, nextProt1.getEnd());
+        assertEquals(1901, nextProt1.getEndClosed());
     }
 
     @Test
@@ -148,9 +148,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1000, nextProt0.getStart());
-        assertEquals(1049, nextProt0.getEnd());
+        assertEquals(1049, nextProt0.getEndClosed());
         assertEquals(1100, nextProt1.getStart());
-        assertEquals(1112, nextProt1.getEnd());
+        assertEquals(1112, nextProt1.getEndClosed());
     }
 
     @Test
@@ -171,9 +171,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1837, nextProt0.getStart());
-        assertEquals(1849, nextProt0.getEnd());
+        assertEquals(1849, nextProt0.getEndClosed());
         assertEquals(1900, nextProt1.getStart());
-        assertEquals(1949, nextProt1.getEnd());
+        assertEquals(1949, nextProt1.getEndClosed());
     }
 
     @Test
@@ -194,9 +194,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1000, nextProt0.getStart());
-        assertEquals(1049, nextProt0.getEnd());
+        assertEquals(1049, nextProt0.getEndClosed());
         assertEquals(1100, nextProt1.getStart());
-        assertEquals(1112, nextProt1.getEnd());
+        assertEquals(1112, nextProt1.getEndClosed());
     }
 
     @Test
@@ -217,9 +217,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1030, nextProt0.getStart());
-        assertEquals(1032, nextProt0.getEnd());
+        assertEquals(1032, nextProt0.getEndClosed());
         assertEquals(1110, nextProt1.getStart()); //
-        assertEquals(1112, nextProt1.getEnd());
+        assertEquals(1112, nextProt1.getEndClosed());
     }
 
     @Test
@@ -240,9 +240,9 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1837, nextProt0.getStart());
-        assertEquals(1839, nextProt0.getEnd());
+        assertEquals(1839, nextProt0.getEndClosed());
         assertEquals(1917, nextProt1.getStart());
-        assertEquals(1919, nextProt1.getEnd());
+        assertEquals(1919, nextProt1.getEndClosed());
     }
 
     @Test
@@ -264,11 +264,11 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1048, nextProt0.getStart());
-        assertEquals(1049, nextProt0.getEnd());
+        assertEquals(1049, nextProt0.getEndClosed());
         assertEquals(1100, nextProt1.getStart());
-        assertEquals(1100, nextProt1.getEnd());
+        assertEquals(1100, nextProt1.getEndClosed());
         assertEquals(1110, nextProt2.getStart());
-        assertEquals(1112, nextProt2.getEnd());
+        assertEquals(1112, nextProt2.getEndClosed());
     }
 
     @Test
@@ -290,11 +290,11 @@ public class TestCasesNextProt {
 
         // Check nextProt markers
         assertEquals(1837, nextProt0.getStart());
-        assertEquals(1839, nextProt0.getEnd());
+        assertEquals(1839, nextProt0.getEndClosed());
         assertEquals(1849, nextProt1.getStart());
-        assertEquals(1849, nextProt1.getEnd());
+        assertEquals(1849, nextProt1.getEndClosed());
         assertEquals(1900, nextProt2.getStart());
-        assertEquals(1901, nextProt2.getEnd());
+        assertEquals(1901, nextProt2.getEndClosed());
     }
 
     @Test

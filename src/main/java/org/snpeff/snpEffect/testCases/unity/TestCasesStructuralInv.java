@@ -394,7 +394,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
         Gene gene = new Gene(chromosome, 2000, 2200, strandMinus, "geneId3", "geneName3", BioType.protein_coding);
         Transcript tr = new Transcript(gene, 2000, 2200, strandMinus, "tr3");
         Exon ex = new Exon(tr, 2000, 2200, strandMinus, "ex1_tr3", 1);
-        String seq = chromoSequence.substring(ex.getStart(), ex.getEnd() - 1);
+        String seq = chromoSequence.substring(ex.getStart(), ex.getEndClosed() - 1);
         ex.setSequence(strandMinus ? GprSeq.reverseWc(seq) : seq);
         tr.add(ex);
         gene.add(tr);

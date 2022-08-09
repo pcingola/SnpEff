@@ -90,10 +90,10 @@ public class TestCasesMarkerUtils {
                     sb.append('-');
             }
 
-            for (int i = m.getStart(); i <= m.getEnd(); i++)
+            for (int i = m.getStart(); i <= m.getEndClosed(); i++)
                 sb.append('M');
 
-            prevEnd = m.getEnd() + 1;
+            prevEnd = m.getEndClosed() + 1;
         }
 
         return sb.toString();

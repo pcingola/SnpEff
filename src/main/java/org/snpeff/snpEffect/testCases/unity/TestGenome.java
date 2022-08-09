@@ -108,9 +108,9 @@ public class TestGenome {
         gene = new Gene(chr, 1000, 2000, strandMinus, "gene1", "gene1", BioType.protein_coding);
 
         // Create a transcript with exons
-        tr = new Transcript(gene, gene.getStart(), gene.getEnd(), strandMinus, "tr1");
+        tr = new Transcript(gene, gene.getStart(), gene.getEndClosed(), strandMinus, "tr1");
         tr.setProteinCoding(true);
-        for (int i = gene.getStart(), rank = 1; i < gene.getEnd(); i += 100, rank++) {
+        for (int i = gene.getStart(), rank = 1; i < gene.getEndClosed(); i += 100, rank++) {
             Exon exon = new Exon(tr, i, i + 49, strandMinus, "exon_" + rank, rank); // Exon is 50 bases (so that there are amino acids spanning across introns)
             exon.setSequence(GprSeq.randSequence(random, exon.size()));
             tr.add(exon);

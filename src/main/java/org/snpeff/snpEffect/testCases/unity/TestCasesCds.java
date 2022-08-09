@@ -50,7 +50,7 @@ public class TestCasesCds extends TestCasesBase {
             // For each exon...
             for (Exon exon : transcript.sortedStrand()) {
                 // Iterate on each base and compare CDS position with calculated one
-                int min = transcript.isStrandPlus() ? exon.getStart() : exon.getEnd();
+                int min = transcript.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
                 int step = transcript.isStrandPlus() ? 1 : -1;
 
                 for (int pos = min; exon.intersects(pos); pos += step, cdsBaseNum++) {

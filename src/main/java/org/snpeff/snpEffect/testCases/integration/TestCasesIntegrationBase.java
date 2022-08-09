@@ -406,9 +406,9 @@ public class TestCasesIntegrationBase {
         StringBuilder nmdStrSimple = new StringBuilder();
         for (Exon exon : tr.sortedStrand()) {
             int step = exon.isStrandPlus() ? 1 : -1;
-            int from = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+            int from = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
-            for (int expos = from; (exon.getStart() <= expos) && (expos <= exon.getEnd()); expos += step) {
+            for (int expos = from; (exon.getStart() <= expos) && (expos <= exon.getEndClosed()); expos += step) {
                 // Not in UTR? => Test
                 if (!tr.isUtr(expos)) {
                     codingExons.add(exon);
@@ -720,7 +720,7 @@ public class TestCasesIntegrationBase {
                 for (String e : vepSos)
                     msg += e + " ";
 
-                msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
+                msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEndClosed();
                 Log.debug(msg);
                 throw new RuntimeException(msg);
             }

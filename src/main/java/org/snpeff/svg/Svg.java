@@ -96,7 +96,7 @@ public class Svg {
 	}
 
 	double end() {
-		return (m.getEnd() - posStart) * scaleX;
+		return (m.getEndClosed() - posStart) * scaleX;
 	}
 
 	public String hline(int y) {
@@ -180,7 +180,7 @@ public class Svg {
 
 	void setScaleX() {
 		posStart = m.getStart();
-		posEnd = m.getEnd();
+		posEnd = m.getEndClosed();
 		if (posEnd <= posStart) throw new RuntimeException("Marker 'start' after 'end': Unsupported!");
 		scaleX = sizeX / ((double) (posEnd - posStart));
 	}

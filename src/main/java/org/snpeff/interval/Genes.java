@@ -89,7 +89,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 			}
 
 			// Intergenic region's [start, end] interval
-			int start = (genePrev != null ? genePrev.getEnd() + 1 : 0);
+			int start = (genePrev != null ? genePrev.getEndClosed() + 1 : 0);
 			int end = gene.getStart() - 1;
 
 			// Valid intergenic region?
@@ -99,7 +99,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 			}
 
 			// Is it null or ends before this one? update 'genePrev'
-			if ((genePrev == null) || (gene.getEnd() > genePrev.getEnd())) genePrev = gene;
+			if ((genePrev == null) || (gene.getEndClosed() > genePrev.getEndClosed())) genePrev = gene;
 
 			// Update chrPrev
 			chrPrev = gene.getChromosome();

@@ -99,7 +99,7 @@ public class HgvsDna extends Hgvs {
 	 * Is this position downstream?
 	 */
 	boolean isDownstream(int pos) {
-		if (tr.isStrandPlus()) return tr.getEnd() < pos;
+		if (tr.isStrandPlus()) return tr.getEndClosed() < pos;
 		return pos < tr.getStart();
 	}
 
@@ -158,7 +158,7 @@ public class HgvsDna extends Hgvs {
 	 */
 	boolean isUpstream(int pos) {
 		if (tr.isStrandPlus()) return pos < tr.getStart();
-		return tr.getEnd() < pos;
+		return tr.getEndClosed() < pos;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class HgvsDna extends Hgvs {
 	protected String pos() {
 		int posStart = -1, posEnd = -1;
 
-		int variantPosStart = strandPlus ? variant.getStart() : variant.getEnd();
+		int variantPosStart = strandPlus ? variant.getStart() : variant.getEndClosed();
 
 		switch (variant.getVariantType()) {
 		case SNP:
@@ -224,9 +224,9 @@ public class HgvsDna extends Hgvs {
 		case MIXED:
 			if (strandPlus) {
 				posStart = variant.getStart();
-				posEnd = variant.getEnd();
+				posEnd = variant.getEndClosed();
 			} else {
-				posStart = variant.getEnd();
+				posStart = variant.getEndClosed();
 				posEnd = variant.getStart();
 			}
 			break;
@@ -285,7 +285,7 @@ public class HgvsDna extends Hgvs {
 	 * Position downstream of the transcript
 	 */
 	protected String posDownstream(int pos) {
-		int trEnd = tr.isStrandPlus() ? tr.getEnd() : tr.getStart();
+		int trEnd = tr.isStrandPlus() ? tr.getEndClosed() : tr.getStart();
 		int baseNumTrEnd = tr.baseNumber2MRnaPos(trEnd);
 		int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
 		int basesFromCdsEndToTrEnd = Math.abs(baseNumTrEnd - baseNumCdsEnd);
@@ -322,19 +322,19 @@ public class HgvsDna extends Hgvs {
 		int posExon = -1;
 		String posExonStr = "";
 		int distanceLeft = Math.max(0, pos - intron.getStart()) + 1;
-		int distanceRight = Math.max(0, intron.getEnd() - pos) + 1;
+		int distanceRight = Math.max(0, intron.getEndClosed() - pos) + 1;
 		if (distanceLeft < distanceRight) {
 			posExon = intron.getStart() - 1;
 			posExonStr = (intron.isStrandPlus() ? "+" : "-");
 		} else if (distanceRight < distanceLeft) {
-			posExon = intron.getEnd() + 1;
+			posExon = intron.getEndClosed() + 1;
 			posExonStr = (intron.isStrandPlus() ? "-" : "+");
 		} else {
 			// Reference: in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with an uneven number of nucleotides the central nucleotide is the last described with a "+"
 			posExonStr = "+";
 
 			if (strandPlus) posExon = intron.getStart() - 1;
-			else posExon = intron.getEnd() + 1;
+			else posExon = intron.getEndClosed() + 1;
 		}
 
 		// Distance to closest exonic base
@@ -410,7 +410,7 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String posUpstream(int pos) {
 		int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
-		int trStart = tr.isStrandPlus() ? tr.getStart() : tr.getEnd();
+		int trStart = tr.isStrandPlus() ? tr.getStart() : tr.getEndClosed();
 		int idx = baseNumTss + Math.abs(pos - trStart);
 
 		if (idx <= 0) return null;

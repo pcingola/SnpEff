@@ -3,7 +3,6 @@ package org.snpeff.interval.tree;
 import org.snpeff.interval.Interval;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.util.Log;
 
 import java.io.Serializable;
 
@@ -47,7 +46,7 @@ public class IntervalNode implements Serializable {
         Markers intersecting = new Markers();
 
         for (Marker interval : markers) {
-            if (interval.getEnd() < center) left.add(interval);
+            if (interval.getEndClosed() < center) left.add(interval);
             else if (interval.getStart() > center) right.add(interval);
             else intersecting.add(interval);
         }
@@ -95,7 +94,7 @@ public class IntervalNode implements Serializable {
         }
 
         if (queryInterval.getStart() < center && leftNode != null) results.add(leftNode.query(queryInterval));
-        if (queryInterval.getEnd() > center && rightNode != null) results.add(rightNode.query(queryInterval));
+        if (queryInterval.getEndClosed() > center && rightNode != null) results.add(rightNode.query(queryInterval));
 
         return results;
     }

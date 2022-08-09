@@ -35,7 +35,7 @@ public class RegulationFileConsensus {
 			} else {
 				if (consensus.intersects(r)) {
 					consensus.setStart(Math.max(consensus.getStart(), r.getStart()));
-					consensus.setEnd(Math.max(consensus.getEnd(), r.getEnd()));
+					consensus.setEndClosed(Math.max(consensus.getEndClosed(), r.getEndClosed()));
 					count++;
 				} else {
 					flush();

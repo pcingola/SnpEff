@@ -136,7 +136,7 @@ public class CircularCorrection {
 					rightGap = m;
 				}
 			}
-			endPrev = m.getEnd();
+			endPrev = m.getEndClosed();
 			first = false;
 		}
 
@@ -151,7 +151,7 @@ public class CircularCorrection {
 	 * Does marker has coordinates after chrEnd;
 	 */
 	boolean isCorrectionAfterChrEnd(Marker m) {
-		return m.getStart() >= chrLen || m.getEnd() >= chrLen;
+		return m.getStart() >= chrLen || m.getEndClosed() >= chrLen;
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class CircularCorrection {
 				int gap = m.getStart() - endPrev;
 				maxGap = Math.max(maxGap, gap);
 			}
-			endPrev = m.getEnd();
+			endPrev = m.getEndClosed();
 			first = false;
 		}
 
@@ -192,7 +192,7 @@ public class CircularCorrection {
 	 * Does marker has coordinates start > end
 	 */
 	boolean isCorrectionStartAfterEnd(Marker m) {
-		return m.getStart() > m.getEnd();
+		return m.getStart() > m.getEndClosed();
 	}
 
 	boolean isCorrectionStartAfterEnd(Markers ms) {

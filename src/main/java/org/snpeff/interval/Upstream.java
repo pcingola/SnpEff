@@ -28,7 +28,7 @@ public class Upstream extends Marker {
 	 * Distance to transcript
 	 */
 	public int distanceToTr(Variant variant) {
-		int dist = (parent.isStrandPlus() ? end - variant.getStart() : variant.getStart() - start) + 1;
+		int dist = (parent.isStrandPlus() ? getEndClosed() - variant.getStart() : variant.getStart() - getStart()) + 1;
 		return Math.max(0, dist);
 	}
 

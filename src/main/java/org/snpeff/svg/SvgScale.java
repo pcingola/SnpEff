@@ -28,7 +28,7 @@ public class SvgScale extends Svg {
 		sb.append(line(0, baseY + 10, sizeY, baseY + 10));
 		int step = selectStep();
 		int st = (m.getStart() / step) * step;
-		for (int pos = st; pos < m.getEnd(); pos += step) {
+		for (int pos = st; pos < m.getEndClosed(); pos += step) {
 			double x = pos2coord(pos);
 			sb.append(line(x, baseY + 0, x, baseY + SCALE_TICK_HEIGHT));
 			String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);

@@ -432,7 +432,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		// Create BED file
 		StringBuilder sb = new StringBuilder();
 		for (Marker i : markersBed) {
-			sb.append(i.getChromosomeName() + "\t" + (i.getStart() + 1) + "\t" + (i.getEnd() + 1) + "\t" + (i instanceof SpliceSiteBranch ? i.getType().toString() : i.getId()) + "\n");
+			sb.append(i.getChromosomeName() + "\t" + (i.getStart() + 1) + "\t" + (i.getEndClosed() + 1) + "\t" + (i instanceof SpliceSiteBranch ? i.getType().toString() : i.getId()) + "\n");
 		}
 		Gpr.toFile(bedFile, sb);
 
@@ -483,10 +483,10 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 				if (exPrev != null) { // Not for first exon (it has no 'previous' intron)
 					int start, end;
 					if (tr.isStrandPlus()) {
-						start = exPrev.getEnd();
+						start = exPrev.getEndClosed();
 						end = ex.getStart();
 					} else {
-						start = ex.getEnd();
+						start = ex.getEndClosed();
 						end = exPrev.getStart();
 					}
 

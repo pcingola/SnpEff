@@ -66,7 +66,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
-						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
+						for (int i = ex.getStart(), idx = 0; i < ex.getEndClosed(); i++, idx++) {
 							// Create a fake SNP. Random REF and ALT bases
 							char ref = Character.toUpperCase(seq.charAt(idx));
 							char alt = ref;
@@ -137,7 +137,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
-						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
+						for (int i = ex.getStart(), idx = 0; i < ex.getEndClosed(); i++, idx++) {
 							// Create a fake INS.
 
 							// Random ALT
@@ -218,7 +218,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
-						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
+						for (int i = ex.getStart(), idx = 0; i < ex.getEndClosed(); i++, idx++) {
 							// Create a fake DEL:  Random REF (since it's a deletion, alt="")
 							int delLen = 1 + random.nextInt(8);
 							int end = idx + delLen;
@@ -298,7 +298,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
-						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
+						for (int i = ex.getStart(), idx = 0; i < ex.getEndClosed(); i++, idx++) {
 							// Create a fake MNP. Random REF and ALT bases
 							int len = random.nextInt(9) + 1;
 							int end = idx + len;
@@ -324,7 +324,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 							// Resulting sequence
 							String newSeq = "";
 							if (idx > 0) newSeq = seq.substring(0, idx);
-							int maxlen = Math.min(ex.getEnd() - i + 1, len);
+							int maxlen = Math.min(ex.getEndClosed() - i + 1, len);
 							newSeq += altsb.substring(0, maxlen);
 							newSeq += (end < seq.length() ? seq.substring(end) : "");
 

@@ -86,8 +86,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	 * Create a transcript
 	 */
 	Transcript createTranscript(Gene gene, String trId) {
-		int start = gene.getStart(), end = gene.getEnd();
-		Transcript tr = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.isStrandMinus(), "transcript_" + trId);
+		int start = gene.getStart(), end = gene.getEndClosed();
+		Transcript tr = new Transcript(gene, gene.getStart(), gene.getEndClosed(), gene.isStrandMinus(), "transcript_" + trId);
 		tr.setProteinCoding(true);
 		add(tr);
 
@@ -141,12 +141,12 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 					// Create a partial exon UTR5
 					Utr5prime utr5;
 					if (tr.isStrandPlus()) utr5 = new Utr5prime(ex, ex.getStart(), ex.getStart() + (utr5size - 1), ex.isStrandMinus(), ex.getId());
-					else utr5 = new Utr5prime(ex, ex.getEnd() - (utr5size - 1), ex.getEnd(), ex.isStrandMinus(), ex.getId());
+					else utr5 = new Utr5prime(ex, ex.getEndClosed() - (utr5size - 1), ex.getEndClosed(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr5);
 					utr5size = -1;
 				} else {
 					// Create a full exon UTR5
-					Utr5prime utr5 = new Utr5prime(ex, ex.getStart(), ex.getEnd(), ex.isStrandMinus(), ex.getId());
+					Utr5prime utr5 = new Utr5prime(ex, ex.getStart(), ex.getEndClosed(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr5);
 					utr5size -= ex.size();
 				}
@@ -170,12 +170,12 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 					// Create a partial exon UTR3
 					Utr3prime utr3;
 					if (tr.isStrandMinus()) utr3 = new Utr3prime(ex, ex.getStart(), ex.getStart() + (utr3size - 1), ex.isStrandMinus(), ex.getId());
-					else utr3 = new Utr3prime(ex, ex.getEnd() - (utr3size - 1), ex.getEnd(), ex.isStrandMinus(), ex.getId());
+					else utr3 = new Utr3prime(ex, ex.getEndClosed() - (utr3size - 1), ex.getEndClosed(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr3);
 					utr3size = -1;
 				} else {
 					// Create a full exon UTR3
-					Utr3prime utr3 = new Utr3prime(ex, ex.getStart(), ex.getEnd(), ex.isStrandMinus(), ex.getId());
+					Utr3prime utr3 = new Utr3prime(ex, ex.getStart(), ex.getEndClosed(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr3);
 					utr3size -= ex.size();
 				}

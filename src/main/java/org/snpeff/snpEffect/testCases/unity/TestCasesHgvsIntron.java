@@ -58,7 +58,7 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
             } else Gpr.showMark(it, 1);
 
             // Check each intronic base
-            for (int j = 0, pos = transcript.getStart(); pos < transcript.getEnd(); j++, pos++) {
+            for (int j = 0, pos = transcript.getStart(); pos < transcript.getEndClosed(); j++, pos++) {
                 // Intron?
                 if (bases[j] == '-') {
                     tested = true;

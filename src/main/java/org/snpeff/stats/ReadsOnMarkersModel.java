@@ -118,7 +118,7 @@ public class ReadsOnMarkersModel {
 		for (Marker m : markers) {
 			// Same marker type & same chromo? Count bases
 			if (m.getChromosomeName().equals(chrName) && markerTypes.isType(m, mtype)) {
-				for (int i = m.getStart(); i <= m.getEnd(); i++)
+				for (int i = m.getStart(); i <= m.getEndClosed(); i++)
 					busy[i] = 1;
 			}
 		}

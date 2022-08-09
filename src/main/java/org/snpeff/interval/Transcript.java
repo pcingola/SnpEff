@@ -93,7 +93,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         int step = isStrandPlus() ? 1 : -1;
         int codonFrame = 0;
         for (Exon exon : sortedStrand()) {
-            int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
+            int min = isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
             int aaIdxStart = -1, aaIdxEnd = -1;
 
@@ -181,7 +181,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         int maxCds = 0;
         for (Cds c : cdss) {
             minCds = Math.min(minCds, c.getStart());
-            maxCds = Math.max(maxCds, c.getEnd());
+            maxCds = Math.max(maxCds, c.getEndClosed());
         }
 
         if (verbose) {
@@ -200,15 +200,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             Utr toAdd = null;
 
             if (isStrandPlus()) {
-                if (mu.getEnd() <= minCds)
-                    toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
+                if (mu.getEndClosed() <= minCds)
+                    toAdd = new Utr5prime(exon, mu.getStart(), mu.getEndClosed(), strandMinus, mu.getId());
                 else if (mu.getStart() >= maxCds)
-                    toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
+                    toAdd = new Utr3prime(exon, mu.getStart(), mu.getEndClosed(), strandMinus, mu.getId());
             } else {
                 if (mu.getStart() >= maxCds)
-                    toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
-                else if (mu.getEnd() <= minCds)
-                    toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
+                    toAdd = new Utr5prime(exon, mu.getStart(), mu.getEndClosed(), strandMinus, mu.getId());
+                else if (mu.getEndClosed() <= minCds)
+                    toAdd = new Utr3prime(exon, mu.getStart(), mu.getEndClosed(), strandMinus, mu.getId());
             }
 
             // OK?
@@ -234,7 +234,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         int countStrandPlus = 0, countStrandMinus = 0;
         for (Exon exon : sortedStrand()) {
             newStart = Math.min(newStart, exon.getStart());
-            newEnd = Math.max(newEnd, exon.getEnd());
+            newEnd = Math.max(newEnd, exon.getEndClosed());
 
             // Common exon strand
             if (exon.isStrandPlus()) countStrandPlus++;
@@ -244,7 +244,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // UTRs
         for (Utr utr : getUtrs()) {
             newStart = Math.min(newStart, utr.getStart());
-            newEnd = Math.max(newEnd, utr.getEnd());
+            newEnd = Math.max(newEnd, utr.getEndClosed());
         }
 
         // Sanity check
@@ -262,14 +262,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // Changed? Update values
         if (newStart < Integer.MAX_VALUE && newEnd > Integer.MIN_VALUE) {
             // Change start?
-            if (start != newStart) {
+            if (getStart() != newStart) {
                 setStart(newStart);
                 changed = true;
             }
 
             // Change end?
-            if (end != newEnd) {
-                setEnd(newEnd);
+            if (getEndClosed() != newEnd) {
+                setEndClosed(newEnd);
                 changed = true;
             }
         }
@@ -287,15 +287,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // Variant after this marker: No effect
         if (!shouldApply(variant)) return this;
 
-        //---
         // Create new transcript
-        //---
         Transcript newTr = (Transcript) super.apply(variant);
         if (newTr == null) return null;
 
-        //---
         // Add changed UTRs
-        //---
         for (Utr utr : utrs) {
             Utr newUtr = (Utr) utr.apply(variant);
             if (newUtr != null) {
@@ -356,7 +352,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 // Intersect this exon? Calculate the number of bases from the beginning
                 int dist = 0;
                 if (isStrandPlus()) dist = pos - eint.getStart();
-                else dist = eint.getEnd() - pos;
+                else dist = eint.getEndClosed() - pos;
 
                 // Sanity check
                 if (dist < 0)
@@ -394,7 +390,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             if (eint.intersects(pos)) {
                 int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
                 if (isStrandPlus()) cdsBaseInExon = pos - Math.max(eint.getStart(), cdsStart);
-                else cdsBaseInExon = Math.min(eint.getEnd(), cdsStart) - pos;
+                else cdsBaseInExon = Math.min(eint.getEndClosed(), cdsStart) - pos;
 
                 cdsBaseInExon = Math.max(0, cdsBaseInExon);
 
@@ -402,13 +398,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             } else {
                 // Before exon begins?
                 if ((isStrandPlus() && (pos < eint.getStart())) // Before exon begins (positive strand)?
-                        || (isStrandMinus() && (pos > eint.getEnd()))) // Before exon begins (negative strand)?
+                        || (isStrandMinus() && (pos > eint.getEndClosed()))) // Before exon begins (negative strand)?
                     return firstCdsBaseInExon - (usePrevBaseIntron ? 1 : 0);
             }
 
             if (isStrandPlus())
-                firstCdsBaseInExon += Math.max(0, eint.getEnd() - Math.max(eint.getStart(), cdsStart) + 1);
-            else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, eint.getEnd()) - eint.getStart() + 1);
+                firstCdsBaseInExon += Math.max(0, eint.getEndClosed() - Math.max(eint.getStart(), cdsStart) + 1);
+            else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, eint.getEndClosed()) - eint.getStart() + 1);
         }
 
         return firstCdsBaseInExon - 1;
@@ -445,7 +441,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // For each exon, add CDS position to array
         int cdsBaseNum = 0;
         for (Exon exon : sortedStrand()) {
-            int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
+            int min = isStrandPlus() ? exon.getStart() : exon.getEndClosed();
             int step = isStrandPlus() ? 1 : -1;
             for (int pos = min; exon.intersects(pos) && cdsBaseNum < cds2pos.length; pos += step)
                 if ((cdsMin <= pos) && (pos <= cdsMax)) cds2pos[cdsBaseNum++] = pos;
@@ -472,31 +468,31 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
             if (utrs.isEmpty()) {
                 // No UTRs => Use all exons
-                cdsStart = (isStrandPlus() ? end : start); // cdsStart is the position of the first base in the CDS (i.e. the first base after all 5'UTR)
-                cdsEnd = (isStrandPlus() ? start : end); // cdsEnd is the position of the last base in the CDS (i.e. the first base before all 3'UTR)
+                cdsStart = (isStrandPlus() ? getEndClosed() : getStart()); // cdsStart is the position of the first base in the CDS (i.e. the first base after all 5'UTR)
+                cdsEnd = (isStrandPlus() ? getStart() : getEndClosed()); // cdsEnd is the position of the last base in the CDS (i.e. the first base before all 3'UTR)
 
                 for (Exon ex : this) {
                     if (isStrandPlus()) {
                         cdsStart = Math.min(cdsStart, ex.getStart());
-                        cdsEnd = Math.max(cdsEnd, ex.getEnd());
+                        cdsEnd = Math.max(cdsEnd, ex.getEndClosed());
                     } else {
-                        cdsStart = Math.max(cdsStart, ex.getEnd());
+                        cdsStart = Math.max(cdsStart, ex.getEndClosed());
                         cdsEnd = Math.min(cdsEnd, ex.getStart());
                     }
                 }
             } else {
                 // We have to take into account UTRs
-                cdsStart = (isStrandPlus() ? start : end); // cdsStart is the position of the first base in the CDS (i.e. the first base after all 5'UTR)
-                cdsEnd = (isStrandPlus() ? end : start); // cdsEnd is the position of the last base in the CDS (i.e. the first base before all 3'UTR)
+                cdsStart = (isStrandPlus() ? getStart() : getEndClosed()); // cdsStart is the position of the first base in the CDS (i.e. the first base after all 5'UTR)
+                cdsEnd = (isStrandPlus() ? getEndClosed() : getStart()); // cdsEnd is the position of the last base in the CDS (i.e. the first base before all 3'UTR)
                 int cdsStartNotExon = cdsStart;
 
                 for (Utr utr : utrs) {
                     if (utr instanceof Utr5prime) {
-                        if (isStrandPlus()) cdsStart = Math.max(cdsStart, utr.getEnd() + 1);
+                        if (isStrandPlus()) cdsStart = Math.max(cdsStart, utr.getEndClosed() + 1);
                         else cdsStart = Math.min(cdsStart, utr.getStart() - 1);
                     } else if (utr instanceof Utr3prime) {
                         if (isStrandPlus()) cdsEnd = Math.min(cdsEnd, utr.getStart() - 1);
-                        else cdsEnd = Math.max(cdsEnd, utr.getEnd() + 1);
+                        else cdsEnd = Math.max(cdsEnd, utr.getEndClosed() + 1);
                     }
                 }
 
@@ -632,13 +628,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             // Is this exon to be replaced? (i.e. collapseZeroGap returns different coordinates)
             if (exon.size() != collapsedExon.size() //
                     || exon.getStart() != collapsedExon.getStart() //
-                    || exon.getEnd() != collapsedExon.getEnd() //
+                    || exon.getEndClosed() != collapsedExon.getEndClosed() //
             ) {
                 ret = true;
 
                 // Show debugging information
                 if (Config.get().isDebug())
-                    System.err.println("\t\t\tTranscript " + getId() + ": Collapsing exon " + exon.getId() + "\t[ " + exon.getStart() + " - " + exon.getEnd() + " ]\t=>\t[ " + collapsedExon.getStart() + " - " + collapsedExon.getEnd() + " ]");
+                    System.err.println("\t\t\tTranscript " + getId() + ": Collapsing exon " + exon.getId() + "\t[ " + exon.getStart() + " - " + exon.getEndClosed() + " ]\t=>\t[ " + collapsedExon.getStart() + " - " + collapsedExon.getEndClosed() + " ]");
 
                 // Replace exon
                 remove((Exon) exon);
@@ -741,13 +737,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         this.upDownLength = upDownLength;
 
         Chromosome chr = getChromosome();
-        int chrMin = chr.getStart(), chrMax = chr.getEnd();
+        int chrMin = chr.getStart(), chrMax = chr.getEndClosed();
 
         // Create up/down stream intervals and add them to the list
-        int beforeStart = Math.max(start - upDownLength, chrMin);
-        int beforeEnd = Math.max(start - 1, chrMin);
-        int afterStart = Math.min(end + 1, chrMax);
-        int afterEnd = Math.min(end + upDownLength, chrMax);
+        int beforeStart = Math.max(getStart() - upDownLength, chrMin);
+        int beforeEnd = Math.max(getStart() - 1, chrMin);
+        int afterStart = Math.min(getEndClosed() + 1, chrMax);
+        int afterEnd = Math.min(getEndClosed() + upDownLength, chrMax);
 
         if (isStrandPlus()) {
             if (beforeStart < beforeEnd) upstream = new Upstream(this, beforeStart, beforeEnd, false, id);
@@ -867,7 +863,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     int firstExonPositionAfter(int pos) {
         for (Exon ex : sorted()) {
             if (pos <= ex.getStart()) return ex.getStart();
-            if (pos <= ex.getEnd()) return pos;
+            if (pos <= ex.getEndClosed()) return pos;
         }
 
         Log.warning(ErrorWarningType.WARNING_EXON_NOT_FOUND, "WARNING: Cannot find first exonic position after " + pos + " for transcript '" + id + "'");
@@ -933,8 +929,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             int end = exonFirst.getStart() + (frame - 1);
             utr5 = new Utr5prime(exonFirst, exonFirst.getStart(), end, isStrandMinus(), exonFirst.getId());
         } else {
-            int start = exonFirst.getEnd() - (frame - 1);
-            utr5 = new Utr5prime(exonFirst, start, exonFirst.getEnd(), isStrandMinus(), exonFirst.getId());
+            int start = exonFirst.getEndClosed() - (frame - 1);
+            utr5 = new Utr5prime(exonFirst, start, exonFirst.getEndClosed(), isStrandMinus(), exonFirst.getId());
         }
 
         if (Config.get().isDebug())
@@ -972,7 +968,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         for (Utr utr : get5primeUtrs()) {
             utr.size();
             utr5Start = Math.min(utr5Start, utr.getStart());
-            utr5End = Math.max(utr5End, utr.getEnd());
+            utr5End = Math.max(utr5End, utr.getEndClosed());
         }
         Marker utr5 = utr5End >= 0 ? new Marker(this, utr5Start, utr5End, strandMinus, "") : null;
 
@@ -1071,7 +1067,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                     if (isStrandPlus() && (ex.getStart() == cds.getStart())) {
                         ex.setFrame(cds.getFrame());
                         break;
-                    } else if (isStrandMinus() && (ex.getEnd() == cds.getEnd())) {
+                    } else if (isStrandMinus() && (ex.getEndClosed() == cds.getEndClosed())) {
                         ex.setFrame(cds.getFrame());
                         break;
                     }
@@ -1187,7 +1183,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      */
     public Marker getTss() {
         calcCdsStartEnd();
-        Marker tss = new Marker(this, start + (isStrandPlus() ? 0 : -1), start + (isStrandPlus() ? 1 : 0), false, "TSS_" + id);
+        Marker tss = new Marker(this, getStart() + (isStrandPlus() ? 0 : -1), getStart() + (isStrandPlus() ? 1 : 0), false, "TSS_" + id);
         return tss;
     }
 
@@ -1257,10 +1253,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                     // Find intron start and end
                     int start, end;
                     if (isStrandPlus()) {
-                        start = exBefore.getEnd() + 1;
+                        start = exBefore.getEndClosed() + 1;
                         end = ex.getStart() - 1;
                     } else {
-                        start = ex.getEnd() + 1;
+                        start = ex.getEndClosed() + 1;
                         end = exBefore.getStart() - 1;
                     }
 
@@ -1314,7 +1310,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             ce = cdsStart;
         }
 
-        return (variant.getEnd() >= cs) && (variant.getStart() <= ce);
+        return (variant.getEndClosed() >= cs) && (variant.getStart() <= ce);
     }
 
     /**
@@ -1461,8 +1457,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                     return -1;
                 }
                 return last;
-            } else if (pos <= ex.getEnd()) return pos;
-            last = ex.getEnd();
+            } else if (pos <= ex.getEndClosed()) return pos;
+            last = ex.getEndClosed();
         }
 
         if (last < 0)
@@ -1692,7 +1688,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     public String toString(boolean full) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getChromosomeName() + ":" + start + "-" + end);
+        sb.append(getChromosomeName() + ":" + getStart() + "-" + getEndClosed());
         sb.append(", strand: " + (isStrandPlus() ? "+" : "-"));
         if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
         if ((bioType != null) && (bioType != null)) sb.append(", bioType:" + bioType);
@@ -1740,12 +1736,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      * Show a transcript as an ASCII Art
      */
     public String toStringAsciiArt(boolean full) {
-
         //---
         // ASCII art for transcript
         //---
         char[] art = new char[size()];
-        for (int i = start, j = 0; i <= end; i++, j++) {
+        for (int i = getStart(), j = 0; i <= getEndClosed(); i++, j++) {
             Utr utr = findUtr(i);
             if (utr != null) art[j] = utr.isUtr5prime() ? '5' : '3';
             else {
@@ -1763,7 +1758,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // DNA Sequence
         //---
         StringBuilder seq = new StringBuilder();
-        for (int i = start; i <= end; i++) {
+        for (int i = getStart(); i <= getEndClosed(); i++) {
             Exon exon = findExon(i);
             if (exon != null) {
                 String s = exon.getSequence().toLowerCase();
@@ -1785,7 +1780,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         StringBuilder pos100sb = new StringBuilder();
         StringBuilder pos1000sb = new StringBuilder();
 
-        int pos = start;
+        int pos = getStart();
         if (isProteinCoding()) {
             char[] codon = new char[3];
             int step = isStrandPlus() ? 1 : -1;
@@ -1847,13 +1842,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         // Create 'vertical lines'
         StringBuilder lines = new StringBuilder();
         if (isStrandPlus()) lines.append(' ');
-        int prev = start;
+        int prev = getStart();
         for (Exon ex : this.sorted()) {
             lines.append(Gpr.repeat(' ', ex.getStart() - prev - 1) + "|");
             prev = ex.getStart();
 
-            lines.append(Gpr.repeat(' ', ex.getEnd() - prev - 1) + "|");
-            prev = ex.getEnd();
+            lines.append(Gpr.repeat(' ', ex.getEndClosed() - prev - 1) + "|");
+            prev = ex.getEndClosed();
         }
 
         StringBuilder coords = new StringBuilder();
@@ -1866,13 +1861,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         int n, len;
         for (Exon ex : exons) {
             // Right-side coordinate
-            n = ex.getEnd();
-            len = n - start + 1;
+            n = ex.getEndClosed();
+            len = n - getStart() + 1;
             coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
 
             // Left-side coordinate
             n = ex.getStart();
-            len = n - start + 1;
+            len = n - getStart() + 1;
             coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
         }
 

@@ -53,7 +53,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
                 // Interval length
                 int intLen = rand.nextInt(100) + 1;
                 int start = pos;
-                int end = Math.min(pos + intLen, chromosome.getEnd());
+                int end = Math.min(pos + intLen, chromosome.getEndClosed());
 
                 // Create a variant
                 Variant variant = new Variant(chromosome, start, end, "");

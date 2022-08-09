@@ -43,14 +43,14 @@ public class Marker extends Interval implements TxtSerializable {
             String err = "";
             if (isShowWarningIfParentDoesNotInclude())
                 err = "WARNING: " + this.getClass().getSimpleName() + " is not included in parent " + parent.getClass().getSimpleName() + ". " //
-                        + "\t" + this.getClass().getSimpleName() + " '" + getId() + "'  [ " + getStart() + " , " + getEnd() + " ]" //
-                        + "\t" + parent.getClass().getSimpleName() + " '" + parent.getId() + "' [ " + parent.getStart() + " , " + parent.getEnd() + " ]";
+                        + "\t" + this.getClass().getSimpleName() + " '" + getId() + "'  [ " + getStart() + " , " + getEndClosed() + " ]" //
+                        + "\t" + parent.getClass().getSimpleName() + " '" + parent.getId() + "' [ " + parent.getStart() + " , " + parent.getEndClosed() + " ]";
 
             // Adjust parent?
             if (isAdjustIfParentDoesNotInclude(parent)) {
                 parent.adjust(this);
                 if (isShowWarningIfParentDoesNotInclude())
-                    err += "\t=> Adjusting " + parent.getClass().getSimpleName() + " '" + parent.getId() + "' to [ " + parent.getStart() + " , " + parent.getEnd() + " ]";
+                    err += "\t=> Adjusting " + parent.getClass().getSimpleName() + " '" + parent.getId() + "' to [ " + parent.getStart() + " , " + parent.getEndClosed() + " ]";
             }
 
             // Show an error?
@@ -62,8 +62,8 @@ public class Marker extends Interval implements TxtSerializable {
      * Adjust [start,end] to include child
      */
     protected void adjust(Marker child) {
-        start = Math.min(start, child.getStart());
-        end = Math.max(end, child.getEnd());
+        setStart(Math.min(getStart(), child.getStart()));
+        setEndClosed(Math.max(getEndClosed(), child.getEndClosed()));
     }
 
     /**
@@ -125,18 +125,17 @@ public class Marker extends Interval implements TxtSerializable {
     protected Marker applyDel(Variant variant) {
         Marker m = cloneShallow();
 
-        if (variant.getEnd() < m.start) {
+        if (variant.getEndClosed() < m.getStart()) {
             // Deletion before start: Adjust coordinates
             int lenChange = variant.lengthChange();
-            m.start += lenChange;
-            m.end += lenChange;
+            m.shiftCoordinates(lenChange);
         } else if (variant.includes(m)) {
             // Deletion completely includes this marker => The whole marker deleted
             return null;
         } else if (m.includes(variant)) {
             // This marker completely includes the deletion, but deletion does not include
             // marker. Marker is shortened (i.e. only 'end' coordinate needs to be updated)
-            m.end += variant.lengthChange();
+            m.shiftEnd(variant.lengthChange());
         } else {
             // Variant is partially included in this marker.
             // This is treated as three different type of deletions:
@@ -147,22 +146,21 @@ public class Marker extends Interval implements TxtSerializable {
             // deletion would fully include the marker (previous case)
 
             // Part 1: Deletion after the marker
-            if (m.end < variant.getEnd()) {
+            if (m.getEndClosed() < variant.getEndClosed()) {
                 // Actually this does not affect the coordinates, so we don't care about this part
             }
 
             // Part 2: Deletion matching the marker (intersection)
-            int istart = Math.max(variant.getStart(), m.start);
-            int iend = Math.min(variant.getEnd(), m.end);
+            int istart = Math.max(variant.getStart(), m.getStart());
+            int iend = Math.min(variant.getEndClosed(), m.getEndClosed());
             if (iend < istart) throw new RuntimeException("This should never happen!"); // Sanity check
-            m.end -= (iend - istart + 1); // Update end coordinate
+            m.shiftEnd(-(iend - istart + 1)); // Update end coordinate
 
             // Part 3: Deletion before the marker
-            if (variant.getStart() < m.start) {
+            if (variant.getStart() < m.getStart()) {
                 // Update coordinates shifting the marker to the left
-                int delta = m.start - variant.getStart();
-                m.start -= delta;
-                m.end -= delta;
+                int delta = m.getStart() - variant.getStart();
+                m.shiftCoordinates(-delta);
             }
         }
 
@@ -175,22 +173,20 @@ public class Marker extends Interval implements TxtSerializable {
     protected Marker applyDup(Variant variant) {
         Marker m = cloneShallow();
 
-        if (variant.getEnd() < m.start) {
+        if (variant.getEndClosed() < m.getStart()) {
             // Duplication before marker start? => Adjust both coordinates
             int lenChange = variant.lengthChange();
-            m.start += lenChange;
-            m.end += lenChange;
+            m.shiftCoordinates(lenChange);
         } else if (variant.includes(m)) {
             // Duplication includes whole marker? => Adjust both coordinates
             int lenChange = variant.lengthChange();
-            m.start += lenChange;
-            m.end += lenChange;
+            m.shiftCoordinates(lenChange);
         } else if (m.includes(variant)) {
             // Duplication included in marker? => Adjust end coordinate
-            m.end += variant.lengthChange();
+            m.shiftEnd(variant.lengthChange());
         } else if (variant.intersects(m)) {
             // Duplication includes part of marker? => Adjust end
-            m.end += variant.intersect(m).size();
+            m.shiftEnd(variant.intersect(m).size());
         } else {
             // Duplication after end, no effect on marker coordinates
         }
@@ -204,14 +200,13 @@ public class Marker extends Interval implements TxtSerializable {
     protected Marker applyIns(Variant variant) {
         Marker m = cloneShallow();
 
-        if (variant.getStart() < m.start) {
+        if (variant.getStart() < m.getStart()) {
             // Insertion point before marker start? => Adjust both coordinates
             int lenChange = variant.lengthChange();
-            m.start += lenChange;
-            m.end += lenChange;
-        } else if (variant.getStart() <= m.end) {
+            m.shiftCoordinates(lenChange);
+        } else if (variant.getStart() <= m.getEndClosed()) {
             // Insertion point after start, but before end? => Adjust end coordinate
-            m.end += variant.lengthChange();
+            m.shiftEnd(variant.lengthChange());
         } else {
             // Insertion point after end, no effect on marker coordinates
         }
@@ -254,10 +249,10 @@ public class Marker extends Interval implements TxtSerializable {
 
             // Copy fields
             clone.chromosomeNameOri = chromosomeNameOri;
-            clone.end = end;
+            clone.setEndClosed(getEndClosed());
             clone.id = id;
             clone.parent = parent;
-            clone.start = start;
+            clone.setStart(getStart());
             clone.strandMinus = strandMinus;
             clone.type = type;
 
@@ -307,12 +302,12 @@ public class Marker extends Interval implements TxtSerializable {
         else if ((chr1 != null) && (chr2 == null)) return -1;
 
         // Compare by start position
-        if (start > i2.start) return 1;
-        if (start < i2.start) return -1;
+        if (getStart() > i2.getStart()) return 1;
+        if (getStart() < i2.getStart()) return -1;
 
         // Compare by end position
-        if (end > i2.end) return 1;
-        if (end < i2.end) return -1;
+        if (getEnd() > i2.getEnd()) return 1;
+        if (getEnd() < i2.getEnd()) return -1;
 
         return 0;
     }
@@ -327,8 +322,8 @@ public class Marker extends Interval implements TxtSerializable {
 
         if (intersects(interval)) return 0;
 
-        if (start > interval.getEnd()) return start - interval.getEnd();
-        if (interval.getStart() > end) return interval.getStart() - end;
+        if (getStart() > interval.getEndClosed()) return getStart() - interval.getEndClosed();
+        if (interval.getStart() > getEndClosed()) return interval.getStart() - getEndClosed();
 
         throw new RuntimeException("This should never happen!");
     }
@@ -351,27 +346,27 @@ public class Marker extends Interval implements TxtSerializable {
 
             // Initialize
             if (latest < 0) {
-                if (fromEnd) latest = m.getEnd() + 1;
+                if (fromEnd) latest = m.getEndClosed() + 1;
                 else latest = m.getStart() - 1;
             }
 
             if (fromEnd) {
-                if (intersects(m)) return len + (m.getEnd() - start);
-                else if (start > m.getEnd()) return len - 1 + (latest - start);
+                if (intersects(m)) return len + (m.getEndClosed() - getStart());
+                else if (getStart() > m.getEndClosed()) return len - 1 + (latest - getStart());
 
                 latest = m.getStart();
             } else {
-                if (intersects(m)) return len + (start - m.getStart());
-                else if (start < m.getStart()) return len - 1 + (start - latest);
+                if (intersects(m)) return len + (getStart() - m.getStart());
+                else if (getStart() < m.getStart()) return len - 1 + (getStart() - latest);
 
-                latest = m.getEnd();
+                latest = m.getEndClosed();
             }
 
             len += m.size();
         }
 
-        if (fromEnd) return len - 1 + (latest - start);
-        return len - 1 + (start - latest);
+        if (fromEnd) return len - 1 + (latest - getStart());
+        return len - 1 + (getStart() - latest);
     }
 
     @Override
@@ -466,15 +461,6 @@ public class Marker extends Interval implements TxtSerializable {
         return sb.toString();
     }
 
-    /**
-     * Is 'interval' completely included in 'this'?
-     *
-     * @return return true if 'this' includes 'interval'
-     */
-    public boolean includes(Marker marker) {
-        if (!marker.getChromosomeName().equals(getChromosomeName())) return false;
-        return (start <= marker.start) && (marker.end <= end);
-    }
 
     /**
      * Intersect of two markers
@@ -484,8 +470,8 @@ public class Marker extends Interval implements TxtSerializable {
     public Marker intersect(Marker marker) {
         if (!getChromosomeName().equals(marker.getChromosomeName())) return null;
 
-        int istart = Math.max(start, marker.getStart());
-        int iend = Math.min(end, marker.getEnd());
+        int istart = Math.max(getStart(), marker.getStart());
+        int iend = Math.min(getEndClosed(), marker.getEndClosed());
         if (iend < istart) return null;
         return new Marker(getParent(), istart, iend, strandMinus, "");
     }
@@ -521,18 +507,18 @@ public class Marker extends Interval implements TxtSerializable {
     public Markers minus(Marker interval) {
         Markers ints = new Markers();
         if (intersects(interval)) {
-            if ((interval.getStart() <= getStart()) && (getEnd() <= interval.getEnd())) {
+            if ((interval.getStart() <= getStart()) && (getEndClosed() <= interval.getEndClosed())) {
                 // 'this' is included in 'interval' => Nothing left
-            } else if ((interval.getStart() <= getStart()) && (interval.getEnd() < getEnd())) {
+            } else if ((interval.getStart() <= getStart()) && (interval.getEndClosed() < getEndClosed())) {
                 // 'interval' overlaps left part of 'this' => Include right part of 'this'
-                ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), isStrandMinus(), getId()));
-            } else if ((getStart() < interval.getStart()) && (getEnd() <= interval.getEnd())) {
+                ints.add(new Marker(getParent(), interval.getEndClosed() + 1, getEndClosed(), isStrandMinus(), getId()));
+            } else if ((getStart() < interval.getStart()) && (getEndClosed() <= interval.getEndClosed())) {
                 // 'interval' overlaps right part of 'this' => Include left part of 'this'
                 ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, isStrandMinus(), getId()));
-            } else if ((getStart() < interval.getStart()) && (interval.getEnd() < getEnd())) {
+            } else if ((getStart() < interval.getStart()) && (interval.getEndClosed() < getEndClosed())) {
                 // 'interval' overlaps middle of 'this' => Include left and right part of 'this'
                 ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, isStrandMinus(), getId()));
-                ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), isStrandMinus(), getId()));
+                ints.add(new Marker(getParent(), interval.getEndClosed() + 1, getEndClosed(), isStrandMinus(), getId()));
             } else throw new RuntimeException("Interval intersection not analysed. This should nbever happen!");
         } else ints.add(this); // No intersection => Just add 'this' interval
 
@@ -571,15 +557,14 @@ public class Marker extends Interval implements TxtSerializable {
                 if (chromo == null)
                     System.err.println("WARNING: Chromosome '" + fields[0] + "' not found in genome '" + genome.getGenomeName() + "', version '" + genome.getVersion() + "'!\n\tLine: " + lineNum + "\t'" + line + "'");
                 parent = chromo;
-                start = Gpr.parseIntSafe(fields[1]) - positionBase;
-                end = Gpr.parseIntSafe(fields[2]) - positionBase;
+                setStart(Gpr.parseIntSafe(fields[1]) - positionBase);
+                setEndClosed(Gpr.parseIntSafe(fields[2]) - positionBase);
                 id = "";
 
                 if (fields.length >= 4) {
                     // Join all ids using a space character (and remove all spaces)
                     for (int t = 3; t < fields.length; t++)
                         id += fields[t].trim() + " ";
-
                     id = id.trim();
                 }
             } else
@@ -595,8 +580,8 @@ public class Marker extends Interval implements TxtSerializable {
         type = EffectType.valueOf(markerSerializer.getNextField());
         markerSerializer.getNextFieldInt();
         parent = new MarkerParentId(markerSerializer.getNextFieldInt()); // Create a 'fake' parent. It will be replaced after all objects are in memory.
-        start = markerSerializer.getNextFieldInt();
-        end = markerSerializer.getNextFieldInt();
+        setStart(markerSerializer.getNextFieldInt());
+        setEndClosed(markerSerializer.getNextFieldInt());
         id = markerSerializer.getNextField();
         strandMinus = markerSerializer.getNextFieldBoolean();
     }
@@ -609,8 +594,8 @@ public class Marker extends Interval implements TxtSerializable {
         return type //
                 + "\t" + markerSerializer.getIdByMarker(this) //
                 + "\t" + (parent != null ? markerSerializer.getIdByMarker((Marker) parent) : -1) //
-                + "\t" + start //
-                + "\t" + end //
+                + "\t" + getStart() //
+                + "\t" + getEndClosed() //
                 + "\t" + id //
                 + "\t" + strandMinus //
                 ;
@@ -621,12 +606,12 @@ public class Marker extends Interval implements TxtSerializable {
      */
     public boolean shouldApply(Variant variant) {
         // Variant after this marker: No effect when applying (all coordinates remain the same)
-        return variant.getStart() <= end;
+        return variant.getStart() <= getEndClosed();
     }
 
     @Override
     public String toString() {
-        return getChromosomeName() + "\t" + start + "-" + end //
+        return getChromosomeName() + "\t" + getStart() + "-" + getEndClosed() //
                 + " " //
                 + type //
                 + ((id != null) && (id.length() > 0) ? " '" + id + "'" : "");
@@ -640,8 +625,8 @@ public class Marker extends Interval implements TxtSerializable {
     public Marker union(Marker m) {
         if (!getChromosomeName().equals(m.getChromosomeName())) return null;
 
-        int ustart = Math.min(start, m.getStart());
-        int uend = Math.max(end, m.getEnd());
+        int ustart = Math.min(getStart(), m.getStart());
+        int uend = Math.max(getEndClosed(), m.getEndClosed());
         return new Marker(getParent(), ustart, uend, strandMinus, "");
     }
 
@@ -657,8 +642,8 @@ public class Marker extends Interval implements TxtSerializable {
     /**
      * Calculate the effect of this variant
      *
-     * @param variantEndPoint :	Before analyzing results, we have to change markers using variantrRef
-     *                        to create a new reference 'on the fly'
+     * @param variant :	Before analyzing results, we have to change markers using variantrRef
+     *                  to create a new reference 'on the fly'
      */
     public boolean variantEffectNonRef(Variant variant, VariantEffects variantEffects) {
         if (!intersects(variant)) return false; // Sanity check

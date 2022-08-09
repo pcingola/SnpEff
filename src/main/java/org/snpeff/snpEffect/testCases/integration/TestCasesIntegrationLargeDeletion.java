@@ -41,7 +41,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
         // Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
         for (VcfEntry ve : vcfEntries) {
             if (verbose)
-                Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getEnd() + "\tsize:" + ve.size());
+                Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getEndClosed() + "\tsize:" + ve.size());
 
             boolean ok = false;
             for (VcfEffect veff : ve.getVcfEffects()) {

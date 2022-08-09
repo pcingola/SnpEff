@@ -31,7 +31,7 @@ public class Intergenic extends Marker {
 		Chromosome chr = null;
 
 		if (geneLeft != null) {
-			start = geneLeft.getEnd() + 1;
+			start = geneLeft.getEndClosed() + 1;
 			gidLeft = geneLeft.getId();
 			gnameLeft = geneLeft.getGeneName();
 			chr = geneLeft.getChromosome();
@@ -47,7 +47,7 @@ public class Intergenic extends Marker {
 			end = geneRight.getStart() - 1;
 			chr = geneRight.getChromosome();
 		} else {
-			end = chr.getEnd();
+			end = chr.getEndClosed();
 		}
 
 		// Do not create marker if the coordinates are negative

@@ -93,7 +93,7 @@ public class SnpEffCmdClosest extends SnpEff {
 				// Show output
 				System.out.println(bed.getChromosomeName() //
 						+ "\t" + bed.getStart() // BED format: Zero-based position
-						+ "\t" + (bed.getEnd() + 1) // BED format: End base is not included
+						+ "\t" + (bed.getEndClosed() + 1) // BED format: End base is not included
 						+ "\t" + id //
 				);
 
@@ -115,7 +115,7 @@ public class SnpEffCmdClosest extends SnpEff {
 			// Extend interval to capture 'close' markers
 			for (int extend = initialExtension; extend < chr.size(); extend *= 2) {
 				int start = Math.max(queryMarker.getStart() - extend, 0);
-				int end = queryMarker.getEnd() + extend;
+				int end = queryMarker.getEndClosed() + extend;
 				Marker extended = new Marker(chr, start, end, false, "");
 
 				// Find all markers that intersect with 'extended interval'

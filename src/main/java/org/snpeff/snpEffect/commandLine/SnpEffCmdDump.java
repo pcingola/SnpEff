@@ -113,7 +113,7 @@ public class SnpEffCmdDump extends SnpEff {
 		String chr = chrStr + marker.getChromosome().getId();
 		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first
 										// base in a chromosome is numbered 0.
-		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The
+		int end = marker.getEndClosed() + 1; // The ending position of the feature in the chromosome or scaffold. The
 										// chromEnd base is not included in the display of the feature.
 		String name = marker.getClass().getSimpleName() + "_" + marker.getId();
 		System.out.println(chr + "\t" + start + "\t" + end + "\t" + name);
@@ -126,7 +126,7 @@ public class SnpEffCmdDump extends SnpEff {
 		String chr = chrStr + marker.getChromosome().getId();
 		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first
 										// base in a chromosome is numbered 0.
-		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The
+		int end = marker.getEndClosed() + 1; // The ending position of the feature in the chromosome or scaffold. The
 										// chromEnd base is not included in the display of the feature.
 
 		StringBuilder info = new StringBuilder();

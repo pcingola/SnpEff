@@ -144,7 +144,7 @@ public class Markers implements Serializable, Collection<Marker> {
         int[] points = new int[2 * size()];
         for (Interval interval : this) {
             points[i++] = interval.getStart();
-            points[i++] = interval.getEnd();
+            points[i++] = interval.getEndClosed();
         }
 
         // Calculate median by sorting and selecting middle element
@@ -177,11 +177,11 @@ public class Markers implements Serializable, Collection<Marker> {
                 Markers query = forest.query(mi);
 
                 // Get intersect
-                Marker intersect = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
+                Marker intersect = new Marker(mi.getParent(), mi.getStart(), mi.getEndClosed(), mi.isStrandMinus(), "");
                 done.add(mi);
                 for (Marker m : query) {
                     if (intersect != null) {
-                        if ((intersect.getStart() < m.getStart()) || (intersect.getEnd() > m.getEnd())) {
+                        if ((intersect.getStart() < m.getStart()) || (intersect.getEndClosed() > m.getEndClosed())) {
                             intersect = intersect.intersect(m);
                         }
                     }
@@ -262,7 +262,7 @@ public class Markers implements Serializable, Collection<Marker> {
             }
 
             // Previous interval finished? => add it to list
-            if (i.start > end) {
+            if (i.getStart() > end) {
                 if ((start >= 0) && (end >= 0)) {
                     if (end < start) { // Sanity check
                         Log.debug("This should never happen!\tstart: " + start + "\tend:" + end);
@@ -278,10 +278,10 @@ public class Markers implements Serializable, Collection<Marker> {
             }
 
             // Update interval 'start'
-            if (start < 0) start = i.start;
+            if (start < 0) start = i.getStart();
 
             // Update 'end'
-            end = Math.max(end, i.end);
+            end = Math.max(end, i.getEndClosed());
 
             // Update tag
             if (tag.length() <= 0) tag = i.id;
@@ -308,18 +308,18 @@ public class Markers implements Serializable, Collection<Marker> {
         // Add all intervals in 'this'
         for (Marker i : this)
             if (i.intersects(interval)) {
-                if ((interval.getStart() <= i.getStart()) && (i.getEnd() <= interval.getEnd())) {
+                if ((interval.getStart() <= i.getStart()) && (i.getEndClosed() <= interval.getEndClosed())) {
                     // 'i' is included in 'interval' => Do not add 'i'
-                } else if ((interval.getStart() <= i.getStart()) && (interval.getEnd() < i.getEnd())) {
+                } else if ((interval.getStart() <= i.getStart()) && (interval.getEndClosed() < i.getEndClosed())) {
                     // 'interval' overlaps left part of 'i' => Include right part of 'i'
-                    ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.isStrandMinus(), i.getId()));
-                } else if ((i.getStart() < interval.getStart()) && (i.getEnd() <= interval.getEnd())) {
+                    ints.add(new Marker(i.getParent(), interval.getEndClosed() + 1, i.getEndClosed(), i.isStrandMinus(), i.getId()));
+                } else if ((i.getStart() < interval.getStart()) && (i.getEndClosed() <= interval.getEndClosed())) {
                     // 'interval' overlaps right part of 'i' => Include left part of 'i'
                     ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.isStrandMinus(), i.getId()));
-                } else if ((i.getStart() < interval.getStart()) && (interval.getEnd() < i.getEnd())) {
+                } else if ((i.getStart() < interval.getStart()) && (interval.getEndClosed() < i.getEndClosed())) {
                     // 'interval' overlaps middle of 'i' => Include left and right part of 'i'
                     ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.isStrandMinus(), i.getId()));
-                    ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.isStrandMinus(), i.getId()));
+                    ints.add(new Marker(i.getParent(), interval.getEndClosed() + 1, i.getEndClosed(), i.isStrandMinus(), i.getId()));
                 } else throw new RuntimeException("Interval intersection not analysed. This should nbever happen!");
             } else ints.add(i); // No intersection => Just add interval
 
@@ -476,7 +476,7 @@ public class Markers implements Serializable, Collection<Marker> {
             sb.append("\t" + (num++) + ":" //
                     + "\t" + i.getChromosomeName() //
                     + "\t" + i.getStart() //
-                    + "\t" + i.getEnd() //
+                    + "\t" + i.getEndClosed() //
                     + "\t" + i.getClass().getSimpleName() //
                     + "\t" + i.getId() //
                     + "\n");
@@ -503,7 +503,7 @@ public class Markers implements Serializable, Collection<Marker> {
                 ch = i.getChromosomeName();
             }
 
-            sb.append("|" + i.toStringAsciiArt(maxLen) + "|\t" + i.getChromosomeName() + ": [" + i.start + " - " + i.end + "] ");
+            sb.append("|" + i.toStringAsciiArt(maxLen) + "|\t" + i.getChromosomeName() + ": [" + i.getStart() + " - " + i.getEndClosed() + "] ");
             if ((i.id != null) && (i.id.length() > 0)) sb.append("'" + i.id + "'"); // Show tag (if any)
             sb.append("\n");
         }
@@ -515,7 +515,7 @@ public class Markers implements Serializable, Collection<Marker> {
     public String toStringTxt() {
         StringBuilder sb = new StringBuilder();
         for (Marker i : this)
-            sb.append(i.getChromosomeName() + "\t" + i.getStart() + "\t" + i.getEnd() + "\t" + i.getId() + "\n");
+            sb.append(i.getChromosomeName() + "\t" + i.getStart() + "\t" + i.getEndClosed() + "\t" + i.getId() + "\n");
         return sb.toString();
     }
 
@@ -541,7 +541,7 @@ public class Markers implements Serializable, Collection<Marker> {
                 Marker union = mi.clone();
                 done.add(mi);
                 for (Marker m : query) {
-                    if ((union != null) && (union.getStart() > m.getStart()) || (union.getEnd() < m.getEnd()))
+                    if ((union != null) && (union.getStart() > m.getStart()) || (union.getEndClosed() < m.getEndClosed()))
                         union = union.union(m);
                     done.add(m);
                 }

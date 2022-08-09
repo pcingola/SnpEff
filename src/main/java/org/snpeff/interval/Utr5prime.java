@@ -115,7 +115,7 @@ public class Utr5prime extends Utr {
 		int cdsStart = tr.getCdsStart();
 		if (cdsStart < 0) return -1;
 
-		if (isStrandPlus()) return cdsStart - variant.getEnd();
+		if (isStrandPlus()) return cdsStart - variant.getEndClosed();
 		return variant.getStart() - cdsStart;
 	}
 

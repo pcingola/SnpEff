@@ -131,7 +131,7 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 		Marker marker = variantEffect.getMarker();
 		Variant variant = variantEffect.getVariant();
 		int start = Math.max(variant.getStart(), marker.getStart());
-		int end = Math.min(variant.getEnd(), marker.getEnd());
+		int end = Math.min(variant.getEndClosed(), marker.getEndClosed());
 		int size = end - start + 1;
 
 		if (size > 0) {

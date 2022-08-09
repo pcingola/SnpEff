@@ -324,7 +324,7 @@ public class TestCasesIntervals extends TestCasesBase {
         assertEquals(1, minus.size());
         Marker minusInt = minus.iterator().next();
         assertEquals(51, minusInt.getStart());
-        assertEquals(90, minusInt.getEnd());
+        assertEquals(90, minusInt.getEndClosed());
 
         if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
     }
@@ -351,7 +351,7 @@ public class TestCasesIntervals extends TestCasesBase {
         assertEquals(1, minus.size());
         Marker minusInt = minus.iterator().next();
         assertEquals(10, minusInt.getStart());
-        assertEquals(50, minusInt.getEnd());
+        assertEquals(50, minusInt.getEndClosed());
     }
 
     /**
@@ -377,11 +377,11 @@ public class TestCasesIntervals extends TestCasesBase {
         Iterator<Marker> it = minus.iterator();
         Marker minusInt = it.next();
         assertEquals(10, minusInt.getStart());
-        assertEquals(39, minusInt.getEnd());
+        assertEquals(39, minusInt.getEndClosed());
 
         minusInt = it.next();
         assertEquals(61, minusInt.getStart());
-        assertEquals(90, minusInt.getEnd());
+        assertEquals(90, minusInt.getEndClosed());
     }
 
     /**
@@ -396,7 +396,7 @@ public class TestCasesIntervals extends TestCasesBase {
         ArrayList<Marker> list = new ArrayList<>();
         list.add(m1);
 
-        int last = m1.getEnd() + 10;
+        int last = m1.getEndClosed() + 10;
         for (int i = m1.getStart(); i <= last; i++) {
             Marker m = new Marker(chr, i, i, false, "");
 
@@ -421,7 +421,7 @@ public class TestCasesIntervals extends TestCasesBase {
         list.add(m2);
         list.add(m3);
 
-        int last = m3.getEnd() + 10;
+        int last = m3.getEndClosed() + 10;
         for (int i = m1.getStart(); i <= last; i++) {
             Marker m = new Marker(chr, i, i, false, "");
 
@@ -446,12 +446,12 @@ public class TestCasesIntervals extends TestCasesBase {
         list.add(m2);
         list.add(m3);
 
-        int last = m3.getEnd() + 10;
+        int last = m3.getEndClosed() + 10;
         for (int i = m1.getStart(); i <= last; i++) {
             Marker m = new Marker(chr, i, i, false, "");
 
             int dist = m.distanceBases(list, true);
-            assertEquals((m3.getEnd() - i) % 100, dist % 100);
+            assertEquals((m3.getEndClosed() - i) % 100, dist % 100);
         }
     }
 

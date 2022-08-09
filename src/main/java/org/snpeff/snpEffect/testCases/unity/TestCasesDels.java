@@ -42,9 +42,9 @@ public class TestCasesDels extends TestCasesBase {
 		currCodon[0] = currCodon[1] = currCodon[2] = ' ';
 		for (Exon exon : transcript.sortedStrand()) {
 			int step = exon.isStrandPlus() ? 1 : -1;
-			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
-			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEndClosed()); pos += step, cdsBaseNum++) {
 				int cdsCodonPos = cdsBaseNum % 3;
 
 				// Should we use this codon?
@@ -83,9 +83,9 @@ public class TestCasesDels extends TestCasesBase {
 		currCodon[0] = currCodon[1] = currCodon[2] = ' ';
 		for (Exon exon : transcript.sortedStrand()) {
 			int step = exon.isStrandPlus() ? 1 : -1;
-			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
-			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEndClosed()); pos += step, cdsBaseNum++) {
 				int cdsCodonPos = cdsBaseNum % 3;
 
 				useCodon |= variant.intersects(pos); // Should we use this codon?
@@ -155,10 +155,10 @@ public class TestCasesDels extends TestCasesBase {
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
 				int step = exon.isStrandPlus() ? 1 : -1;
-				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
 				// For each base in this exon...
-				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEndClosed()); pos += step, cdsBaseNum++) {
 					//---
 					// Create variant
 					//---
@@ -168,7 +168,7 @@ public class TestCasesDels extends TestCasesBase {
 
 					// Variants affecting only one exon
 					int start = pos;
-					int end = Math.min(pos + delLen, exon.getEnd());
+					int end = Math.min(pos + delLen, exon.getEndClosed());
 
 					if (transcript.isStrandMinus()) {
 						start = pos - delLen;
@@ -176,7 +176,7 @@ public class TestCasesDels extends TestCasesBase {
 					}
 
 					if (start < 0) start = 0;
-					if (end > chromosome.getEnd()) end = chromosome.getEnd();
+					if (end > chromosome.getEndClosed()) end = chromosome.getEndClosed();
 					delLen = end - start + 1;
 
 					String delPlus = chromoSequence.substring(start, end + 1); // Deletion (plus strand)

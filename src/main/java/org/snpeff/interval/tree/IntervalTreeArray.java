@@ -83,7 +83,7 @@ public class IntervalTreeArray implements Itree {
 		Markers intersecting = new Markers();
 
 		for (Marker interval : markers) {
-			if (interval.getEnd() < center) left.add(interval);
+			if (interval.getEndClosed() < center) left.add(interval);
 			else if (interval.getStart() > center) right.add(interval);
 			else intersecting.add(interval);
 		}
@@ -190,7 +190,7 @@ public class IntervalTreeArray implements Itree {
 		}
 
 		// Recurse right?
-		if ((midPos < marker.getEnd()) && (right[idx] >= 0)) {
+		if ((midPos < marker.getEndClosed()) && (right[idx] >= 0)) {
 			query(marker, right[idx], results);
 		}
 	}

@@ -56,7 +56,7 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 					// Add BED line
 					ann = m.getChromosomeName() + "\t" //
 							+ "\t" + (m.getStart() + outOffset) //
-							+ "\t" + (m.getEnd() + outOffset + 1) //
+							+ "\t" + (m.getEndClosed() + outOffset + 1) //
 							+ "\t" + variantName + ";" + type //
 							+ (geneName != null ? ":" + geneName : "") //
 					;

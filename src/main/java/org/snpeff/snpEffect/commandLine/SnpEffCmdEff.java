@@ -816,7 +816,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			sb.append(">" + tr.getId() + " Variant " //
 					+ var.getChromosomeName() //
 					+ ":" + (var.getStart() + 1) //
-					+ "-" + (var.getEnd() + 1) //
+					+ "-" + (var.getEndClosed() + 1) //
 					+ " Ref:" + var.getReference() //
 					+ " Alt:" + var.getAlt() //
 					+ " HGVS.p:" + varEff.getHgvsProt() //

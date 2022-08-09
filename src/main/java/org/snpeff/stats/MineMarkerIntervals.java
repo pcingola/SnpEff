@@ -42,7 +42,7 @@ public class MineMarkerIntervals {
 					&& (m.getChromosome().getId().equals(prev.getChromosome().getId())) // Same chromosome?
 			) {
 				if( m.intersects(prev) ) distanceStats.sample(0); // Intersect? => Distance is zero
-				else distanceStats.sample(m.getStart() - prev.getEnd()); // Perform distance stats
+				else distanceStats.sample(m.getStart() - prev.getEndClosed()); // Perform distance stats
 			}
 
 			prev = m;

@@ -54,12 +54,12 @@ public class TestCasesDel {
         Exon exons[] = {e1, e2, e3, e4};
 
         for (Exon e : exons) {
-            String seq = chrSeq.substring(e.getStart(), e.getEnd() + 1);
+            String seq = chrSeq.substring(e.getStart(), e.getEndClosed() + 1);
             seq = GprSeq.reverseWc(seq);
             e.setSequence(seq);
             tr.add(e);
 
-            Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
+            Cds cds = new Cds(tr, e.getStart(), e.getEndClosed(), e.isStrandMinus(), "");
             tr.add(cds);
         }
         tr.rankExons();

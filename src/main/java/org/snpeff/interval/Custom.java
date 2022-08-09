@@ -75,9 +75,9 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 		StringBuilder sb = new StringBuilder();
 		sb.append(getChromosomeName());
 		sb.append("\t");
-		sb.append(start);
+		sb.append(getStart());
 		sb.append("-");
-		sb.append(end);
+		sb.append(getEndClosed());
 		sb.append(" ");
 		sb.append(type);
 		sb.append(((id != null) && (id.length() > 0) ? " '" + id + "'" : ""));

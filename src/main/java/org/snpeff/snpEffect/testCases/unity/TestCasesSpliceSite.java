@@ -54,7 +54,7 @@ public class TestCasesSpliceSite extends TestCasesBase {
 
                 // Splice site acceptor
                 effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? EffectType.SPLICE_SITE_DONOR : null);
-                for (int pos = intron.getEnd() - ssBases; pos <= intron.getEnd(); pos++) {
+                for (int pos = intron.getEndClosed() - ssBases; pos <= intron.getEndClosed(); pos++) {
                     Variant variant = new Variant(chromosome, pos, "A", "T");
                     checkEffect(variant, EffectType.SPLICE_SITE_ACCEPTOR, effectNotExpected, EffectImpact.HIGH);
                 }

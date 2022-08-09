@@ -21,7 +21,6 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * This class stores all "relevant" sequences in a genome
@@ -100,7 +99,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 			if (!genes.getChromosomeName().equalsIgnoreCase(chr)) continue; // Different chromosome? => Skip
 
 			int ssStart = genes.getStart();
-			int ssEnd = genes.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+			int ssEnd = genes.getEndClosed() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
 			if ((ssStart < 0) || (ssEnd > chrSeq.length())) {
 				System.err.println("Ignoring gene outside chromosome range (chromo length: " + chrSeq.length() + "). Sequence (merged genes): " + genes.toStr());
@@ -110,7 +109,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 					seqsAdded++;
 
 					// Create a marker sequence and add it to interval forest
-					MarkerSeq m = new MarkerSeq(genes.getChromosome(), genes.getStart(), genes.getEnd(), false, genes.getChromosomeName() + ":" + genes.getStart() + "-" + genes.getEnd());
+					MarkerSeq m = new MarkerSeq(genes.getChromosome(), genes.getStart(), genes.getEndClosed(), false, genes.getChromosomeName() + ":" + genes.getStart() + "-" + genes.getEndClosed());
 					m.setSequence(seq);
 					intervalForest.add(m);
 				} catch (Throwable t) {
@@ -178,14 +177,14 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 			if (!gene.getChromosomeName().equalsIgnoreCase(chr)) continue; // Different chromosome? => Skip
 
 			int ssStart = gene.getStart();
-			int ssEnd = gene.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+			int ssEnd = gene.getEndClosed() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
 			if ((ssStart < 0) || (ssEnd > chrLen)) {
 				System.err.println("Ignoring gene outside chromosome range (chromo length: " + chrLen + "). Gene: " + gene.toStr());
 			} else {
 				try {
 					// Create a marker sequence and add it to interval forest
-					MarkerSeq m = new MarkerSeq(gene.getChromosome(), gene.getStart(), gene.getEnd(), false, gene.getId());
+					MarkerSeq m = new MarkerSeq(gene.getChromosome(), gene.getStart(), gene.getEndClosed(), false, gene.getId());
 					markers.add(m);
 				} catch (Throwable t) {
 					t.printStackTrace();

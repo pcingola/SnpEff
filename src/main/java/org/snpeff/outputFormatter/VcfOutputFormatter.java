@@ -134,7 +134,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						Variant variant = variantEffect.getVariant();
 
 						// Get cDNA position
-						int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
+						int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEndClosed(); // First base in cDNA
 						int cdnaIdx = tr.baseNumber2MRnaPos(pos) + 1; // Which cDNA base number?
 						if (cdnaIdx > 0) sb.append("(" + VcfEntry.vcfInfoValueSafe(tr.getId()) + "|" + cdnaIdx + ")");
 

@@ -60,7 +60,7 @@ public class TestCasesBaseApply extends TestCasesBase {
 
         // Create gene, trancript and exons
         gene = new Gene(chromosome, 0, 999, false, "gene1", "gene1", BioType.protein_coding);
-        transcript = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.isStrandMinus(), "transcript1");
+        transcript = new Transcript(gene, gene.getStart(), gene.getEndClosed(), gene.isStrandMinus(), "transcript1");
         transcript.setProteinCoding(true);
 
         Exon exons[] = new Exon[3];
@@ -69,7 +69,7 @@ public class TestCasesBaseApply extends TestCasesBase {
         exons[2] = new Exon(transcript, 900, 999, false, "exon3", 0);
 
         for (Exon ex : exons) {
-            ex.setSequence(chromoSequence.substring(ex.getStart(), ex.getEnd() + 1));
+            ex.setSequence(chromoSequence.substring(ex.getStart(), ex.getEndClosed() + 1));
             transcript.add(ex);
         }
 

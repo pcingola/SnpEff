@@ -49,7 +49,7 @@ public class SnpEffCmdLen extends SnpEff {
 							+ "\t" + gene.getId() //
 							+ "\t" + gene.getChromosomeName() //
 							+ "\t" + (gene.getStart() + 1) //
-							+ "\t" + (gene.getEnd() + 1) //
+							+ "\t" + (gene.getEndClosed() + 1) //
 							+ "\t" + efflen //
 							+ "\t" + maxcds //
 					);
@@ -76,13 +76,13 @@ public class SnpEffCmdLen extends SnpEff {
 			if (tr.isProteinCoding()) {
 				for (Exon ex : tr) {
 					// Mark all bases in exon as 'used'
-					for (int i = ex.getStart(); i <= ex.getEnd(); i++)
+					for (int i = ex.getStart(); i <= ex.getEndClosed(); i++)
 						coding[i - gene.getStart()] = 1;
 
 					// Mark bases in SpliceSiteAcceptor/Donnor as 'used'
 					for (SpliceSite ss : ex.getSpliceSites()) {
 						if (ss instanceof SpliceSiteAcceptor || ss instanceof SpliceSiteDonor) {
-							for (int i = ss.getStart(); i <= ss.getEnd(); i++)
+							for (int i = ss.getStart(); i <= ss.getEndClosed(); i++)
 								coding[i - gene.getStart()] = 1;
 						}
 					}
@@ -93,7 +93,7 @@ public class SnpEffCmdLen extends SnpEff {
 				for (Intron intr : tr.introns()) {
 					for (SpliceSite ss : intr.getSpliceSites()) {
 						if (ss instanceof SpliceSiteAcceptor || ss instanceof SpliceSiteDonor) {
-							for (int i = ss.getStart(); i <= ss.getEnd(); i++)
+							for (int i = ss.getStart(); i <= ss.getEndClosed(); i++)
 								coding[i - gene.getStart()] = 1;
 						}
 					}

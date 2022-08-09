@@ -49,7 +49,7 @@ public class TestCasesEffectCollapse2 extends TestCasesBase {
         // Create variant
         Variant variant = new Variant(genome.getChromosome("1"), 695, "ACGTACGTACGTACGT", "");
         if (verbose)
-            Log.info(variant.getVariantType() + "\t" + variant.getStart() + "-" + variant.getEnd() + "\t" + variant);
+            Log.info(variant.getVariantType() + "\t" + variant.getStart() + "-" + variant.getEndClosed() + "\t" + variant);
 
         // Calculate effect
         VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
