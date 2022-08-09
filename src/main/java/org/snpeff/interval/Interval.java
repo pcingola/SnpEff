@@ -201,18 +201,19 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
     /**
      * Return true if this intersects '[iStart, iEnd)'
+     * <p>
      * Examples:
-     * - These intervals intersect:
-     * [------------)
-     * [--------)
+     * These intervals intersect:
+     * -----------[>>>>>>>>>>>>)----------
+     * -------------------[>>>>>>>>)------
      * <p>
-     * - These intervals do not intersect:
-     * [-----------)
-     * [----------)
+     * These intervals do not intersect:
+     * ---[>>>>>>>>>>>)-------------------
+     * -----------------[>>>>>>>>>>)------
      * <p>
-     * - These intervals do not intersect:
-     * [-----------)
-     * [------------)
+     * These intervals do not intersect:
+     * -------[>>>>>>>>>>)---------------
+     * ------------------[>>>>>>>>>>>)--
      */
     public boolean intersects(int iStart, int iEnd) {
         return (iEnd > start) && (iStart < end);
@@ -222,25 +223,27 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
      * Return true if this intersects 'interval'
      */
     public boolean intersects(Interval interval) {
-        if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-        return (interval.getEnd() > start) && (interval.getStart() < end);
+        return interval.getChromosomeName().equals(getChromosomeName()) && intersects(interval.getStart(), interval.getEnd());
     }
 
     /**
      * Return true if this interval contains point (inclusive)
      * <p>
      * Examples:
-     * - This point intersect:
-     * X
-     * [------------)
+     * This point intersects:
+     * ----------------X------------------
+     * ----------[>>>>>>>>>>)-------------
+     * This point intersects:
+     * ----------X------------------------
+     * ----------[>>>>>>>>>>)-------------
      * <p>
-     * - This point does NOT intersect:
-     * X
-     * [----------)
+     * This point does NOT intersect:
+     * ---------X-------------------------
+     * ----------[>>>>>>>>>>)-------------
      * <p>
-     * - This point does NOT intersect:
-     * X
-     * [----------)
+     * This point does NOT intersect:
+     * ---------------------X-------------
+     * ----------[>>>>>>>>>>)-------------
      */
     public boolean intersects(long point) {
         return (start <= point) && (point < end);
@@ -252,8 +255,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
      * @return return true if 'this' includes 'interval'
      */
     public boolean includes(Interval interval) {
-        if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-        return (start <= interval.start) && (interval.end <= end);
+        return interval.getChromosomeName().equals(getChromosomeName()) && (start <= interval.start) && (interval.end <= end);
     }
 
     /**

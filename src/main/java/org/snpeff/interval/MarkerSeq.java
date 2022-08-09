@@ -43,6 +43,7 @@ public class MarkerSeq extends Marker {
      */
     @Override
     public MarkerSeq apply(Variant variant) {
+        throw new RuntimeException("    !!!!!!!!!!! DO NOT OVERIDE THIS METHOD\n");
         if (!shouldApply(variant)) return this;
 
         // Create new MarkerSeq with updated coordinates
@@ -90,6 +91,8 @@ public class MarkerSeq extends Marker {
      * Apply a change type deletion (update sequence)
      */
     protected void applyDel(Variant variant, MarkerSeq markerSeq) {
+        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+
         // Get sequence in positive strand direction
         String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
@@ -110,6 +113,7 @@ public class MarkerSeq extends Marker {
      * Apply a change type duplication (update sequence)
      */
     protected void applyDup(Variant variant, MarkerSeq markerSeq) {
+        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
         // Get sequence in positive strand direction
         String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
@@ -127,6 +131,7 @@ public class MarkerSeq extends Marker {
      * Apply a change type insertion (update sequence)
      */
     protected void applyIns(Variant variant, MarkerSeq markerSeq) {
+        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
         // Get sequence in positive strand direction
         String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
@@ -144,6 +149,7 @@ public class MarkerSeq extends Marker {
      * Apply a change type MNP (update sequence)
      */
     protected void applyMnp(Variant variant, MarkerSeq markerSeq) {
+        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
         // Calculate indexes
         int idxStart = variant.getStart() - getStart();
         int idxAlt = 0;
@@ -174,6 +180,7 @@ public class MarkerSeq extends Marker {
      * Apply a change type SNP (update sequence)
      */
     protected void applySnp(Variant variant, MarkerSeq markerSeq) {
+        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
         // Get sequence in positive strand direction
         String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
