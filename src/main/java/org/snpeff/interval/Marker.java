@@ -9,6 +9,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -69,16 +70,14 @@ public class Marker extends Interval implements TxtSerializable {
     /**
      * Apply a variant to a marker.
      * <p>
-     * Calculate a the result of a marker, such that
+     * Calculate the result of a marker, such that
      * newMarker = marker.apply( variant )
-     * variant = Diff( newMarker , marker )		// Differences in sequence
+     * variant = Diff( newMarker , marker ) // Differences in sequence
      * <p>
      * Note: This method may return:
-     * - The same marker (this) when genetic coordinates remain unchanged
+     * - The same marker (shallow clone) when genetic coordinates remain unchanged
      * - 'null' if the whole marker is removed by the variant (e.g. a deletion spanning the whole marker)
      * <p>
-     * For these reasons, the method should never be invoked directly.
-     * This is why the method is 'private' and 'final'
      *
      * @return The marker result after applying variant
      */
@@ -88,9 +87,11 @@ public class Marker extends Interval implements TxtSerializable {
         Marker newMarker = null;
         switch (variant.getVariantType()) {
             case SNP:
+                newMarker = applySnp(variant);
+                break;
+
             case MNP:
-                // Variant does not change length. No effect when applying (all coordinates remain the same)
-                newMarker = this;
+                newMarker = applyMnp(variant);
                 break;
 
             case INS:
@@ -115,9 +116,14 @@ public class Marker extends Interval implements TxtSerializable {
         }
 
         // Always return a copy of the marker (if the variant is applied)
-        if (newMarker == this) return cloneShallow();
+        if (newMarker == this) {
+            Log.debug("Clone shallow while applying. This should not happen!");
+            return cloneShallow();
+        }
+
         return newMarker;
     }
+
 
     /**
      * Apply a Variant to a marker. Variant is a deletion
@@ -231,6 +237,19 @@ public class Marker extends Interval implements TxtSerializable {
 
         return m;
     }
+
+    protected Marker applyMnp(Variant variant) {
+        // Variant does not change length.
+        // No effect when applying, because all coordinates remain the same.
+        return cloneShallow();
+    }
+
+    protected Marker applySnp(Variant variant) {
+        // Variant does not change length.
+        // No effect when applying, because all coordinates remain the same.
+        return cloneShallow();
+    }
+
 
     @Override
     public Marker clone() {
@@ -603,6 +622,7 @@ public class Marker extends Interval implements TxtSerializable {
 
     /**
      * True if the variant should be applied to the marker
+     * We need to modify the coordinates if the variant is "left" respect to the marker
      */
     public boolean shouldApply(Variant variant) {
         // Variant after this marker: No effect when applying (all coordinates remain the same)
@@ -643,7 +663,7 @@ public class Marker extends Interval implements TxtSerializable {
      * Calculate the effect of this variant
      *
      * @param variant :	Before analyzing results, we have to change markers using variantrRef
-     *                  to create a new reference 'on the fly'
+     *                to create a new reference 'on the fly'
      */
     public boolean variantEffectNonRef(Variant variant, VariantEffects variantEffects) {
         if (!intersects(variant)) return false; // Sanity check

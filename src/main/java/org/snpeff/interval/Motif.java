@@ -62,7 +62,7 @@ public class Motif extends Marker {
             // Step 2:
             //     Calculate new sequence, by 'applying' variant to mseq.
             if (variant.isSnp() || variant.isMnp()) {
-                MarkerSeq mseqNew = mseq.apply(variant);
+                MarkerSeq mseqNew = (MarkerSeq) mseq.apply(variant);
                 String variantd = mseqNew.getSequence();
                 if (isStrandMinus()) variantd = GprSeq.reverseWc(variantd);
 

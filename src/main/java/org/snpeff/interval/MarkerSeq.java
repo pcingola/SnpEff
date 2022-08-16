@@ -39,62 +39,14 @@ public class MarkerSeq extends Marker {
     }
 
     /**
-     * Apply variant
-     */
-    @Override
-    public MarkerSeq apply(Variant variant) {
-        throw new RuntimeException("    !!!!!!!!!!! DO NOT OVERIDE THIS METHOD\n");
-        if (!shouldApply(variant)) return this;
-
-        // Create new MarkerSeq with updated coordinates
-        MarkerSeq newMarkerSeq = (MarkerSeq) super.apply(variant);
-        if (newMarkerSeq == null) return null;
-
-        if (variant.intersects(this) && (sequence != null) && (!sequence.isEmpty())) {
-            switch (variant.getVariantType()) {
-                case SNP:
-                    applySnp(variant, newMarkerSeq);
-                    break;
-
-                case INS:
-                    applyIns(variant, newMarkerSeq);
-                    break;
-
-                case DEL:
-                    applyDel(variant, newMarkerSeq);
-                    break;
-
-                case DUP:
-                    applyDup(variant, newMarkerSeq);
-                    break;
-
-                case MNP:
-                    applyMnp(variant, newMarkerSeq);
-                    break;
-
-                case MIXED:
-                    // When applying a MIXED variant, it is decomposed into two
-                    // variants (MNP+InDel) and each of them is applied to the
-                    // marker. So at this point the variants have been fully
-                    // applied and there is no need for further processing.
-                    break;
-
-                default:
-                    throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
-            }
-        } else newMarkerSeq.setSequence(getSequence());
-
-        return newMarkerSeq;
-    }
-
-    /**
      * Apply a change type deletion (update sequence)
      */
-    protected void applyDel(Variant variant, MarkerSeq markerSeq) {
-        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+    protected MarkerSeq applyDel(Variant variant) {
+        MarkerSeq newMarker = (MarkerSeq) super.applyDel(variant);
+        if (!shouldChangeSeq(variant)) return newMarker;
 
         // Get sequence in positive strand direction
-        String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+        String seq = getSequencePositive();
 
         // Apply change to sequence
         int idxStart = variant.getStart() - getStart();
@@ -105,17 +57,19 @@ public class MarkerSeq extends Marker {
         if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
 
         // Update sequence
-        seq = newSeq.toString();
-        markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+        newMarker.setSequencePositive(newSeq.toString());
+        return newMarker;
     }
 
     /**
      * Apply a change type duplication (update sequence)
      */
-    protected void applyDup(Variant variant, MarkerSeq markerSeq) {
-        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+    protected MarkerSeq applyDup(Variant variant) {
+        MarkerSeq newMarker = (MarkerSeq) super.applyDup(variant);
+        if (!shouldChangeSeq(variant)) return newMarker;
+
         // Get sequence in positive strand direction
-        String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+        String seq = getSequencePositive();
 
         // Apply duplication to sequence
         String dupSeq = getSequence(intersect(variant));
@@ -124,16 +78,19 @@ public class MarkerSeq extends Marker {
         else seq = dupSeq + seq;
 
         // Update sequence
-        markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+        newMarker.setSequencePositive(seq);
+        return newMarker;
     }
 
     /**
      * Apply a change type insertion (update sequence)
      */
-    protected void applyIns(Variant variant, MarkerSeq markerSeq) {
-        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+    protected MarkerSeq applyIns(Variant variant) {
+        MarkerSeq newMarker = (MarkerSeq) super.applyIns(variant);
+        if (!shouldChangeSeq(variant)) return newMarker;
+
         // Get sequence in positive strand direction
-        String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+        String seq = getSequencePositive();
 
         // Apply change to sequence
         String netChange = variant.netChange(this);
@@ -142,14 +99,17 @@ public class MarkerSeq extends Marker {
         else seq = netChange + seq;
 
         // Update sequence
-        markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+        newMarker.setSequencePositive(seq);
+        return newMarker;
     }
 
     /**
      * Apply a change type MNP (update sequence)
      */
-    protected void applyMnp(Variant variant, MarkerSeq markerSeq) {
-        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+    protected MarkerSeq applyMnp(Variant variant) {
+        MarkerSeq newMarker = (MarkerSeq) super.applyMnp(variant);
+        if (!shouldChangeSeq(variant)) return newMarker;
+
         // Calculate indexes
         int idxStart = variant.getStart() - getStart();
         int idxAlt = 0;
@@ -172,24 +132,27 @@ public class MarkerSeq extends Marker {
         seqsb.append(seq.substring(idxEnd).toLowerCase());
 
         // Update sequence
-        seq = seqsb.toString();
-        markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+        newMarker.setSequencePositive(seqsb.toString());
+        return newMarker;
     }
 
     /**
      * Apply a change type SNP (update sequence)
      */
-    protected void applySnp(Variant variant, MarkerSeq markerSeq) {
-        throw new RuntimeException("THIS METHOD SHOULD OVERRIDE PARENT'S CLASS METHOD\n");
+    protected MarkerSeq applySnp(Variant variant) {
+        MarkerSeq newMarker = (MarkerSeq) super.applyMnp(variant);
+        if (!shouldChangeSeq(variant)) return newMarker;
+
         // Get sequence in positive strand direction
-        String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+        String seq = getSequencePositive();
 
         // Apply change to sequence
         int idx = variant.getStart() - getStart();
         seq = seq.substring(0, idx) + variant.getAlt() + seq.substring(idx + 1);
 
         // Update sequence
-        markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+        newMarker.setSequencePositive(seq);
+        return newMarker;
     }
 
     /**
@@ -261,6 +224,21 @@ public class MarkerSeq extends Marker {
     }
 
     /**
+     * Get sequence always translated as "positive strand"
+     */
+    public String getSequencePositive() {
+        return isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+    }
+
+    /**
+     * Set sequence. The sequence is given in the positive strand
+     */
+    public void setSequencePositive(String sequence) {
+        if (isStrandPlus()) setSequence(sequence);
+        else setSequence(GprSeq.reverseWc(sequence));
+    }
+
+    /**
      * Get sequence intersecting 'marker'
      * <p>
      * WARNING: Sequence is always according to coding
@@ -277,8 +255,9 @@ public class MarkerSeq extends Marker {
      * Do we have a sequence for this exon?
      */
     public boolean hasSequence() {
-        if (size() <= 0) return true; // This interval has zero length, so sequence should be empty anyway (it is OK if its empty)
-        return (sequence != null) && (!sequence.isEmpty());
+        return (size() <= 0) // The marker has zero length, so sequence should be empty anyway (it is OK if its empty)
+                || ((sequence != null) && (!sequence.isEmpty())) // Do we have a valid sequence?
+                ;
     }
 
     /**
@@ -299,6 +278,16 @@ public class MarkerSeq extends Marker {
                 + "\t" + sequence.getSequence() //
                 ;
     }
+
+    /**
+     * Do we need to change the sequence?
+     *
+     * @return True if the variant intersects this marker, we need to change the sequence
+     */
+    boolean shouldChangeSeq(Variant variant) {
+        return variant.intersects(this) && hasSequence();
+    }
+
 
     @Override
     public String toString() {
