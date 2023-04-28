@@ -196,7 +196,8 @@ public class SnpEff implements CommandLine {
 				for (Transcript t : g) {
 					String cds = t.cds();
 					int cdsLen = (cds != null ? cds.length() : 0);
-					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
+					String proteinCoding = t.isProteinCoding() ? "protein_coding" : "";
+					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen + "\t" + proteinCoding);
 				}
 			}
 		}
