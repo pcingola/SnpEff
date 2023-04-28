@@ -153,7 +153,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 				if (gene.intersects(tr)) {
 					// Do we need to update gene length?
 					if (start < gene.getStart()) gene.setStart(start);
-					if (gene.getEnd() < end) gene.setEnd(end);
+					if (gene.getEndClosed() < end) gene.setEndClosed(end);
 
 					return gene;
 				}

@@ -370,7 +370,7 @@ public class CountReadsOnMarkers {
 			// Show 'key' information in first columns
 			sb.append(key.getChromosomeName() //
 					+ "\t" + (key.getStart() + 1) //
-					+ "\t" + (key.getEnd() + 1) //
+					+ "\t" + (key.getEndClosed() + 1) //
 					+ "\t" + key.idChain() //
 			);
 

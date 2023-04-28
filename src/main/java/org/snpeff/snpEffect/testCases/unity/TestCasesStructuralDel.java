@@ -111,7 +111,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
         if (verbose) {
             Log.debug("Variant: " + variant);
             for (Gene g : genome.getGenes()) {
-                Log.debug("\tGene: " + g.getId() + "\t" + gene.getStart() + " - " + gene.getEnd());
+                Log.debug("\tGene: " + g.getId() + "\t" + gene.getStart() + " - " + gene.getEndClosed());
                 for (Transcript tr : g)
                     Log.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
             }

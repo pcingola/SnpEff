@@ -2,7 +2,6 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Variant;
-import org.snpeff.util.Log;
 
 /**
  * Test cases: apply a variant (INS) to a transcript
@@ -18,8 +17,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_01() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
     }
@@ -29,8 +26,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_02() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
     }
@@ -40,8 +35,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_03() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
     }
@@ -51,8 +44,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_04() {
-        Log.debug("Test");
-
+        verbose = debug = true;
         Variant variant = new Variant(transcript.getParent(), 300, "", "ACG");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -61,7 +53,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
                 ;
 
         checkApplyIns(variant, expectedCds, null, 1, 300, 402);
-
     }
 
     /**
@@ -69,8 +60,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_05() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 310, "", "ACG");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -87,8 +76,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_06() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -105,8 +92,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_07() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -123,8 +108,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_08() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -134,8 +117,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_09() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -145,8 +126,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_10() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 290, "", "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT");
         checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 420, 519);
     }
@@ -156,8 +135,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_11() {
-        Log.debug("Test");
-
         String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT";
         Variant variant = new Variant(transcript.getParent(), 300, "", seq);
 
@@ -175,8 +152,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_12() {
-        Log.debug("Test");
-
         String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG";
         Variant variant = new Variant(transcript.getParent(), 290, "", seq);
 
@@ -189,8 +164,6 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_13() {
-        Log.debug("Test");
-
         String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATG";
         Variant variant = new Variant(transcript.getParent(), 300, "", seq);
 

@@ -230,7 +230,7 @@ public class VariantEffectStructural extends VariantEffect {
 		}
 
 		return m.getChromosomeName().equals(variant.getChromosomeName()) //
-				&& m.intersects(variant.getEnd());
+				&& m.intersects(variant.getEndClosed());
 	}
 
 	protected boolean isGene(Marker m) {

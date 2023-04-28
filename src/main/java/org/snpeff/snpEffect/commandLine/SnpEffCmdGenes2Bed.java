@@ -154,7 +154,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 
 				if (cds != null) {
 					int start = cds.getStart() - expandUpstreamDownstream;
-					int end = cds.getEnd() + 1 + expandUpstreamDownstream;
+					int end = cds.getEndClosed() + 1 + expandUpstreamDownstream;
 
 					System.out.println(cds.getChromosomeName() //
 							+ "\t" + start //
@@ -178,7 +178,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		for (Transcript tr : g) {
 			for (Exon ex : tr.sorted()) {
 				int start = ex.getStart() - expandUpstreamDownstream;
-				int end = ex.getEnd() + 1 + expandUpstreamDownstream;
+				int end = ex.getEndClosed() + 1 + expandUpstreamDownstream;
 
 				System.out.println(ex.getChromosomeName() //
 						+ "\t" + start //
@@ -199,7 +199,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void showGene(Gene g) {
 		// Show gene
 		int start = g.getStart() - expandUpstreamDownstream;
-		int end = g.getEnd() + 1 + expandUpstreamDownstream;
+		int end = g.getEndClosed() + 1 + expandUpstreamDownstream;
 
 		System.out.println(g.getChromosomeName() //
 				+ "\t" + start //
@@ -254,7 +254,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		for (Transcript tr : g) {
 			for (Intron intr : tr.introns()) {
 				int start = intr.getStart() - expandUpstreamDownstream;
-				int end = intr.getEnd() + 1 + expandUpstreamDownstream;
+				int end = intr.getEndClosed() + 1 + expandUpstreamDownstream;
 
 				System.out.println(intr.getChromosomeName() //
 						+ "\t" + start //
@@ -275,7 +275,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void showTr(Gene g) {
 		for (Transcript tr : g) {
 			int start = tr.getStart() - expandUpstreamDownstream;
-			int end = tr.getEnd() + 1 + expandUpstreamDownstream;
+			int end = tr.getEndClosed() + 1 + expandUpstreamDownstream;
 
 			System.out.println(tr.getChromosomeName() //
 					+ "\t" + start //

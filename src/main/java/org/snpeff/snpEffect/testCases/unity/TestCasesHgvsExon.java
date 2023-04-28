@@ -45,7 +45,7 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
             // For each exon...
             for (Exon exon : transcript.sortedStrand()) {
                 // For each base in this exon...
-                for (int pos = exon.getStart(); (exon.getStart() <= pos) && (pos <= exon.getEnd()); pos++, cdsBaseNum++) {
+                for (int pos = exon.getStart(); (exon.getStart() <= pos) && (pos <= exon.getEndClosed()); pos++, cdsBaseNum++) {
 
                     // Reference base
                     char refBase = chromoBases[pos]; // exon.basesAt(pos - exon.getStart(), 1).charAt(0);

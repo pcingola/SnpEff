@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.snpeff.align.StringDiff;
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.fileIterator.VcfFileIterator;
@@ -105,29 +106,24 @@ public class TestCasesBase {
     public void checkApply(Variant variant, VariantType varType, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
         Transcript newTr = transcript.apply(variant);
 
-        if (debug) {
-            Log.debug("Variant " + variant.getVariantType() //
-                    + " [ " + variant.getStart() + " , " + variant.getEnd() + "]" //
-                    + ", REF len: " + variant.getReference().length() //
-                    + ", ALT len: " + variant.getAlt().length() + ":" //
-                    + variant //
-                    + "\nBefore:\n" + transcript.toStringAsciiArt(true) //
-                    + "\nAfter:\n" + newTr.toStringAsciiArt(true) //
-            );
-        } else if (verbose) {
-            Log.debug("Variant " + variant.getVariantType() //
-                    + " [ " + variant.getStart() + " , " + variant.getEnd() + "]" //
+        if (verbose || debug) {
+            Log.debug("Apply:\nVariant " + variant.getVariantType() //
+                    + " [ " + variant.getStart() + " , " + variant.getEndClosed() + "]" //
                     + ", REF len: " + variant.getReference().length() //
                     + ", ALT len: " + variant.getAlt().length() + ":" //
                     + variant //
                     + "\nBefore:\n" + Gpr.prependEachLine("\t", transcript) //
                     + "\nAfter:\n" + Gpr.prependEachLine("\t", newTr) //
             );
+
+            if (debug) {
+                Log.debug("\nTranscript:\n" + transcript.toStringAsciiArt(true) + "\n\nNew transcript:\n" + newTr.toStringAsciiArt(true));
+            }
         }
 
         // Check that reference sequence matches chromosome
         if (!variant.getReference().isEmpty()) {
-            String chrSeq = chromoSequence.substring(variant.getStart(), variant.getEnd() + 1);
+            String chrSeq = chromoSequence.substring(variant.getStart(), variant.getEndClosed() + 1);
             assertEquals(chrSeq, variant.getReference(), "Reference sequence does not match: " + chrSeq + " vs " + variant.getReference());
         }
 
@@ -135,14 +131,19 @@ public class TestCasesBase {
         assertEquals(varType, variant.getVariantType(), "Variant type does not match: " + varType + " vs " + variant.getVariantType());
 
         // Check sequences
-        assertEquals(expectedCds, newTr.cds(), "CDS sequence should not change");
-        if (expectedProtein != null)
-            assertEquals(expectedProtein, newTr.protein(), "Protein sequence should not change");
+        if (!expectedCds.equals(newTr.cds())) {
+            StringDiff diff = new StringDiff(expectedCds, "Expected CDS", newTr.cds(), "New CDS");
+            assertEquals(expectedCds, newTr.cds(), "CDS sequence should not change:\n" + diff);
+        }
+        if (expectedProtein != null && !expectedProtein.equals(newTr.protein())) {
+            StringDiff diff = new StringDiff(expectedCds, "Expected CDS", newTr.cds(), "New CDS");
+            assertEquals(expectedProtein, newTr.protein(), "Protein sequence should not change:\n" + diff);
+        }
 
         // Check exon coordinates
         Exon newEx1 = newTr.sorted().get(1);
         assertEquals(expectedExon1Start, newEx1.getStart(), "Exon start coordinate");
-        assertEquals(expectedExon1End, newEx1.getEnd(), "Exon end coordinate");
+        assertEquals(expectedExon1End, newEx1.getEndClosed(), "Exon end coordinate");
     }
 
     public void checkApplyDel(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
@@ -351,7 +352,7 @@ public class TestCasesBase {
         transcript.resetCache();
 
         // Change chromosome sequence
-        chromoSequence = chromoSequence.substring(0, ex.getStart()) + ex.getSequence() + chromoSequence.substring(ex.getEnd() + 1);
+        chromoSequence = chromoSequence.substring(0, ex.getStart()) + ex.getSequence() + chromoSequence.substring(ex.getEndClosed() + 1);
 
         // Rebuild genomicSequences
         GenomicSequences gs = genome.getGenomicSequences();

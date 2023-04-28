@@ -103,8 +103,8 @@ public class PromoterSequences {
 						start = gene.getStart() - LEN_UPSTREAM;
 						end = gene.getStart() + LEN_AFTER_TSS;
 					} else {
-						start = gene.getEnd() - LEN_AFTER_TSS;
-						end = gene.getEnd() + LEN_UPSTREAM;
+						start = gene.getEndClosed() - LEN_AFTER_TSS;
+						end = gene.getEndClosed() + LEN_UPSTREAM;
 					}
 
 					// Show subsequence

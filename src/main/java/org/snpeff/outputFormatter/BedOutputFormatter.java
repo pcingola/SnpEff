@@ -73,7 +73,7 @@ public class BedOutputFormatter extends OutputFormatter {
 
 		return chrStr + variant.getChromosomeName() //
 				+ "\t" + (variant.getStart() + outOffset) //
-				+ "\t" + (variant.getEnd() + 1) // End base is not included in BED format
+				+ "\t" + (variant.getEndClosed() + 1) // End base is not included in BED format
 				+ "\t" + changeEffSb.toString() //
 		;
 	}

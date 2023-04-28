@@ -44,7 +44,7 @@ public class Utr3prime extends Utr {
 		if (cdsEnd < 0) return -1;
 
 		if (isStrandPlus()) return variant.getStart() - cdsEnd;
-		return cdsEnd - variant.getEnd();
+		return cdsEnd - variant.getEndClosed();
 	}
 
 	@Override

@@ -94,7 +94,7 @@ public class Coverage implements Serializable {
 		String chr = m.getChromosomeName();
 		CoverageChr cchr = get(chr);
 		if (cchr == null) throw new RuntimeException("Chromosome '" + chr + "' not found!");
-		return cchr.avgCoverage(m.getStart(), m.getEnd());
+		return cchr.avgCoverage(m.getStart(), m.getEndClosed());
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Coverage implements Serializable {
 		String chr = m.getChromosomeName();
 		CoverageChr cchr = get(chr);
 		if (cchr == null) throw new RuntimeException("Chromosome '" + chr + "' not found!");
-		return cchr.coverage(m.getStart(), m.getEnd());
+		return cchr.coverage(m.getStart(), m.getEndClosed());
 	}
 
 	/**

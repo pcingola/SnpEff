@@ -67,10 +67,10 @@ public class TestCasesIntegrationMarkerSeq extends TestCasesIntegrationBase {
                     if (verbose)
                         Log.debug("Transcript: " + tr.getId() + "\tExon: " + ex.getId() + ", strand: " + (ex.isStrandPlus() ? "+" : "-") + "\tSequence: " + sequence);
 
-                    for (int i = 0, pos = ex.getStart(); pos <= ex.getEnd(); i++, pos++) {
+                    for (int i = 0, pos = ex.getStart(); pos <= ex.getEndClosed(); i++, pos++) {
                         // Random size
                         int size = rand.nextInt(maxSize);
-                        if (size > (ex.getEnd() - pos)) size = 0;
+                        if (size > (ex.getEndClosed() - pos)) size = 0;
 
                         // Get subsequence
                         String seqExpected = sequence.substring(i, i + size + 1);

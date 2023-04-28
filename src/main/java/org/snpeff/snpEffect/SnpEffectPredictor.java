@@ -338,7 +338,7 @@ public class SnpEffectPredictor implements Serializable {
             // Extend interval to capture 'close' genes
             for (int extend = initialExtension; extend < chr.size(); extend *= 2) {
                 int start = Math.max(inputInterval.getStart() - extend, 0);
-                int end = inputInterval.getEnd() + extend;
+                int end = inputInterval.getEndClosed() + extend;
                 Marker extended = new Marker(chr, start, end, false, "");
 
                 // Find all genes that intersect with the interval
@@ -727,7 +727,7 @@ public class SnpEffectPredictor implements Serializable {
         if (!hitChromo) {
             // Special case: Insertion right after chromosome's last base
             Chromosome chr = genome.getChromosome(variant.getChromosomeName());
-            if (variant.isIns() && variant.getStart() == (chr.getEnd() + 1)) {
+            if (variant.isIns() && variant.getStart() == (chr.getEndClosed() + 1)) {
                 // This is a chromosome extension
                 variantEffects.add(variant, null, EffectType.CHROMOSOME_ELONGATION, "");
             } else if (Config.get().isErrorChromoHit()) {

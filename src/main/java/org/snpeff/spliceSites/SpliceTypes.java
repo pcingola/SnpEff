@@ -279,7 +279,7 @@ public class SpliceTypes {
 	 */
 	int createSpliceSites(Intron intron) {
 		int start = intron.getStart();
-		int end = intron.getEnd();
+		int end = intron.getEndClosed();
 		String key = intron.getChromosomeName() + ":" + start + "-" + end;
 		String donor = donorsByIntron.get(key);
 		String acc = acceptorsByIntron.get(key);
@@ -567,10 +567,10 @@ public class SpliceTypes {
 				if (exPrev != null) { // Not for first exon (it has no 'previous' intron)
 					int start, end;
 					if (tr.isStrandPlus()) {
-						start = exPrev.getEnd();
+						start = exPrev.getEndClosed();
 						end = ex.getStart();
 					} else {
-						start = ex.getEnd();
+						start = ex.getEndClosed();
 						end = exPrev.getStart();
 					}
 

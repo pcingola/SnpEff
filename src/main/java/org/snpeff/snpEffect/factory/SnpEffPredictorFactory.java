@@ -108,7 +108,7 @@ public abstract class SnpEffPredictorFactory {
 			if (oldex.includes(exon)) return oldex; // Redundant, just ignore it.
 
 			// Create a new exon with same info and different 'id'
-			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.isStrandMinus(), exon.getId() + "_" + tr.subIntervals().size(), exon.getRank());
+			exon = new Exon(tr, exon.getStart(), exon.getEndClosed(), exon.isStrandMinus(), exon.getId() + "_" + tr.subIntervals().size(), exon.getRank());
 		}
 
 		// Add exon
@@ -192,7 +192,7 @@ public abstract class SnpEffPredictorFactory {
 
 				for (Exon exon : tr) {
 					int ssStart = exon.getStart();
-					int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+					int ssEnd = exon.getEndClosed() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
 					String seq = null;
 					if ((ssStart >= 0) && (ssEnd <= chrLen)) {
@@ -261,9 +261,9 @@ public abstract class SnpEffPredictorFactory {
 			Integer len = lenByChr.get(chrName);
 
 			Chromosome chr = gene.getChromosome();
-			if (chr.getEnd() > 0 && gene.getEnd() > chr.getEnd()) Log.warning(ErrorWarningType.WARNING_CHROMOSOME_LENGTH, "Chromosome '" + chr.getChromosomeName() + "' has end coordinate " + chr.getEnd() + ", but gene ID '" + gene.getId() + "' has end coordiante " + gene.getEnd());
+			if (chr.getEndClosed() > 0 && gene.getEndClosed() > chr.getEndClosed()) Log.warning(ErrorWarningType.WARNING_CHROMOSOME_LENGTH, "Chromosome '" + chr.getChromosomeName() + "' has end coordinate " + chr.getEndClosed() + ", but gene ID '" + gene.getId() + "' has end coordiante " + gene.getEndClosed());
 
-			int max = Math.max(gene.getEnd(), (len != null ? len : 0));
+			int max = Math.max(gene.getEndClosed(), (len != null ? len : 0));
 			lenByChr.put(chrName, max);
 		}
 
@@ -272,9 +272,9 @@ public abstract class SnpEffPredictorFactory {
 		for (String chrName : lenByChr.keySet()) {
 			Chromosome chr = config.getGenome().getChromosome(chrName);
 			int newEnd = lenByChr.get(chrName);
-			if (chr.getEnd() < newEnd) {
+			if (chr.getEndClosed() < newEnd) {
 				if (chr.size() <= 1) { // If start = end = 0, then size() is 1
-					chr.setEnd(lenByChr.get(chrName));
+					chr.setEndClosed(lenByChr.get(chrName));
 					mark(adjusted++);
 				} else if (verbose) Log.info("\t\tChromosome '" + chr.getId() + "' has length of " + chr.size() + ", but genes end at " + lenByChr.get(chrName));
 			}
@@ -515,9 +515,9 @@ public abstract class SnpEffPredictorFactory {
 		int rank = 1;
 		for (Cds cds : cdss) {
 			// Create exon and add it to transcript
-			String id = GffType.EXON + "_" + cds.getChromosomeName() + "_" + cds.getStart() + "_" + cds.getEnd();
+			String id = GffType.EXON + "_" + cds.getChromosomeName() + "_" + cds.getStart() + "_" + cds.getEndClosed();
 			if (tr.get(id) == null) { // Don't add an exon twice
-				Exon exon = new Exon(tr, cds.getStart(), cds.getEnd(), trStrandMinus, id, rank);
+				Exon exon = new Exon(tr, cds.getStart(), cds.getEndClosed(), trStrandMinus, id, rank);
 				tr.add(exon);
 			}
 

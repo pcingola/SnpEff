@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
  * @author pcingola
  */
 @Suite
-@SuiteDisplayName("Unit test cases")
+@SuiteDisplayName("Integration test cases")
 @SelectPackages({"org.snpeff.snpEffect.testCases.integration"})
 public class TestSuiteIntegration {
 }

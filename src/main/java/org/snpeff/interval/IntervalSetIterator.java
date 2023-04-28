@@ -93,7 +93,7 @@ public class IntervalSetIterator implements Iterator<Set<Marker>>, Iterable<Set<
 		chromo = intStart.getChromosomeName();
 
 		intEnd = itEnd.next();
-		end = intEnd.getEnd();
+		end = intEnd.getEndClosed();
 		openIntervals.add(intEnd);
 
 		i = intStart.getStart();
@@ -113,7 +113,7 @@ public class IntervalSetIterator implements Iterator<Set<Marker>>, Iterable<Set<
 		start = intStart.getStart();
 
 		//intEnd = itEnd.next();
-		end = intEnd.getEnd();
+		end = intEnd.getEndClosed();
 		openIntervals.add(intEnd);
 
 		i = Math.min(start, end);
@@ -146,12 +146,12 @@ public class IntervalSetIterator implements Iterator<Set<Marker>>, Iterable<Set<
 		}
 
 		// Need to iterate on intervalsByStart?
-		if( ((intEnd != null) && (intEnd.getEnd() <= i)) || newChromosome || (intStart == null) ) {
+		if( ((intEnd != null) && (intEnd.getEndClosed() <= i)) || newChromosome || (intStart == null) ) {
 			if( itEnd.hasNext() ) {
 				openIntervals.remove(intEnd);
 				intEnd = itEnd.next();
 				if( equalsChromo(intEnd.getChromosomeName()) ) {
-					end = intEnd.getEnd();
+					end = intEnd.getEndClosed();
 					i = Math.min(start, end);
 				}
 				return;

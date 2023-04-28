@@ -38,8 +38,8 @@ public class IntervalComparatorByStart implements Comparator<Marker> {
 		if (i1.getStart() < i2.getStart()) return -order;
 
 		// End
-		if (i1.getEnd() > i2.getEnd()) return order;
-		if (i1.getEnd() < i2.getEnd()) return -order;
+		if (i1.getEndClosed() > i2.getEndClosed()) return order;
+		if (i1.getEndClosed() < i2.getEndClosed()) return -order;
 
 		// Compare by ID
 		if ((i1.getId() == null) && (i2.getId() == null)) return 0;

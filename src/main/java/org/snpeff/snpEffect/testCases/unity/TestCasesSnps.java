@@ -60,10 +60,10 @@ public class TestCasesSnps extends TestCasesBase {
             // For each exon...
             for (Exon exon : transcript.sortedStrand()) {
                 int step = exon.isStrandPlus() ? 1 : -1;
-                int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+                int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
                 // For each base in this exon...
-                for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+                for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEndClosed()); pos += step, cdsBaseNum++) {
                     // Reference base
                     char refBase = chromoBases[pos]; // exon.basesAt(pos - exon.getStart(), 1).charAt(0);
                     refBase = Character.toUpperCase(refBase);

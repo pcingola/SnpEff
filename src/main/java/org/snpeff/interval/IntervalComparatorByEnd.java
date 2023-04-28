@@ -34,8 +34,8 @@ public class IntervalComparatorByEnd implements Comparator<Marker> {
 		}
 
 		// End
-		if (i1.getEnd() > i2.getEnd()) return order;
-		if (i1.getEnd() < i2.getEnd()) return -order;
+		if (i1.getEndClosed() > i2.getEndClosed()) return order;
+		if (i1.getEndClosed() < i2.getEndClosed()) return -order;
 
 		// Start
 		if (i1.getStart() > i2.getStart()) return order;

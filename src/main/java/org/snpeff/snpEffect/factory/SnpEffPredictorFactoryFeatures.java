@@ -213,7 +213,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		int end = fcds.getEnd() - inOffset;
 
 		// CDS cannot be outside gene coordinates
-		if (start < gene.getStart() || gene.getEnd() < end) return false;
+		if (start < gene.getStart() || gene.getEndClosed() < end) return false;
 
 		// Sanity check: Do gene names match?
 		String geneName = fcds.getGeneName();
@@ -236,7 +236,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		int end = fcds.getEnd() - inOffset;
 
 		// CDS cannot be outside transcript coordinates
-		if (start < tr.getStart() || tr.getEnd() < end) return false;
+		if (start < tr.getStart() || tr.getEndClosed() < end) return false;
 
 		// If multiple coordinates are available (and transcript has exons), try to match exons
 		if (fcds.hasMultipleCoordinates() && !tr.subIntervals().isEmpty()) return cdsMatchesTrExons(fcds, tr);
@@ -287,14 +287,14 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		Exon trEx = trExons.get(trExIdx);
 
 		// Skip transcript exons before CDs
-		while (cdsEx.getStart() > trEx.getEnd()) {
+		while (cdsEx.getStart() > trEx.getEndClosed()) {
 			trExIdx++;
 			if (trExIdx >= trExons.size()) return false; // We run out of transcript's exons and none matched
 			trEx = trExons.get(trExIdx);
 		}
 
 		// First CDS exon can differ only on the left side.
-		if ((trEx.getStart() > cdsEx.getStart()) || (trEx.getEnd() != cdsEx.getEnd())) return false;
+		if ((trEx.getStart() > cdsEx.getStart()) || (trEx.getEndClosed() != cdsEx.getEndClosed())) return false;
 
 		// Exons after the first (and before the last one) must match exactly
 		while (cdsExIdx < cdsExons.size() - 2) {
@@ -303,7 +303,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			if (trExIdx >= trExons.size()) return false; // We run out of transcript's exons and none matched
 			cdsEx = cdsExons.get(cdsExIdx);
 			trEx = trExons.get(trExIdx);
-			if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEnd() != cdsEx.getEnd())) return false;
+			if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEndClosed() != cdsEx.getEndClosed())) return false;
 		}
 
 		// Compare last CDS exon
@@ -315,7 +315,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		trEx = trExons.get(trExIdx);
 
 		// Last CDS exon can differ only on the right side.
-		if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEnd() < cdsEx.getEnd())) return false;
+		if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEndClosed() < cdsEx.getEndClosed())) return false;
 
 		return true; // OK, all CDS exons match
 	}
@@ -436,7 +436,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			trId = unusedTranscriptId(trId); // We need to create a new transcript ID, because the current one is in use
 			gene = (Gene) tr.getParent();
 			start = tr.getStart();
-			end = tr.getEnd();
+			end = tr.getEndClosed();
 			strandMinus = tr.isStrandMinus();
 		} else {
 			// Create gene or use latest?

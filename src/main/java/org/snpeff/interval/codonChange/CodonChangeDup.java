@@ -56,11 +56,11 @@ public class CodonChangeDup extends CodonChangeStructural {
 	 */
 	boolean beyondTranscript() {
 		if (coding) {
-			if (transcript.isStrandPlus()) return variant.getEnd() > transcript.getCdsEnd();
-			return variant.getEnd() > transcript.getCdsStart();
+			if (transcript.isStrandPlus()) return variant.getEndClosed() > transcript.getCdsEnd();
+			return variant.getEndClosed() > transcript.getCdsStart();
 		}
 
-		return variant.getEnd() > transcript.getEnd();
+		return variant.getEndClosed() > transcript.getEndClosed();
 	}
 
 	@Override

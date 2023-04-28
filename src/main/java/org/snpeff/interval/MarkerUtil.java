@@ -38,13 +38,13 @@ public class MarkerUtil {
 
 			if (markerPrev != null) {
 				// Find start, end and gap size
-				int start = markerPrev.getEnd() + 1;
+				int start = markerPrev.getEndClosed() + 1;
 				int end = m.getStart() - 1;
 				int gapSize = end - start + 1;
 
 				if (gapSize <= 0) {
 					countCollapsed++;
-					if (markerToAdd.getEnd() < m.getEnd()) markerToAdd.setEnd(m.getEnd()); // Set new end for this marker (we are collapsing it with the previous one)
+					if (markerToAdd.getEndClosed() < m.getEndClosed()) markerToAdd.setEndClosed(m.getEndClosed()); // Set new end for this marker (we are collapsing it with the previous one)
 
 					// Do we need to correct frame information?
 					if (markerToAdd.isStrandMinus() && (markerToAdd instanceof MarkerWithFrame) && (m instanceof MarkerWithFrame)) {
@@ -113,7 +113,7 @@ public class MarkerUtil {
 		// whose coordinates have not been corrected (we take care of
 		// these when we correct circular coordinates)
 		for (Marker m : markersOri)
-			if (m.getStart() <= m.getEnd()) {
+			if (m.getStart() <= m.getEndClosed()) {
 				markers.add(m);
 			}
 		int size = markers.size();

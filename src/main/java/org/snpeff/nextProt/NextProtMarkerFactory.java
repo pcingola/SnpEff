@@ -220,7 +220,7 @@ public class NextProtMarkerFactory {
         Markers nextProtMarkers = new Markers();
         // Create one nextProt marker for each intersection with a different exon
         for (Marker m : exonsIntersected)
-            nextProtMarkers.add(new NextProt(tr, m.getStart(), m.getEnd(), accession, name));
+            nextProtMarkers.add(new NextProt(tr, m.getStart(), m.getEndClosed(), accession, name));
         return nextProtMarkers;
     }
 

@@ -102,7 +102,7 @@ public class TestCasesStructuralTranslocations {
         if (verbose) {
             Log.debug("Variant: " + variant);
             for (Gene g : genome.getGenes()) {
-                Log.debug("\tGene: " + g.getId() + "\t" + gene1.getStart() + " - " + gene1.getEnd());
+                Log.debug("\tGene: " + g.getId() + "\t" + gene1.getStart() + " - " + gene1.getEndClosed());
                 for (Transcript tr : g)
                     Log.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
             }
@@ -201,8 +201,8 @@ public class TestCasesStructuralTranslocations {
         gene1 = new Gene(chr1, 10, 90, gene1NegativeStrand, "gene1", "gene1", BioType.protein_coding);
         gene2 = new Gene(chr2, 110, 190, gene2NegativeStrand, "gene2", "gene2", BioType.protein_coding);
 
-        tr1 = new Transcript(gene1, gene1.getStart(), gene1.getEnd(), gene1.isStrandMinus(), "tr1");
-        tr2 = new Transcript(gene2, gene2.getStart(), gene2.getEnd(), gene2.isStrandMinus(), "tr2");
+        tr1 = new Transcript(gene1, gene1.getStart(), gene1.getEndClosed(), gene1.isStrandMinus(), "tr1");
+        tr2 = new Transcript(gene2, gene2.getStart(), gene2.getEndClosed(), gene2.isStrandMinus(), "tr2");
         gene1.add(tr1);
         gene2.add(tr2);
         tr1.setProteinCoding(true);
@@ -215,14 +215,14 @@ public class TestCasesStructuralTranslocations {
         Exon[] exons = {e11, e12, e21, e22};
 
         for (Exon e : exons) {
-            String seq = e.getChromosome().getSequence().substring(e.getStart(), e.getEnd() + 1);
+            String seq = e.getChromosome().getSequence().substring(e.getStart(), e.getEndClosed() + 1);
             if (e.isStrandMinus()) seq = GprSeq.reverseWc(seq);
             e.setSequence(seq);
 
             Transcript tr = (Transcript) e.getParent();
             tr.add(e);
 
-            Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
+            Cds cds = new Cds(tr, e.getStart(), e.getEndClosed(), e.isStrandMinus(), "");
             tr.add(cds);
         }
         tr1.rankExons();
@@ -239,9 +239,9 @@ public class TestCasesStructuralTranslocations {
         // Create fake cytobands
         CytoBands cytoBands = genome.getCytoBands();
         cytoBands.add(new Marker(chr1, chr1.getStart(), 99, false, "p1"));
-        cytoBands.add(new Marker(chr1, 100, chr1.getEnd(), false, "q1"));
+        cytoBands.add(new Marker(chr1, 100, chr1.getEndClosed(), false, "q1"));
         cytoBands.add(new Marker(chr2, chr2.getStart(), 99, false, "q2"));
-        cytoBands.add(new Marker(chr2, 100, chr2.getEnd(), false, "p2"));
+        cytoBands.add(new Marker(chr2, 100, chr2.getEndClosed(), false, "p2"));
         cytoBands.build();
     }
 

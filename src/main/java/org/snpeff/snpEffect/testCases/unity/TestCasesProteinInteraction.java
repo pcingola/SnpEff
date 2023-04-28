@@ -44,10 +44,10 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
         assertEquals(2, list.size(), "Number of loci do not match");
 
         ProteinInteractionLocus pil = list.get(0);
-        assertTrue((pil.getStart() == 199) && (pil.getEnd() == 199), "Interactions coordinates do not match: " + pil);
+        assertTrue((pil.getStart() == 199) && (pil.getEndClosed() == 199), "Interactions coordinates do not match: " + pil);
 
         pil = list.get(1);
-        assertTrue((pil.getStart() == 300) && (pil.getEnd() == 301), "Interactions coordinates do not match: " + pil);
+        assertTrue((pil.getStart() == 300) && (pil.getEndClosed() == 301), "Interactions coordinates do not match: " + pil);
     }
 
     /**
@@ -76,10 +76,10 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
         assertEquals(2, list.size(), "Number of loci do not match");
 
         ProteinInteractionLocus pil = list.get(0);
-        assertTrue((pil.getStart() == 398) && (pil.getEnd() == 399), "Interactions coordinates do not match: " + pil);
+        assertTrue((pil.getStart() == 398) && (pil.getEndClosed() == 399), "Interactions coordinates do not match: " + pil);
 
         pil = list.get(1);
-        assertTrue((pil.getStart() == 900) && (pil.getEnd() == 900), "Interactions coordinates do not match: " + pil);
+        assertTrue((pil.getStart() == 900) && (pil.getEndClosed() == 900), "Interactions coordinates do not match: " + pil);
     }
 
     public void test_03_split_codon_base_alphafold() {

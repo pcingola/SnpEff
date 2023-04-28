@@ -234,7 +234,7 @@ public class LossOfFunction {
 
 		// Create an interval intersecting the CDS and the deletion
 		int start = Math.max(cdsStart, variant.getStart());
-		int end = Math.min(cdsEnd, variant.getEnd());
+		int end = Math.min(cdsEnd, variant.getEndClosed());
 		if (start >= end) return false; // No intersections with coding part of the exon? => not LOF
 		Marker codingDeleted = new Marker(variant.getChromosome(), start, end, false, "");
 
@@ -284,7 +284,7 @@ public class LossOfFunction {
 
 		boolean nmd;
 		if (tr.isStrandPlus()) nmd = variant.getStart() <= lastNmdPos;
-		else nmd = lastNmdPos <= variant.getEnd();
+		else nmd = lastNmdPos <= variant.getEndClosed();
 
 		// Update sets and counters
 		if (nmd) {
@@ -324,7 +324,7 @@ public class LossOfFunction {
 		//---
 		// Find that position of MND_BASES_BEFORE_LAST_JUNCTION before the last exon-exon junction
 		//---
-		int lastExonJunction = tr.isStrandPlus() ? lastExon.getStart() : lastExon.getEnd();
+		int lastExonJunction = tr.isStrandPlus() ? lastExon.getStart() : lastExon.getEndClosed();
 		int chrPos[] = tr.baseNumberCds2Pos();
 		int lastNmdPos = -1;
 		for (int cdsi = chrPos.length - 1; cdsi >= 0; cdsi--) {

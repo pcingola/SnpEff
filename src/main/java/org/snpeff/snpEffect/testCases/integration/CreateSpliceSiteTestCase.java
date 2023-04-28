@@ -51,13 +51,13 @@ public class CreateSpliceSiteTestCase {
 							else out(eint, eint.getStart() - SpliceSite.CORE_SPLICE_SITE_SIZE, eint.getStart() - 1, EffectType.UPSTREAM);
 
 							// Donor splice site: after exon end, but not after last exon
-							if (eint.getRank() < exons.size()) out(eint, eint.getEnd() + 1, eint.getEnd() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.SPLICE_SITE_DONOR);
-							else out(eint, eint.getEnd() + 1, eint.getEnd() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.DOWNSTREAM);
+							if (eint.getRank() < exons.size()) out(eint, eint.getEndClosed() + 1, eint.getEndClosed() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.SPLICE_SITE_DONOR);
+							else out(eint, eint.getEndClosed() + 1, eint.getEndClosed() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.DOWNSTREAM);
 						} else { // Negative strand donor & acceptor sites
 
 							// Acceptor splice site: before exon start (since it's minus strand, it's actually after end), but not before first exon
-							if (eint.getRank() > 1) out(eint, eint.getEnd() + 1, eint.getEnd() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.SPLICE_SITE_ACCEPTOR);
-							else out(eint, eint.getEnd() + 1, eint.getEnd() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.UPSTREAM);
+							if (eint.getRank() > 1) out(eint, eint.getEndClosed() + 1, eint.getEndClosed() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.SPLICE_SITE_ACCEPTOR);
+							else out(eint, eint.getEndClosed() + 1, eint.getEndClosed() + SpliceSite.CORE_SPLICE_SITE_SIZE, EffectType.UPSTREAM);
 
 							// Donor splice site: after exon end (since it's minus strand, it's actually before start), but not after last exon
 							if (eint.getRank() < exons.size()) out(eint, eint.getStart() - SpliceSite.CORE_SPLICE_SITE_SIZE, eint.getStart() - 1, EffectType.SPLICE_SITE_DONOR);

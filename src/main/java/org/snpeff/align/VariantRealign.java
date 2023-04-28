@@ -59,11 +59,11 @@ public class VariantRealign {
 
 		// Minimum and maximum base number to request (we only have sequence within these positions)
 		maxBasesLeft = variant.getStart() - ms.getStart();
-		maxBasesRight = ms.getEnd() - variant.getEnd();
+		maxBasesRight = ms.getEndClosed() - variant.getEndClosed();
 
 		// Calculate bases to left & right
 		basesAddedLeft = variant.getStart() - (variant.getStart() - addBasesLeft);
-		basesAddedRight = (variant.getEnd() + addBasesRight) - variant.getEnd();
+		basesAddedRight = (variant.getEndClosed() + addBasesRight) - variant.getEndClosed();
 
 		// Make sure we don't go over limit
 		basesAddedLeft = Math.min(basesAddedLeft, maxBasesLeft);
@@ -107,11 +107,11 @@ public class VariantRealign {
 	boolean createRealignedVariant() {
 		// Calculate new coordinates
 		int start = variant.getStart() - basesAddedLeft + basesTrimLeft;
-		int end = variant.getEnd() + basesAddedRight - basesTrimRight;
+		int end = variant.getEndClosed() + basesAddedRight - basesTrimRight;
 		if (end < start) end = start;
 
 		// Do we need to create a new variant?
-		if (start == variant.getStart() && end == variant.getEnd()) return false;
+		if (start == variant.getStart() && end == variant.getEndClosed()) return false;
 
 		// Create new variant
 		variantRealigned = new Variant(variant.getParent(), start, refRealign, altRealign, variant.getId());
@@ -124,7 +124,7 @@ public class VariantRealign {
 	 * Create reference sequence
 	 */
 	boolean createRefSeq() {
-		Marker m = new Marker(variant.getChromosome(), variant.getStart() - basesAddedLeft, variant.getEnd() + basesAddedRight);
+		Marker m = new Marker(variant.getChromosome(), variant.getStart() - basesAddedLeft, variant.getEndClosed() + basesAddedRight);
 		sequenceRef = genSeqs.querySequence(m);
 		return sequenceRef != null;
 	}

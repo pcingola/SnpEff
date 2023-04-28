@@ -55,10 +55,10 @@ public class TestCasesIns extends TestCasesBase {
             // For each exon...
             for (Exon exon : transcript.sortedStrand()) {
                 int step = exon.isStrandPlus() ? 1 : -1;
-                int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+                int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
                 // For each base in this exon...
-                for (int pos = beg; (exon.getStart() <= pos) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+                for (int pos = beg; (exon.getStart() <= pos) && (pos <= exon.getEndClosed()); pos += step, cdsBaseNum++) {
 
                     // Get a random base different from 'refBase'
                     int insLen = rand.nextInt(10) + 1;

@@ -34,7 +34,7 @@ public class VariantVcfEntry extends Variant {
 	}
 
 	public VariantVcfEntry(Variant variant, VcfEntry vcfEntry) {
-		super(variant.getParent(), variant.getStart(), variant.getEnd(), variant.getId());
+		super(variant.getParent(), variant.getStart(), variant.getEndClosed(), variant.getId());
 
 		chromosomeNameOri = variant.getChromosomeNameOri();
 		type = variant.getType();

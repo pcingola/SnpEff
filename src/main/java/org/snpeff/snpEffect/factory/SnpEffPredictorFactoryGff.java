@@ -43,7 +43,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
      */
     protected Exon addExon(Transcript tr, GffMarker gffMarker, String exonId) {
         int rank = 0; // Rank information is added later
-        Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), exonId, rank);
+        Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), exonId, rank);
         ex.setFrame(gffMarker.getFrame());
         return add(ex);
     }
@@ -101,25 +101,25 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
             int rank = 0; // Rank information is added later
             switch (gffMarker.getGffType()) {
                 case EXON:
-                    Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id, rank);
+                    Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), id, rank);
                     ex.setFrame(gffMarker.getFrame());
                     ex = add(ex);
                     list.add(ex);
                     break;
 
                 case CDS:
-                    Cds cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id);
+                    Cds cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), id);
                     cds.setFrame(gffMarker.getFrame());
                     add(cds);
                     break;
 
                 case START_CODON:
                 case STOP_CODON:
-                    ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id, rank);
+                    ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), id, rank);
                     ex.setFrame(gffMarker.getFrame());
                     add(ex);
 
-                    cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getGffType() + "_" + id);
+                    cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getGffType() + "_" + id);
                     cds.setFrame(gffMarker.getFrame());
                     add(cds);
                     break;
@@ -152,7 +152,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         // Create gene
         Gene gene = new Gene(gffMarker.getChromosome() //
                 , gffMarker.getStart() //
-                , gffMarker.getEnd() //
+                , gffMarker.getEndClosed() //
                 , gffMarker.isStrandMinus() //
                 , geneId //
                 , gffMarker.getGeneName() //
@@ -167,7 +167,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
      * Add an intergenic conserved region
      */
     protected IntergenicConserved addIntergenicConserved(GffMarker gffMarker) {
-        IntergenicConserved intergenicConserved = new IntergenicConserved(gffMarker.getChromosome(), gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+        IntergenicConserved intergenicConserved = new IntergenicConserved(gffMarker.getChromosome(), gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getId());
         add(intergenicConserved);
         return intergenicConserved;
     }
@@ -238,7 +238,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
             return null;
         }
 
-        IntronConserved intronConserved = new IntronConserved(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+        IntronConserved intronConserved = new IntronConserved(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getId());
         add(intronConserved);
         return intronConserved;
     }
@@ -247,7 +247,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
      * Create and add transcript
      */
     Transcript addTranscript(Gene gene, GffMarker gffMarker, String trId) {
-        Transcript tr = new Transcript(gene, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), trId);
+        Transcript tr = new Transcript(gene, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), trId);
 
         // Set protein coding (if available)
         if (gffMarker.isProteingCoding()) tr.setProteinCoding(true);
@@ -300,7 +300,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
                 Transcript tr = (Transcript) exon.getParent();
 
                 // Create UTR
-                Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+                Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getId());
                 tr.add(u3);
                 add(u3);
                 list.add(u3);
@@ -324,7 +324,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
                 Transcript tr = (Transcript) exon.getParent();
 
                 // Create UTR
-                Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+                Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getId());
                 tr.add(u5);
                 add(u5);
                 list.add(u5);
@@ -375,7 +375,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         }
 
         // Find exon using coordinates
-        Marker utr = new Marker(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+        Marker utr = new Marker(tr, gffMarker.getStart(), gffMarker.getEndClosed(), gffMarker.isStrandMinus(), gffMarker.getId());
         Exon exon = tr.queryExon(utr);
         if (exon != null) return exon;
 

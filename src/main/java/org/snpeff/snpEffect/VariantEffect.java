@@ -149,7 +149,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
             idThis = trThis.getId();
             chrThis = trThis.getChromosomeName();
             startThis = trThis.getStart();
-            endThis = trThis.getEnd();
+            endThis = trThis.getEndClosed();
         }
 
         // Other transcript data
@@ -165,7 +165,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
             idOther = trOther.getId();
             chrOther = trOther.getChromosomeName();
             startOther = trOther.getStart();
-            endOther = trOther.getEnd();
+            endOther = trOther.getEndClosed();
         }
 
         // Compare by TSL: Smaller first
@@ -204,7 +204,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
             idThis = mThis.getId();
             chrThis = mThis.getChromosomeName();
             startThis = mThis.getStart();
-            endThis = mThis.getEnd();
+            endThis = mThis.getEndClosed();
         }
 
         startOther = 0;
@@ -215,7 +215,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
             idOther = mOther.getId();
             chrOther = mOther.getChromosomeName();
             startOther = mOther.getStart();
-            endOther = mOther.getEnd();
+            endOther = mOther.getEndClosed();
         }
 
         // Compare genomic coordinate

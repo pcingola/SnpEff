@@ -5,7 +5,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 
 /**
- * Interval for a gene, as well as some other information: exons, utrs, cds, etc.
+ * Interval for a gene, as well as some other information: exons, UTRs, CDS, etc.
  *
  * @author pcingola
  *
@@ -28,12 +28,12 @@ public class Downstream extends Marker {
 	 * Distance to transcript
 	 */
 	public int distanceToTr(Variant variant) {
-		int dist = (parent.isStrandPlus() ? variant.getStart() - start : end - variant.getStart()) + 1;
+		int dist = (parent.isStrandPlus() ? variant.getStart() - getStart() : getEndClosed() - variant.getStart()) + 1;
 		return Math.max(0, dist);
 	}
 
 	/**
-	 * Upstream sites are no included in transcript (by definition).
+	 * Upstream sites are not included in transcript (by definition).
 	 */
 	@Override
 	protected boolean isShowWarningIfParentDoesNotInclude() {

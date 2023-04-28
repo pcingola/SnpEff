@@ -52,17 +52,17 @@ public class CodonChangeMnp extends CodonChange {
 		cdsEnd = transcript.isStrandPlus() ? transcript.getCdsEnd() : transcript.getCdsStart();
 
 		// Does it intersect CDS?
-		if (cdsStart > variant.getEnd()) return;
+		if (cdsStart > variant.getEndClosed()) return;
 		if (cdsEnd < variant.getStart()) return;
 
 		// Base number relative to CDS start
 		int scStart, scEnd;
 		if (transcript.isStrandPlus()) {
 			scStart = cdsBaseNumber(variant.getStart(), false);
-			scEnd = cdsBaseNumber(variant.getEnd(), true);
+			scEnd = cdsBaseNumber(variant.getEndClosed(), true);
 		} else {
 			scEnd = cdsBaseNumber(variant.getStart(), true);
-			scStart = cdsBaseNumber(variant.getEnd(), false);
+			scStart = cdsBaseNumber(variant.getEndClosed(), false);
 		}
 
 		// Update coordinates

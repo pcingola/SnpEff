@@ -131,7 +131,7 @@ public class TestCasesMnps extends TestCasesBase {
 		char[] codonOld = new char[3];
 		char[] codonNew = new char[3];
 		for (Exon ex : transcript.sortedStrand()) {
-			int start = ex.isStrandPlus() ? ex.getStart() : ex.getEnd();
+			int start = ex.isStrandPlus() ? ex.getStart() : ex.getEndClosed();
 			for (i = start; ex.intersects(i); i += step, codonIdx = (codonIdx + 1) % 3) {
 				codonOld[codonIdx] = seq[i];
 				codonNew[codonIdx] = seqNew[i];

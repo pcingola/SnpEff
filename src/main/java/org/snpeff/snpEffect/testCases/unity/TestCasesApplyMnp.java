@@ -19,8 +19,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_01() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 290, "TTT", "AAA");
         checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -30,8 +28,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_02() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 297, "TCC", "ACG");
         checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -41,12 +37,10 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_03() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 299, "CTG", "GAC");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-                + "ACtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+                + "ACtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1], changed bases 'AC'
                 + "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
                 ;
 
@@ -58,8 +52,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_04() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 300, "TGT", "ACA");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -76,8 +68,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_05() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 310, "TTC", "AAG");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -94,8 +84,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_06() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 397, "ACG", "TGC");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -112,8 +100,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_07() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 398, "CGA", "GCT");
 
         String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
@@ -130,8 +116,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_08() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 400, "AAA", "TTT");
         checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -141,8 +125,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_09() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent(), 410, "AGC", "TCG");
         checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
     }
@@ -152,8 +134,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_10() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent() //
                 , 290 //
                 , "tttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacgaaagggagct" //
@@ -173,8 +153,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_11() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent() //
                 , 300 //
                 , "TGTTTGGGAATTCACGGGCACGGTTCTGCAGCAAGCTGAATTGGCAGCTCGGCATAAATCCCGACCCCATCGTCACGCACGGATCAATTCATCCTCAACGAAAGGGAGCTAGCGCTGTAC" //
@@ -194,8 +172,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_12() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent()//
                 , 280 //
                 , "aaccgctaactttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
@@ -216,8 +192,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
      */
     @Test
     public void test_apply_variant_13() {
-        Log.debug("Test");
-
         Variant variant = new Variant(transcript.getParent() //
                 , 300 //
                 , "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //

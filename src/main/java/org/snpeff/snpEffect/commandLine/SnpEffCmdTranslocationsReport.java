@@ -24,7 +24,6 @@ import org.snpeff.stats.TranslocationReport;
 import org.snpeff.svg.SvgTranslocation;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -335,7 +334,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 
 		if (var.isDup() || var.isDel()) {
 			// Create a BND variant
-			return new VariantBnd(var.getChromosome(), var.getStart(), "N", "N", var.getChromosome(), var.getEnd(), false, false);
+			return new VariantBnd(var.getChromosome(), var.getStart(), "N", "N", var.getChromosome(), var.getEndClosed(), false, false);
 		}
 
 		throw new RuntimeException("Unsupported variant type '" + var.getVariantType() + "'");

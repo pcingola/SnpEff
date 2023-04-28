@@ -333,7 +333,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		if (length <= 0) {
 			length = 0;
 			for (Chromosome chr : chromosomes.values())
-				length += chr.getEnd() - chr.getStart() + 1;
+				length += chr.getEndClosed() - chr.getStart() + 1;
 		}
 
 		return length;

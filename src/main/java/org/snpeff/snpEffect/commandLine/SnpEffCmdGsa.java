@@ -40,7 +40,6 @@ import org.snpeff.interval.VariantWithScore;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -684,7 +683,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		int num = 1;
 		BedFileIterator bfi = new BedFileIterator(inputFile);
 		for (Variant sc : bfi) {
-			cppList.add(sc.getChromosome(), sc.getStart(), sc.getEnd(), ((VariantWithScore) sc).getScore());
+			cppList.add(sc.getChromosome(), sc.getStart(), sc.getEndClosed(), ((VariantWithScore) sc).getScore());
 			if (verbose) Gpr.showMark(num++, READ_INPUT_SHOW_EVERY);
 		}
 
@@ -755,7 +754,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				warns++;
 			} else {
 				// Add to list
-				cppList.add(ve.getChromosome(), ve.getStart(), ve.getEnd(), score);
+				cppList.add(ve.getChromosome(), ve.getStart(), ve.getEndClosed(), score);
 			}
 
 			if (verbose) Gpr.showMark(num++, READ_INPUT_SHOW_EVERY);

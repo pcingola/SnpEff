@@ -118,7 +118,7 @@ public class CodonChangeDel extends CodonChangeStructural {
 		if (netCdsChange.isEmpty()) return "";
 
 		int min = variant.getStart();
-		int max = variant.getEnd();
+		int max = variant.getEndClosed();
 		int cdsBaseMin = cdsBaseNumber(min);
 		int cdsBaseMax = cdsBaseNumber(max);
 

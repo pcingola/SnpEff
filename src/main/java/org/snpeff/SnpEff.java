@@ -686,7 +686,7 @@ public class SnpEff implements CommandLine {
 				markers.add(m);
 			} else {
 				// Not a custom interval? Create one
-				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), false, m.getId(), label);
+				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEndClosed(), false, m.getId(), label);
 				markers.add(custom);
 			}
 		}
@@ -832,7 +832,7 @@ public class SnpEff implements CommandLine {
 		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();
 			int max = chrs.getOrDefault(chr, 0);
-			max = Math.max(max, r.getEnd());
+			max = Math.max(max, r.getEndClosed());
 			chrs.put(chr, max);
 		}
 

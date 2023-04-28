@@ -406,9 +406,9 @@ public class TestCasesIntegrationBase {
         StringBuilder nmdStrSimple = new StringBuilder();
         for (Exon exon : tr.sortedStrand()) {
             int step = exon.isStrandPlus() ? 1 : -1;
-            int from = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+            int from = exon.isStrandPlus() ? exon.getStart() : exon.getEndClosed();
 
-            for (int expos = from; (exon.getStart() <= expos) && (expos <= exon.getEnd()); expos += step) {
+            for (int expos = from; (exon.getStart() <= expos) && (expos <= exon.getEndClosed()); expos += step) {
                 // Not in UTR? => Test
                 if (!tr.isUtr(expos)) {
                     codingExons.add(exon);
@@ -720,7 +720,7 @@ public class TestCasesIntegrationBase {
                 for (String e : vepSos)
                     msg += e + " ";
 
-                msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
+                msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEndClosed();
                 Log.debug(msg);
                 throw new RuntimeException(msg);
             }
@@ -941,6 +941,34 @@ public class TestCasesIntegrationBase {
 
         // Not found? Error
         if (!found) throw new RuntimeException("Genotype '" + genotype + "' not found.");
+    }
+
+    /**
+     * Run SnpEff prediction and filter effects from results (VCF)
+     */
+    public List<EffectType> snpEffectFilter(String genome, String vcfInputFile, boolean useCanonical, int filterPos, EffectType filterEffType) {
+        String[] argsCanon = {"-canon"};
+        String[] args = (useCanonical ? argsCanon : null);
+
+        // Annotate
+        List<VcfEntry> vcfEntries = snpEffect(genome, vcfInputFile, args);
+        if (verbose) vcfEntries.forEach(v -> System.out.println("VcfEffect:" + v));
+
+        // Get variant effects at desired position
+        Optional<VcfEffect> oeff = vcfEntries.stream() //
+                .filter(v -> v.getStart() == filterPos) //
+                .flatMap(v -> v.getVcfEffects().stream()) //
+                .findFirst();
+
+        // Sanity check
+        if (verbose) Log.info("VcfEffect:" + oeff);
+        assertTrue(oeff.isPresent(), "Could not find any variant effect at position " + filterPos);
+
+        List<EffectType> effTypes = oeff.get().getEffectTypes();
+        if (verbose) Log.info("effTypes:" + effTypes);
+        assertTrue(effTypes.contains(filterEffType), "Effect type '" + filterEffType + "' not found");
+
+        return effTypes;
     }
 
     /**

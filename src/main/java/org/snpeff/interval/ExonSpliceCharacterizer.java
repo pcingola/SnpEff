@@ -8,7 +8,6 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Characterize exons based on alternative splicing
@@ -82,10 +81,10 @@ public class ExonSpliceCharacterizer {
 				if (exon.intersects(e)) {
 					if (exon.isStrandPlus()) {
 						// Same exon end, different exon start?
-						if ((exon.getStart() != e.getStart()) && (exon.getEnd() == e.getEnd())) return true;
+						if ((exon.getStart() != e.getStart()) && (exon.getEndClosed() == e.getEndClosed())) return true;
 					} else {
 						// Same exon end, different exon start? (negative strand)
-						if ((exon.getStart() == e.getStart()) && (exon.getEnd() != e.getEnd())) return true;
+						if ((exon.getStart() == e.getStart()) && (exon.getEndClosed() != e.getEndClosed())) return true;
 					}
 				}
 			}
@@ -105,10 +104,10 @@ public class ExonSpliceCharacterizer {
 				if (exon.intersects(e)) {
 					if (exon.isStrandPlus()) {
 						// Same exon start, different exon end?
-						if ((exon.getStart() == e.getStart()) && (exon.getEnd() != e.getEnd())) return true;
+						if ((exon.getStart() == e.getStart()) && (exon.getEndClosed() != e.getEndClosed())) return true;
 					} else {
 						// Same exon start, different exon end? (negative strand)
-						if ((exon.getStart() != e.getStart()) && (exon.getEnd() == e.getEnd())) return true;
+						if ((exon.getStart() != e.getStart()) && (exon.getEndClosed() == e.getEndClosed())) return true;
 					}
 				}
 			}
@@ -164,7 +163,7 @@ public class ExonSpliceCharacterizer {
 	 * @return
 	 */
 	String key(Marker m) {
-		return m.getChromosomeName() + ":" + m.getStart() + "-" + m.getEnd();
+		return m.getChromosomeName() + ":" + m.getStart() + "-" + m.getEndClosed();
 	}
 
 	public void setVerbose(boolean verbose) {

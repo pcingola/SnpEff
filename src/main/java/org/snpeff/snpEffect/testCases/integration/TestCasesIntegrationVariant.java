@@ -238,7 +238,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
                 if (verbose) Log.info("Transcript: " + tr.getId());
                 List<Exon> exons = tr.sortedStrand();
                 for (Exon exon : exons) {
-                    for (int i = exon.getStart(); i <= exon.getEnd(); i++) {
+                    for (int i = exon.getStart(); i <= exon.getEndClosed(); i++) {
                         String base = seq.substring(i, i + 1);
                         String exonBase = exon.basesAt(i - exon.getStart(), 1);
 
@@ -292,7 +292,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 
         // Set chromosome size (so that we don't get an exception)
         for (Chromosome chr : config.getGenome())
-            chr.setEnd(1000000000);
+            chr.setEndClosed(1000000000);
 
         //---
         // Calculate effect

@@ -84,7 +84,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		Exon ex = tr.getFirstCodingExon();
 		Variant Variant = new Variant(tr.getChromosome(), ex.getStart(), "AC", "A");
 		Variant.setStart(ex.getStart());
-		Variant.setEnd(ex.getEnd());
+		Variant.setEndClosed(ex.getEndClosed());
 		Variant.setVariantType(VariantType.DEL);
 		if (verbose) Log.debug("Variant:" + Variant);
 		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.EXON_DELETED, ex);
@@ -105,10 +105,10 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		for (int i = 0; i < NUM_DEL_TEST; i++) {
 			// Create a random Variant
 			int delStart = random.nextInt(tr.size() - 1) + tr.getStart();
-			int delEnd = random.nextInt(tr.getEnd() - delStart) + delStart + 1;
+			int delEnd = random.nextInt(tr.getEndClosed() - delStart) + delStart + 1;
 			Variant Variant = new Variant(tr.getChromosome(), delStart, "AC", "A");
 			Variant.setStart(delStart);
-			Variant.setEnd(delEnd);
+			Variant.setEndClosed(delEnd);
 			if (verbose) Log.debug("Variant:" + Variant);
 			Variant.setVariantType(VariantType.DEL);
 
@@ -141,7 +141,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		int codingBase = 0;
 
 		for (Exon ex : tr.sortedStrand()) {
-			int start = tr.isStrandPlus() ? ex.getStart() : ex.getEnd();
+			int start = tr.isStrandPlus() ? ex.getStart() : ex.getEndClosed();
 			int step = tr.isStrandPlus() ? 1 : -1;
 
 			// All exonic positions
@@ -214,7 +214,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 
 		if (intron.getRank() > 1) {
 			// Position
-			int posDonor = tr.isStrandPlus() ? intron.getEnd() : intron.getStart();
+			int posDonor = tr.isStrandPlus() ? intron.getEndClosed() : intron.getStart();
 
 			// Splice site size
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);
@@ -249,7 +249,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 
 		if (intron.getRank() < maxRank) {
 			// Position
-			int posDonor = tr.isStrandPlus() ? intron.getStart() : intron.getEnd();
+			int posDonor = tr.isStrandPlus() ? intron.getStart() : intron.getEndClosed();
 
 			// Splice site size
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);

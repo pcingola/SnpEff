@@ -40,7 +40,7 @@ public class IntervalNodeOri implements Serializable, Iterable<Marker> {
 
 		for (Interval interval : markers) {
 			endpoints.add(interval.getStart());
-			endpoints.add(interval.getEnd());
+			endpoints.add(interval.getEndClosed());
 		}
 
 		if (endpoints.isEmpty()) {
@@ -55,7 +55,7 @@ public class IntervalNodeOri implements Serializable, Iterable<Marker> {
 		Markers right = new Markers();
 
 		for (Marker interval : markers) {
-			if (interval.getEnd() < median) left.add(interval);
+			if (interval.getEndClosed() < median) left.add(interval);
 			else if (interval.getStart() > median) right.add(interval);
 			else {
 				List<Marker> posting = intervals.get(interval);
@@ -128,11 +128,11 @@ public class IntervalNodeOri implements Serializable, Iterable<Marker> {
 			if (entry.getKey().intersects(target)) {
 				for (Marker interval : entry.getValue())
 					result.add(interval);
-			} else if (entry.getKey().getStart() > target.getEnd()) break;
+			} else if (entry.getKey().getStart() > target.getEndClosed()) break;
 		}
 
 		if (target.getStart() < center && leftNode != null) result.add(leftNode.query(target));
-		if (target.getEnd() > center && rightNode != null) result.add(rightNode.query(target));
+		if (target.getEndClosed() > center && rightNode != null) result.add(rightNode.query(target));
 		return result;
 	}
 
@@ -161,7 +161,7 @@ public class IntervalNodeOri implements Serializable, Iterable<Marker> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(center + ": ");
 		for (Entry<Marker, List<Marker>> entry : intervals.entrySet()) {
-			sb.append("[" + entry.getKey().getStart() + "," + entry.getKey().getEnd() + "]:{");
+			sb.append("[" + entry.getKey().getStart() + "," + entry.getKey().getEndClosed() + "]:{");
 			for (Interval interval : entry.getValue()) {
 				sb.append("(" + interval + ")");
 			}
