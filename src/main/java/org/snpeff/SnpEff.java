@@ -94,7 +94,7 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "d";
+	public static final String REVISION = "e";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
 	public static final String VERSION_MAJOR = "5.1";
@@ -191,13 +191,16 @@ public class SnpEff implements CommandLine {
 
 		if (verbose) {
 			// Show genes and transcript (which ones are considered 'canonical')
-			Log.info("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
+			Log.info("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength\taaLength\tproteinCoding");
 			for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
 				for (Transcript t : g) {
-					String cds = t.cds();
-					int cdsLen = (cds != null ? cds.length() : 0);
-					String proteinCoding = t.isProteinCoding() ? "protein_coding" : "";
-					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen + "\t" + proteinCoding);
+					System.err.println("\t\t" + g.getGeneName()
+							+ "\t" + g.getId()
+							+ "\t" + t.getId()
+							+ "\t" + (t.cds() != null ? t.cds().length() : 0)
+							+ "\t" + (t.protein() != null ? t.protein().length() : 0)
+							+ "\t" + (t.isProteinCoding() ? "protein_coding" : "")
+					);
 				}
 			}
 		}
