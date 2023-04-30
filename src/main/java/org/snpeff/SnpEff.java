@@ -189,9 +189,9 @@ public class SnpEff implements CommandLine {
 		if (verbose) Log.info("Filtering out non-canonical transcripts.");
 		config.getSnpEffectPredictor().removeNonCanonical(canonicalFile);
 
+		// Show genes and transcript (which ones are considered 'canonical')
 		if (verbose) {
-			// Show genes and transcript (which ones are considered 'canonical')
-			Log.info("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength\taaLength\tproteinCoding");
+			Log.info("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength\taaLength\tbioType\ttranscriptSupportLevel");
 			for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
 				for (Transcript t : g) {
 					System.err.println("\t\t" + g.getGeneName()
@@ -199,7 +199,8 @@ public class SnpEff implements CommandLine {
 							+ "\t" + t.getId()
 							+ "\t" + (t.cds() != null ? t.cds().length() : 0)
 							+ "\t" + (t.protein() != null ? t.protein().length() : 0)
-							+ "\t" + (t.isProteinCoding() ? "protein_coding" : "")
+							+ "\t" + t.getBioType()
+							+ "\t" + (t.getTranscriptSupportLevel() != null ? t.getTranscriptSupportLevel().toString() : "")
 					);
 				}
 			}

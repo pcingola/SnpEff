@@ -52,7 +52,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     List<Intron> introns; // Intron markers
     Upstream upstream; // Upstream interval
     Downstream downstream; // Downstream interval
-    Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
+    Exon firstCodingExon; // First coding exon; i.e. where transcription start site (TSS) is.
     int[] cds2pos, aa2pos;
     TranscriptSupportLevel transcriptSupportLevel = null;
 
