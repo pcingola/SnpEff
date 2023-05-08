@@ -3,7 +3,6 @@ package org.snpeff.interval.tree;
 import org.snpeff.interval.Interval;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.util.Log;
 
 import java.io.Serializable;
 

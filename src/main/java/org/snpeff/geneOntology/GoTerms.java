@@ -22,7 +22,6 @@ import org.snpeff.util.Log;
  * @author Pablo Cingolani
  *
  */
-@SuppressWarnings("serial")
 public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 	public static boolean debug = false; // Debug mode for this class?
@@ -469,18 +468,20 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 		// Read file
 		int lineNum;
 		try {
-			// Open file and initialize buffers
-			BufferedReader inFile = new BufferedReader(new FileReader(fileName));
-			String line;
+			try (
+				// Open file and initialize buffers
+				BufferedReader inFile = new BufferedReader(new FileReader(fileName))) {
+				String line;
 
-			// Read each line
-			for (lineNum = 1; (line = inFile.readLine()) != null; lineNum++) {
-				String symbolName = line.trim();
-				addInterestingSymbol(symbolName, lineNum, noGoTermFound);
+				// Read each line
+				for (lineNum = 1; (line = inFile.readLine()) != null; lineNum++) {
+					String symbolName = line.trim();
+					addInterestingSymbol(symbolName, lineNum, noGoTermFound);
+				}
+
+				// Ok, finished
+				inFile.close();
 			}
-
-			// Ok, finished
-			inFile.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -504,14 +505,13 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			// Open file and initialize buffers
 			BufferedReader inFile = Gpr.reader(oboFile);
 			String line;
-			int lineNum;
-			int found = 0, removed = 0;
+			int found = 0;
 			String goTermAcc = null, isa = null;
 			GoTerm goTerm = null;
 			HashSet<String> goNotFound = new HashSet<String>();
 
 			// Read each line
-			for (lineNum = 0; (line = inFile.readLine()) != null; lineNum++) {
+			while ((line = inFile.readLine()) != null) {
 				// Get term's accesion
 				if (line.startsWith("id: ")) {
 					goTermAcc = line.substring(4);
@@ -527,7 +527,6 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 						goTerm.setSescription(line.substring(6).trim());
 					} else if (line.startsWith("is_obsolete: ") && removeObsolete) { // Is this an obsolete term? => ignore it
 						removeGOTerm(goTermAcc);
-						removed++;
 					} else if ((goTermAcc != null) && (line.startsWith("is_a: "))) { // Add childs & parents as needed
 						isa = line.substring(6, 16);
 						GoTerm parent = findOrCreate(isa); // Add this as child
@@ -548,7 +547,6 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	/**

@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Check is a new version is available

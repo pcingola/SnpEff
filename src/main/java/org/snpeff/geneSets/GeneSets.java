@@ -20,7 +20,6 @@ import org.snpeff.geneOntology.GoTerm;
 import org.snpeff.geneOntology.GoTerms;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * A collection of GeneSets
@@ -29,12 +28,8 @@ import org.snpeff.util.Timer;
  *
  * @author Pablo Cingolani
  */
-@SuppressWarnings("serial")
 public class GeneSets implements Iterable<GeneSet>, Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -359594418467719013L;
 	public static boolean debug = false; // Debug mode for this class?
 	public static double LOG2 = Math.log(2); // We use this constant often
@@ -420,7 +415,6 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	 * @param fileName
 	 * @return A list of genes not found
 	 */
-	@SuppressWarnings("unchecked")
 	public List<String> loadExperimentalValues(String fileName, boolean maskException) {
 		LinkedList<String> notFound = new LinkedList<String>();
 

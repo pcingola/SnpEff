@@ -14,7 +14,6 @@ import org.snpeff.stats.plot.GooglePlotInt;
  * 
  * @author pcingola
  */
-@SuppressWarnings("serial")
 public class IntStats implements Serializable {
 
 	int maxBins = Integer.MAX_VALUE;
@@ -259,7 +258,6 @@ public class IntStats implements Serializable {
 /**
  * A class for iterating the Map and performing basic statistics
  */
-@SuppressWarnings("serial")
 class StatsProcedure implements TIntIntProcedure, Serializable {
 
 	int minKey = Integer.MAX_VALUE;

@@ -3,14 +3,12 @@ package org.snpeff.snpEffect.testCases.integration;
 import org.junit.jupiter.api.Test;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Log;
-import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -53,7 +51,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
     public void test_01() {
         verbose = true;
         Log.debug("Test");
-        List<EffectType> effTypes = snpEffectFilter("testHg19Chr7", path("test.splice_region_01.vcf"), true, 117174416, EffectType.SPLICE_SITE_REGION);
+        snpEffectFilter("testHg19Chr7", path("test.splice_region_01.vcf"), true, 117174416, EffectType.SPLICE_SITE_REGION);
     }
 
     /**
@@ -62,7 +60,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
     @Test
     public void test_02_splice_region() {
         verbose = true;
-        List<EffectType> effTypes = snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174326, EffectType.SPLICE_SITE_REGION);
+        snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174326, EffectType.SPLICE_SITE_REGION);
     }
 
     /**
@@ -70,7 +68,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
      */
     @Test
     public void test_03_splice_acceptor() {
-        List<EffectType> effTypes = snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174327, EffectType.SPLICE_SITE_ACCEPTOR);
+        snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174327, EffectType.SPLICE_SITE_ACCEPTOR);
     }
 
     /**
@@ -78,7 +76,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
      */
     @Test
     public void test_04_splice_acceptor() {
-        List<EffectType> effTypes = snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174328, EffectType.SPLICE_SITE_ACCEPTOR);
+        snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174328, EffectType.SPLICE_SITE_ACCEPTOR);
     }
 
     /**
@@ -86,7 +84,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
      */
     @Test
     public void test_05_splice_region() {
-        List<EffectType> effTypes = snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174329, EffectType.SPLICE_SITE_REGION);
+        snpEffectFilter("testHg19Chr7", path("test.splice_acceptor_02.vcf"), true, 117174329, EffectType.SPLICE_SITE_REGION);
     }
 
     /**

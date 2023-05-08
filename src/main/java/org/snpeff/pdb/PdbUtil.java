@@ -1,11 +1,7 @@
 package org.snpeff.pdb;
-
 import org.biojava.nbio.structure.*;
-import org.snpeff.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class PdbUtil {
 

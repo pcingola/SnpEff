@@ -79,7 +79,6 @@ Test system: AMD Opteron, 64 bit linux, Sun Java 1.5_06 -server -Xbatch -Xmx64M
  * @version $Id: OpenBitSet.java,v 1.1 2011/03/10 12:18:16 pcingola Exp $
  */
 
-@SuppressWarnings("serial")
 public class OpenBitSet implements Cloneable, Serializable {
 
 	protected long[] bits;

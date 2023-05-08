@@ -8,7 +8,6 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Characterize exons based on alternative splicing

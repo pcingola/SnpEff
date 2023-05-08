@@ -8,7 +8,6 @@ import java.io.Serializable;
  * 
  * @author pcingola
  */
-@SuppressWarnings("serial")
 public abstract class Coder implements Serializable {
 
 	public static final int BITS_PER_LONGWORD = 64;

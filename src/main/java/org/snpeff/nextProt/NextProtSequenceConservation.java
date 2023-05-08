@@ -104,7 +104,6 @@ public class NextProtSequenceConservation {
 		var avgLen = averageAaSeqLength(cbt);
 		if(verbose) Log.info("Category '" + category + "', count: " + cbt.getTotalCount() + ", different sequences: " + cbt.keySet().size() + ", AA sequence length: " + avgLen);
 
-		StringBuilder sb = new StringBuilder();
 		boolean highlyConservedAaSequence = false;
 		int rank = 1;
 		for (String aas : cbt.keysRanked(false)) {

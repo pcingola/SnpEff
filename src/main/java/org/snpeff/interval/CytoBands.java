@@ -6,7 +6,6 @@ import org.snpeff.interval.tree.Itree;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Cytband definitions
