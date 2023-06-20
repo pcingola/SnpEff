@@ -10,7 +10,6 @@ import java.util.Set;
  * 
  * @author pcingola
  */
-@SuppressWarnings("serial")
 public class CountByKey<T> implements Serializable {
 
 	HashMap<T, Long> countByKey;

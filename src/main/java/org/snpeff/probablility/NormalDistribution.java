@@ -57,7 +57,8 @@ public class NormalDistribution {
 		final double b[] = { 47.20258190468824187, 976.09855173777669322, 10260.932208618978205, 45507.789335026729956 };
 
 		double xden, temp, xnum, result, ccum;
-		double del, min, eps, xsq;
+		// double del, min, eps, xsq;
+		double del, eps, xsq;
 		double y;
 		int i;
 
@@ -76,7 +77,7 @@ public class NormalDistribution {
 		}
 
 		eps = Constants.DBL_EPSILON * 0.5;
-		min = Double.MIN_VALUE;
+		// min = Double.MIN_VALUE;
 		y = java.lang.Math.abs(x);
 
 		if (y <= 0.66291) {

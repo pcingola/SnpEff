@@ -10,7 +10,6 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.ReadsOnMarkersModel;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 import htsjdk.samtools.BAMIndex;
 import htsjdk.samtools.BAMIndexMetaData;

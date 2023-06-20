@@ -127,7 +127,6 @@ public class HashLongLongArray {
 	 * @param key
 	 * @param value
 	 */
-	@SuppressWarnings("unused")
 	public void put(long key, long value) {
 		// Get reference to 'values'
 		int bucketNumber = getBucketNumber(key);
@@ -152,10 +151,10 @@ public class HashLongLongArray {
 		long bucket[] = buckets[bucketNumber];
 		if( bucket == null ) {
 			bucket = buckets[bucketNumber] = new long[INITIAL_BUCKET_SIZE];
-			if( EMPTY_VALUE != 0 ) { // Only if this ever changes, we need to initialize
-				for( int i = 0; i < bucket.length; i++ )
-					bucket[i] = EMPTY_VALUE;
-			}
+			// if( EMPTY_VALUE != 0 ) { // Only if this ever changes, we need to initialize
+			// 	for( int i = 0; i < bucket.length; i++ )
+			// 		bucket[i] = EMPTY_VALUE;
+			// }
 		}
 
 		// Find first available position in 'bucket'

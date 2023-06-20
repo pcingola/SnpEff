@@ -247,9 +247,9 @@ public class CompareToVep {
 	boolean compareHgvsDna(VcfEffect eff, VcfConsequence csq) {
 		String effHgsv = eff.getHgvsDna();
 		String csqHgvs = csq.getHgvsDna();
-		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true;
-		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false;
-		if (csqHgvs.isEmpty() && (effHgsv != null || !effHgsv.isEmpty())) return false;
+		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true; // Both are empty
+		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false; // One is empty, one is not
+		if (csqHgvs.isEmpty() && !(effHgsv == null || effHgsv.isEmpty())) return false; // One is empty, one is not
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
 		boolean eq = csqHgvs.equals(effHgsv);
@@ -266,9 +266,9 @@ public class CompareToVep {
 		String effHgsv = eff.getHgvsProt();
 		String csqHgvs = csq.getHgvsProt();
 
-		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true;
-		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false;
-		if (csqHgvs.isEmpty() && (effHgsv != null || !effHgsv.isEmpty())) return false;
+		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true; // Both are empty
+		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false; // One is empty, one is not
+		if (csqHgvs.isEmpty() && !(effHgsv == null || effHgsv.isEmpty())) return false; // One is empty, one is not
 
 		// This seems to be a bug in ENSEMBL's VEP
 		// E.g.: 'ENST00000241356.4:c.945G>A(p.%3D)'
