@@ -75,8 +75,8 @@ public class NextProtMarkerFactory {
     void addConservation(NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, Transcript tr) {
         int aaStart = location.begin;
         int aaEnd = location.end;
-        int start = tr.aaNumber2Pos(aaStart);
-        int end = tr.aaNumber2Pos(aaEnd);
+        // int start = tr.aaNumber2Pos(aaStart);
+        // int end = tr.aaNumber2Pos(aaEnd);
 
         if (location.isInteraction()) {
             // In this case we need to add both sides of the interaction separately

@@ -250,7 +250,7 @@ public class SpliceTypes {
 			String a = getAcceptorsByIntron(intronKey);
 
 			if (d.startsWith(donor) && a.endsWith(acceptor)) {
-				String branch = getAcceptorsByIntron(intronKey);
+				// String branch = getAcceptorsByIntron(intronKey);
 				fasta.append(">" + intronKey + "\n" + d + "-" + a + "\n");
 			}
 		}
