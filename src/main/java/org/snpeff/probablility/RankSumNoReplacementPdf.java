@@ -113,7 +113,6 @@ public class RankSumNoReplacementPdf {
 	 * @return
 	 */
 	private void cachePrune(int n) {
-		int deleted = 0;
 		HashMap<String, Apfloat> newCachePdf = new HashMap<String, Apfloat>();
 		for (String key : cachePdf.keySet()) {
 			// Parse key
@@ -123,8 +122,9 @@ public class RankSumNoReplacementPdf {
 			int keyOut = Integer.parseInt(field[4]);
 
 			// Delete this entry?
-			if ((keyN == n) && ((keyRmin > 1) || (keyOut > 0))) deleted++;
-			else newCachePdf.put(key, cachePdf.get(key));
+			if ((keyN == n) && ((keyRmin > 1) || (keyOut > 0))) {
+				// Delete entry: Do not copy to 'newCachePdf'
+			} else newCachePdf.put(key, cachePdf.get(key));
 		}
 
 		cachePdf = newCachePdf;

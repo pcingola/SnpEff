@@ -8,7 +8,6 @@ import java.util.LinkedList;
 
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * A queue of commands to be run.

@@ -16,11 +16,9 @@ import org.snpeff.util.GprHtml;
  *
  * @author pcingola
  */
-@SuppressWarnings("serial")
 public class CountByType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	public static final String TOTAL_TYPE = "Total";
 
 	HashMap<String, Long> countByType;

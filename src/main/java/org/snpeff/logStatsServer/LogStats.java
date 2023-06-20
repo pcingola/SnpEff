@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  *

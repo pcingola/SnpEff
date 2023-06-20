@@ -21,7 +21,6 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * This class stores all "relevant" sequences in a genome

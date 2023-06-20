@@ -656,11 +656,13 @@ public class Config implements Serializable, Iterable<String> {
 
             if (Gpr.canRead(configFileName)) {
                 // Load properties
-                properties.load(new FileReader(confFile));
+                var freader = new FileReader(confFile);
+                properties.load(freader);
 
                 // Set config directory
                 configDirPath = confFile.getCanonicalFile().getParent();
 
+                freader.close();
                 return true;
             }
         } catch (Exception e) {

@@ -1,6 +1,5 @@
 package org.snpeff.interval;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +23,7 @@ import org.snpeff.util.Gpr;
  *
  * @author pcingola
  */
-public class Genome extends Marker implements Serializable, Iterable<Chromosome> {
+public class Genome extends Marker implements Iterable<Chromosome> {
 
 	private static final long serialVersionUID = -330362012383572257L;
 

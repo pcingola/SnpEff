@@ -1,14 +1,7 @@
 package org.snpeff.fileIterator;
 
-import java.io.IOException;
-import java.util.Iterator;
 
-//import org.broad.igv.bbfile.BBFileHeader;
-//import org.broad.igv.bbfile.BBFileReader;
-//import org.broad.igv.bbfile.BedFeature;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantWithScore;
-import org.snpeff.util.Gpr;
 
 /**
  * FileIterator for BigBed features

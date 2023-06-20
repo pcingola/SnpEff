@@ -40,7 +40,6 @@ import org.snpeff.interval.VariantWithScore;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEntry;
 
 /**

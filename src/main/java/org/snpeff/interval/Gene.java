@@ -1,6 +1,5 @@
 package org.snpeff.interval;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ import org.snpeff.util.Log;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript> {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN

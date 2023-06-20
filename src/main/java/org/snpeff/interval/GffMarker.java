@@ -8,10 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-
 import org.snpeff.util.Gpr;
 import org.snpeff.util.KeyValue;
-import org.snpeff.util.Log;
 
 /**
  * An interval intended as a mark

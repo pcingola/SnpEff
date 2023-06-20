@@ -134,18 +134,23 @@ public class CompareToEnsembl {
 	 */
 	String effTranslate(EffectType eff) {
 		switch (eff) {
-		case UTR_5_PRIME:
-		case START_GAINED:
-			return "5PRIME_UTR";
-		case UTR_3_PRIME:
-			return "3PRIME_UTR";
-		case NON_SYNONYMOUS_START:
-		case START_LOST:
-			return "NON_SYNONYMOUS_CODING";
-		case INTRON:
-			return "INTRONIC";
+			case UTR_5_PRIME:
+			case START_GAINED:
+				return "5PRIME_UTR";
+
+			case UTR_3_PRIME:
+				return "3PRIME_UTR";
+
+			case NON_SYNONYMOUS_START:
+			case START_LOST:
+				return "NON_SYNONYMOUS_CODING";
+
+			case INTRON:
+				return "INTRONIC";
+			
+			default:
+				return eff.toString();
 		}
-		return eff.toString();
 	}
 
 	/**

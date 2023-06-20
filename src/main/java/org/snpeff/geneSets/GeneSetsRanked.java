@@ -12,7 +12,6 @@ import java.util.Set;
  * 
  * @author Pablo Cingolani
  */
-@SuppressWarnings("serial")
 public class GeneSetsRanked extends GeneSets {
 
 	private static final long serialVersionUID = -7922357470081599803L;
@@ -180,7 +179,6 @@ public class GeneSetsRanked extends GeneSets {
 	 * @return A list of genes not found
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<String> loadExperimentalValues(String fileName, boolean maskException) {
 		List<String> notFound = super.loadExperimentalValues(fileName, maskException);
 		rankByValue(false);

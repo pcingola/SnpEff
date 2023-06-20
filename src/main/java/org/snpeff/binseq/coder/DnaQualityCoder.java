@@ -11,7 +11,6 @@ package org.snpeff.binseq.coder;
  * @author pcingola
  *
  */
-@SuppressWarnings("serial")
 public class DnaQualityCoder extends DnaCoder {
 
 	public static final int MAX_QUALITY = 63;

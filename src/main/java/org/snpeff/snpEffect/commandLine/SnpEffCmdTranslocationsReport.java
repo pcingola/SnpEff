@@ -24,7 +24,6 @@ import org.snpeff.stats.TranslocationReport;
 import org.snpeff.svg.SvgTranslocation;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
