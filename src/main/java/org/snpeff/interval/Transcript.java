@@ -10,6 +10,7 @@ import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
+import org.snpeff.interval.GffMarker;
 
 import java.util.*;
 
@@ -56,7 +57,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     int[] aa2pos; // Amino acid to genomic possition mapping
     int[] cds2pos; // CDS to genomic possition mapping
     TranscriptSupportLevel transcriptSupportLevel = null;
-    String tags; // Transcript tags. Multiple tags separated by '\t'
+    String tags; // Transcript tags. Multiple tags separated by MULTIPLE_VALUES_SEPARATOR
 
     public Transcript() {
         super();
@@ -1177,8 +1178,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     }
 
     public String[] getTags() {
-        if (tags == null) return new String[0];
-        return tags.split("\t");
+        if (tags == null || tags.isEmpty()) return new String[0];
+        return tags.split(GffMarker.MULTIPLE_VALUES_SEPARATOR);
     }
 
     public TranscriptSupportLevel getTranscriptSupportLevel() {
@@ -1240,7 +1241,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      */
     public boolean hasTag(String tag) {
         if( tags == null ) return false;
-        for(String t: tags.split("\t"))
+        for(String t: getTags())
             if( t.equals(tag) ) return true;
         return false;
     }
@@ -1659,6 +1660,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
         for (Marker m : markerSerializer.getNextFieldMarkers())
             cdss.add((Cds) m);
+        
+        tags = markerSerializer.getNextField();
     }
 
     /**
@@ -1680,6 +1683,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 + "\t" + markerSerializer.save(downstream) //
                 + "\t" + markerSerializer.save((Iterable) utrs)//
                 + "\t" + markerSerializer.save((Iterable) cdss)//
+                + "\t" + tags //
                 ;
     }
 

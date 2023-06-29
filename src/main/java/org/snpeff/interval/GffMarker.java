@@ -20,6 +20,7 @@ import org.snpeff.util.KeyValue;
 public class GffMarker extends Custom {
 
 	private static final long serialVersionUID = -164502778854644537L;
+	public static final String MULTIPLE_VALUES_SEPARATOR = ";";
 
 	String source;
 	int frame;
@@ -69,7 +70,7 @@ public class GffMarker extends Custom {
 			// Pack multiple values into a single tab-separated string
 			if (keyValues.containsKey(key)) {
                 String oldValue = keyValues.get(key);
-                String newValue = (oldValue != null ? oldValue + "\t" + value : value);
+                String newValue = (oldValue != null ? oldValue + MULTIPLE_VALUES_SEPARATOR + value : value);
                 keyValues.put(key, newValue);
             } else {
                 keyValues.put(key, value);

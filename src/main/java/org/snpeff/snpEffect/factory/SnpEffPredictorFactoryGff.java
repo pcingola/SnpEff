@@ -33,7 +33,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         genesById = new HashMap<>();
         transcriptsById = new HashMap<>();
         fileName = config.getBaseFileNameGenes() + ".gff";
-
         frameCorrection = true;
         frameType = FrameType.GFF;
     }
