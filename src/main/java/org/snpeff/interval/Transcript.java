@@ -53,8 +53,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     Upstream upstream; // Upstream interval
     Downstream downstream; // Downstream interval
     Exon firstCodingExon; // First coding exon; i.e. where transcription start site (TSS) is.
-    int[] cds2pos, aa2pos;
+    int[] aa2pos; // Amino acid to genomic possition mapping
+    int[] cds2pos; // CDS to genomic possition mapping
     TranscriptSupportLevel transcriptSupportLevel = null;
+    String tag; // Transcript tag (only one per transcript)
 
     public Transcript() {
         super();
@@ -1228,6 +1230,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return hasError() || hasWarning();
     }
 
+    /**
+     * Does this transcript have 'tag'?
+     */
+    public boolean hasTag(String tag) {
+        return this.tag != null && this.tag.equals(tag);
+    }
+
     public boolean hasTranscriptSupportLevelInfo() {
         return (transcriptSupportLevel != null) && (transcriptSupportLevel != TranscriptSupportLevel.TSL_NA);
     }
@@ -1665,6 +1674,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 + "\t" + markerSerializer.save((Iterable) utrs)//
                 + "\t" + markerSerializer.save((Iterable) cdss)//
                 ;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void sortCds() {

@@ -263,10 +263,14 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         String ver = gffMarker.getTranscriptVersion();
         if (ver != null) tr.setVersion(ver);
 
+        // Tag
+        String tag = gffMarker.getAttr("tag");
+        if(tag!= null) tr.setTag(tag);
+
         // Add transcript
         add(tr);
 
-        //---parse
+        //---
         // Sanity check and updates for gene
         //---
 
