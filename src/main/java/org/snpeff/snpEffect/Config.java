@@ -529,7 +529,7 @@ public class Config implements Serializable, Iterable<String> {
         readConfig(configFileName, override); // Read config file and get a genome
         genome = genomeById.get(genomeVersion); // Set a genome
         if (!genomeVersion.isEmpty() && (genome == null))
-            throw new RuntimeException("No such genome '" + genomeVersion + "'");
+            throw new RuntimeException("No such genome '" + genomeVersion + "' in config file '" + configFileName + "'");
 
         // Make this the current singleton instance
         configInstance = this;
@@ -751,6 +751,8 @@ public class Config implements Serializable, Iterable<String> {
         // Genome specified?
         if (!genomeVersion.isEmpty()) {
             readGenomeConfig(genomeVersion, properties); // Read configuration file for genome version (if any)
+            genome = new Genome(genomeVersion, properties); // Create genome object
+            genomeById.put(genomeVersion, genome);
             createCodonTables(genomeVersion, properties); // Codon tables
         }
 
@@ -782,9 +784,6 @@ public class Config implements Serializable, Iterable<String> {
             if (debug)
                 System.err.println("File '" + genomePropsFileName + "' not found"); // File does not exists? => OK
         }
-
-        genome = new Genome(genVer, properties);
-        genomeById.put(genVer, genome);
     }
 
     /**

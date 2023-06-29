@@ -263,9 +263,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         String ver = gffMarker.getTranscriptVersion();
         if (ver != null) tr.setVersion(ver);
 
-        // Tag
-        String tag = gffMarker.getAttr("tag");
-        if(tag!= null) tr.setTag(tag);
+        // Tags: Tab separated tags in one string
+        String tags = gffMarker.getAttr("tag");
+        if(tags != null) tr.setTags(tags);
 
         // Add transcript
         add(tr);

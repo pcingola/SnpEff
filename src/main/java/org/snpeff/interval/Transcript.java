@@ -56,7 +56,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     int[] aa2pos; // Amino acid to genomic possition mapping
     int[] cds2pos; // CDS to genomic possition mapping
     TranscriptSupportLevel transcriptSupportLevel = null;
-    String tag; // Transcript tag (only one per transcript)
+    String tags; // Transcript tags. Multiple tags separated by '\t'
 
     public Transcript() {
         super();
@@ -1176,6 +1176,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return (Gene) findParent(Gene.class);
     }
 
+    public String[] getTags() {
+        if (tags == null) return new String[0];
+        return tags.split("\t");
+    }
+
     public TranscriptSupportLevel getTranscriptSupportLevel() {
         return transcriptSupportLevel;
     }
@@ -1234,7 +1239,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      * Does this transcript have 'tag'?
      */
     public boolean hasTag(String tag) {
-        return this.tag != null && this.tag.equals(tag);
+        if( tags == null ) return false;
+        for(String t: tags.split("\t"))
+            if( t.equals(tag) ) return true;
+        return false;
     }
 
     public boolean hasTranscriptSupportLevelInfo() {
@@ -1245,8 +1253,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      * Does this transcript have any errors?
      */
     public boolean hasWarning() {
-        return isWarningStopCodon() // All possible warnings
-                ;
+        return isWarningStopCodon(); // All possible warnings
     }
 
     /**
@@ -1676,8 +1683,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 ;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public void sortCds() {

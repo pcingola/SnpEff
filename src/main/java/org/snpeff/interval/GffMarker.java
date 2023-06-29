@@ -65,7 +65,18 @@ public class GffMarker extends Custom {
 		if (keys == null) keys = new HashSet<>();
 
 		keys.add(key); // Store original key (to preserve capitalization in 'Custom' annotations)
-		keyValues.put(key.toLowerCase(), value);
+		if(isMultipleValues(key)) {
+			// Pack multiple values into a single tab-separated string
+			if (keyValues.containsKey(key)) {
+                String oldValue = keyValues.get(key);
+                String newValue = (oldValue != null ? oldValue + "\t" + value : value);
+                keyValues.put(key, newValue);
+            } else {
+                keyValues.put(key, value);
+            }
+		} else {
+			keyValues.put(key.toLowerCase(), value);
+		}
 	}
 
 	public String getAttr(String key) {
@@ -206,6 +217,11 @@ public class GffMarker extends Custom {
 	public boolean hasAttr(String key) {
 		key = key.toLowerCase();
 		return keyValues.containsKey(key) && (keyValues.get(key) != null);
+	}
+
+	/** Does the key have mutiple values */
+	public boolean isMultipleValues(String key) {
+		return false;
 	}
 
 	/**

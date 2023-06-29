@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class Gtf2Marker extends GffMarker {
 
 	private static final long serialVersionUID = 5416962964309837838L;
-
+	static final String TAG_KEY = "tag";
 	static final String ATTRIBUTE_PATTERN_REGEX = "\\s*(\\S+)\\s+\"(.*?)\"\\s*;";
 	static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(ATTRIBUTE_PATTERN_REGEX);
 
@@ -28,6 +28,11 @@ public class Gtf2Marker extends GffMarker {
 
 	public Gtf2Marker(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
+	}
+
+	/** Does the key have mutiple values */
+	public boolean isMultipleValues(String key) {
+		return key.equals(TAG_KEY);  // Only the 'tag' key is allowed multiple value
 	}
 
 	/**
