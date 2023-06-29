@@ -84,7 +84,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 					chromosome = new Chromosome(genome, start, end, chrName);
 					add(chromosome);
 				} else {
-					if (debug) System.err.println("Warnign: 'SOURCE' already assigned to chromosome. Ignoring feature:\n" + f);
+					if (debug) System.err.println("Warning: 'SOURCE' already assigned to chromosome. Ignoring feature:\n" + f);
 				}
 			}
 		}

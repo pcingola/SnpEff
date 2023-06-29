@@ -184,7 +184,7 @@ public class Config implements Serializable, Iterable<String> {
                     // Find chromosome
                     Chromosome chr = gen.getOrCreateChromosome(chromo);
 
-                    Log.info("Codon table '" + codonTableName + "' assigned to chromosome '" + chr + "'");
+                    if( verbose ) Log.info("Codon table '" + codonTableName + "' assigned to chromosome '" + chr.getChromosomeName() + "'");
 
                     // Everything seems to be OK, go on
                     CodonTables.getInstance().set(genomeById.get(genomeId), chr, codonTable);
