@@ -64,9 +64,15 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
     }
 
     @Test
-    public void test_02() {
-        // TODO: Filter out transcripts having 'tag' (remove 'tag')
+    public void test_03_filter_keep_tags() {
+        // TODO: Command line to filter (i.e. only keep) transcripts having 'tag'
+
     }
 
+    @Test
+    public void test_04_filter_out_tags() {
+        // TODO: Command line to filter out (i.e. remove) transcripts having 'tag'
+
+    }
 
 }
