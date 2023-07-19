@@ -395,6 +395,20 @@ public class SnpEff implements CommandLine {
 		cmd.tagsNo = tagsNo;
 	}
 
+	/**
+	 * Filter by tags
+	 */
+	protected void filterTags() {
+		if (verbose) Log.info("Filtering transcripts by tags " + tags + ", filter out tags " + tagsNo);
+		if( tags.isEmpty() && tagsNo.isEmpty() ) {
+			Log.info("Filtering by tag transcripts: No tags provided, skipping.");
+			return;
+		}
+
+		config.getSnpEffectPredictor().filterTags(tags, tagsNo);
+		if (verbose) Log.info("done.");
+	}
+
 	@Override
 	public String[] getArgs() {
 		return args;
@@ -544,6 +558,9 @@ public class SnpEff implements CommandLine {
 
 		// Filter canonical transcripts
 		if (canonical || (canonicalFile != null && !canonicalFile.isEmpty())) canonical();
+
+		// Filter by tags
+		filterTags();
 
 		// Filter transcripts by TSL
 		if (maxTranscriptSupportLevel != null) {

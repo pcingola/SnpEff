@@ -191,6 +191,14 @@ public class SnpEffectPredictor implements Serializable {
     }
 
     /**
+     * Filter transcripts by tags
+     */
+    public void filterTags(Set<String> tags, Set<String> tagsNo) {
+        for (Gene g : genome.getGenes())
+            g.filterTags(tags, tagsNo);
+    }
+
+    /**
      * Filter transcripts by TSL
      */
     public void filterTranscriptSupportLevel(TranscriptSupportLevel maxTsl) {

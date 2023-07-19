@@ -93,11 +93,11 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
     }
 
     @Test
-    public void test_04_filter_keep_tags() {
+    public void test_04_filter_out_tags() {
         // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
         List<String> args = new LinkedList<>();
         args.add("-tagNo");
-        args.add("MANE_Select");
+        args.add("CAGE_supported_TSS");
         args.add("test_GRCh38.mane.1.0.ensembl.chr21");
         var emptyVcf = path("empty.vcf");
         args.add(emptyVcf);
@@ -108,17 +108,11 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
         int count = 0;
         for(Gene g : genome.getGenes()) {
             for(Transcript tr: g) {
-                assertFalse(tr.hasTag("MANE_Select"), "Transcript has 'MANE_Select' tag: " + tr.getId());
+                assertTrue(!tr.hasTag("CAGE_supported_TSS"), "Transcript has 'MANE_Select' tag: " + tr.getId());
                 count++;
             }
         }
-        assertEquals(6856, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
-    }
-
-    @Test
-    public void test_04_filter_out_tags() {
-        // TODO: Command line to filter out (i.e. remove) transcripts having 'tag'
-
+        assertEquals(200, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
     }
 
 }

@@ -223,6 +223,37 @@ public class Gene extends IntervalAndSubIntervals<Transcript> {
 	}
 
 	/**
+	 * Filter transcripts by tags
+	 * @param tags: Ttranscripts to keep
+	 * @param tagsNo: Transcripts to remove
+	 */
+	public void filterTags(Set<String> tags, Set<String> tagsNo) {
+		ArrayList<Transcript> toDelete = new ArrayList<>();
+
+        // Mark transcripts for removal
+        for (Transcript tr : this) {
+			boolean keep = false, remove = false;
+			for(String tag: tr.getTags()) {
+				if (tags.contains(tag)) {
+					keep = true;
+					continue;
+				}
+				if (tagsNo.contains(tag)) {
+                    remove = true;
+                }
+			}
+
+			// Keep or remove transcript?
+			if (keep) continue;
+            if (remove) toDelete.add(tr);
+		}	
+
+        // Remove transcripts
+        for (Transcript t : toDelete)
+            remove(t);
+	}
+
+	/**
 	 * Filter transcripts by TSL
 	 */
 	public void filterTranscriptSupportLevel(TranscriptSupportLevel maxTsl) {
