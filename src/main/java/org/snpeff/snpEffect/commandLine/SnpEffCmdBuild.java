@@ -138,8 +138,7 @@ public class SnpEffCmdBuild extends SnpEff {
         else if (geneDatabaseFormat == GeneDatabaseFormat.GFF3) factory = new SnpEffPredictorFactoryGff3(config);
         else if (geneDatabaseFormat == GeneDatabaseFormat.GFF2) factory = new SnpEffPredictorFactoryGff2(config);
         else if (geneDatabaseFormat == GeneDatabaseFormat.REFSEQ) factory = new SnpEffPredictorFactoryRefSeq(config);
-        else if (geneDatabaseFormat == GeneDatabaseFormat.KNOWN_GENES)
-            factory = new SnpEffPredictorFactoryKnownGene(config);
+        else if (geneDatabaseFormat == GeneDatabaseFormat.KNOWN_GENES) factory = new SnpEffPredictorFactoryKnownGene(config);
         else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) factory = new SnpEffPredictorFactoryGenBank(config);
         else if (geneDatabaseFormat == GeneDatabaseFormat.EMBL) factory = new SnpEffPredictorFactoryEmbl(config);
         else if (geneDatabaseFormat == GeneDatabaseFormat.BIOMART)

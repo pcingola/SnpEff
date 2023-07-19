@@ -1283,6 +1283,8 @@ public class SnpEff implements CommandLine {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
 		System.err.println("\t-canonList <file>            : Only use canonical transcripts, replace some transcripts using the 'gene_id \t transcript_id' entries in <file>.");
+		System.err.println("\t-tag <tagName>               : Only use transcript having a tag 'tagName'.");
+		System.err.println("\t-notag <tagName>             : Filter out transcript having a tag 'tagName'.");
 		System.err.println("\t-interaction                 : Annotate using interactions (requires interaction database). Default: " + interaction);
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");

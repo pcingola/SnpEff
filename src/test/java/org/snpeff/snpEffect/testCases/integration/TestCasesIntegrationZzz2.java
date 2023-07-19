@@ -1,12 +1,17 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Gene;
+import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
@@ -65,8 +70,20 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
 
     @Test
     public void test_03_filter_keep_tags() {
-        // TODO: Command line to filter (i.e. only keep) transcripts having 'tag'
-
+        // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
+        List<String> args = new LinkedList<>();
+        args.add("-genome");
+        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
+        args.add("-tag");
+        args.add("MANE_Select");
+        SnpEff snpeff = runCmd(args);
+        Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
+        // Check that all transcripts have 'MANE_Select' tag
+        for(Gene g : genome.getGenes()) {
+            for(Transcript tr: g) {
+                assertTrue(tr.hasTag("MANE_Select"), "Transcript has no MANE_Select tag: " + tr.getId());
+            }
+        }
     }
 
     @Test

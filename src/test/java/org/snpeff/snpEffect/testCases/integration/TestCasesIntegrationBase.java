@@ -156,7 +156,6 @@ public class TestCasesIntegrationBase {
      * Build a genome from a GFF3 file and compare results to 'expected' results
      */
     public SnpEffectPredictor buildGff3AndCompare(String genome, String gff3File, String resultFile, boolean readSeqs, boolean createRandSequences) {
-
         // Build
         Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
         SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
@@ -818,6 +817,25 @@ public class TestCasesIntegrationBase {
             }
         }
         return path;
+    }
+
+    /**
+     * Create a 'snpeff' command line and run it
+     */
+    public SnpEff runCmd(List<String> args) {
+        return runCmd((String[]) args.toArray(new String[0]));
+    }
+
+    /**
+     * Create a 'snpeff' command line and run it
+     */
+    public SnpEff runCmd(String[] args) {
+        SnpEff snpeff = new SnpEff(args);
+        snpeff.setVerbose(verbose);
+        snpeff.setDebug(debug);
+        SnpEff snpeffCmd = (SnpEffCmdBuild) snpeff.cmd();
+        assertTrue(snpeffCmd.run(), "Snpeff command failed");
+        return snpeffCmd;
     }
 
     public String showTranscripts(Genome genome) {
