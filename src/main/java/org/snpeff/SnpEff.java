@@ -398,12 +398,8 @@ public class SnpEff implements CommandLine {
 	 * Filter by tags
 	 */
 	protected void filterTags() {
+		if( tags.isEmpty() && tagsNo.isEmpty() ) return;
 		if (verbose) Log.info("Filtering transcripts by tags " + tags + ", filter out tags " + tagsNo);
-		if( tags.isEmpty() && tagsNo.isEmpty() ) {
-			Log.info("Filtering by tag transcripts: No tags provided, skipping.");
-			return;
-		}
-
 		config.getSnpEffectPredictor().filterTags(tags, tagsNo);
 		if (verbose) Log.info("done.");
 	}
