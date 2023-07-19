@@ -16,13 +16,12 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
 /**
  * Test case
  */
-public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
+public class TestCasesIntegrationTags extends TestCasesIntegrationBase {
 
     @Test
     public void test_01_parse_tags_from_gtf() {
