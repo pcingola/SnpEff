@@ -16,12 +16,13 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
+import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case
  */
 public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
-
 
     @Test
     public void test_01_parse_tags_from_gtf() {
@@ -72,18 +73,46 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
     public void test_03_filter_keep_tags() {
         // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
         List<String> args = new LinkedList<>();
-        args.add("-genome");
-        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
         args.add("-tag");
         args.add("MANE_Select");
+        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
+        var emptyVcf = path("empty.vcf");
+        args.add(emptyVcf);
+        Log.debug(emptyVcf);
         SnpEff snpeff = runCmd(args);
         Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
         // Check that all transcripts have 'MANE_Select' tag
+        int count = 0;
         for(Gene g : genome.getGenes()) {
             for(Transcript tr: g) {
-                assertTrue(tr.hasTag("MANE_Select"), "Transcript has no MANE_Select tag: " + tr.getId());
+                assertTrue(tr.hasTag("MANE_Select"), "Transcript has no 'MANE_Select' tag: " + tr.getId());
+                count++;
             }
         }
+        assertEquals(213, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
+    }
+
+    @Test
+    public void test_04_filter_keep_tags() {
+        // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
+        List<String> args = new LinkedList<>();
+        args.add("-tagNo");
+        args.add("MANE_Select");
+        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
+        var emptyVcf = path("empty.vcf");
+        args.add(emptyVcf);
+        Log.debug(emptyVcf);
+        SnpEff snpeff = runCmd(args);
+        Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
+        // Check that all transcripts have 'MANE_Select' tag
+        int count = 0;
+        for(Gene g : genome.getGenes()) {
+            for(Transcript tr: g) {
+                assertFalse(tr.hasTag("MANE_Select"), "Transcript has 'MANE_Select' tag: " + tr.getId());
+                count++;
+            }
+        }
+        assertEquals(6856, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
     }
 
     @Test

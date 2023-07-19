@@ -3,6 +3,7 @@ package org.snpeff;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -143,6 +144,8 @@ public class SnpEff implements CommandLine {
 	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
 	protected String canonicalFile = null; // Use cannonical transcripts changing the ones that are present in the file.
+	protected Set<String> tags = new HashSet<>(); // Keep transcripts having these tags
+	protected Set<String> tagsNo = new HashSet<>(); // Remove transcripts having these tags
 	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
@@ -388,6 +391,8 @@ public class SnpEff implements CommandLine {
 		cmd.upDownStreamLength = upDownStreamLength;
 		cmd.verbose = verbose;
 		cmd.configOverride = configOverride;
+		cmd.tags = tags;
+		cmd.tagsNo = tagsNo;
 	}
 
 	@Override
@@ -1064,6 +1069,16 @@ public class SnpEff implements CommandLine {
 					strict = true;
 					break;
 
+				case "-tag":
+					if ((i + 1) < args.length) tags.add(args[++i]); // Add this tag to the list
+					else usage("Option '-tag' without tagName argument");
+					break;
+
+				case "-tagno":
+					if ((i + 1) < args.length) tagsNo.add(args[++i]); // Add this tag to the list
+					else usage("Option '-tagNo' without tagName argument");
+					break;
+
 				//				case "-t":
 				//					multiThreaded = true;
 				//					break;
@@ -1283,8 +1298,8 @@ public class SnpEff implements CommandLine {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
 		System.err.println("\t-canonList <file>            : Only use canonical transcripts, replace some transcripts using the 'gene_id \t transcript_id' entries in <file>.");
-		System.err.println("\t-tag <tagName>               : Only use transcript having a tag 'tagName'.");
-		System.err.println("\t-notag <tagName>             : Filter out transcript having a tag 'tagName'.");
+		System.err.println("\t-tag <tagName>               : Only use transcript having a tag 'tagName'. This option can be used multiple times.");
+		System.err.println("\t-notag <tagName>             : Filter out transcript having a tag 'tagName'. This option can be used multiple times.");
 		System.err.println("\t-interaction                 : Annotate using interactions (requires interaction database). Default: " + interaction);
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");

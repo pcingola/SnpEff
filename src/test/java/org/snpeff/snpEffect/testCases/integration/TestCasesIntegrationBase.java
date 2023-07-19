@@ -833,7 +833,7 @@ public class TestCasesIntegrationBase {
         SnpEff snpeff = new SnpEff(args);
         snpeff.setVerbose(verbose);
         snpeff.setDebug(debug);
-        SnpEff snpeffCmd = (SnpEffCmdBuild) snpeff.cmd();
+        SnpEff snpeffCmd = snpeff.cmd();
         assertTrue(snpeffCmd.run(), "Snpeff command failed");
         return snpeffCmd;
     }
