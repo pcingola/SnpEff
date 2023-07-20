@@ -3,6 +3,8 @@
 Genomic variant annotations, and functional effect prediction toolbox.
 
 [Download](https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip){: .md-button .md-button--primary }
+[SnpEff Documentation](snpeff/introduction.md){: .md-button .md-button--primary }
+[SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
 
 Latest version 5.1 (2023-07-18)
 
@@ -29,7 +31,7 @@ SnpSift annotates genomic variants using databases, filters, and manipulates gen
 
 Once you annotated your files using SnpEff, you can use SnpSift to help you filter large genomic datasets in order to find the most significant variants for your experiment.
 
-[SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
+
 
 ## Citing SnpEff & SnpSift
 
