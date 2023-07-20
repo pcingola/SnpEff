@@ -1,0 +1,1903 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift">
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      
+      
+        <link rel="prev" href="../introduction/">
+      
+      
+        <link rel="next" href="../annotate/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+    
+    
+      
+        <title>SnpSift Filter - SnpEff & SnpSift</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="default" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#snpsift-filter" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-header__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SnpEff & SnpSift
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SnpSift Filter
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../snpeff/introduction/" class="md-tabs__link">
+        SnpEff
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link md-tabs__link--active">
+        SnpSift
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../download/" class="md-tabs__link">
+        Download & Install
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        Examples
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        About
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    SnpEff & SnpSift
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Usage examples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          SnpEff
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          SnpEff
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/running/" class="md-nav__link">
+        Running SnpEff
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/commandline/" class="md-nav__link">
+        Commands &amp; command line options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/inputoutput/" class="md-nav__link">
+        Input &amp; output files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/cansersamples/" class="md-nav__link">
+        Cancer samples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/additionalann/" class="md-nav__link">
+        Additional annotations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/outputsummary/" class="md-nav__link">
+        Output summary files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/build_db/" class="md-nav__link">
+        Building databases
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/build_db_gff_gtf/" class="md-nav__link">
+        Build databses. GTF / GFF details
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/build_reg/" class="md-nav__link">
+        Building databases. Regulatory and Non-coding
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/build_pdb/" class="md-nav__link">
+        Building databases. PDB and AlphaFold
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/integration/" class="md-nav__link">
+        Integration. GATK and Galaxy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/commands/" class="md-nav__link">
+        Commands and utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/human_genomes/" class="md-nav__link">
+        Human Genomes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpeff/faq/" class="md-nav__link">
+        Frequently Asked Questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          SnpSift
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          SnpSift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Filter
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        SnpSift Filter
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#typical-usage" class="md-nav__link">
+    Typical usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-options" class="md-nav__link">
+    Command line options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-valued-fields-and-variables" class="md-nav__link">
+    Multiple valued fields and variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genotype-fields" class="md-nav__link">
+    Genotype fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sets" class="md-nav__link">
+    Sets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-ann-fields" class="md-nav__link">
+    SnpEff 'ANN' fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-eff-fields" class="md-nav__link">
+    SnpEff 'EFF' fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-lof-and-nmd-fields" class="md-nav__link">
+    SnpEff 'LOF' and 'NMD' fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-operands-and-functions" class="md-nav__link">
+    Available operands and functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-sample-names-instead-of-sample-numbers" class="md-nav__link">
+    Using sample names instead of sample numbers
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annotate/" class="md-nav__link">
+        SnpSift Annotate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../casecontrol/" class="md-nav__link">
+        SnpSift CaseControl
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intervals/" class="md-nav__link">
+        SnpSift Intervals
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intervalsindex/" class="md-nav__link">
+        SnpSift Intervals Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../join/" class="md-nav__link">
+        SnpSift Join
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rmrefgen/" class="md-nav__link">
+        SnpSift RmRefGen
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tstv/" class="md-nav__link">
+        SnpSift TsTv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extractfields/" class="md-nav__link">
+        SnpSift Extract Fields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../varianttype/" class="md-nav__link">
+        SnpSift Variant Type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gwascatalog/" class="md-nav__link">
+        SnpSift GWAS Catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbnsfp/" class="md-nav__link">
+        SnpSift dbNSFP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../split/" class="md-nav__link">
+        SnpSift Split
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../phastcons/" class="md-nav__link">
+        SnpSift PhastCons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concordance/" class="md-nav__link">
+        SnpSift Concordance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private/" class="md-nav__link">
+        SnpSift Private
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vcf2ped/" class="md-nav__link">
+        SnpSift Vcf2Tped
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intersect/" class="md-nav__link">
+        SnpSift Intersect
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rminfo/" class="md-nav__link">
+        SnpSift RmInfo
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../genesets/" class="md-nav__link">
+        SnpSift GeneSets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gt/" class="md-nav__link">
+        SnpSift GT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vcfcheck/" class="md-nav__link">
+        SnpSift VcfCheck
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        Frequently asked questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          Download & Install
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Download & Install
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../download/" class="md-nav__link">
+        Download and install
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          About
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../help/" class="md-nav__link">
+        Help and Bugs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../xiangyi_lu_donate/" class="md-nav__link">
+        In Memory
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="snpsift-filter">SnpSift filter</h1>
+<p>SnpSift filter is one of the most useful SnpSift commands.
+Using SnpSift filter you can filter VCF files using arbitrary expressions, for instance <code>"(QUAL &gt; 30) | (exists INDEL) | ( countHet() &gt; 2 )"</code>. The actual expressions can be quite complex, so it allows for a lot of flexibility.</p>
+<h3 id="typical-usage">Typical usage</h3>
+<p>Some examples for the impatient:</p>
+<ul>
+<li>
+<p>I want to filter out samples with quality less than 30:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="s2">&quot; ( QUAL &gt;= 30 )&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>...but we also want InDels that have quality 20 or more:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="s2">&quot;(( exists INDEL ) &amp; (QUAL &gt;= 20)) | (QUAL &gt;= 30 )&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>...or any homozygous variant present in more than 3 samples:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="s2">&quot;(countHom() &gt; 3) | (( exists INDEL ) &amp; (QUAL &gt;= 20)) | (QUAL &gt;= 30 )&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>...or any heterozygous sample with coverage 25 or more:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="s2">&quot;((countHet() &gt; 0) &amp;&amp; (DP &gt;= 25)) | (countHom() &gt; 3) | (( exists INDEL ) &amp; (QUAL &gt;= 20)) | (QUAL &gt;= 30 )&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>I want to keep samples where the genotype for the first sample is homozygous variant and the genotype for the second sample is reference:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="s2">&quot;isHom( GEN[0] ) &amp; isVariant( GEN[0] ) &amp; isRef( GEN[1] )&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>I want to keep samples where the ID matches a set defined in a file:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">--</span><span class="n">set</span><span class="w"> </span><span class="n">my_rs</span><span class="o">.</span><span class="n">txt</span><span class="w"> </span><span class="s2">&quot;ID in SET[0]&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="o">.</span><span class="n">vcf</span>
+</code></pre></div>
+
+<p>and the file my_rs.txt has one string per line, e.g.:</p>
+<div class="codehilite"><pre><span></span><code>rs58108140
+rs71262674
+rs71262673
+</code></pre></div>
+
+</li>
+</ul>
+<p>You can combine any conditions you want using boolean operators.</p>
+<h3 id="command-line-options">Command line options</h3>
+<div class="highlight"><pre><span></span><code>Usage: java -jar SnpSift.jar filter [options] &#39;expression&#39; [input.vcf]
+Options:
+    -a|--addFilter   : Add a string to FILTER VCF field if &#39;expression&#39; is true. Default: &#39;&#39; (none)
+    -e|--exprFile    : Read expression from a file
+    -f|--file        : VCF input file. Default: STDIN
+    -i|--filterId    : ID for this filter (##FILTER tag in header and FILTER VCF field). Default: &#39;SnpSift&#39;
+    -n|--inverse     : Inverse. Show lines that do not match filter expression
+    -p|--pass        : Use &#39;PASS&#39; field instead of filtering out VCF entries
+    -r|--rmFilter    : Remove a string from FILTER VCF field if &#39;expression&#39; is true (and &#39;str&#39; is in the field). Default: &#39;&#39; (none)
+    -s|--set         : Create a SET using &#39;file&#39;
+    --errMissing     : Error is a field is missing. Default: false
+    --format         : SnpEff format version: {2, 3}. Default: Auto
+    --galaxy         : Used from Galaxy (expressions have been sanitized).
+</code></pre></div>
+<h3 id="variables">Variables</h3>
+<p>All VCF fields can be used as variables names, as long as they are declared in the VCF header OR they are "standard" VCF fields (as defined by the VCF 4.1 specification).</p>
+<ul>
+<li>
+<p><strong>Fields</strong> names: "CHROM, POS, ID, REF, ALT, QUAL or FILTER". Examples:</p>
+<ul>
+<li>
+<p>Any variant in chromosome 1:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( CHROM = &#39;chr1&#39; )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>Variants between two positions:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( POS &gt; 123456 ) &amp; ( POS &lt; 654321 )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>Has an ID and it matches the regulat expression 'rs':</p>
+<div class="codehilite"><pre><span></span><code>&quot;(exists ID) &amp; ( ID =~ &#39;rs&#39; )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>The reference is 'A':</p>
+<div class="codehilite"><pre><span></span><code>&quot;( REF = &#39;A&#39; )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>The alternative is 'T':</p>
+<div class="codehilite"><pre><span></span><code>&quot;( ALT = &#39;T&#39; )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>Quality over 30:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( QUAL &gt; 30 )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p>Filter value is either 'PASS' or it is missing:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( na FILTER ) | (FILTER = &#39;PASS&#39;)&quot;
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+<li>
+<p><strong>INFO field</strong> names in the INFO field. E.g. if the info field has "DP=48;AF1=0;..." you can use something like:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( DP &gt; 10 ) &amp; ( AF1 = 0 )&quot;
+</code></pre></div>
+
+</li>
+</ul>
+<h3 id="multiple-valued-fields-and-variables">Multiple valued fields and variables</h3>
+<p>When variables have multiple values, you can access individual values as if it was an array.</p>
+<ul>
+<li>
+<p><strong>Multiple value</strong> info fields (comma separated) can be accessed using an index. E.g. If the INFO field has "CI95=0.04167,0.5417" you can use an expression such as:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( CI95[0] &gt; 0.1 ) &amp; (CI95[1] &lt;= 0.3)&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p><strong>Multiple indexes</strong> You may test multiple indexed fields using 'ANY' or 'ALL' as index. In the examples we assume the INFO field has "CI95=0.04167,0.5417"</p>
+<p><strong>ANY</strong> or <strong>*</strong>: If you use 'ANY' as index, the expression will be true if any field satisfies the expression.</p>
+<p>So, for instance, the following expressions:</p>
+<div class="codehilite"><pre><span></span><code><span class="ss">&quot;( CI95[ANY] &gt; 0.1 )&quot;</span>
+</code></pre></div>
+
+<p>or:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( CI95[*] &gt; 0.1 )&quot;
+</code></pre></div>
+
+<p>are equivalent to (in this case, there are only two values in the array):</p>
+<div class="codehilite"><pre><span></span><code>&quot;( CI95[0] &gt; 0.1 ) | ( CI95[1] &gt; 0.1 )&quot;
+</code></pre></div>
+
+<p><strong>ALL</strong> or <strong>?</strong>: If you use 'ALL' as index, the expression will be true if all field satisfy the expression.</p>
+<p>So, for instance, the following expressions:</p>
+<div class="codehilite"><pre><span></span><code><span class="ss">&quot;( CI95[ALL] &gt; 0.1 )&quot;</span>
+<span class="ss">&quot;( CI95[?] &gt; 0.1 )&quot;</span>
+</code></pre></div>
+
+<p>are equivalent to (in this case, there are only two values in the array):</p>
+<div class="codehilite"><pre><span></span><code>&quot;( CI95[0] &gt; 0.1 ) &amp; ( CI95[1] &gt; 0.1 )&quot;
+</code></pre></div>
+
+</li>
+</ul>
+<h3 id="genotype-fields">Genotype fields</h3>
+<p>Vcf genotype fields can be accessed individually using array notation.</p>
+<ul>
+<li>
+<p><strong>Genotype fields</strong> are accessed using an index (sample number) followed by a variable name. E.g. If the genotypes are <code>GT:PL:GQ    1/1:255,66,0:63    0/1:245,0,255:99</code>
+    You can write something like:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( GEN[0].GQ &gt; 60 ) &amp; ( GEN[1].GQ &gt; 90 )&quot;
+</code></pre></div>
+
+<p>You may use an asterisk to represent 'ANY' field:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( GEN[*].GQ &gt; 60 )&quot;
+</code></pre></div>
+
+</li>
+<li>
+<p><strong>Genotype multiple fields</strong> are accessed using an index (sample number) followed by a variable name and then another index. E.g. If the genotypes are <code>GT:PL:GQ    1/1:255,66,0:63    0/1:245,0,255:99</code>
+    You can write something like:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( GEN[0].PL[2] = 0 )&quot;
+</code></pre></div>
+
+<p>You may use an asterisk to represent 'ANY' field:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( GEN[0].PL[*] = 0 )&quot;
+</code></pre></div>
+
+<p>...or even:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( GEN[*].PL[*] = 0 )&quot;
+</code></pre></div>
+
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can create an expression using sample names instead of genotype numbers.
+E.g.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="p">.</span><span class="n">jar</span><span class="w"> </span><span class="k">filter</span><span class="w"> </span><span class="ss">&quot;( GEN[HG00096].DS &gt; 0.2 ) &amp; ( GEN[HG00097].DS &gt; 0.5 )&quot;</span><span class="w"> </span><span class="n">examples</span><span class="o">/</span><span class="mi">1</span><span class="n">kg</span><span class="p">.</span><span class="n">head_chr1</span><span class="p">.</span><span class="n">vcf</span><span class="p">.</span><span class="n">gz</span>
+</code></pre></div>
+
+</div>
+<h3 id="sets">Sets</h3>
+<p>Sets are defined by the '-s' (or '--set') command line option. Each file must have one string per line.
+They are named based on the order used in the command line (e.g. the first one is <code>SET[0]</code>, the second one is <code>SET[1]</code>, etc.)</p>
+<p>Example: You can write something like (assuming your command line was "-s set1.txt -s set2.txt -s set3.txt"):</p>
+<div class="codehilite"><pre><span></span><code>&quot;( ID in SET[2] )&quot;
+</code></pre></div>
+
+<h3 id="snpeff-ann-fields">SnpEff 'ANN' fields</h3>
+<p>SnpEff annotations are parsed, so you can access individual sub-fields:</p>
+<p>Effect fields (from SnpEff) are accessed using an index (effect number) followed by a sub-field name.</p>
+<p>Available <code>ANN</code> sub-fields are (for details, take a look at the <a href="../../adds/VCFannotationformat_v1.0.pdf">specification</a>):</p>
+<ul>
+<li><code>ALLELE</code> (alias GENOTYPE)</li>
+<li><code>EFFECT</code> (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)</li>
+<li><code>IMPACT</code>: { HIGH, MODERATE, LOW, MODIFIER }</li>
+<li><code>GENE</code>: Gene name (e.g. 'PSD3')</li>
+<li><code>GENEID</code>: Gene ID</li>
+<li><code>FEATURE</code></li>
+<li><code>FEATUREID</code> (alias TRID: Transcript ID)</li>
+<li><code>BIOTYPE</code>: Biotype, as described by the annotations (e.g. 'protein_coding')</li>
+<li><code>RANK</code>: Exon or Intron rank (i.e. exon number in a transcript)</li>
+<li><code>HGVS_C</code> (alias HGVS_DNA, CODON): Variant in HGVS (DNA) notation</li>
+<li><code>HGVS_P</code> (alias HGVS, HGVS_PROT, AA): Variant in HGVS (protein) notation</li>
+<li><code>CDNA_POS</code> (alias POS_CDNA)</li>
+<li><code>CDNA_LEN</code> (alias LEN_CDNA)</li>
+<li><code>CDS_POS</code> (alias POS_CDS)</li>
+<li><code>CDS_LEN</code> (alias LEN_CDS)</li>
+<li><code>AA_POS</code> (alias POS_AA)</li>
+<li><code>AA_LEN</code> (alias LEN_AA)</li>
+<li><code>DISTANCE</code></li>
+<li><code>ERRORS</code> (alias WARNING, INFOS)</li>
+</ul>
+<p>For example, you may want only the lines where the <strong>first</strong> annotation has <code>missense_variant</code> variant:</p>
+<p><strong>Important</strong> According to the specification, there can be more than one EFFECT separated by &amp; (e.g. 'missense_variant&amp;splice_region_variant', thus using <code>has</code> operator is better than using equality operator (<code>=</code>).
+For instance <code>'missense_variant&amp;splice_region_variant' = 'missense_variant'</code> is false, whereas  <code>'missense_variant&amp;splice_region_variant' has 'missense_variant'</code> is true.</p>
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar filter &quot;ANN[0].EFFECT has &#39;missense_variant&#39;&quot; examples/test.chr22.ann.vcf &gt; test.chr22.ann.filter_missense_first.vcf
+
+# Output example (edited for readability)
+$ cat test.chr22.ann.filter_missense_first.vcf
+22    17072035    .    C    T    .    .    ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G&gt;A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;A|||||3944|
+22    17072258    .    C    A    .    .    ANN=A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1183G&gt;T|p.Gly395Cys|1443/2034|1183/1674|395/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;T|||||3721|
+22    17072674    .    G    A    .    .    ANN=A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.767C&gt;T|p.Pro256Leu|1027/2034|767/1674|256/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397C&gt;T|||||3305|
+22    17072747    .    T    C    .    .    ANN=C|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.694A&gt;G|p.Met232Val|954/2034|694/1674|232/557||,C|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397A&gt;G|||||3232|
+22    17073043    .    C    T    .    .    ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.398G&gt;A|p.Arg133Gln|658/2034|398/1674|133/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;A|||||2936|
+22    17073119    .    C    T    .    .    ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.322G&gt;A|p.Val108Met|582/2034|322/1674|108/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;A|||||2860|
+</code></pre></div>
+<p>...but this probably doesn't make much sense. What you may really want are lines where <strong>ANY</strong> effect to be <code>missense_variant</code>:
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar filter &quot;ANN[*].EFFECT has &#39;missense_variant&#39;&quot; examples/test.chr22.ann.vcf &gt; test.chr22.ann.filter_missense_any.vcf
+
+# Output example (edited for readability)
+$ cat test.chr22.ann.filter_missense_any.vcf
+...
+22    24891462    .    G    A    .    .    ANN=A|stop_gained|HIGH|UPB1|ENSG00000100024|transcript|ENST00000413389|protein_coding|2/10|c.59G&gt;A|p.Trp20*|1652/3418|59/951|20/316||
+                                              ,A|missense_variant|MODERATE|UPB1|ENSG00000100024|transcript|ENST00000326010|protein_coding|1/10|c.91G&gt;A|p.Gly31Ser|435/2290|91/1155|31/384||
+                                              ,A|missense_variant|MODERATE|UPB1|ENSG00000100024|transcript|ENST00000382760|protein_coding|1/4|c.91G&gt;A|p.Gly31Ser|253/1928|91/561|31/186||
+
+22    24896158    .    A    T    .    .    ANN=T|missense_variant|MODERATE|UPB1|ENSG00000100024|transcript|ENST00000326010|protein_coding|2/10|c.188A&gt;T|p.Glu63Val|532/2290|188/1155|63/384||
+                                              ,T|missense_variant|MODERATE|UPB1|ENSG00000100024|transcript|ENST00000382760|protein_coding|2/4|c.188A&gt;T|p.Glu63Val|350/1928|188/561|63/186||
+</code></pre></div></p>
+<p>May be you want only the ones that affect <strong>gene 'TRMT2A'</strong>:
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar filter &quot;(ANN[*].EFFECT has &#39;missense_variant&#39;) &amp;&amp; (ANN[*].GENE = &#39;TRMT2A&#39;)&quot; examples/test.chr22.ann.vcf &gt; test.chr22.ann.filter_missense_any_TRMT2A.vcf
+
+$ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
+22    20103915    .    C    T    .    .    ANN=T|stop_gained|HIGH|RANBP1|ENSG00000099901|transcript|ENST00000432879|protein_coding|1/3|c.208C&gt;T|p.Arg70*|455/744|208/497|70/164||WARNING_TRANSCRIPT_INCOMPLETE
+                                              ,T|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000439169|protein_coding|2/12|c.245G&gt;A|p.Arg82His|561/2473|245/1932|82/643||
+                                              ,T|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000252136|protein_coding|2/12|c.245G&gt;A|p.Arg82His|634/2964|245/1878|82/625||
+                                              ,T|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000403707|protein_coding|3/13|c.245G&gt;A|p.Arg82His|607/2928|245/1878|82/625||
+                                              ,T|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000404751|protein_coding|2/12|c.245G&gt;A|p.Arg82His|584/2498|245/1689|82/562||
+                                              ,T|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000445045|protein_coding|2/2|c.209G&gt;A|p.Arg70His|432/582|209/359|70/118||WARNING_TRANSCRIPT_INCOMPLETE
+                                              ,...
+
+22    20103925    .    T    C    .    .    ANN=C|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000439169|protein_coding|2/12|c.235A&gt;G|p.Asn79Asp|551/2473|235/1932|79/643||
+                                              ,C|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000252136|protein_coding|2/12|c.235A&gt;G|p.Asn79Asp|624/2964|235/1878|79/625||
+                                              ,C|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000403707|protein_coding|3/13|c.235A&gt;G|p.Asn79Asp|597/2928|235/1878|79/625||
+                                              ,C|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000404751|protein_coding|2/12|c.235A&gt;G|p.Asn79Asp|574/2498|235/1689|79/562||
+                                              ,C|missense_variant|MODERATE|RANBP1|ENSG00000099901|transcript|ENST00000432879|protein_coding|1/3|c.218T&gt;C|p.Phe73Ser|465/744|218/497|73/164||WARNING_TRANSCRIPT_INCOMPLETE
+                                              ,C|missense_variant|MODERATE|TRMT2A|ENSG00000099899|transcript|ENST00000445045|protein_coding|2/2|c.199A&gt;G|p.Asn67Asp|422/582|199/359|67/118||WARNING_TRANSCRIPT_INCOMPLETE
+                                              ,C|splice_region_variant&amp;intron_variant|LOW|RANBP1|ENSG00000099901|transcript|ENST00000430524|protein_coding|1/5|c.-374+7T&gt;C||||||
+                                              ,...
+</code></pre></div></p>
+<h3 id="snpeff-eff-fields">SnpEff 'EFF' fields</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This section documents older SnpEff/SnpSift which used 'EFF' INFO field (as opposed to 'ANN' field) or files annotated using SnpEff's <code>-classic</code> or <code>-formatEff</code> command line options.</p>
+</div>
+<p>SnpEff annotations are parsed, so you can access individual sub-fields:</p>
+<p>Effect fields (from SnpEff) are accessed using an index (effect number) followed by a sub-field name.</p>
+<p>Available <code>EFF</code> sub-fields are:</p>
+<ul>
+<li><code>EFFECT</code>: Effect (e.g. SYNONYMOUS_CODING, NON_SYNONYMOUS_CODING, FRAME_SHIFT, etc.)</li>
+<li><code>IMPACT</code>: { HIGH, MODERATE, LOW, MODIFIER }</li>
+<li><code>FUNCLASS</code>: { NONE, SILENT, MISSENSE, NONSENSE }</li>
+<li><code>CODON</code>: Codon change (e.g. 'ggT/ggG')</li>
+<li><code>AA</code>: Amino acid change (e.g. 'G156')</li>
+<li><code>GENE</code>: Gene name (e.g. 'PSD3')</li>
+<li><code>BIOTYPE</code>: Gene biotype, as described by the annotations (e.g. 'protein_coding')</li>
+<li><code>CODING</code>: Gene is { CODING, NON_CODING }</li>
+<li><code>TRID</code>: Transcript ID</li>
+<li><code>RANK</code>: Exon or Intron rank (i.e. exon number in a transcript)</li>
+</ul>
+<p>For example, you may want only the lines where the first effect is a NON_SYNONYMOUS variants:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( EFF[0].EFFECT = &#39;NON_SYNONYMOUS_CODING&#39; )&quot;
+</code></pre></div>
+
+<p>...but this probably doesn't make much sense. What you may really want are lines where ANY effect is NON_SYNONYMOUS:</p>
+<div class="codehilite"><pre><span></span><code>&quot;( EFF[*].EFFECT = &#39;NON_SYNONYMOUS_CODING&#39; )&quot;
+</code></pre></div>
+
+<p>May be you want only the ones that affect gene 'TCF7L2':</p>
+<div class="codehilite"><pre><span></span><code>&quot;( EFF[*].EFFECT = &#39;NON_SYNONYMOUS_CODING&#39; ) &amp;  ( EFF[*].GENE = &#39;TCF7L2&#39; )&quot;
+</code></pre></div>
+
+<h3 id="snpeff-lof-and-nmd-fields">SnpEff 'LOF' and 'NMD' fields</h3>
+<p>Similarly <code>LOF</code> and <code>NMD</code> sub-fields are available:</p>
+<ul>
+<li><code>LOF.GENE</code> and NMD.GENE</li>
+<li><code>LOF.GENEID</code> and NMD.GENEID</li>
+<li><code>LOF.NUMTR</code> and NMD.NUMTR</li>
+<li><code>LOF.PERC</code> and NMD.PERC</li>
+</ul>
+<p>For instance, if we want to obtain genes having a Loss of Function effect in more than 90% of the transcripts, you can do this:</p>
+<div class="codehilite"><pre><span></span><code>$cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter &quot;(exists LOF[*].PERC) &amp; (LOF[*].PERC &gt; 0.9)&quot;
+</code></pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We assume that 'test.snpeff.vcf' was annotated with SnpEff using '-lof' command line option.</p>
+</div>
+<h3 id="available-operands-and-functions">Available operands and functions</h3>
+<p>The following operators and functions are interpreted by <code>SnpSift filter</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Operand</th>
+<th>Description</th>
+<th>Data type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>Equality test</td>
+<td>FLOAT, INT or STRING</td>
+<td>(REF <strong>=</strong> 'A')</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater than</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>&gt;</strong> 20)</td>
+</tr>
+<tr>
+<td>&ge;</td>
+<td>Greater or equal than</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>&ge;</strong> 20)</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less than</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>&lt;</strong> 20)</td>
+</tr>
+<tr>
+<td>&le;</td>
+<td>Less or equal than</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>&le;</strong> 20)</td>
+</tr>
+<tr>
+<td>=~</td>
+<td>Match regular expression</td>
+<td>STRING</td>
+<td>(REL <strong>=~</strong> 'AC')</td>
+</tr>
+<tr>
+<td>!~</td>
+<td>Does not match regular expression</td>
+<td>STRING</td>
+<td>(REL <strong>!~</strong> 'AC')</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>AND operator</td>
+<td>Boolean</td>
+<td>(DP &gt; 20) <strong>&amp;</strong> (REF = 'A')</td>
+</tr>
+<tr>
+<td>|</td>
+<td>OR operator</td>
+<td>Boolean</td>
+<td>(DP &gt; 20) <strong>|</strong> (REF = 'A')</td>
+</tr>
+<tr>
+<td>!</td>
+<td>NOT operator</td>
+<td>Boolean</td>
+<td><strong>!</strong> (DP &gt; 20)</td>
+</tr>
+<tr>
+<td>exists</td>
+<td>The variable exists (not missing)</td>
+<td>Any</td>
+<td>(<strong>exists</strong> INDEL)</td>
+</tr>
+<tr>
+<td>has</td>
+<td>The right hand side expression is equalt to any of the items in a list consisting of separating the left hand side expression using delimiters: <code>&amp;</code>, <code>+</code>, <code>;</code>, <code>,</code>, <code>:</code>, <code>(', ')</code> ,<code>[', ']</code>. <br> Example: If the expression is: ANN[*].EFFECT <strong>has</strong> 'missense_variant'.<br> If left hand side (ANN[*].EFFECT) has value 'missense_variant&amp;splice_region_variant', then it is transformed to a list: <code>['missense_variant', 'splice_region_variant']</code><br> Since the right hand side ('missense_variant') is in the list, the expression evaluates to 'true'</td>
+<td>Any</td>
+<td>(ANN[*].EFFECT <strong>has</strong> 'missense_variant')</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+<th>Data type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>countHom()</code></td>
+<td>Count number of homozygous genotypes</td>
+<td>No arguments</td>
+<td>(<strong>countHom()</strong> &gt; 0)</td>
+</tr>
+<tr>
+<td><code>countHet()</code></td>
+<td>Count number of heterozygous genotypes</td>
+<td>No arguments</td>
+<td>(<strong>countHet()</strong> &gt; 2)</td>
+</tr>
+<tr>
+<td><code>countVariant()</code></td>
+<td>Count number of genotypes that are variants (i.e. not reference 0/0)</td>
+<td>No arguments</td>
+<td>(<strong>countVariant()</strong> &gt; 5)</td>
+</tr>
+<tr>
+<td><code>countRef()</code></td>
+<td>Count number of genotypes that are NOT variants (i.e. reference 0/0)</td>
+<td>No arguments</td>
+<td>(<strong>countRef()</strong> &lt; 1)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Genotype <br> Function</th>
+<th>Description</th>
+<th>Data type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isHom</code></td>
+<td>Is homozygous genotype?</td>
+<td>Genotype</td>
+<td><strong>isHom( GEN[0] )</strong></td>
+</tr>
+<tr>
+<td><code>isHet</code></td>
+<td>Is heterozygous genotype?</td>
+<td>Genotype</td>
+<td><strong>isHet( GEN[0] )</strong></td>
+</tr>
+<tr>
+<td><code>isVariant</code></td>
+<td>Is genotype a variant? (i.e. not reference 0/0)</td>
+<td>Genotype</td>
+<td><strong>isVariant( GEN[0] )</strong></td>
+</tr>
+<tr>
+<td><code>isRef</code></td>
+<td>Is genotype a reference? (i.e. 0/0)</td>
+<td>Genotype</td>
+<td><strong>isRef( GEN[0] )</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="using-sample-names-instead-of-sample-numbers">Using sample names instead of sample numbers</h3>
+<p>As of version 4.1A, SnpSift allows to use sample names instead of sample numbers.
+This allows to create more readable expressions.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code>$ cat cancer.vcf | java -jar SnpSift.jar filter &quot;GEN[Somatic].GT = &#39;2/1&#39;&quot;
+#CHROM  POS    ID   REF  ALT    QUAL  FILTER    INFO    FORMAT    Germline    Somatic
+1       69091  .    A    C,G    .     PASS      AC=1    GT        1/0         2/1
+</code></pre></div>
+<p>Note that we used <code>GEN[Somatic]</code> instead of <code>GEN[1]</code>.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Pablo Cingolani
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.highlight", "search.suggest", "toc.integrate", "content.tabs.link", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+    
+  </body>
+</html>

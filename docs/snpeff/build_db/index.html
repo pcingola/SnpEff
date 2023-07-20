@@ -1,0 +1,1997 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift">
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      
+      
+        <link rel="prev" href="../troubleshooting/">
+      
+      
+        <link rel="next" href="../build_db_gff_gtf/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+    
+    
+      
+        <title>Building databases - SnpEff & SnpSift</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="default" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#building-databases" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-header__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SnpEff & SnpSift
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Building databases
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link md-tabs__link--active">
+        SnpEff
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../snpsift/introduction/" class="md-tabs__link">
+        SnpSift
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../download/" class="md-tabs__link">
+        Download & Install
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        Examples
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        About
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    SnpEff & SnpSift
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Usage examples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          SnpEff
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          SnpEff
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running/" class="md-nav__link">
+        Running SnpEff
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commandline/" class="md-nav__link">
+        Commands &amp; command line options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inputoutput/" class="md-nav__link">
+        Input &amp; output files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cansersamples/" class="md-nav__link">
+        Cancer samples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../additionalann/" class="md-nav__link">
+        Additional annotations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../outputsummary/" class="md-nav__link">
+        Output summary files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Building databases
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Building databases
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#managing-snpeff-databases-manually" class="md-nav__link">
+    Managing SnpEff databases manually
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backwards-compatible-databases" class="md-nav__link">
+    Backwards compatible databases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-a-database" class="md-nav__link">
+    Building a database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-configure-a-new-genome" class="md-nav__link">
+    Step 1: Configure a new genome
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Configure a new genome">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-a-genome-to-the-configuration-file" class="md-nav__link">
+    Add a genome to the configuration file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-codon-tables-not-always-required" class="md-nav__link">
+    Configuring codon tables (not always required)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-build-using-gene-annotations-and-reference-sequences" class="md-nav__link">
+    Step 2: Build using gene annotations and reference sequences
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Build using gene annotations and reference sequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-2-option-1-building-a-database-from-gtf-files" class="md-nav__link">
+    Step 2, Option 1: Building a database from GTF files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-option-2-building-a-database-from-genbank-files" class="md-nav__link">
+    Step 2, Option 2: Building a database from GenBank files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-option-3-building-a-database-from-gff-files" class="md-nav__link">
+    Step 2, Option 3: Building a database from GFF files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-option-4-building-a-database-from-refseq-table-from-ucsc" class="md-nav__link">
+    Step 2, Option 4: Building a database from RefSeq table from UCSC
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-checking-the-database" class="md-nav__link">
+    Step 3: Checking the database
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Checking the database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checking-cds-sequences" class="md-nav__link">
+    Checking CDS sequences
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-protein-sequences" class="md-nav__link">
+    Checking Protein sequences
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-building-the-human-genome-database" class="md-nav__link">
+    Example: Building the Human Genome database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-database-builds" class="md-nav__link">
+    Troubleshooting Database builds
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_db_gff_gtf/" class="md-nav__link">
+        Build databses. GTF / GFF details
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_reg/" class="md-nav__link">
+        Building databases. Regulatory and Non-coding
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_pdb/" class="md-nav__link">
+        Building databases. PDB and AlphaFold
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration/" class="md-nav__link">
+        Integration. GATK and Galaxy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/" class="md-nav__link">
+        Commands and utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../human_genomes/" class="md-nav__link">
+        Human Genomes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        Frequently Asked Questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          SnpSift
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          SnpSift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/filter/" class="md-nav__link">
+        SnpSift Filter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/annotate/" class="md-nav__link">
+        SnpSift Annotate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/casecontrol/" class="md-nav__link">
+        SnpSift CaseControl
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intervals/" class="md-nav__link">
+        SnpSift Intervals
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intervalsindex/" class="md-nav__link">
+        SnpSift Intervals Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/join/" class="md-nav__link">
+        SnpSift Join
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/rmrefgen/" class="md-nav__link">
+        SnpSift RmRefGen
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/tstv/" class="md-nav__link">
+        SnpSift TsTv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/extractfields/" class="md-nav__link">
+        SnpSift Extract Fields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/varianttype/" class="md-nav__link">
+        SnpSift Variant Type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/gwascatalog/" class="md-nav__link">
+        SnpSift GWAS Catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/dbnsfp/" class="md-nav__link">
+        SnpSift dbNSFP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/split/" class="md-nav__link">
+        SnpSift Split
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/phastcons/" class="md-nav__link">
+        SnpSift PhastCons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/concordance/" class="md-nav__link">
+        SnpSift Concordance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/private/" class="md-nav__link">
+        SnpSift Private
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/vcf2ped/" class="md-nav__link">
+        SnpSift Vcf2Tped
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intersect/" class="md-nav__link">
+        SnpSift Intersect
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/rminfo/" class="md-nav__link">
+        SnpSift RmInfo
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/genesets/" class="md-nav__link">
+        SnpSift GeneSets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/gt/" class="md-nav__link">
+        SnpSift GT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/vcfcheck/" class="md-nav__link">
+        SnpSift VcfCheck
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/faq/" class="md-nav__link">
+        Frequently asked questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          Download & Install
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Download & Install
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../download/" class="md-nav__link">
+        Download and install
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          About
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../help/" class="md-nav__link">
+        Help and Bugs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../xiangyi_lu_donate/" class="md-nav__link">
+        In Memory
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="building-databases">Building databases</h1>
+<p>SnpEff needs a database to perform genomic annotations.
+There are pre-built databases for thousands of genomes, so chances are that your organism of choice already has a SnpEff database available.
+In the (unlikely?) event that you need to build one yourself, here we describe how to it.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can know which genomes are supported by running the following command:</p>
+<div class="codehilite"><pre><span></span><code>java -jar snpEff.jar databases
+</code></pre></div>
+
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Most people do NOT need to build a database, and can safely use a pre-built one.
+So unless you are working with a rare genome you most likely don't need to do it either.</p>
+</div>
+<h3 id="managing-snpeff-databases-manually">Managing SnpEff databases manually</h3>
+<p>SnpEff databases for the most popular genomes are already pre-built and available for you to download.
+So, chances are that you don't need to build a database yourself (this will save you a LOT of work).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>By default SnpEff automatically downloads and installs the database for you, so you don't need to do it manually.
+The following instructions are for people that want to pre-install databases manually (again, most people don't need to do this).</p>
+</div>
+<p>The easiest way to download and install a pre-built SnpEff database manually, is using the <code>download</code> command.
+E.g. if you want to install the SnpEff database for the human genome, you can run the following command:</p>
+<div class="highlight"><pre><span></span><code>java -jar snpEff.jar download -v GRCh37.75
+</code></pre></div>
+<h3 id="backwards-compatible-databases">Backwards compatible databases</h3>
+<p>In many cases the databases from previous SnpEff versions might be compatible with newer versions.
+So, SnpEff has a <em>fallback</em> mechanism for <em>"backwards-compatible database formats"</em>.
+If database format version 5.1 is backward compatible with "5.0", then we can use the "old" (5.0) databases in SnpEff version 5.1</p>
+<p>For example, let's say GRCh38.99 was built for "SnpEff version 5.0".
+When I released version 5.1 I don't need to rebuild GRCh38.99 (or any of the other thousands of databases) again for 5.1, we can just use the "old" 5.0 versions.</p>
+<p>How does it work? SnpEff checks the database in "5.1" path, if it doesn't work it fallback to "5.0" path.
+If you take a look a SnpEff's download output using the <code>-v</code> command, you'll see that it tries two times:</p>
+<div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar download -v GRCm38.99
+
+00:00:00 SnpEff version SnpEff 5.1d (build 2022-04-19 15:49), by Pablo Cingolani
+00:00:00 Command: &#39;download&#39;
+00:00:00 Reading configuration file &#39;snpEff.config&#39;. Genome: &#39;GRCm38.99&#39;
+00:00:00 Reading config file: /Users/pcingola/snpEff/snpEff.config
+00:00:00 done
+00:00:00 Downloading database for &#39;GRCm38.99&#39;
+00:00:00 Downloading from &#39;https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip&#39; to local file &#39;/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_1_GRCm38.99.zip&#39;
+00:00:00 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip, using proxy: false
+00:00:01 ERROR while connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Downloading from &#39;https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip&#39; to local file &#39;/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip&#39;
+00:00:01 Connecting to **https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip**
+00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip, using proxy: false
+00:00:02 Local file name: &#39;/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip&#39;
+......
+</code></pre></div>
+<p>So, it starts searching at <code>https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip</code>
+bu<code>t it doesn't find it there, so it proceeds with the databse</code>5.0<code>path</code>https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
+This is done using the <code>-c</code> command line option:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">Xmx8g</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">snpEff</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">download</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">snpEff</span><span class="o">/</span><span class="n">snpEff</span><span class="o">.</span><span class="n">config</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="n">GRCh37</span><span class="o">.</span><span class="mi">75</span>
+</code></pre></div>
+
+</div>
+<h3 id="building-a-database">Building a database</h3>
+<p>In order to build a database for a new genome, you need to:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Most people do NOT need to build a database, and can safely use a pre-built one.
+So unless you are working with a rare genome you most likely don't need to do it either.</p>
+</div>
+<ol>
+<li>
+<p><strong>Step 1:</strong> <a href="#step-1-configure-a-new-genome">Configure a new genome</a> in SnpEff's config file <code>snpEff.config</code>.</p>
+<ol>
+<li><a href="#add-a-genome-to-the-configuration-file">Add genome entry</a> to snpEff's configuration</li>
+<li>If the genome uses a non-standard codon table: <a href="#configuring-codon-tables-not-always-required">Add codon table parameter</a></li>
+</ol>
+</li>
+<li>
+<p><strong>Step 2:</strong> <a href="#step-2-build-using-gene-annotations-and-reference-sequences">Build using gene annotations and reference sequences</a></p>
+<ol>
+<li><a href="#step-2-option-1-building-a-database-from-gtf-files">Option 1:</a> Building a database from GTF files (<strong>recommended for large genomes</strong>)</li>
+<li><a href="#step-2-option-2-building-a-database-from-genbank-files">Option 2:</a> Building a database from GenBank files (<strong>recommended for small genomes</strong>)</li>
+<li><a href="#step-2-option-3-building-a-database-from-gff-files">Option 3:</a> Building a database from GFF files</li>
+<li><a href="#step-2-option-4-building-a-database-from-refseq-table-from-ucsc">Option 4:</a> Building a database from RefSeq table from UCSC</li>
+</ol>
+</li>
+<li>
+<p><strong>Step 3:</strong> <a href="#step-3-checking-the-database">Checking the database</a>: SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.</p>
+<ol>
+<li><a href="#checking-cds-sequences">Checking CDS sequences</a></li>
+<li><a href="#checking-protein-sequences">Checking Protein sequences</a></li>
+</ol>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>All files can be compressed using <code>gzip</code>
+E.g. the reference file 'hg19.fa' can be compressed to 'hg19.fa.gz', snpEff will automatically decompress the file.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Some files claimed to be compressed using GZIP are actually not or even use a block compression variant not supported by Java's gzip library.
+If you notice that your build process finishes abruptly for no apparent reason, try uncompressing the files.</p>
+</div>
+<h3 id="step-1-configure-a-new-genome">Step 1: Configure a new genome</h3>
+<p>In order to tell SnpEff that there is a new genome available, you must update SnpEff's configuration file <code>snpEff.config</code>.</p>
+<p>You must add a new genome entry to <code>snpEff.config</code>.</p>
+<p>If your genome, or a chromosome, uses non-standard codon tables you must update <code>snpEff.config</code> accordingly.
+A typical case is when you use mitochondrial DNA. Then you specify that chromosome 'MT' uses <code>codon.Invertebrate_Mitochondrial</code> codon table.
+Another common case is when you are adding a bacterial genome, then you specify that the codon table is <code>Bacterial_and_Plant_Plastid</code>.</p>
+<h4 id="add-a-genome-to-the-configuration-file">Add a genome to the configuration file</h4>
+<p>This example shows how to add a new genome to the config files. For this example we'll use the mouse genome (mm37.61):</p>
+<ol>
+<li>
+<p>Edit the config file to create the new genome:</p>
+<div class="codehilite"><pre><span></span><code>vi snpEff.config
+</code></pre></div>
+
+<p>Add the following lines (you are editing snpEff.config):</p>
+<div class="codehilite"><pre><span></span><code># Mouse genome, version mm37.61
+mm37.61.genome : Mouse
+</code></pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You may need to add codon table information for the genome or some parts of it (e.g. mitochondrial "chromosome").
+See next section for details.</p>
+</div>
+</li>
+<li>
+<p>Optional: Add genome to Galaxy's menu:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">galaxy</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">tools</span><span class="o">/</span><span class="n">snpEffect</span><span class="o">/</span>
+<span class="n">vi</span><span class="w"> </span><span class="n">snpEffect</span><span class="o">.</span><span class="n">xml</span>
+</code></pre></div>
+
+<p>Add the following lines to the file:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nx">param</span><span class="w"> </span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;genomeVersion&quot;</span><span class="w"> </span><span class="k">type</span><span class="p">=</span><span class="s">&quot;select&quot;</span><span class="w"> </span><span class="nx">label</span><span class="p">=</span><span class="s">&quot;Genome&quot;</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nx">option</span><span class="w"> </span><span class="nx">value</span><span class="p">=</span><span class="s">&quot;hg37&quot;</span><span class="p">&gt;</span><span class="nx">Human</span><span class="w"> </span><span class="p">(</span><span class="nx">hg37</span><span class="p">)&lt;</span><span class="nx">option</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nx">option</span><span class="w"> </span><span class="nx">value</span><span class="p">=</span><span class="s">&quot;mm37.61&quot;</span><span class="p">&gt;</span><span class="nx">Mouse</span><span class="w"> </span><span class="p">(</span><span class="nx">mm37</span><span class="m m-Double">.6</span><span class="mi">1</span><span class="p">)&lt;</span><span class="nx">option</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nx">param</span><span class="p">&gt;</span>
+</code></pre></div>
+
+</li>
+</ol>
+<h4 id="configuring-codon-tables-not-always-required">Configuring codon tables (not always required)</h4>
+<p>Codon tables are provided in the <code>snpEff.config</code> configuration file under the section <code>codon.Name_of_your_codon_table</code>.
+The format is a comma separated list of <code>CODON/AMINO_ACID</code>.</p>
+<p>E.g.:</p>
+<div class="codehilite"><pre><span></span><code>codon.Invertebrate_Mitochondrial:  TTT/F, TTC/F, TAC/Y, TAA/*, ATG/M+, ATG/M+, ACT/T, ...
+</code></pre></div>
+
+<p>Note that codons marked with '*' are STOP codons and codons marked with a '+' are START codons.</p>
+<p>In order for you to use them, you have to specify that a given "chromosome" uses one of the tables (otherwise the default codon table is used).</p>
+<p>E.g. Here we say the chromosome 'M' from fly genome (dm3) uses Invertebrate_Mitochondrial codon table:</p>
+<div class="codehilite"><pre><span></span><code>dm3.M.codonTable : Invertebrate_Mitochondrial
+</code></pre></div>
+
+<p>...of course, chromosome 'M' is not a real chromosome, it is just a way to mark the sequence as mitochondrial DNA in the reference genome.</p>
+<h3 id="step-2-build-using-gene-annotations-and-reference-sequences">Step 2: Build using gene annotations and reference sequences</h3>
+<p>To build a database, SnpEff needs:</p>
+<ol>
+<li>The reference genome sequence: This is the sequence of all chromosomes in the genome, typically in a FASTA file</li>
+<li>Gene annotations files: This is the information on where the genes, transcripts and exons are in the genome. Typically, from files in GTF, GeneBank, GFF, or RefSeq formats</li>
+<li>Sequences of CDS or Proteins from the genome. These are used to check that SnpEff's database is consistent and doesn't have errors  (see sections <a href="#checking-cds-sequences">Checking CDS sequences</a> and <a href="#checking-protein-sequences">Checking Protein sequences</a>)</li>
+</ol>
+<h4 id="step-2-option-1-building-a-database-from-gtf-files">Step 2, Option 1: Building a database from GTF files</h4>
+<p>GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations in this format).</p>
+<p>See a more detailed explanation about <a href="../build_db_gff_gtf/">SnpEff's requirements for GTF files here</a></p>
+<ol>
+<li>
+<p>Get the genome and uncompress it:</p>
+<div class="codehilite"><pre><span></span><code>#<span class="w"> </span><span class="nv">Create</span><span class="w"> </span><span class="nv">directory</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">this</span><span class="w"> </span><span class="nv">new</span><span class="w"> </span><span class="nv">genome</span>
+<span class="nv">cd</span><span class="w"> </span><span class="o">/</span><span class="nv">path</span><span class="o">/</span><span class="nv">to</span><span class="o">/</span><span class="nv">snpEff</span><span class="o">/</span><span class="nv">data</span><span class="o">/</span>
+<span class="nv">mkdir</span><span class="w"> </span><span class="nv">mm37</span>.<span class="mi">61</span>
+<span class="nv">cd</span><span class="w"> </span><span class="nv">mm37</span>.<span class="mi">61</span>
+
+#<span class="w"> </span><span class="nv">Get</span><span class="w"> </span><span class="nv">annotation</span><span class="w"> </span><span class="nv">files</span>
+<span class="nv">wget</span><span class="w"> </span><span class="nv">ftp</span>:<span class="o">//</span><span class="nv">ftp</span>.<span class="nv">ensembl</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">pub</span><span class="o">/</span><span class="nv">current</span><span class="o">/</span><span class="nv">gtf</span><span class="o">/</span><span class="nv">mus_musculus</span><span class="o">/</span><span class="nv">Mus_musculus</span>.<span class="nv">NCBIM37</span>.<span class="mi">61</span>.<span class="nv">gtf</span>.<span class="nv">gz</span>
+<span class="nv">mv</span><span class="w"> </span><span class="nv">Mus_musculus</span>.<span class="nv">NCBIM37</span>.<span class="mi">61</span>.<span class="nv">gtf</span>.<span class="nv">gz</span><span class="w"> </span><span class="nv">genes</span>.<span class="nv">gtf</span>.<span class="nv">gz</span>
+
+#<span class="w"> </span><span class="nv">Get</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">genome</span><span class="w"> </span><span class="nv">reference</span><span class="w"> </span><span class="nv">sequence</span><span class="w"> </span><span class="nv">file</span>
+<span class="nv">cd</span><span class="w"> </span><span class="o">/</span><span class="nv">path</span><span class="o">/</span><span class="nv">to</span><span class="o">/</span><span class="nv">snpEff</span><span class="o">/</span><span class="nv">data</span><span class="o">/</span><span class="nv">genomes</span>
+<span class="nv">wget</span><span class="w"> </span><span class="nv">ftp</span>:<span class="o">//</span><span class="nv">ftp</span>.<span class="nv">ensembl</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">pub</span><span class="o">/</span><span class="nv">current</span><span class="o">/</span><span class="nv">fasta</span><span class="o">/</span><span class="nv">mus_musculus</span><span class="o">/</span><span class="nv">dna</span><span class="o">/</span><span class="nv">Mus_musculus</span>.<span class="nv">NCBIM37</span>.<span class="mi">61</span>.<span class="nv">dna</span>.<span class="nv">toplevel</span>.<span class="nv">fa</span>.<span class="nv">gz</span>
+<span class="nv">mv</span><span class="w"> </span><span class="nv">Mus_musculus</span>.<span class="nv">NCBIM37</span>.<span class="mi">61</span>.<span class="nv">dna</span>.<span class="nv">toplevel</span>.<span class="nv">fa</span>.<span class="nv">gz</span><span class="w"> </span><span class="nv">mm37</span>.<span class="mi">61</span>.<span class="nv">fa</span>.<span class="nv">gz</span>
+</code></pre></div>
+
+</li>
+<li>
+<p><strong>Note:</strong> The FASTA file can be either in <br> <code>/path/to/snpEff/data/genomes/mm37.61.fa</code> <br>or in <br> <code>/path/to/snpEff/data/mm37.61/sequences.fa</code></p>
+</li>
+<li>Add the new genome to the config file (see <a href="#add-a-genome-to-the-configuration-file">Add a new genome to the configuration file</a> for details)</li>
+<li>Create database:<div class="codehilite"><pre><span></span><code>cd /path/to/snpEff
+java -jar snpEff.jar build -gtf22 -v mm37.61
+</code></pre></div>
+
+</li>
+</ol>
+<h4 id="step-2-option-2-building-a-database-from-genbank-files">Step 2, Option 2: Building a database from GenBank files</h4>
+<p>In this section, we show how to build a genome database using GeneBank files.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Using GeneBank files is the recommended way for databases for small genomes, such as viruses or bacteria</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For NCBI genomes, you can use the script <code>buildDbNcbi.sh</code> that downloads and builds the database.
+See details in <a href="../faq/#how-to-building-an-ncbi-genome-genbank-file">this FAQ</a></p>
+</div>
+<p><strong>Example:</strong> This example shows how to create a database for a new genome.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>GenBank files usually include genome sequence as well as CDS sequences.
+If these sequences are NOT in the GeneBank file, you should provide separate FASTA files for genome reference and CDS (or Protein) sequences.</p>
+</div>
+<p>For this example we'll use "Staphylococcus aureus":</p>
+<ol>
+<li>Go to NIH page for <a href="http://www.ncbi.nlm.nih.gov/nuccore/CP000730.1">CP000730</a></li>
+<li>Download the features in geneBank format, by clicking as shown in the following images (red arrows):</li>
+</ol>
+<p><img alt="genBank0" class="center" src="../../images/genBank_0.png" /></p>
+<p>Make sure you click the "Update" button!</p>
+<p>Then you go to the "Send" menu:</p>
+<p><img alt="genBank1" class="center" src="../../images/genBank_1.png" /></p>
+<p>and then:</p>
+<p><img alt="genBank2" class="center" src="../../images/genBank_2.png" /></p>
+<ol>
+<li>Save the GenBank data to <code>/path/to/snpEff/data/CP000730/genes.gbk</code></li>
+</ol>
+<p><strong>Note:</strong> If there are more than one genbank file for an organism (e.g. multiple chromosomes), then you can download each file and concatenate them.</p>
+<p>E.g.: Vibrio Cholerae has two chromosomes with GenBank accessions: NC_002505.1 and NC_002506.1.
+   You can download both files and save them as <code>snpEff/data/vibrio/NC_002505.1.gbk</code> and <code>snpEff/data/vibrio/NC_002506.1.gbk</code> respectively, and then concatenate both files:</p>
+<div class="codehilite"><pre><span></span><code>    cat NC_002505.1.gbk NC_002506.1.gbk &gt; genes.gbk
+</code></pre></div>
+
+<p>Add the following entries in the config file:</p>
+<div class="codehilite"><pre><span></span><code>    # Vibrio Cholerae
+    vibrio.genome : Vibrio Cholerae
+            vibrio.chromosomes : NC_002505.1, NC_002506.1
+            vibrio.NC_002505.1.codonTable : Bacterial_and_Plant_Plastid
+            vibrio.NC_002506.1.codonTable : Bacterial_and_Plant_Plastid
+</code></pre></div>
+
+<ol>
+<li>Create database (note the <code>-genbank</code> flag):<div class="codehilite"><pre><span></span><code>cd /path/to/snpEff
+java -jar snpEff.jar build -genbank -v CP000730
+</code></pre></div>
+
+</li>
+</ol>
+<h4 id="step-2-option-3-building-a-database-from-gff-files">Step 2, Option 3: Building a database from GFF files</h4>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using GFF is highly discouraged, we recommend you use GTF files instead (whenever possible).</p>
+</div>
+<p>See a more detailed explanation about <a href="../build_db_gff_gtf/">SnpEff's requirements for GFF files here</a></p>
+<p>This example shows how to create a database for a new genome using GFF file (e.g. FlyBase, WormBase, BeeBase release GFF files).
+For this example we'll use the Drosophila melanogaster genome (dm5.31):</p>
+<ol>
+<li>
+<p>Get a GFF file to <code>path/to/snpEff/data/dm5.31/genes.gff</code>:</p>
+<div class="codehilite"><pre><span></span><code>mkdir path/to/snpEff/data/dm5.31
+cd path/to/snpEff/data/dm5.31
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.31_FB2010_08/gff/dmel-all-r5.31.gff.gz
+mv dmel-all-r5.31.gff.gz genes.gff.gz
+</code></pre></div>
+
+</li>
+<li>
+<p><strong>Note:</strong> GFF3 files can include the reference sequence in the same file. This is done by dumping the fasta file after a '##FASTA' line. You can also add the sequence fasta file to the 'data/genomes/' directory, like it is done in when using GTF format.</p>
+</li>
+<li>Add the new genome to the config file (see <a href="#add-a-genome-to-the-configuration-file">Add a new genome to the configuration file</a> for details)</li>
+<li>Create database (note the "-gff3" flag):<div class="codehilite"><pre><span></span><code>cd /path/to/snpEff
+java -jar snpEff.jar build -gff3 -v dm5.31
+</code></pre></div>
+
+</li>
+</ol>
+<h4 id="step-2-option-4-building-a-database-from-refseq-table-from-ucsc">Step 2, Option 4: Building a database from RefSeq table from UCSC</h4>
+<p>This example shows how to create a database for a new genome using UCSC's genome tables.
+For this example we'll use the Human genome (hg19).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using UCSC genome tables is highly discouraged, we recommend you use ENSEMBL versions instead.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>UCSC tables sometimes change for different species.
+This means that even if these instructions work for human genome, it might not work for other genomes.
+Obviously creating a new parser for each genome is impractical, so working with UCSC genomes is highly discouraged.
+We recommend to use ENSEMBL genomes instead.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>UCSC genomes provide only major release version, but NOT sub-versions.
+E.g. UCSC's "hg19" has major version 19 but there is no "sub-version", whereas ENSEMBL's GRCh37.70 clearly has major version 37 and minor version 70.
+Not providing a minor version means that they might change the database and two "hg19" genomes are actually be different.
+This creates all sorts of consistency problems (e.g. the annotations may not be the same that you see in the UCSC genome browser, even though both of them are 'hg19' version).
+Using UCSC genome tables is highly discouraged, we recommend you use ENSEMBL versions instead.</p>
+</div>
+<p>In order to build a genome using UCSC tables, you can follow these instructions:</p>
+<ol>
+<li>Go to <a href="http://genome.ucsc.edu/">UCSC genome browser</a></li>
+<li>Click on "Table" menu</li>
+<li>
+<p>Select parameters as shown here:</p>
+<p><img alt="uscs_ref_Seq" class="center" src="../../images/ucsc_refSeq.png" /></p>
+</li>
+<li>
+<p>Click on "get output" and save the data to file "/path/to/snpEff/data/hg19/genes.refseq".</p>
+</li>
+<li>
+<p>Add the fasta reference genome. The FASTA file can be either in:</p>
+<p><code>/path/to/snpEff/data/genomes/hg19.fa</code></p>
+<p>or in:</p>
+<p><code>/path/to/snpEff/data/hg19/sequences.fa</code></p>
+</li>
+<li>
+<p>Add the new genome to the config file (see <a href="#add-a-genome-to-the-configuration-file">Add a new genome to the configuration file</a> for details)</p>
+</li>
+<li>Create database (note the <code>-refSeq</code> flag):<div class="codehilite"><pre><span></span><code>cd /path/to/snpEff
+java -jar snpEff.jar build -refSeq -v hg19
+</code></pre></div>
+
+</li>
+</ol>
+<h3 id="step-3-checking-the-database">Step 3: Checking the database</h3>
+<p>SnpEff makes sure that the database is built correctly by comparing the internal representation with CDS and Protein sequences.
+The CDS and Protein sequences are obtained from the same source as the genome reference and gene annotation files.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If neither a "Protein" nor a "CDS" sequences are provided, SnpEff will not be able to check the database.
+By default, SnpEff will refuse to save any unchecked database.</p>
+</div>
+<h4 id="checking-cds-sequences">Checking CDS sequences</h4>
+<p>When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when</p>
+<ul>
+<li>building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.</li>
+<li>building via GenBank file: CDS sequences are available within the GenBank file</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+</div>
+<p>You can disable this check unsing command line option <code>-noCheckCds</code></p>
+<p>FASTA cds file format:</p>
+<ul>
+<li>The file name should be <code>cds.fa</code> (or <code>cds.fa.gz</code> if compressed)</li>
+<li>Each transcript should have one CDS sequence</li>
+<li>Each FASTA header has the transcript ID either:<ul>
+<li>The header contains only the transcript ID</li>
+<li>The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these</li>
+<li>Some example sequences with valid header examples:
+<div class="highlight"><pre><span></span><code>&gt;ENST00000448914
+ACTGGGGGATACG
+
+&gt;chromosome:GRCh38:14:22449113:22449125:1 transcript:ENST00000448914.1 cds gene:ENSG00000228985.1 gene_biotype:TR_D_gene transcript_biotype:TR_D_gene gene_symbol:TRDD3 description:T cell receptor delta diversity 3
+ACTGGGGGATACG
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<p>CSD checking output.
+When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character</p>
+<ul>
+<li><code>+</code>: OK, the CDS sequence matches the one predicted by SnpEff</li>
+<li><code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the</li>
+<li><code>*</code>: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.</li>
+</ul>
+<p>After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
+<div class="highlight"><pre><span></span><code>CDS check:  GRCh38.86   OK: 94384   Warnings: 22766 Not found: 103618   Errors: 0   Error percentage: 0.0%
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+</div>
+<p>As a "rule of the thumb", you should not get more than 2% or 3% of errors.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+</div>
+<p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each CDS sequence comparison.
+The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.</p>
+<h4 id="checking-protein-sequences">Checking Protein sequences</h4>
+<p>This is very similar to the CDS checking in the previous sub-section.
+When building a database, SnpEff will also try to check Protein sequences for all transcripts when</p>
+<ul>
+<li>building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.</li>
+<li>building via GenBank file: protein sequences are available within the GenBank file</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+</div>
+<p>You can disable this check unsing command line option <code>-noCheckProtein</code></p>
+<p>FASTA protein file:</p>
+<ul>
+<li>The file name should be <code>protein.fa</code> (or <code>protein.fa.gz</code> if compressed)</li>
+<li>Each transcript should have one protein sequence</li>
+<li>Each FASTA header has the transcript ID either:<ul>
+<li>The header contains only the transcript ID</li>
+<li>The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these</li>
+<li>Some example sequences with valid header examples (sequences have been cut for readability):
+<div class="highlight"><pre><span></span><code>&gt;ENST00000382044
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+
+&gt;ENSP00000371475 pep chromosome:GRCh38:15:43403061:43493171:-1 gene:ENSG00000067369 transcript:ENST00000382044 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:TP53BP1 description:tumor protein p53 binding protein
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<p><strong>Protein checking output:</strong></p>
+<p>When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:</p>
+<ul>
+<li><code>+</code>: OK, the protein sequence matches the one predicted by SnpEff</li>
+<li><code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the</li>
+<li><code>*</code>: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.</li>
+</ul>
+<p>After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+<div class="highlight"><pre><span></span><code>Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
+</code></pre></div></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+</div>
+<p>As a "rule of the thumb", the errors should be below 2% or 3%.</p>
+<p><strong>How exactly protein sequences are compared</strong>
+The rules used for protein sequence comparison are:</p>
+<ul>
+<li>Comparison is case-insensitive</li>
+<li>Trailing STOP codon (<code>'*'</code>) is removed</li>
+<li>Trailing incomplete codon (<code>'?'</code>) is removed</li>
+<li>Leading incomplete codons (<code>'?'</code>) are removed</li>
+</ul>
+<p>If these comparisons fails, further attempts are made:</p>
+<ul>
+<li>Replace "unknown" codon characters: Codons using old <code>'X'</code> characters are replaced by newer <code>'?'</code> characters</li>
+<li>If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)</li>
+<li>Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace <code>'*'</code> by <code>'U'</code></li>
+<li>Try replacing unknown aminco acids (<code>'?'</code>) by the ones at the same position in the protein sequence from the FASTA file</li>
+</ul>
+<p>If after all these attempts the protein sequence still do not match, they are considered "not equal".</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+</div>
+<p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
+The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.</p>
+<h3 id="example-building-the-human-genome-database">Example: Building the Human Genome database</h3>
+<p>This is a full example on how to build the human genome database (using GTF file from ENSEBML), it includes support for regulatory features, sanity check, rare amino acids, etc..
+<div class="highlight"><pre><span></span><code># Go to SnpEff&#39;s install dir
+cd ~/snpeff
+
+# Create database dir
+mkdir data/GRCh37.70
+cd data/GRCh37.70
+
+# Download annotated genes
+wget ftp://ftp.ensembl.org/pub/release-70/gtf/homo_sapiens/Homo_sapiens.GRCh37.70.gtf.gz
+mv Homo_sapiens.GRCh37.70.gtf.gz genes.gtf.gz
+
+# Download proteins
+# This is used for:
+#   - &quot;Rare Amino Acid&quot; annotations
+#   - Sanity check (checking protein predicted from DNA sequences match &#39;real&#39; proteins)
+wget ftp://ftp.ensembl.org/pub/release-70/fasta/homo_sapiens/pep/Homo_sapiens.GRCh37.70.pep.all.fa.gz
+mv Homo_sapiens.GRCh37.70.pep.all.fa.gz protein.fa.gz
+
+# Download CDSs
+# Note: This is used as &quot;sanity check&quot; (checking that CDSs predicted from gene sequences match &#39;real&#39; CDSs)
+wget ftp://ftp.ensembl.org/pub/release-70/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh37.70.cdna.all.fa.gz
+mv Homo_sapiens.GRCh37.70.cdna.all.fa.gz cds.fa.gz
+
+# Download regulatory annotations
+wget ftp://ftp.ensembl.org/pub/release-70/regulation/homo_sapiens/AnnotatedFeatures.gff.gz
+mv AnnotatedFeatures.gff.gz regulation.gff.gz
+
+# Uncompress
+gunzip *.gz
+
+# Download genome
+cd ../genomes/
+wget ftp://ftp.ensembl.org/pub/release-70/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.70.dna.toplevel.fa.gz
+mv Homo_sapiens.GRCh37.70.dna.toplevel.fa.gz GRCh37.70.fa.gz
+
+# Uncompress:
+# Why do we need to uncompress?
+# Because ENSEMBL compresses files using a block compress gzip which is not compatible with Java&#39;s library Gunzip
+gunzip GRCh37.70.fa.gz
+
+# Edit snpEff.config file
+#
+# WARNING! You must do this yourself. Just copying and pasting this into a terminal won&#39;t work.
+#
+# Add lines:
+#       GRCh37.70.genome : Homo_sapiens
+#       GRCh37.70.reference : ftp://ftp.ensembl.org/pub/release-70/gtf/
+
+# Now we are ready to build the database
+cd ~/snpeff
+java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2&gt;&amp;1 | tee GRCh37.70.build
+</code></pre></div></p>
+<h3 id="troubleshooting-database-builds">Troubleshooting Database builds</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>By far the most common problem is that the FASTA file chromosome names are different than the GFF chromosome names.
+Make sure chromosome names are consistent in all the files you use.</p>
+</div>
+<p><strong>When I build the database using GFF 3 SnpEff reports that Exons don't have sequences</strong></p>
+<p>GFF3 files can have sequence information either in the same file or in a separate fasta file.</p>
+<p>In order to add sequence information in the GFF file, you can do this:
+<div class="highlight"><pre><span></span><code>cat annotations.gff &gt; genes.gff
+echo &quot;###&quot;  &gt;&gt; genes.gff
+echo &quot;##FASTA&quot;  &gt;&gt; genes.gff
+cat sequence.fa  &gt;&gt; genes.gff
+</code></pre></div>
+<strong>When building a database, I get zero protein coding genes</strong></p>
+<p>When building a database, snpEff tries to find which transcripts are protein coding. This is done using the 'bioType' information.</p>
+<p>The bioType information is not a standard GFF or GTF feature. So I follow ENSEMBL's convention of using the second column ('source') for bioType, as well as the gene_biotype attribute.</p>
+<p>If your file was not produced by ENSEMBL, it probably doesn't have this information. This means that snpEff doesn't know which genes are protein coding and which ones are not.</p>
+<p>Having no information, snpEff will treat all genes as protein coding (assuming you have <code>-treatAllAsProteinCoding Auto</code> option in the command line, which is the default).</p>
+<p>So you will get effects as if all genes were protein coding, then you can filter out the irrelevant genes. Unfortunately, this is the best I can do if there is no 'bioType' information</p>
+<p><strong>When building a database, I get too many warnings</strong></p>
+<p>There are plenty of GFF and GTF files that, unfortunately, do not follow the specification.
+SnpEff usually complains about this, but tries hard to correct the problems.
+So the database may be OK even after you see many warnings.</p>
+<p>You can check the database to see if the features (genes, exons, UTRs) have been correctly incorporated, by taking a look at the database:</p>
+<div class="codehilite"><pre><span></span><code>java -jar snpEff.jar dump myGenome | less
+</code></pre></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Pablo Cingolani
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.highlight", "search.suggest", "toc.integrate", "content.tabs.link", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+    
+  </body>
+</html>

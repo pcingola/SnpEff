@@ -444,9 +444,6 @@ void buildDocs() {
 	# Build with mkdocs
 	sys cd '$dirSnpEff' ; source $venvBin/activate ; $venvBin/mkdocs build
 
-	# Copy 'index.html' 
-	sys cp -vf '$dirSnpEff/src/docs/index.html' '$dirSnpEff/site/'
-
 	# Cleanup old docs
 	sys rm -vf '$dirSnpEff/docs/*/index.html'
 
