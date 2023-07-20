@@ -7,67 +7,68 @@ Extract fields from a VCF file to a TXT, tab separated format, that you can easi
 You can also use sub-fields and genotype fields / sub-fields such as:
 
 * Standard VCF fields:
-    * CHROM
-    * POS
-    * ID
-    * REF
-    * ALT
-    * FILTER
+    * `CHROM`
+    * `POS`
+    * `ID`
+    * `REF`
+    * `ALT`
+    * `FILTER`
 * INFO fields:
-    * AF
-    * AC
-    * DP
-    * MQ
+    * `AF`
+    * `AC`
+    * `DP`
+    * `MQ`
     * etc. (any info field available)
 * SnpEff 'ANN' fields:
-    * "ANN\[\*].ALLELE" (alias GENOTYPE)
-    * "ANN\[\*].EFFECT" (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)
-    * "ANN\[\*].IMPACT:" { HIGH, MODERATE, LOW, MODIFIER }
-    * "ANN\[\*].GENE:" Gene name (e.g. 'PSD3')
-    * "ANN\[\*].GENEID:" Gene ID
-    * "ANN\[\*].FEATURE"
-    * "ANN\[\*].FEATUREID" (alias TRID: Transcript ID)
-    * "ANN\[\*].BIOTYPE:" Biotype, as described by the annotations (e.g. 'protein_coding')
-    * "ANN\[\*].RANK:" Exon or Intron rank (i.e. exon number in a transcript)
-    * "ANN\[\*].HGVS_C" (alias HGVS_DNA, CODON): Variant in HGVS (DNA) notation
-    * "ANN\[\*].HGVS_P" (alias HGVS, HGVS_PROT, AA): Variant in HGVS (protein) notation
-    * "ANN\[\*].CDNA_POS" (alias POS_CDNA)
-    * "ANN\[\*].CDNA_LEN" (alias LEN_CDNA)
-    * "ANN\[\*].CDS_POS" (alias POS_CDS)
-    * "ANN\[\*].CDS_LEN" (alias LEN_CDS)
-    * "ANN\[\*].AA_POS" (alias POS_AA)
-    * "ANN\[\*].AA_LEN" (alias LEN_AA)
-    * "ANN\[\*].DISTANCE"
-    * "ANN\[\*].ERRORS" (alias WARNING, INFOS)
+    * `ANN[*].ALLELE` (alias GENOTYPE)
+    * `ANN[*].EFFECT` (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)
+    * `ANN[*].IMPACT:` { HIGH, MODERATE, LOW, MODIFIER }
+    * `ANN[*].GENE:` Gene name (e.g. 'PSD3')
+    * `ANN[*].GENEID:` Gene ID
+    * `ANN[*].FEATURE`
+    * `ANN[*].FEATUREID` (alias TRID: Transcript ID)
+    * `ANN[*].BIOTYPE:` Biotype, as described by the annotations (e.g. 'protein_coding')
+    * `ANN[*].RANK:` Exon or Intron rank (i.e. exon number in a transcript)
+    * `ANN[*].HGVS_C` (alias HGVS_DNA, CODON): Variant in HGVS (DNA) notation
+    * `ANN[*].HGVS_P` (alias HGVS, HGVS_PROT, AA): Variant in HGVS (protein) notation
+    * `ANN[*].CDNA_POS` (alias POS_CDNA)
+    * `ANN[*].CDNA_LEN` (alias LEN_CDNA)
+    * `ANN[*].CDS_POS` (alias POS_CDS)
+    * `ANN[*].CDS_LEN` (alias LEN_CDS)
+    * `ANN[*].AA_POS` (alias POS_AA)
+    * `ANN[*].AA_LEN` (alias LEN_AA)
+    * `ANN[*].DISTANCE`
+    * `ANN[*].ERRORS` (alias WARNING, INFOS)
 * SnpEff 'EFF' fields (this is for older SnpEff/SnpSift versions, new version use 'ANN' field):
-    * "EFF\[\*].EFFECT"
-    * "EFF\[\*].IMPACT"
-    * "EFF\[\*].FUNCLASS"
-    * "EFF\[\*].CODON"
-    * "EFF\[\*].AA"
-    * "EFF\[\*].AA_LEN"
-    * "EFF\[\*].GENE"
-    * "EFF\[\*].BIOTYPE"
-    * "EFF\[\*].CODING"
-    * "EFF\[\*].TRID"
-    * "EFF\[\*].RANK"
+    * `EFF[*].EFFECT`
+    * `EFF[*].IMPACT`
+    * `EFF[*].FUNCLASS`
+    * `EFF[*].CODON`
+    * `EFF[*].AA`
+    * `EFF[*].AA_LEN`
+    * `EFF[*].GENE`
+    * `EFF[*].BIOTYPE`
+    * `EFF[*].CODING`
+    * `EFF[*].TRID`
+    * `EFF[*].RANK`
 
     !!! info
         You can combine `vcfEffOnePerLine.pl` script with `SnpSift extractFields` if you want to have each effect in a separate line.
 
 * SnpEff 'LOF' fields:
-    * "LOF\[\*].GENE"
-    * "LOF\[\*].GENEID"
-    * "LOF\[\*].NUMTR"
-    * "LOF\[\*].PERC"
+    * `LOF[*].GENE`
+    * `LOF[*].GENEID`
+    * `LOF[*].NUMTR`
+    * `LOF[*].PERC`
 * SnpEff' NMD' fields:
-    * "NMD\[\*].GENE"
-    * "NMD\[\*].GENEID"
-    * "NMD\[\*].NUMTR"
-    * "NMD\[\*].PERC"
+    * `NMD[*].GENE`
+    * `NMD[*].GENEID`
+    * `NMD[*].NUMTR`
+    * `NMD[*].PERC`
 
 !!! warning
-    When using multiple indexes (e.g. "ANN\[\*].EFFECT") you must remember to use quotes the command line. Otherwise, the shell would parse the asterisk changing the expression and producing unexpected results.
+    When using multiple indexes you must remember to use quotes and escape the character in the command line (e.g. `"ANN[*].EFFECT"`).
+    Otherwise, the shell would parse the asterisk changing the expression and producing unexpected results.
 
 !!! info
     You can use command line option `-s` to specify multiple field separator and `-e` to specify how to represent empty fields.
@@ -95,12 +96,12 @@ $ java -jar SnpSift.jar extractFields s.vcf CHROM POS ID AF | head
 
 This means to extract:
 
-* CHROM POS ID: regular fields (as in the previous example)
-* THETA : This one is from INFO
-* "GEN\[0].GL\[1]" : Second likelihood from first genotype
-* "GEN\[1].GL" : The whole GL fields (all entries without separating them)
-* "GEN\[3].GL\[\*]" : All likelihoods form genotype 3 (this time they will be tab separated, as opposed to the previous one).
-* "GEN\[\*].GT" : Genotype subfields (GT) from ALL samples (tab separated).
+* `CHROM` `POS` `ID`: regular fields (as in the previous example)
+* `THETA` : This one is from INFO
+* `GEN[0].GL[1]` : Second likelihood from first genotype
+* `GEN[1].GL` : The whole GL fields (all entries without separating them)
+* `GEN[3].GL[*]` : All likelihoods form genotype 3 (this time they will be tab separated, as opposed to the previous one).
+* `GEN[*].GT` : Genotype subfields (GT) from ALL samples (tab separated).
 
 The result will look something like:
 ```

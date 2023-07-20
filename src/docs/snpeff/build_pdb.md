@@ -3,19 +3,6 @@
 SnpEff supports Protein interactions calculated from [PDB](http://www.rcsb.org/) or [AlphaFold](https://alphafold.ebi.ac.uk/download).
 Adding protein interaction to existing SnpEff databases is rather involved, so it's recommended you use a pre-build database if available (e.g. human).
 
-# PDB COMPOUND LIST !!!
-
-```
-$ ack pdbCompoundLines
-
-scripts_build/pdbCompoundLines.sh
-9:	gunzip -c $pdb | $scripts/pdbCompoundLines.py $pdbId
-
-src/main/java/org/snpeff/snpEffect/commandLine/SnpEffCmdPdb.java
-36:    public static final String DEFAULT_INTERACT_FILE = DEFAULT_PDB_DIR + "/pdbCompoundLines.txt";
-```
-
-
 ## Requirements
 
 In order to add protein data to a database, you need:
@@ -58,16 +45,3 @@ The format is: tab-separated, one line per entry:
 ```
 transcriptID \t proteinID
 ```
-where 
--`transcriptID`: 
--`proteinID`: 
-
-
-
-
-
-
-
-## Adding protein data
-
-

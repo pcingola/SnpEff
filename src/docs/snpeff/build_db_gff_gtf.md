@@ -158,7 +158,7 @@ Possible values are:
 !!! info
     Sometimes this is called 'phase' instead of frame, to distinguish form the *"coding base modulo 3"* definition. 
 
-**Frame correctio:n**
+**Frame correction**
 SnpEff performs a "frame correction".
 If the frame value calculated using the feature (exon) coordinates differs from the one given in the `start / end` coordinates, the coordinates will be corrected.
 

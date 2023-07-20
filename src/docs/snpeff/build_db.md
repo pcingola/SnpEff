@@ -7,7 +7,7 @@ In the (unlikely?) event that you need to build one yourself, here we describe h
 !!! info
     You can know which genomes are supported by running the following command:
 
-        $ java -jar snpEff.jar databases
+        java -jar snpEff.jar databases
 
 !!! warning
     Most people do NOT need to build a database, and can safely use a pre-built one.
@@ -25,9 +25,11 @@ So, chances are that you don't need to build a database yourself (this will save
 The easiest way to download and install a pre-built SnpEff database manually, is using the `download` command.
 E.g. if you want to install the SnpEff database for the human genome, you can run the following command:
 
-    $ java -jar snpEff.jar download -v GRCh37.75
+```
+java -jar snpEff.jar download -v GRCh37.75
+```
 
-###Backwards compatible databases
+### Backwards compatible databases
 
 In many cases the databases from previous SnpEff versions might be compatible with newer versions.
 So, SnpEff has a *fallback* mechanism for *"backwards-compatible database formats"*.
@@ -40,7 +42,7 @@ How does it work? SnpEff checks the database in "5.1" path, if it doesn't work i
 If you take a look a SnpEff's download output using the `-v` command, you'll see that it tries two times:
 
 ```
-snpeff download -v GRCm38.99
+$ java -jar snpEff.jar download -v GRCm38.99
 
 00:00:00 SnpEff version SnpEff 5.1d (build 2022-04-19 15:49), by Pablo Cingolani
 00:00:00 Command: 'download'
@@ -66,7 +68,7 @@ bu`t it doesn't find it there, so it proceeds with the databse `5.0` path `https
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
     This is done using the `-c` command line option:
 
-        $ java -Xmx8g -jar snpEff.jar download -c path/to/snpEff/snpEff.config -v GRCh37.75
+        java -Xmx8g -jar snpEff.jar download -c path/to/snpEff/snpEff.config -v GRCh37.75
 
 ### Building a database
 
@@ -235,12 +237,12 @@ For this example we'll use "Staphylococcus aureus":
 
    ![genBank2](../images/genBank_2.png){: .center}
 
-3. Save the GenBank data to "/path/to/snpEff/data/CP000730/genes.gbk".
+3. Save the GenBank data to `/path/to/snpEff/data/CP000730/genes.gbk`
 
    **Note:** If there are more than one genbank file for an organism (e.g. multiple chromosomes), then you can download each file and concatenate them.
 
    E.g.: Vibrio Cholerae has two chromosomes with GenBank accessions: NC_002505.1 and NC_002506.1.
-   You can download both files and save them as snpEff/data/vibrio/NC_002505.1.gbk and snpEff/data/vibrio/NC_002506.1.gbk respectively, and then concatenate both files:
+   You can download both files and save them as `snpEff/data/vibrio/NC_002505.1.gbk` and `snpEff/data/vibrio/NC_002506.1.gbk` respectively, and then concatenate both files:
 
         cat NC_002505.1.gbk NC_002506.1.gbk > genes.gbk
 
@@ -265,10 +267,10 @@ For this example we'll use "Staphylococcus aureus":
 
 See a more detailed explanation about [SnpEff's requirements for GFF files here](build_db_gff_gtf.md)
 
-This example shows how to create a database for a new genome using GFF file ((e.g. FlyBase, WormBase, BeeBase release GFF files).
+This example shows how to create a database for a new genome using GFF file (e.g. FlyBase, WormBase, BeeBase release GFF files).
 For this example we'll use the Drosophila melanogaster genome (dm5.31):
 
-1. Get a GFF file (into path/to/snpEff/data/dm5.31/genes.gff):
+1. Get a GFF file to `path/to/snpEff/data/dm5.31/genes.gff`:
 
         mkdir path/to/snpEff/data/dm5.31
         cd path/to/snpEff/data/dm5.31

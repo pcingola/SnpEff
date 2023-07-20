@@ -177,25 +177,25 @@ Effect fields (from SnpEff) are accessed using an index (effect number) followed
 
 Available `ANN` sub-fields are (for details, take a look at the [specification](../adds/VCFannotationformat_v1.0.pdf)):
 
-* ALLELE (alias GENOTYPE)
-* EFFECT (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)
-* IMPACT: { HIGH, MODERATE, LOW, MODIFIER }
-* GENE: Gene name (e.g. 'PSD3')
-* GENEID: Gene ID
-* FEATURE
-* FEATUREID (alias TRID: Transcript ID)
-* BIOTYPE: Biotype, as described by the annotations (e.g. 'protein_coding')
-* RANK: Exon or Intron rank (i.e. exon number in a transcript)
-* HGVS_C (alias HGVS_DNA, CODON): Variant in HGVS (DNA) notation
-* HGVS_P (alias HGVS, HGVS_PROT, AA): Variant in HGVS (protein) notation
-* CDNA_POS (alias POS_CDNA)
-* CDNA_LEN (alias LEN_CDNA)
-* CDS_POS (alias POS_CDS)
-* CDS_LEN (alias LEN_CDS)
-* AA_POS (alias POS_AA)
-* AA_LEN (alias LEN_AA)
-* DISTANCE
-* ERRORS (alias WARNING, INFOS)
+* `ALLELE` (alias GENOTYPE)
+* `EFFECT` (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)
+* `IMPACT`: { HIGH, MODERATE, LOW, MODIFIER }
+* `GENE`: Gene name (e.g. 'PSD3')
+* `GENEID`: Gene ID
+* `FEATURE`
+* `FEATUREID` (alias TRID: Transcript ID)
+* `BIOTYPE`: Biotype, as described by the annotations (e.g. 'protein_coding')
+* `RANK`: Exon or Intron rank (i.e. exon number in a transcript)
+* `HGVS_C` (alias HGVS_DNA, CODON): Variant in HGVS (DNA) notation
+* `HGVS_P` (alias HGVS, HGVS_PROT, AA): Variant in HGVS (protein) notation
+* `CDNA_POS` (alias POS_CDNA)
+* `CDNA_LEN` (alias LEN_CDNA)
+* `CDS_POS` (alias POS_CDS)
+* `CDS_LEN` (alias LEN_CDS)
+* `AA_POS` (alias POS_AA)
+* `AA_LEN` (alias LEN_AA)
+* `DISTANCE`
+* `ERRORS` (alias WARNING, INFOS)
 
 For example, you may want only the lines where the **first** annotation has `missense_variant` variant:
 
@@ -264,16 +264,16 @@ Effect fields (from SnpEff) are accessed using an index (effect number) followed
 
 Available `EFF` sub-fields are:
 
-* EFFECT: Effect (e.g. SYNONYMOUS_CODING, NON_SYNONYMOUS_CODING, FRAME_SHIFT, etc.)
-* IMPACT: { HIGH, MODERATE, LOW, MODIFIER }
-* FUNCLASS: { NONE, SILENT, MISSENSE, NONSENSE }
-* CODON: Codon change (e.g. 'ggT/ggG')
-* AA: Amino acid change (e.g. 'G156')
-* GENE: Gene name (e.g. 'PSD3')
-* BIOTYPE: Gene biotype, as described by the annotations (e.g. 'protein_coding')
-* CODING: Gene is { CODING, NON_CODING }
-* TRID: Transcript ID
-* RANK: Exon or Intron rank (i.e. exon number in a transcript)
+* `EFFECT`: Effect (e.g. SYNONYMOUS_CODING, NON_SYNONYMOUS_CODING, FRAME_SHIFT, etc.)
+* `IMPACT`: { HIGH, MODERATE, LOW, MODIFIER }
+* `FUNCLASS`: { NONE, SILENT, MISSENSE, NONSENSE }
+* `CODON`: Codon change (e.g. 'ggT/ggG')
+* `AA`: Amino acid change (e.g. 'G156')
+* `GENE`: Gene name (e.g. 'PSD3')
+* `BIOTYPE`: Gene biotype, as described by the annotations (e.g. 'protein_coding')
+* `CODING`: Gene is { CODING, NON_CODING }
+* `TRID`: Transcript ID
+* `RANK`: Exon or Intron rank (i.e. exon number in a transcript)
 
 For example, you may want only the lines where the first effect is a NON_SYNONYMOUS variants:
 
@@ -291,10 +291,10 @@ May be you want only the ones that affect gene 'TCF7L2':
 
 Similarly `LOF` and `NMD` sub-fields are available:
 
-* LOF.GENE and NMD.GENE
-* LOF.GENEID and NMD.GENEID
-* LOF.NUMTR and NMD.NUMTR
-* LOF.PERC and NMD.PERC
+* `LOF.GENE` and NMD.GENE
+* `LOF.GENEID` and NMD.GENEID
+* `LOF.NUMTR` and NMD.NUMTR
+* `LOF.PERC` and NMD.PERC
 
 For instance, if we want to obtain genes having a Loss of Function effect in more than 90% of the transcripts, you can do this:
 
@@ -326,17 +326,17 @@ Operand | Description   | Data type            | Example
 
 Function   | Description | Data type | Example
 ---------- | ----------- | --------- | --------
-countHom() | Count number of homozygous genotypes   | No arguments | (**countHom()** &gt; 0)
-countHet() | Count number of heterozygous genotypes | No arguments | (**countHet()** &gt; 2)
-countVariant() | Count number of genotypes that are variants (i.e. not reference 0/0) | No arguments | (**countVariant()** &gt; 5)
-countRef()     | Count number of genotypes that are NOT variants (i.e. reference 0/0) | No arguments | (**countRef()** &lt; 1)
+`countHom()` | Count number of homozygous genotypes   | No arguments | (**countHom()** &gt; 0)
+`countHet()` | Count number of heterozygous genotypes | No arguments | (**countHet()** &gt; 2)
+`countVariant()` | Count number of genotypes that are variants (i.e. not reference 0/0) | No arguments | (**countVariant()** &gt; 5)
+`countRef()`     | Count number of genotypes that are NOT variants (i.e. reference 0/0) | No arguments | (**countRef()** &lt; 1)
 
 Genotype <br> Function | Description | Data type | Example
 ---------------------- | ----------- | --------- | --------
-isHom     | Is homozygous genotype?   | Genotype | **isHom( GEN\[0] )**
-isHet     | Is heterozygous genotype? | Genotype | **isHet( GEN\[0] )**
-isVariant | Is genotype a variant? (i.e. not reference 0/0) | Genotype | **isVariant( GEN\[0] )**
-isRef     | Is genotype a reference? (i.e. 0/0)             | Genotype | **isRef( GEN\[0] )**
+`isHom`     | Is homozygous genotype?   | Genotype | **isHom( GEN\[0] )**
+`isHet`     | Is heterozygous genotype? | Genotype | **isHet( GEN\[0] )**
+`isVariant` | Is genotype a variant? (i.e. not reference 0/0) | Genotype | **isVariant( GEN\[0] )**
+`isRef`     | Is genotype a reference? (i.e. 0/0)             | Genotype | **isRef( GEN\[0] )**
 
 ### Using sample names instead of sample numbers
 
