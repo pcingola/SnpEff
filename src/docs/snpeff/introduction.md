@@ -113,7 +113,9 @@ In most cases, this can be done and there is a [section](build_db.md) of this ma
 
 Which databases are supported? You can find out all the supported databases by running the `databases` command:
 
-    $ java -jar snpEff.jar databases | less
+```
+java -jar snpEff.jar databases | less
+```
 
 This command shows the database name, genome name and source data (where was the genome reference data obtained from).
 Keep in mind that many times I use ENSEMBL reference genomes, so the name would be `GRCh37` instead of `hg19`, or `GRCm38` instead
@@ -123,7 +125,8 @@ of `mm10`, and so on.
 You can runs something like this:
 
 ```
-$ java -jar snpEff.jar databases | grep -i musculus
+java -jar snpEff.jar databases | grep -i musculus
+
 129S1_SvImJ_v1.99                                           	Mus_musculus_129s1svimj                                     	          	                              	https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_129S1_SvImJ_v1.99.zip
 AKR_J_v1.99                                                 	Mus_musculus_akrj                                           	          	                              	https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AKR_J_v1.99.zip
 A_J_v1.99                                                   	Mus_musculus_aj                                             	          	                              	https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_A_J_v1.99.zip

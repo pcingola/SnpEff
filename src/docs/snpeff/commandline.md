@@ -5,8 +5,10 @@ The default command is `'eff'` used to annotate variants.
 
 **Help:** In order to see all available commands, you can run SnpEff without any arguments:
 
-    # This will show a 'help' message
-    java -jar snpEff.jar
+```
+# This will show a 'help' message
+java -jar snpEff.jar
+```
 
 ### Commands
 
@@ -14,19 +16,19 @@ Here is a list of what each command does:
 
 Command       |  Meaning
 ------------- | ------------------
-\[eff\|ann]   | This is the default command. It is used for annotating variant filed (e.g. VCF files).
-build         | Build a SnpEff database from reference genome files (FASTA, GTF, etc.).
-buildNextProt | Build NextProt database using XML files
-cds           | Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database).
-closest       | Annotate the closest genomic region.
-count         | Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.
-databases     | Show currently available databases (from local config file).
-download      | Download a SnpEff database.
-dump          | Dump to STDOUT a SnpEff database (mostly used for debugging).
-genes2bed     | Create a bed file from a genes list.
-len           | Calculate total genomic length for each marker type.
-protein       | Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness. (invoked automatically when building a database).
-spliceAnalysis| Perform an analysis of splice sites. Experimental feature.
+`eff | ann`   | This is the default command. It is used for annotating variant filed (e.g. VCF files).
+`build`         | Build a SnpEff database from reference genome files (FASTA, GTF, etc.).
+`buildNextProt` | Build NextProt database using XML files
+`cds`           | Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database).
+`closest`       | Annotate the closest genomic region.
+`count`         | Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.
+`databases`     | Show currently available databases (from local config file).
+`download`      | Download a SnpEff database.
+`dump`          | Dump to STDOUT a SnpEff database (mostly used for debugging).
+`genes2bed`     | Create a bed file from a genes list.
+`len`           | Calculate total genomic length for each marker type.
+`protein`       | Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness. (invoked automatically when building a database).
+spliceAnalysis``| Perform an analysis of splice sites. Experimental feature.
 
 **Common options**
 
@@ -177,10 +179,11 @@ In order to speed up the annotation process, there are two options that can be a
     In multithreaded mode, SnpEff will attempt to use all available cores.
     Nevertheless is very rare that all cores get 100% usage.
 
-### HGVS /Classic notation
+### HGVS / Classic notation
 
 SnpEff uses [HGVS notation](http://www.hgvs.org/), which is somewhat popular amongst clinicians.
-You can de-activate HGVS notation (to use the old annotation style) using the command line option `-classic`.
+
+You can switch to the old (deprecated) annotaions format, using the command line option `-classic`.
 
 ### Logging
 
@@ -197,12 +200,12 @@ SnpEff supports filter of output results by using combinations of the following 
 
 Command line option | Meaning
 ------------------- | -----------
--no-downstream      | Do not show DOWNSTREAM changes
--no-intergenic      | Do not show INTERGENIC changes
--no-intron          | Do not show INTRON changes
--no-upstream        | Do not show UPSTREAM changes
--no-utr             | Do not show 5_PRIME_UTR or 3_PRIME_UTR changes
--no EffectType      | Do not show 'EffectType' (it can be used several times) <br>e.g: `-no INTERGENIC -no SPLICE_SITE_REGION`
+`-no-downstream`      | Do not show DOWNSTREAM changes
+`-no-intergenic`      | Do not show INTERGENIC changes
+`-no-intron`          | Do not show INTRON changes
+`-no-upstream`        | Do not show UPSTREAM changes
+`-no-utr`             | Do not show 5_PRIME_UTR or 3_PRIME_UTR changes
+`-no EffectType`      | Do not show 'EffectType' (it can be used several times) <br>e.g: `-no INTERGENIC -no SPLICE_SITE_REGION`
 
 
 ### Annotating selected intervals
@@ -233,7 +236,9 @@ SnpEff allows to annotate using canonical transcripts by using `-canon` command 
 
 Example on how to use canonical transcripts annotations:
 
-    $ java -Xmx8g -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf
+```
+java -Xmx8g -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf
+```
 
 In order to get a list of canonical transcripts, you can use the `-d` (debug) command line option. E.g.:
 ```
@@ -262,7 +267,9 @@ $ java -Xmx8g -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 SnpEff allows you to provide a list of transcripts to use for annotations by using the `-onlyTr file.txt` and providing a file with one transcript ID per line.
 Any other transcript will be ignored.
 
-    $ java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
+java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
 
 ###  Upstream and downstream
 
@@ -271,7 +278,9 @@ This also allows to eliminate any upstream and downstream effect by using "-ud 0
 
 Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
 
-    $ java -Xmx8g -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
+java -Xmx8g -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
 
 ### Splice site size
 
@@ -279,7 +288,9 @@ You can change the default splice site size (default is 2 bases) using the `-spl
 
 Example: Make splice sites four bases long
 
-    $ java -Xmx8g -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
+java -Xmx8g -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
 
 ### Adding your own annotations
 SnpEff allows user defined intervals to be annotated.
