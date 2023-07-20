@@ -5,8 +5,9 @@ This project is maintained by [**Pablo Cingolani**](http://www.linkedin.com/in/p
 ## Asking for help
 
 Please send any questions by creating issues in repositories:
-* SnpEff:  <https://github.com/pcingola/SnpEff/issues>
-* SnpSift: <https://github.com/pcingola/SnpSift/issues>
+
+* [SnpEff - https://github.com/pcingola/SnpEff/issues](https://github.com/pcingola/SnpEff/issues)
+* [SnpSift - https://github.com/pcingola/SnpSift/issues](https://github.com/pcingola/SnpSift/issues)
 
 !!!warning
     **Important:** In order to assess and your problem precisely, I must be able to reproduce your example.
@@ -25,10 +26,10 @@ Results      | What you expect to obtain | "we wanted to get information on vari
 
 **Note:** A few guidelines when asking for help...
 
-* **Use the latest version.** SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).
+* **Use the latest version.** May be the issue has already been corrected.
 
 * **Read the documentation first.** Please make sure you've read the documentation before asking fo help.
-        I know this is obvious, but a lot of people ask for questions in that are answered or shown as examples in the documentation.
+        I know this is obvious, but a lot of people ask for questions in that are answered, or shown as examples in the documentation.
 
 * **If the documentation did not help.** I'm aware that the documentation is not always "easy reading".
         So let me know which part of the manual is confusing, outdated or plain wrong.
@@ -49,8 +50,8 @@ Results      | What you expect to obtain | "we wanted to get information on vari
 
 Please send any bug reports by creating issues in repositories:
 
-* SnpEff:  <https://github.com/pcingola/SnpEff/issues>
-* SnpSift: <https://github.com/pcingola/SnpSift/issues>
+* SnpEff:  [https://github.com/pcingola/SnpEff/issues](https://github.com/pcingola/SnpEff/issues)
+* SnpSift: [https://github.com/pcingola/SnpSift/issues](https://github.com/pcingola/SnpSift/issues)
 
 !!!warning
     **Important:** In order to assess and fix the issue, I must be able to reproduce exactly your error condition.
@@ -83,8 +84,9 @@ Results      | What you expect to obtain (if applicable)| "we expected result X,
 
 I always take into account features request.
 So don't hesitate to send me your ideas by creating issues in repositories:
-* SnpEff:  <https://github.com/pcingola/SnpEff/issues>
-* SnpSift: <https://github.com/pcingola/SnpSift/issues>
+
+* SnpEff:  [https://github.com/pcingola/SnpEff/issues](https://github.com/pcingola/SnpEff/issues)
+* SnpSift: [https://github.com/pcingola/SnpSift/issues](https://github.com/pcingola/SnpSift/issues)
 
 Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get a request.
 But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it.
@@ -98,7 +100,7 @@ Please, don't be frustrated if I tell you I cannot implement your suggestion / i
 ## Asking for new database / genome
 
 I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).
-Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail [in the documentation](se_build_db.md).
+Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail [in the documentation](snpeff/build_db.md).
 If you are unable to build the database, I can try to help you out. Please, create issue in repository: <https://github.com/pcingola/SnpEff>.
 
 In order to do so, I need you to send me the following information:
@@ -118,4 +120,4 @@ I'm well aware that I could try to google that information myself, but I need yo
 
 ## Contact information
 
-<strong>[Pablo Cingolani](http://www.linkedin.com/in/pablocingolani).</strong>
+<strong>[Pablo Cingolani](http://www.linkedin.com/in/pablocingolani)</strong>

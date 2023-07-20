@@ -8,7 +8,7 @@ SnpSift helps to perform this VCF file manipulation and filtering required at th
 
 ### Download and install
 
-SnpSift is part of SnpEff main distribution, so please click on [here](download.md) and follow the instructions on how to download and install SnpEff.
+SnpSift is part of SnpEff main distribution, so please click on [here](../download.md) and follow the instructions on how to download and install SnpEff.
 
 ### SnpSift utilities
 
@@ -34,7 +34,7 @@ Operation              | Meaning
 
 ### Citing SnpSift
 
-In order to cite SnpSift, please use the following [example](citing.md#citing-snpsift).
+In order to cite SnpSift, please use the following [example](../index.md#citing-snpsift).
 
 ### Source code
 

@@ -6,7 +6,7 @@ Annotate using PhastCons conservation scores.
     You must download PhastCons files [here](http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/).
 
 !!! info
-    You also need a chromosome size file, which can be created using `samtools faidx`, or you can download it from [here](adds/genome.fai).
+    You also need a chromosome size file, which can be created using `samtools faidx`, or you can download it from [here](../adds/genome.fai).
 
 Full example.
 Most of the example deals with downloading and installing PhastCons database, which is done only once.

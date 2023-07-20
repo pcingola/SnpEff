@@ -166,7 +166,7 @@ In order to install SnpEff in your own Galaxy server, you can use the `galaxy/*.
 
 This is a screen capture from a Galaxy server (click to enlarge):
 
-[![](images/snpEff_galaxy_small.png)](images/snpEff_galaxy.png){: .center}
+[![](../images/snpEff_galaxy_small.png)](../images/snpEff_galaxy.png){: .center}
 
 Installing SnpEff in a Galaxy server:
 ```

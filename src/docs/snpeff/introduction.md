@@ -5,11 +5,11 @@ It annotates and predicts the effects of genetic variants (such as amino acid ch
 
 ### Download &amp; Install
 
-Download and installing SnpEff it pretty easy, take a look at the [download page](download.md).
+Download and installing SnpEff it pretty easy, take a look at the [download page](../download.md).
 
 ### Building from source
 
-Take a look at the ["Source code"](download.md#source-code) section.
+Take a look at the ["Source code"](../download.md#source-code) section.
 
 ### SnpEff Summary
 
@@ -21,7 +21,7 @@ A typical SnpEff use case would be:
 * Output:
     SnpEff analyzes the input variants.
     It annotates the variants and calculates the effects they produce on known genes (e.g. amino acid changes).
-    A list of effects and annotations that SnpEff can calculate can be found [here](se_inputoutput.md#effect-prediction-details).
+    A list of effects and annotations that SnpEff can calculate can be found [here](inputoutput.md#effect-prediction-details).
 
 **Variants**
 
@@ -64,7 +64,7 @@ they must be analyzed and independently validated by corresponding wet-lab exper
 
 ### Citing
 
-If you are using SnpEff or SnpSift, please cite our work as shown [here](citing.md). Thank you!
+If you are using SnpEff or SnpSift, please cite our work as shown [here](../index.md#citing-snpeff). Thank you!
 
 ### SnpEff Features
 
@@ -109,7 +109,7 @@ Currently, there are pre-built database for over 20,000 reference genomes.
 This means that most cases are covered.
 
 In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
-In most cases, this can be done and there is a [section](se_build_db.md) of this manual teaching how to build your own SnpEff database.
+In most cases, this can be done and there is a [section](build_db.md) of this manual teaching how to build your own SnpEff database.
 
 Which databases are supported? You can find out all the supported databases by running the `databases` command:
 
@@ -151,5 +151,5 @@ Again, this is an example of the version numbers at the time of writing this par
 should update to the corresponding version.
 
 **Unsupported reference genomes:** If your reference genome of interest is not supported yet (i.e. there is no database available),
-you can build a database yourself (see [Building databases](se_build_db.md)).
+you can build a database yourself (see [Building databases](build_db.md)).
 If you have problems adding you own organism, send the issue to SnpEff repository and I'll do my best to help you out.

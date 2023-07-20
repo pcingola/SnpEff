@@ -71,7 +71,7 @@ Here is an example of some header lines added to an annotated file:
 
 Functional annotations information is added to the INFO field using an `ANN` tag.
 
-**NOTE:** field. SnpEff implements the [**VCF annotation standard 'ANN' field.**](adds/VCFannotationformat_v1.0.pdf)
+**NOTE:** field. SnpEff implements the [**VCF annotation standard 'ANN' field.**](../adds/VCFannotationformat_v1.0.pdf)
 
 This format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
 and attempts to:
@@ -83,7 +83,7 @@ and attempts to:
 
 Obviously this 'ANN' field broke compatibility with the old 'EFF' field from old SnpEff versions. In order to use the old 'EFF' field, you can use the `-formatEff` command line option.
 
-The annotation 'ANN' field looks like this (the full annotation standard specification can be found [here](adds/VCFannotationformat_v1.0.pdf)).
+The annotation 'ANN' field looks like this (the full annotation standard specification can be found [here](../adds/VCFannotationformat_v1.0.pdf)).
 
 ```
 ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G>A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>A|||||3944|
@@ -402,7 +402,7 @@ Functional class can be, which is inferred as:
 
 Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions.
 In older versions, this prediction was activated using command line option `-lof`, but as of version 4.0, it is activated by default.
-Some details on how these variants work, can be found in [these slides](adds/snpEff_lof_nmd.pdf).
+Some details on how these variants work, can be found in [these slides](../adds/snpEff_lof_nmd.pdf).
 
 !!! info
     Starting from version 4.0, this option is activated by default.
@@ -476,7 +476,7 @@ Here is a description of the errors and warnings:
 
 | Error                         | Meaning and possible solutions                                                                                                           |
 |-------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| ERROR_CHROMOSOME_NOT_FOUND    | Chromosome does not exits in reference database. See this [FAQ](se_faq.md#error-chromosome-not-found) for more details.                  |
+| ERROR_CHROMOSOME_NOT_FOUND    | Chromosome does not exits in reference database. See this [FAQ](faq.md#error-chromosome-not-found) for more details.                  |
 | ERROR_OUT_OF_CHROMOSOME_RANGE | This means that the position is higher than chromosome's length. Probably an indicator that your data is not from this reference genome. |
 | ERROR_OUT_OF_EXON             | Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database                                    |
 | ERROR_MISSING_CDS_SEQUENCE    | Transcript has no CDS info. Indicates a problem (or even a bug?) in the database                                                         |

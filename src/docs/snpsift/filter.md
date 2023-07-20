@@ -175,7 +175,7 @@ SnpEff annotations are parsed, so you can access individual sub-fields:
 
 Effect fields (from SnpEff) are accessed using an index (effect number) followed by a sub-field name.
 
-Available `ANN` sub-fields are (for details, take a look at the [specification](adds/VCFannotationformat_v1.0.pdf)):
+Available `ANN` sub-fields are (for details, take a look at the [specification](../adds/VCFannotationformat_v1.0.pdf)):
 
 * ALLELE (alias GENOTYPE)
 * EFFECT (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)

@@ -40,7 +40,8 @@ How does it work? SnpEff checks the database in "5.1" path, if it doesn't work i
 If you take a look a SnpEff's download output using the `-v` command, you'll see that it tries two times:
 
 ```
-$ snpeff download -v GRCm38.99
+snpeff download -v GRCm38.99
+
 00:00:00 SnpEff version SnpEff 5.1d (build 2022-04-19 15:49), by Pablo Cingolani
 00:00:00 Command: 'download'
 00:00:00 Reading configuration file 'snpEff.config'. Genome: 'GRCm38.99'
@@ -172,7 +173,7 @@ To build a database, SnpEff needs:
 
 GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations in this format).
 
-See a more detailed explanation about [SnpEff's requirements for GTF files here](se_build_db_gff_gtf.md)
+See a more detailed explanation about [SnpEff's requirements for GTF files here](build_db_gff_gtf.md)
 
 1. Get the genome and uncompress it:
 
@@ -207,7 +208,7 @@ In this section, we show how to build a genome database using GeneBank files.
 
 !!! info
     For NCBI genomes, you can use the script `buildDbNcbi.sh` that downloads and builds the database.
-    See details in [this FAQ](se_faq.md#how-to-building-an-ncbi-genome-genbank-file)
+    See details in [this FAQ](faq.md#how-to-building-an-ncbi-genome-genbank-file)
 
 
 **Example:** This example shows how to create a database for a new genome.
@@ -222,17 +223,17 @@ For this example we'll use "Staphylococcus aureus":
 1. Go to NIH page for [CP000730](http://www.ncbi.nlm.nih.gov/nuccore/CP000730.1)
 2. Download the features in geneBank format, by clicking as shown in the following images (red arrows):
 
-   ![genBank0](images/genBank_0.png){: .center}
+   ![genBank0](../images/genBank_0.png){: .center}
 
    Make sure you click the "Update" button!
 
    Then you go to the "Send" menu:
 
-   ![genBank1](images/genBank_1.png){: .center}
+   ![genBank1](../images/genBank_1.png){: .center}
 
    and then:
 
-   ![genBank2](images/genBank_2.png){: .center}
+   ![genBank2](../images/genBank_2.png){: .center}
 
 3. Save the GenBank data to "/path/to/snpEff/data/CP000730/genes.gbk".
 
@@ -262,7 +263,7 @@ For this example we'll use "Staphylococcus aureus":
 !!! warning
     Using GFF is highly discouraged, we recommend you use GTF files instead (whenever possible).
 
-See a more detailed explanation about [SnpEff's requirements for GFF files here](se_build_db_gff_gtf.md)
+See a more detailed explanation about [SnpEff's requirements for GFF files here](build_db_gff_gtf.md)
 
 This example shows how to create a database for a new genome using GFF file ((e.g. FlyBase, WormBase, BeeBase release GFF files).
 For this example we'll use the Drosophila melanogaster genome (dm5.31):
@@ -308,7 +309,7 @@ In order to build a genome using UCSC tables, you can follow these instructions:
 2. Click on "Table" menu
 3. Select parameters as shown here:
 
-    ![uscs_ref_Seq](images/ucsc_refSeq.png){: .center}
+    ![uscs_ref_Seq](../images/ucsc_refSeq.png){: .center}
 
 4. Click on "get output" and save the data to file "/path/to/snpEff/data/hg19/genes.refseq".
 5. Add the fasta reference genome. The FASTA file can be either in:

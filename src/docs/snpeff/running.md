@@ -4,7 +4,7 @@ We show some basic examples how to use SnpEff.
 
 ### Basic example: Installing SnpEff
 
-Obviously the first step to use the program is to install it (for details, take a look at the [download page](download.md).
+Obviously the first step to use the program is to install it (for details, take a look at the [download page](../download.md).
 You have to download the core program and then uncompress the ZIP file.
 In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 If you have a Unix or a Mac system, the command line would be:
@@ -46,8 +46,8 @@ $ head examples/test.chr22.ann.vcf
 
 As you can see, SnpEff added functional annotations in the `ANN` info field (eigth column in the VCF output file).
 
-Details about the 'ANN' field format can be found in the [ANN Field](se_inputoutput.md#ann-field-vcf-output-files) section and in [VCF annotation about standard 'ANN' field](adds/VCFannotationformat_v1.0.pdf).
-Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the [EFF Field](se_inputoutput.md#eff-field-vcf-output-files) section).
+Details about the 'ANN' field format can be found in the [ANN Field](inputoutput.md#ann-field-vcf-output-files) section and in [VCF annotation about standard 'ANN' field](../adds/VCFannotationformat_v1.0.pdf).
+Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the [EFF Field](inputoutput.md#eff-field-vcf-output-files) section).
 
 You can also annotate using the "verbose" mode (command line option `-v`), this makes SnpEff to show a lot of information which can be useful for debugging.
 
@@ -180,7 +180,7 @@ The annotated variants will be in the new file "test.chr22.ann.vcf".
 
 ### Detailed examples
 
-Take a look at several detailed examples in our [examples page](examples.md).
+Take a look at several detailed examples in our [examples page](../examples.md).
 
 ### Specify a configuration file
 

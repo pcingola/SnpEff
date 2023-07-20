@@ -2,7 +2,7 @@
 
 SnpEff creates an additional output file showing overall statistics.
 This "stats" file is an HTML file which can be opened using a web browser.
-You can find an example of a 'stats' file [here](adds/1kg.html).
+You can find an example of a 'stats' file [here](../adds/1kg.html).
 
 ### HTML summary (snpEff_summary.html)
 
@@ -35,7 +35,7 @@ E.g.: In a UTR_5_PRIME region you can have UTR_5_PRIME and START_GAINED effect t
 This means that the number of both tables are not exactly the same, because the labels don't mean the same.
 See the next figure as an example:
 
-![type_vs_region](images/type_vs_region.png){: .center}
+![type_vs_region](../images/type_vs_region.png){: .center}
 
 So the number of effects that affect a UTR_5_PRIME *region* is 206. Of those, 57 are effects *type* START_GAINED and 149 are effects *type* UTR_5_PRIME.
 

@@ -1,6 +1,6 @@
 
-site_name: 'SnpEff & SnpSift Documentation'
-site_description: 'SnpEff and SnpSift documentation'
+site_name: 'SnpEff & SnpSift'
+site_description: 'SnpEff and SnpSift'
 site_author: 'Pablo Cingolani'
 copyright: 'Pablo Cingolani'
 repo_name: 'SnpEff'
@@ -27,8 +27,8 @@ theme:
       - content.code.copy
   palette:
     scheme: slate
-    primary: teal
-    accent: indigo
+    primary: default
+    # accent: indigo
 
 markdown_extensions:
   - admonition
@@ -48,55 +48,50 @@ extra:
 nav:
   - Home:
      - Home: index.md
-     - Features: features.md
      - Usage examples: examples.md
-     - Paper & Citations: citing.md
-     - Who uses SnpEff?: users_of_snpeff.md
-     - Integration: integration.md
      - License: license.md
-     - Test cases: tests.md
   - SnpEff:
-     - Introduction: se_introduction.md
-     - Running SnpEff: se_running.md
-     - Commands &amp; command line options: se_commandline.md
-     - Input &amp; output files: se_inputoutput.md
-     - Cancer samples: se_cansersamples.md
-     - Additional annotations: se_additionalann.md
-     - Output summary files: se_outputsummary.md
-     - Troubleshooting: se_troubleshooting.md
-     - Building databases: se_build_db.md
-     - Build databses. GTF / GFF details: se_build_db_gff_gtf.md
-     - Building databases. Regulatory and Non-coding: se_build_reg.md
-     - Building databases. PDB and AlphaFold: se_build_pdb.md
-     - Integration. GATK and Galaxy: se_integration.md
-     - Commands and utilities: se_commands.md
-     - Human Genomes: se_human_genomes.md
-     - Frequently Asked Questions: se_faq.md
+     - Introduction: snpeff/introduction.md
+     - Running SnpEff: snpeff/running.md
+     - Commands &amp; command line options: snpeff/commandline.md
+     - Input &amp; output files: snpeff/inputoutput.md
+     - Cancer samples: snpeff/cansersamples.md
+     - Additional annotations: snpeff/additionalann.md
+     - Output summary files: snpeff/outputsummary.md
+     - Troubleshooting: snpeff/troubleshooting.md
+     - Building databases: snpeff/build_db.md
+     - Build databses. GTF / GFF details: snpeff/build_db_gff_gtf.md
+     - Building databases. Regulatory and Non-coding: snpeff/build_reg.md
+     - Building databases. PDB and AlphaFold: snpeff/build_pdb.md
+     - Integration. GATK and Galaxy: snpeff/integration.md
+     - Commands and utilities: snpeff/commands.md
+     - Human Genomes: snpeff/human_genomes.md
+     - Frequently Asked Questions: snpeff/faq.md
   - SnpSift:
-     - Introduction: ss_introduction.md
-     - SnpSift Filter: ss_filter.md
-     - SnpSift Annotate: ss_annotate.md
-     - SnpSift CaseControl: ss_casecontrol.md
-     - SnpSift Intervals: ss_intervals.md
-     - SnpSift Intervals Index: ss_intervalsindex.md
-     - SnpSift Join: ss_join.md
-     - SnpSift RmRefGen: ss_rmrefgen.md
-     - SnpSift TsTv: ss_tstv.md
-     - SnpSift Extract Fields: ss_extractfields.md
-     - SnpSift Variant Type: ss_varianttype.md
-     - SnpSift GWAS Catalog: ss_gwascatalog.md
-     - SnpSift dbNSFP: ss_dbnsfp.md
-     - SnpSift Split: ss_split.md
-     - SnpSift PhastCons: ss_phastcons.md
-     - SnpSift Concordance: ss_concordance.md
-     - SnpSift Private: ss_private.md
-     - SnpSift Vcf2Tped: ss_vcf2ped.md
-     - SnpSift Intersect: ss_intersect.md
-     - SnpSift RmInfo: ss_rminfo.md
-     - SnpSift GeneSets: ss_genesets.md
-     - SnpSift GT: ss_gt.md
-     - SnpSift VcfCheck: ss_vcfcheck.md
-     - Frequently asked questions: ss_faq.md
+     - Introduction: snpsift/introduction.md
+     - SnpSift Filter: snpsift/filter.md
+     - SnpSift Annotate: snpsift/annotate.md
+     - SnpSift CaseControl: snpsift/casecontrol.md
+     - SnpSift Intervals: snpsift/intervals.md
+     - SnpSift Intervals Index: snpsift/intervalsindex.md
+     - SnpSift Join: snpsift/join.md
+     - SnpSift RmRefGen: snpsift/rmrefgen.md
+     - SnpSift TsTv: snpsift/tstv.md
+     - SnpSift Extract Fields: snpsift/extractfields.md
+     - SnpSift Variant Type: snpsift/varianttype.md
+     - SnpSift GWAS Catalog: snpsift/gwascatalog.md
+     - SnpSift dbNSFP: snpsift/dbnsfp.md
+     - SnpSift Split: snpsift/split.md
+     - SnpSift PhastCons: snpsift/phastcons.md
+     - SnpSift Concordance: snpsift/concordance.md
+     - SnpSift Private: snpsift/private.md
+     - SnpSift Vcf2Tped: snpsift/vcf2ped.md
+     - SnpSift Intersect: snpsift/intersect.md
+     - SnpSift RmInfo: snpsift/rminfo.md
+     - SnpSift GeneSets: snpsift/genesets.md
+     - SnpSift GT: snpsift/gt.md
+     - SnpSift VcfCheck: snpsift/vcfcheck.md
+     - Frequently asked questions: snpsift/faq.md
   - 'Download & Install':
      - Download and install: download.md
   - 'Examples':

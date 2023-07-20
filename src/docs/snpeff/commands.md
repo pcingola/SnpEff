@@ -42,9 +42,9 @@ Input files can be in BAM, SAM, VCF, BED or BigBed formats.
 
 A summary HTML file with charts is generated. Here are some examples:
 
-![snpeff_count_01](images/snpeff_count_01.png){: .smallerimg .center}
+![snpeff_count_01](../images/snpeff_count_01.png){: .smallerimg .center}
 
-![snpeff_count_02](images/snpeff_count_02.png){: .smallerimg .center}
+![snpeff_count_02](../images/snpeff_count_02.png){: .smallerimg .center}
 
 If you need to count how many reads (and bases) from a BAM file hit each genomic region, you can use 'count' utility.
 
@@ -392,7 +392,7 @@ Example: Extract the file sizes in a directory and show a histogram
     $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/hist.pl
 
 Creates the following plot:
-![hist_example](images/hist_example.png){: .smallerimg .center}
+![hist_example](../images/hist_example.png){: .smallerimg .center}
 
 #### plotMA.pl, plot.pl, plotQQ.pl, plotSmoothScatter.pl
 Similar to 'hist.pl', these perform plots based on input from STDIN.
@@ -401,7 +401,7 @@ Note that in some cases, inputs are expected to be probabilities (qqplot.pl) or 
     $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/plot.pl
 
 Creates the following plot:
-![plot_example](images/plot_example.png){: .smallerimg .center}
+![plot_example](../images/plot_example.png){: .smallerimg .center}
 
 #### queue.pl
 

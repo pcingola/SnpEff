@@ -1,6 +1,8 @@
 # Xiangyi Lu Donate
 
-##  In memory of Dr. Xiangyi Lu: [Click here to donate](https://giving.wayne.edu/donate/medicine)
+##  In memory of Dr. Xiangyi Lu
+
+[Click here to donate](https://giving.wayne.edu/donate/medicine)
 
 ![](images/xiangy.jpg){: .right}
 

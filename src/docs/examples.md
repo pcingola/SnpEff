@@ -76,7 +76,7 @@ We will then use SnpSift, a filtering program to extract the most significant va
 
 Our first step is to annotate each of the ~500,000 variants contained in the VCF file.
 By default, SnpEff adds primary annotations and basic impact assessment for coding and non-coding variants as described above.
-SnpEff has several command line options that can be used in this annotation stage and which are described in detail in the [online manual](se_commandline.md).
+SnpEff has several command line options that can be used in this annotation stage and which are described in detail in the [online manual](snpeff/commandline.md).
 
 In this example, we annotate (all these annotations are activated by default when using SnpEff):
 
@@ -361,7 +361,7 @@ Note: We assumed GATK is installed in "$HOME/tools/gatk/" and the reference geno
 ### Galaxy
 
 Anther popular tool in bioinformatics is Galaxy 3, which allows pipelines to be created in a web environment using graphical interface, making it flexible and straightforward to use.
-SnpEff provides [Galaxy modules](se_integration.md#integration-galaxy).
+SnpEff provides [Galaxy modules](snpeff/integration.md#integration-galaxy).
 
 Once these modules are installed, we can run our sample annotation pipeline in Galaxy.
 
@@ -439,7 +439,7 @@ cat protocols/ex2.ann.cons.vcf \
 ```
 
 SnpSift filter supports a flexible syntax to create Boolean expressions using the annotation data that provides a versatile way to prioritize shorter lists of SNPs for subsequent validation.
-This syntax is described in detail in the [online manual](ss_filter.md).
+This syntax is described in detail in the [online manual](snpsift/filter.md).
 In this example, our filter results in only two candidate SNPs, one of which was extensively validated in the original study and is assumed to be causative.
 
 The principles illustrated in our example for a small set of SNVs can be applied to millions of variants from whole genome sequencing experiments. Similarly, although we filtered the SNVs using "custom" ChIP-seq data that provided in the original study, regulatory information from public Encode or Epigenome Roadmap datasets could be used in a first line investigation before generating our own Chip-seq or RNA-seq data using disease-relevant cells and tissues.
