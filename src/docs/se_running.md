@@ -9,15 +9,15 @@ You have to download the core program and then uncompress the ZIP file.
 In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 If you have a Unix or a Mac system, the command line would be:
 
-```
+``` sh
 # Download using wget
-$ wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
+wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 
 # If you prefer to use 'curl' instead of 'wget', you can type:
 #     curl -L https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip > snpEff_latest_core.zip
 
 # Install
-$ unzip snpEff_latest_core.zip
+unzip snpEff_latest_core.zip
 ```
 
 ### Basic example: Annotate using SnpEff

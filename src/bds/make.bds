@@ -113,6 +113,8 @@ dirScriptsBuild		:= "$dirSnpEff/scripts_build"
 dirZip				:= "$dirSnpEff/zip"
 pwmsBin				:= "$dirDb/jaspar/pwms.bin"
 ensembl2refSeqTrIds := "$dirDb/ensembl2refSeq/ensembl2refSeq.GRCh.txt"
+venvDir	 			:= "$dirSnpEff/.venv"
+venvBin 			:= "$venvDir/bin"
 
 # URLs
 snpeffDownload		:= "$azureBlobEndpoint/versions/snpEff_latest_core.zip"
@@ -440,7 +442,7 @@ void buildDocs() {
 	sys rm -rvf '$dirSnpEff/site'
 	
 	# Build with mkdocs
-	sys cd '$dirSnpEff' ; source ./bin/activate ; ./bin/mkdocs build
+	sys cd '$dirSnpEff' ; source $venvBin/activate ; $venvBin/mkdocs build
 
 	# Copy 'index.html' 
 	sys cp -vf '$dirSnpEff/src/docs/index.html' '$dirSnpEff/site/'

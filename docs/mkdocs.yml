@@ -56,6 +56,7 @@ nav:
      - Building databases: se_build_db.md
      - Build databses. GTF / GFF details: se_build_db_gff_gtf.md
      - Building databases. Regulatory and Non-coding: se_build_reg.md
+     - Building databases. PDB and AlphaFold: se_build_pdb.md
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
      - Human Genomes: se_human_genomes.md

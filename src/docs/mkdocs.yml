@@ -16,16 +16,27 @@ extra_css:
 
 theme:
   name: material
-  palette:
-      primary: 'indigo'
-      accent: 'indigo'
   features:
-      - tabs
+      - navigation.tabs
+      - navigation.sections
+      - search.highlight
+      - search.suggest
+      - toc.integrate
+      - content.tabs.link
+      - content.code.annotate
+      - content.code.copy
+  palette:
+    scheme: slate
+    primary: teal
+    accent: indigo
 
 markdown_extensions:
   - admonition
   - attr_list
   - tables
+  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
 
 extra:
   social:
