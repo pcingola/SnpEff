@@ -1,7 +1,5 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.jupiter.api.Test;
-
 /**
  * Test playground
  *

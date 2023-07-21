@@ -10,7 +10,6 @@ import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
-import org.snpeff.interval.GffMarker;
 
 import java.util.*;
 
