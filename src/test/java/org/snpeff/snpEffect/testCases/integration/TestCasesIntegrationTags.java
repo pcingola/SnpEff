@@ -16,12 +16,34 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
-import org.snpeff.util.Log;
 
 /**
  * Test case
  */
 public class TestCasesIntegrationTags extends TestCasesIntegrationBase {
+
+    void filter_keep_tags(String genomeName, String tag, int countTranscriptsExpected, boolean reverse) {
+        // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
+        List<String> args = new LinkedList<>();
+        args.add(reverse ? "-tagNo" : "-tag");
+        args.add(tag);
+        args.add(genomeName);
+        var emptyVcf = path("empty.vcf");
+        args.add(emptyVcf);
+        SnpEff snpeff = runCmd(args);
+        Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
+        // Check that all transcripts have 'MANE_Select' tag
+        int count = 0;
+        for(Gene g : genome.getGenes()) {
+            for(Transcript tr: g) {
+                boolean hasTag = tr.hasTag(tag);
+                if ( reverse ) hasTag =!hasTag;
+                assertTrue(hasTag, "Transcript " + (reverse ? "has" : "does not have") + " tag '" + tag + "': " + tr.getId() + ", genome: " + genomeName);
+                count++;
+            }
+        }
+        assertEquals(countTranscriptsExpected, count, "Incorrect number of transcripts with '" + tag + "' tag: expected: " + countTranscriptsExpected + ", got: " + count);
+    }
 
     @Test
     public void test_01_parse_tags_from_gtf() {
@@ -69,49 +91,33 @@ public class TestCasesIntegrationTags extends TestCasesIntegrationBase {
     }
 
     @Test
-    public void test_03_filter_keep_tags() {
-        // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
-        List<String> args = new LinkedList<>();
-        args.add("-tag");
-        args.add("MANE_Select");
-        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
-        var emptyVcf = path("empty.vcf");
-        args.add(emptyVcf);
-        Log.debug(emptyVcf);
-        SnpEff snpeff = runCmd(args);
-        Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
-        // Check that all transcripts have 'MANE_Select' tag
-        int count = 0;
-        for(Gene g : genome.getGenes()) {
-            for(Transcript tr: g) {
-                assertTrue(tr.hasTag("MANE_Select"), "Transcript has no 'MANE_Select' tag: " + tr.getId());
-                count++;
-            }
-        }
-        assertEquals(213, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
+    public void test_03_filter_keep_tags_chr21() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr21", "MANE_Select", 213, false);
     }
 
     @Test
-    public void test_04_filter_out_tags() {
-        // Command line to filter (i.e. only keep) transcripts having 'MANE_Select'
-        List<String> args = new LinkedList<>();
-        args.add("-tagNo");
-        args.add("CAGE_supported_TSS");
-        args.add("test_GRCh38.mane.1.0.ensembl.chr21");
-        var emptyVcf = path("empty.vcf");
-        args.add(emptyVcf);
-        Log.debug(emptyVcf);
-        SnpEff snpeff = runCmd(args);
-        Genome genome = snpeff.getConfig().getSnpEffectPredictor().getGenome();
-        // Check that all transcripts have 'MANE_Select' tag
-        int count = 0;
-        for(Gene g : genome.getGenes()) {
-            for(Transcript tr: g) {
-                assertTrue(!tr.hasTag("CAGE_supported_TSS"), "Transcript has 'MANE_Select' tag: " + tr.getId());
-                count++;
-            }
-        }
-        assertEquals(200, count, "Incorrect number of transcripts with 'MANE_Select' tag: " + count);
+    public void test_04_filter_keep_tags_chr19() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr19", "MANE_Select", 1370, false);
+    }
+
+    @Test
+    public void test_05_filter_out_tags_chr21() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr21", "CAGE_supported_TSS", 200, true);
+    }
+
+    @Test
+    public void test_06_filter_out_tags_chr19() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr21", "CAGE_supported_TSS", 200, true);
+    }
+
+    @Test
+    public void test_07_filter_tags_chr19() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr19", "MANE_Plus_Clinical", 3, false);
+    }
+
+    @Test
+    public void test_08_filter_out_tags_chr19() {
+        filter_keep_tags("test_GRCh38.mane.1.0.ensembl.chr19", "MANE_Select", 3, true);
     }
 
 }

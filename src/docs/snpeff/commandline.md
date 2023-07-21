@@ -10,7 +10,7 @@ The default command is `'eff'` used to annotate variants.
 java -jar snpEff.jar
 ```
 
-### Commands
+## Commands
 
 Here is a list of what each command does:
 
@@ -30,7 +30,7 @@ Command       |  Meaning
 `protein`       | Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness. (invoked automatically when building a database).
 spliceAnalysis``| Perform an analysis of splice sites. Experimental feature.
 
-**Common options**
+### Common options: All commands
 
 The general help shows some options that are available to all commands. For instance, at the time of writing, the common options are under "Generic options" and "Database options" are these:
 ```
@@ -84,9 +84,10 @@ Database options:
 	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
 ```
 
-**Help (command specific):**
+## `ANN` command: Variant annotations
 
 In order to see a help message for a particular command, you can run the command without any arguments or use `-help` command line option:
+
 ```
 # This will show a 'help' message for the 'ann' (aka 'eff') command
 $ java -jar snpEff.jar ann
@@ -96,7 +97,6 @@ Usage: snpEff [eff] [options] genome_version [input_file]
 
 
 	variants_file                   : Default is STDIN
-
 
 
 Options:
@@ -163,35 +163,7 @@ Database options:
 
 ```
 
-### Speed up options: Multithreaded &amp; No statistics
-
-In order to speed up the annotation process, there are two options that can be activated:
-
-* No statistics: Calculating statistics can take a significant amount of time.
-  Particularly if there are hundreds or thousands of samples in the VCF file. The command line option `-noStats` disables the statistics and may result in a significant speedup.
-* Multithreaded: SnpEff has a multithreaded implementation. This allows to use several cores available in the local machine. It can be activated using the `-t` command line option.
-
-!!! warning
-    Some features are not available when running in multithreaded mode.
-    For instance, statistics are disabled in order to speed up the annotation process.
-
-!!! warning
-    In multithreaded mode, SnpEff will attempt to use all available cores.
-    Nevertheless is very rare that all cores get 100% usage.
-
-### HGVS / Classic notation
-
-SnpEff uses [HGVS notation](http://www.hgvs.org/), which is somewhat popular amongst clinicians.
-
-You can switch to the old (deprecated) annotaions format, using the command line option `-classic`.
-
-### Logging
-
-SnpEff will try to log usage statistics to our "log server".
-This is useful for us to understand user's needs and have some statistics on what users are doing with the program (e.g. decide whether a command or option is useful or not).
-Logging can be deactivated by using the `-noLog` command line option.
-
-### Filters
+### Annotation Filters
 
 SnpEff supports filter of output results by using combinations of the following command line options:
 
@@ -205,24 +177,59 @@ Command line option | Meaning
 `-no-intron`          | Do not show INTRON changes
 `-no-upstream`        | Do not show UPSTREAM changes
 `-no-utr`             | Do not show 5_PRIME_UTR or 3_PRIME_UTR changes
-`-no EffectType`      | Do not show 'EffectType' (it can be used several times) <br>e.g: `-no INTERGENIC -no SPLICE_SITE_REGION`
+`-no <effect_type>`      | Do not show `effect_type` (it can be used several times), e.g: `-no INTERGENIC -no SPLICE_SITE_REGION`
 
+####  Disabling Upstream and Downstream annotations
 
-### Annotating selected intervals
+You can change the default upstream and downstream interval size (default is 5K) using the `-ud size_in_bases` option.
+This also allows to eliminate any upstream and downstream effect by using "-ud 0".
 
-You can use the `-fi intervals.bed` command line option (filterInterval). For instance, let's assume you have an interval file 'intervals.bed':
+Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
+
 ```
-2L	10000	10999
-2L	12000	12999
-2L	14000	14999
-2L	16000	16999
-2L	18000	18999 
+java -Xmx8g -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 ```
-In order to get only variants matching your intervals, you can use the command:
 
-    $ java -Xmx8g -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf
+#### Splice site size
 
-### Canonical transcripts
+You can change the default splice site size (default is 2 bases) using the `-spliceSiteSize size_in_bases` option.
+
+Example: Make splice sites four bases long
+
+```
+java -Xmx8g -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+```
+
+#### Adding your own annotations
+
+SnpEff allows user defined intervals to be annotated.
+This is achieved using the `-interval file.bed` command line option, which can be used multiple times in the same command line
+(it accepts files in TXT, BED, BigBed, VCF, GFF formats).
+Any variant that intersects an interval defined in those files, will be annotated using the "name" field (fourth column) in the input bed file.
+
+Example: We create our own annotations in `my_annotations.bed`
+```
+$ cat my_annotations.bed
+1	10000	20000	MY_ANNOTATION
+
+$ cat test.vcf
+1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732
+
+Annotate (output edited for readability)
+
+$ java -Xmx8g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
+1    10469    .    C    G    365.78    PASS    AC=30;AF=0.0732;
+                                               ANN=G|upstream_gene_variant|MODIFIER|DDX11L1|ENSG00000223972|transcript|ENST00000456328|processed_transcript||n.-1C>G|||||1400|
+                                               ...
+                                               G|custom|MODIFIER|||CUSTOM&my_annotations|MY_ANNOTATION|||||||||
+
+```
+
+Notice that the variant was annotated using "MY_ANNOTATION" in the `ANN` field.
+
+### Selecting transcripts
+
+#### Canonical transcripts
 
 SnpEff allows to annotate using canonical transcripts by using `-canon` command line option.
 
@@ -262,7 +269,8 @@ $ java -Xmx8g -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
                 AL391001.1      ENSG00000242652 ENST00000489859 289
 ...
 ```
-### Selected list of transcripts
+
+#### Selected list of transcripts
 
 SnpEff allows you to provide a list of transcripts to use for annotations by using the `-onlyTr file.txt` and providing a file with one transcript ID per line.
 Any other transcript will be ignored.
@@ -271,54 +279,52 @@ Any other transcript will be ignored.
 java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 ```
 
-###  Upstream and downstream
+#### Finltering by transcript tags
 
-You can change the default upstream and downstream interval size (default is 5K) using the `-ud size_in_bases` option.
-This also allows to eliminate any upstream and downstream effect by using "-ud 0".
+In some cases the genome files contain tags, for example, here are from GTF lines from ENSEMBL's GRCh38 (MANE release 1.0):
 
-Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-
+Note, GTF lines edited for readability:
 ```
-java -Xmx8g -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
-```
-
-### Splice site size
-
-You can change the default splice site size (default is 2 bases) using the `-spliceSiteSize size_in_bases` option.
-
-Example: Make splice sites four bases long
-
-```
-java -Xmx8g -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+chr1  .  transcript  1471765  1497848  .  +  .  transcript_id "ENST00000673477.1";  gene_name "ATAD3B"; tag "MANE_Select";
+chr1  .  transcript  3069203  3438621  .  +  .  transcript_id "ENST00000270722.10"; gene_name "PRDM16"; tag "MANE_Select";
+chr1  .  transcript  2476289  2505532  .  +  .  transcript_id "ENST00000378486.8";  gene_name "PLCH2";  tag "MANE_Select";
+chr1  .  transcript  9292894  9369532  .  +  .  transcript_id "ENST00000328089.11"; gene_name "SPSB1";  tag "MANE_Select";
+chr1  .  transcript  9035106  9069635  .  -  .  transcript_id "ENST00000377424.9";  gene_name "SLC2A5"; tag "MANE_Select";
+chr1  .  transcript  8861000  8878686  .  -  .  transcript_id "ENST00000234590.10"; gene_name "ENO1";   tag "MANE_Select"; tag "CAGE_supported_TSS";
 ```
 
-### Adding your own annotations
-SnpEff allows user defined intervals to be annotated.
-This is achieved using the `-interval file.bed` command line option, which can be used multiple times in the same command line
-(it accepts files in TXT, BED, BigBed, VCF, GFF formats).
-Any variant that intersects an interval defined in those files, will be annotated using the "name" field (fourth column) in the input bed file.
+Command line arguments for tag selection:
 
-Example: We create our own annotations in `my_annotations.bed`
+- `-tag <tag_name>`: Only use transcripts that match `<tag_name>`
+- `-tagNo <tag_name>`: Filter out transcripts that match `<tag_name>`
+
+
+!!! info
+	Both `-tag` and `-tagNo` options can be specified multiple times
+
+### Other options
+
+#### Logging
+
+SnpEff will try to log usage statistics to our "log server".
+This is useful for us to understand user's needs and have some statistics on what users are doing with the program (e.g. decide whether a command or option is useful or not).
+Logging can be deactivated by using the `-noLog` command line option.
+
+#### Annotating selected intervals
+
+You can use the `-fi intervals.bed` command line option (filterInterval). For instance, let's assume you have an interval file 'intervals.bed':
 ```
-$ cat my_annotations.bed
-1	10000	20000	MY_ANNOTATION
-
-$ cat test.vcf
-1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732
-
-Annotate (output edited for readability)
-
-$ java -Xmx8g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
-1    10469    .    C    G    365.78    PASS    AC=30;AF=0.0732;
-                                               ANN=G|upstream_gene_variant|MODIFIER|DDX11L1|ENSG00000223972|transcript|ENST00000456328|processed_transcript||n.-1C>G|||||1400|
-                                               ...
-                                               G|custom|MODIFIER|||CUSTOM&my_annotations|MY_ANNOTATION|||||||||
-
+2L	10000	10999
+2L	12000	12999
+2L	14000	14999
+2L	16000	16999
+2L	18000	18999 
 ```
+In order to get only variants matching your intervals, you can use the command:
 
-Notice that the variant was annotated using "MY_ANNOTATION" in the `ANN` field.
+    $ java -Xmx8g -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf
 
-### Gene ID instead of gene names
+#### Gene ID instead of gene names
 
 You can obtain gene IDs instead of gene names by using the command line option `-geneId`.
 Note: This is only for the old 'EFF' field ('ANN' field always shows both gene name and gene ID).
@@ -330,10 +336,23 @@ Example:
 
 Note: The gene 'PLEKHN1' was annotated as 'ENSG00000187583'.
 
+#### Speed up options: No statistics
+
+In order to speed up the annotation process, you can de-activate the statistics.
+Calculating statistics can take a significant amount of time, particularly if there are hundreds or thousands of samples in the (multi-sample) VCF file.
+The command line option `-noStats` disables the statistics and may result in a significant speedup.
+
+#### HGVS / Classic notation
+
+SnpEff uses [HGVS notation](http://www.hgvs.org/), which is somewhat popular amongst clinicians.
+
+You can switch to the old (deprecated) annotaions format, using the command line option `-classic`.
+
 ### Compressed files
 
 SnpEff will automatically open gzip compresssed files, even if you don't specify the '.gz' extension.
 Example
+
 ```
 # Create compressed version of the examples files
 cp examples/test.chr22.vcf my.vcf
@@ -341,14 +360,15 @@ cp examples/test.chr22.vcf my.vcf
 # Compress it
 gzip my.vcf 
 
-# Annotate (note the it doesn't require the ending '.gz')
-java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
+# Annotate the comressed file
+java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf.gz > my.ann.vcf
 ```
 
 ### Streaming files
 
 !!! info
-    You can use "-" as input file name to specify **STDIN**. As of version 4.0 onwards STDIN is the default, so using no name at all, also means 'STDIN'.
+    You can use "`-`" as input file name to specify `STDIN`. As of version 4.0 onwards `STDIN` is the default, so using no file name at all, also means `STDIN`.
+	
 For example, you can easily stream files like this:
 ```
 # These three commands are the same

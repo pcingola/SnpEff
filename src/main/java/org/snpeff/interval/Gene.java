@@ -232,19 +232,17 @@ public class Gene extends IntervalAndSubIntervals<Transcript> {
 
         // Mark transcripts for removal
         for (Transcript tr : this) {
-			boolean keep = false, remove = false;
+			boolean remove = !tags.isEmpty();	// If we have some "tags to keep"
 			for(String tag: tr.getTags()) {
 				if (tags.contains(tag)) {
-					keep = true;
-					continue;
+					remove = false;
 				}
 				if (tagsNo.contains(tag)) {
                     remove = true;
                 }
 			}
 
-			// Keep or remove transcript?
-			if (keep) continue;
+			// Remove transcript?
             if (remove) toDelete.add(tr);
 		}	
 
