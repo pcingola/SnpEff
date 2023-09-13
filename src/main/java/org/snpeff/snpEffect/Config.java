@@ -40,8 +40,11 @@ public class Config implements Serializable, Iterable<String> {
     //     ---------------+-----------
     //                5.1 | 5.0
     //     ---------------+-----------
+    //                5.2 | 5.1, 5.0
+    //     ---------------+-----------
+    public static final String[] COMPATIBLE_WITH_5_2 = {"5.0", "5.1"};
     public static final String[] COMPATIBLE_WITH_5_1 = {"5.0"};
-    public static final Map<String, String[]> DATABASE_COMPATIBLE_VERSIONS = Map.of("5.1", COMPATIBLE_WITH_5_1);
+    public static final Map<String, String[]> DATABASE_COMPATIBLE_VERSIONS = Map.of("5.1", COMPATIBLE_WITH_5_1, "5.2", COMPATIBLE_WITH_5_2);
 
     private static final long serialVersionUID = 877453207407217465L;
 
