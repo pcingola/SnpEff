@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.snpeff</groupId>
   <artifactId>SnpEff</artifactId>
-  <version>5.1</version>
+  <version>5.2</version>
   <packaging>jar</packaging>
   <name>SnpEff</name>
   <description>Variant annotation and effect prediction package.</description>
