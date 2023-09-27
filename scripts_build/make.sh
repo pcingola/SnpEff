@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-export VERSION=5.1
+export VERSION=5.2
 
 # Separate version-subversion by '_'
 # E.g.: '4_1' (instead of '4.1')
