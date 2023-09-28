@@ -67,6 +67,7 @@ bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemo
 		if( localPath.isEmpty() ) localPath = url.baseName()
 		if( localPath.exists() ) {
 			log("Local file '$localPath' exists, skipping")
+			return true
 		}
 	}
 
