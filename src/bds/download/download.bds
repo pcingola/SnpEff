@@ -20,22 +20,26 @@ include 'downloadUcsc'
 # Fetch (wget) a file to current dir
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
-bool wget(string url) return wget(url, '', true, false, false)
+bool wget(string url) return wget(url, '', true, false, false, false)
 
-bool wgetTask(string url) return wget(url, '', false, false, false)
+bool wgetTask(string url) return wget(url, '', false, false, false, false)
 
-bool wget(string url, string localPath) return wget(url, localPath, true, false, false)
+bool wget(string url, string localPath) return wget(url, localPath, true, false, false, false)
 
-bool wgetTask(string url, string localPath) return wget(url, localPath, false, false, false)
+bool wgetTask(string url, string localPath) return wget(url, localPath, false, false, false, false)
 
 #-------------------------------------------------------------------------------
 # Fetch (wget) a list of files to current dir
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
 bool wgetTask(string[] urls) {
+	return wgetTask(urls, false, false, false, true)
+}
+
+bool wgetTask(string[] urls, bool doWait, bool canFail, bool skipRemoteCheck, bool checkLocal) {
 	oks := true
 	for(string url: urls) {
-		ok := wget(url, '', false, false, false)
+		ok := wget(url, '', doWait, canFail, skipRemoteCheck, checkLocal)
 		oks &= ok
 	}
 	return oks
@@ -45,7 +49,7 @@ bool wgetTask(string[] urls) {
 # Fetch (wget) a file, provide local file path
 # Returns true if download command is executed (or task created)
 #-------------------------------------------------------------------------------
-bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemoteCheck) {
+bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemoteCheck, bool checkLocal) {
 	log("Downloading '$url'")
 
 	canFailStr := (canFail ? '|| true' : '')
@@ -57,6 +61,13 @@ bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemo
 			return true	# Already downloaded, success
 		}
 		localStr = "-O '$localPath'"
+	} 
+
+	if( checkLocal ) {
+		if( localPath.isEmpty() ) localPath = url.baseName()
+		if( localPath.exists() ) {
+			log("Local file '$localPath' exists, skipping")
+		}
 	}
 
 	if( !skipRemoteCheck && !url.exists() ) {

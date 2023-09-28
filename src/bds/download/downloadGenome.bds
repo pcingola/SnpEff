@@ -122,7 +122,7 @@ class DownloadGenome {
 			return localFile
 		}
 
-		if( wget(url, localFile, doWait, false, false) ) return localFile
+		if( wget(url, localFile, doWait, false, false, true) ) return localFile
 		error "Could not download remote file '$url'";
 	}
 

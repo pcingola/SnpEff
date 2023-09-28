@@ -84,7 +84,7 @@ class DbNsfp {
 
 		# Download
         dbNsfpDir.chdir()
-        wget(urlDbNsfp, zip, true, false, true)
+        wget(urlDbNsfp, zip, true, false, true, true)
 
 		unzip(zip)
 	}
