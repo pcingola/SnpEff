@@ -203,6 +203,7 @@ class DownloadGenome {
 
     # Retrun true if the (local) file has already been downloaded (exists and non-empty)
     bool isDownloaded(string path) {
+		println("isDownloaded: $path: ")
         return path.exists() && (path.size() > 0)
     }
 
