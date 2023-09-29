@@ -13,7 +13,7 @@ SnpEff is open source, released as "MIT".
 
 ### System requirements
 
-SnpEff requires that you have Java v1.8 or later installed (any modern operating system has it).
+SnpEff requires that you have Java v1.11 or later installed (any modern operating system has it).
 
 The amount of memory used can vary significantly depending on genome size and data analysis type you are doing.
 For large genomes, such as the human genome, you'll probably need at least 4Gb of memory.

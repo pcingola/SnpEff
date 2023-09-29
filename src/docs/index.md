@@ -6,7 +6,7 @@ Genomic variant annotations, and functional effect prediction toolbox.
 [SnpEff Documentation](snpeff/introduction.md){: .md-button .md-button--primary }
 [SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
 
-Latest version 5.1 (2023-07-18)
+Latest version 5.2 (2023-09-29)
 
 ## SnpEff
 
