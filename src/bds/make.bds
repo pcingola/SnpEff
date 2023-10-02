@@ -44,8 +44,8 @@ cpus = 1
 help Ensembl
 downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
 downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
-ensemblBfmppRelease		:= 52			help Ensembl BFMPP release number
-ensemblRelease			:= 105			help Vertebrate release number
+ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
+ensemblRelease			:= 110			help Vertebrate release number
 #ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
 ensemblReleases			:= [ensemblRelease]
 
