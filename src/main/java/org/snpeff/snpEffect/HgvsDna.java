@@ -48,7 +48,6 @@ public class HgvsDna extends Hgvs {
 	 * DNA level base changes
 	 */
 	protected String dnaBaseChange() {
-
 		switch (variant.getVariantType()) {
 		case SNP:
 			if (strandPlus) return ref() + ">" + alt();
