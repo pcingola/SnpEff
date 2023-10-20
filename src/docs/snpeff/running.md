@@ -247,7 +247,7 @@ As you can see, it's very simple.
 
 ### Loading the database
 
-One of the first thins SnpEff has to do is to load the database.
+One of the first things SnpEff has to do is to load the database.
 Usually it takes from a few seconds to a couple of minutes, depending on database size.
 Complex databases, like human, require more time to load.
 After the database is loaded, SnpEff can analyze thousands of variants per second.
