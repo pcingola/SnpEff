@@ -15,8 +15,11 @@ import org.snpeff.snpEffect.VariantEffect.FunctionalClass;
 import org.snpeff.stats.plot.GoogleGenePercentBar;
 
 /**
- *
- * Variants effect statistics
+ * Variants annotation statistics.
+ * 
+ * These are statistics about each variant annotation / effect. There can be
+ * multiple annotaitons per variant (e.g. multiple transcripts in a gene
+ * produce multiple annotations in a single variant).
  */
 public class VariantEffectStats implements SamplingStats<VariantEffect> {
 

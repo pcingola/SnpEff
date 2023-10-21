@@ -148,7 +148,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 		outputFormatter.close();
 
-		// Create reports and finish up
+		// Finish up taks, e.g. create reports
 		boolean err = annotateFinish(vcf);
 
 		return !err;
@@ -164,8 +164,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 
 		try {
-			countInputLines++;
-			countVcfEntries++;
+			countInputLines++; // Count input VCF lines (not including comment lines)
+			countVcfEntries++; // Count VCF entries (same as input lines)
 
 			// Find if there is a pedigree and if it has any 'derived' entry
 			if (vcfFile.isHeadeSection()) {
@@ -187,11 +187,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			// ---
 			// Analyze all changes in this VCF entry
 			// Note, this is the standard analysis.
 			// Next section deals with cancer: Somatic vs Germline comparisons
-			// ---
 			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
@@ -389,7 +387,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Create new 'section'
 		outputFormatter.startSection(variant);
 
-		// Show results
+		// Add variat effects to output
 		for (VariantEffect variantEffect : variantEffects) {
 			if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
 
