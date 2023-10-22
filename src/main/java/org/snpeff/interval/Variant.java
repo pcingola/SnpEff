@@ -71,8 +71,11 @@ public class Variant extends Marker {
 
         // Split alts
         String[] alts;
-        if (altStr.indexOf(',') >= 0) alts = altStr.split(",");
-        else {
+        if (altStr.indexOf(',') >= 0) {
+            // Alts separated by ','
+            alts = altStr.split(",");
+        } else {
+            // Alts separated by '/'
             alts = altStr.split("/");
 
             // Special case, two ALTs are the same

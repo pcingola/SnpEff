@@ -1555,7 +1555,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			}
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
 			// Translocations
-
+			
 			// Parse ALT string
 			boolean left = alt.indexOf(']') >= 0;
 			String sep = (left ? "\\]" : "\\[");

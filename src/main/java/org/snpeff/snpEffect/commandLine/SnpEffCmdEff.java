@@ -193,11 +193,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
-				// Show progress
-				showProgress();
-
-				// Annotate variant
-				impactLowOrHigher |= annotateVariant(variant);
+				countVariants++;
+				showProgress(); // Show progress
+				impactLowOrHigher |= annotateVariant(variant); // Annotate variant
 			}
 
 			// Perform cancer annotations
@@ -230,9 +228,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Iterate over input file
 		for (Variant variant : variantFileIterator) {
 			try {
-				countInputLines++;
-
-				countVariants++;
+				countInputLines++; // Count input BED lines (not including comment lines)
+				countVariants++; // Count BED variants (same as input lines)
 				if (verbose && (countVariants % SHOW_EVERY == 0)) Log.info("\t" + countVariants + " variants");
 
 				// Skip if there are filter intervals and they are not matched
@@ -951,7 +948,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Show annotation progress
 	 */
 	void showProgress() {
-		countVariants++;
 		if (verbose && (countVariants % SHOW_EVERY == 0)) {
 			int millisec = ((int) annotateTimer.elapsed());
 			int secs = millisec / 1000;

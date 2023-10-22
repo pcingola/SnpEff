@@ -1509,23 +1509,64 @@ If you scroll up in the config file, you'll see a comment like this:</p>
 <p>Here <code>ENSEMBL BFMPP</code> stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
 So the comment is indicating that this is Ensembl's release 32.</p>
 <h2 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h2>
-<p>First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
-<p><strong>Counting variants / annotations</strong></p>
+<p>First of all, SnpEff is probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
+<p><strong>Counting variants vs lines in a VCF file</strong></p>
 <p>It is important to remember that the VCF format specification allows having multiple variants in a single line.
-Also, a single variant can have more than one annotation, due to:</p>
+For example, here is a VCF line with multiple variants:</p>
+<div class="highlight"><pre><span></span><code>#CHROM  POS         ID  REF  ALT       QUAL  FILTER  INFO
+chr2    115032192   .   G    GT,GTT    30    PASS    ...
+</code></pre></div>
+<p>In this case, the <code>ALT</code> field has more than one value separated by comma.
+This means that the line contains two variants: </p>
+<ul>
+<li><code>G -&gt; GT</code> </li>
+<li><code>G -&gt; GTT</code></li>
+</ul>
+<p>So counting the number of non-comment lines in the VCF file will not give you the exact number of variants (it does give a lower bound on the number of variants).</p>
+<p><strong>Counting variants vs annotations</strong></p>
+<p>Also, a single variant can have more than one annotation, due to:</p>
 <ul>
 <li>Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)</li>
 <li>Multiple (overlapping) genes in the genomic location of the variant.</li>
 <li>A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</li>
 </ul>
-<p>When you count the number of variants, you must keep all these in mind to count them properly.
-Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.</p>
-<p><strong>Typical counting mistake</strong></p>
-<p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.</p>
-<p>A typical scenario is, for example, that people are "counting missense variants" using something like this:
+<p>So counting the number of variants is not equivalent to counting the number of annotations.
+SnpEff does consider all these factors when counting the variants and annotations for the summary HTML.</p>
+<p><strong>IUPAC expansion</strong></p>
+<p>Sometimes either the <code>REF</code> or <code>ALT</code> fields have <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC/IUB</a> bases.
+A common example is when you see an <code>N</code> character, which means that the base could be any of <code>{A, C, G, T}</code>.
+There are several IUPAC characters, please see details in <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC degenarate base symbols table</a>.</p>
+<p>In case of having IUPAC symbols in either the <code>REF</code> and/or <code>ALT</code> fields, SnpEff will expand them into different variants.
+This means that entries with ambiguous symbols will be tranformed into all possible combinations of variants using the IUPAC notation.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can disable the 'IUPAC/IUB expand' behaviour by using the <code>-noexpandiub</code> command line option.</p>
+</div>
+<p>For example, consider the following VCF line:</p>
+<div class="highlight"><pre><span></span><code>#CHROM  POS         ID  REF  ALT  QUAL  FILTER  INFO
+chr1    102947631   .   T    N    30    PASS    ...
+</code></pre></div>
+<p>In this case the ambiguous variant <code>T -&gt; N</code> will be expanded into three variants: </p>
+<ul>
+<li><code>T -&gt; A</code></li>
+<li><code>T -&gt; C</code></li>
+<li><code>T -&gt; G</code></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the number of degenerate symbols increases, the number of variants expanded will increase exponentiallly.
+Currently SnpEff will not expand more than <code>MAX_IUB_BASES=10</code> bases</p>
+</div>
+<p><strong>Typical counting mistakes</strong></p>
+<p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previously discussed items.</p>
+<p>The most typical mistake is counting the number of non-comment Lines in a VCF file:</p>
+<div class="highlight"><pre><span></span><code># This does NOT give the exact number of variants (only a lower bound on the number of variants)
+grep -v &#39;^#&#39; myfile.vcf | wc -l
+</code></pre></div>
+<p>Another typical scenario is, when people are "counting missense variants" using something like this:</p>
 <div class="highlight"><pre><span></span><code>grep missense file.vcf | wc -l
 </code></pre></div>
-This is counting <em>"lines in a VCF file that have at least one missense variants"</em>, as opposed to counting <em>"missense annotations"</em> and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.</p>
+<p>This is counting <em>"lines in a VCF file that have at least one missense variants"</em>, as opposed to counting <em>"missense annotations"</em> and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.</p>
 <h2 id="snpeff-taking-too-long">SnpEff taking too long</h2>
 <p>Usually SnpEff runs within minutes.
 Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
