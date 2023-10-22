@@ -212,7 +212,7 @@ th a:active, th a:hover {
 		<td> ${countVariants} </td>
 	</tr>
 	<tr bgcolor=ffffff>
-		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
+		<td valign=top> <b> Number of non-variants <br>(i.e. reference equals alternative) </b> </td>
 		<td> ${variantStats.countNonVariants} </td>
 	</tr>
 	<tr bgcolor=dddddd>
