@@ -15,7 +15,7 @@ import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfHeader;
 
 /**
- * Opens a VCF file and iterates over all entries
+ * Opens a VCF file and iterates over all entries (i.e. VCF lines in the file)
  *
  * Format: VCF 4.1
  *
@@ -47,11 +47,11 @@ import org.snpeff.vcf.VcfHeader;
  *        - SOMATIC indicates that the record is a somatic mutation, for cancer genomics
  *        - VALIDATED validated by follow-up experiment
  *
- * Warning: You can have more than one type of change simultaneously,
- *          e.g.:
+ * Warning: You can have more than one variant (and variant type) per VCF line (i.e. VCfEntry), e.g.:
  *          	TTG	->	TTGTG,T					Insertion of 'TG' and deletion of 'TG'
  *          	TA	->	T,TT					Deletion of 'A' and SNP (A replaced by T)
  *				T	->	TTTTGTG,TTTTG,TTGTG		Insertion of 'TTTGTG', insertion of 'TTTG' and insertion of 'TGTG'
+ * 
  *
  * @author pcingola
  */
@@ -126,9 +126,11 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	 */
 	public VcfEntry parseVcfLine(String line) {
 		try {
-			if (line.startsWith("#")) {
-				header.addLine(line); // Header?
-			} else if ((line.length() > 0) && (!line.startsWith("#"))) return new VcfEntry(this, line, lineNum, parseNow); // Vcf entry?
+			if (line.startsWith("#")) { // Header?
+				header.addLine(line);
+			} else if ((line.length() > 0) && (!line.startsWith("#"))) { // Vcf entry?
+				return new VcfEntry(this, line, lineNum, parseNow);
+			}
 		} catch (Throwable t) {
 			Log.debug("Fatal error reading file '" + fileName + "' (line: " + lineNum + "):\n" + line);
 			throw new RuntimeException(t);

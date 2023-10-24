@@ -11,7 +11,8 @@ import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 
 /**
- * Variants statistics
+ * Variants statistics: These are statisticas at Variant level.
+ * For example in a VCF file, there can be more than one variant per VCF entry (i.e. VCF line)
  */
 public class VariantStats implements SamplingStats<Variant> {
 

@@ -278,30 +278,86 @@ So the comment is indicating that this is Ensembl's release 32.
 
 ## Number of variants in VCF and HTML summary do not match
 
-First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.
+First of all, SnpEff is probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.
 
-**Counting variants / annotations**
+### Counting variants vs lines in a VCF file
 
 It is important to remember that the VCF format specification allows having multiple variants in a single line.
+For example, here is a VCF line with multiple variants:
+
+```
+#CHROM  POS         ID  REF  ALT       QUAL  FILTER  INFO
+chr2    115032192   .   G    GT,GTT    30    PASS    ...
+```
+
+In this case, the `ALT` field has more than one value separated by comma.
+This means that the line contains two variants: 
+
+- `G -> GT` 
+- `G -> GTT`
+
+So counting the number of non-comment lines in the VCF file will not give you the exact number of variants (it does give a lower bound on the number of variants).
+
+### Counting variants vs annotations
+
 Also, a single variant can have more than one annotation, due to:
 
 - Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)
 - Multiple (overlapping) genes in the genomic location of the variant.
 - A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)
 
-When you count the number of variants, you must keep all these in mind to count them properly.
-Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.
+So counting the number of variants is not equivalent to counting the number of annotations.
+SnpEff does consider all these factors when counting the variants and annotations for the summary HTML.
 
-**Typical counting mistake**
+### IUPAC expansion
 
-Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.
+Sometimes either the `REF` or `ALT` fields have [IUPAC/IUB](https://en.wikipedia.org/wiki/Nucleic_acid_notation) bases.
+A common example is when you see an `N` character, which means that the base could be any of `{A, C, G, T}`.
+There are several IUPAC characters, please see details in [IUPAC degenarate base symbols table](https://en.wikipedia.org/wiki/Nucleic_acid_notation).
 
-A typical scenario is, for example, that people are "counting missense variants" using something like this:
+In case of having IUPAC symbols in either the `REF` and/or `ALT` fields, SnpEff will expand them into different variants.
+This means that entries with ambiguous symbols will be tranformed into all possible combinations of variants using the IUPAC notation.
+
+!!! info
+	You can disable the 'IUPAC/IUB expand' behaviour by using the `-noexpandiub` command line option.
+
+
+For example, consider the following VCF line:
+
+```
+#CHROM  POS         ID  REF  ALT  QUAL  FILTER  INFO
+chr1    102947631   .   T    N    30    PASS    ...
+```
+
+In this case the ambiguous variant `T -> N` will be expanded into three variants: 
+
+- `T -> A`
+- `T -> C`
+- `T -> G`
+
+!!! warning
+	If the number of degenerate symbols increases, the number of variants expanded will increase exponentiallly.
+	Currently SnpEff will not expand more than `MAX_IUB_BASES=10` bases
+
+
+### Typical counting mistakes
+
+Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previously discussed items.
+
+The most typical mistake is counting the number of non-comment Lines in a VCF file:
+
+```
+# This does NOT give the exact number of variants (only a lower bound on the number of variants)
+grep -v '^#' myfile.vcf | wc -l
+```
+
+Another typical scenario is, when people are "counting missense variants" using something like this:
+
 ```
 grep missense file.vcf | wc -l
 ```
-This is counting _"lines in a VCF file that have at least one missense variants"_, as opposed to counting _"missense annotations"_ and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.
 
+This is counting _"lines in a VCF file that have at least one missense variants"_, as opposed to counting _"missense annotations"_ and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.
 
 
 ## SnpEff taking too long

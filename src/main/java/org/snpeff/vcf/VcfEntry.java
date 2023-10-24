@@ -24,8 +24,9 @@ import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
 /**
- * A VCF entry (a line) in a VCF file
-
+ * A VCF entry is a line in a VCF file
+ * A VCF line can have multiple variants, and multiple genotypes
+ * 
  * @author pablocingolani
  */
 public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
@@ -1554,7 +1555,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			}
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
 			// Translocations
-
+			
 			// Parse ALT string
 			boolean left = alt.indexOf(']') >= 0;
 			String sep = (left ? "\\]" : "\\[");

@@ -148,7 +148,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 		outputFormatter.close();
 
-		// Create reports and finish up
+		// Finish up taks, e.g. create reports
 		boolean err = annotateFinish(vcf);
 
 		return !err;
@@ -164,8 +164,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 
 		try {
-			countInputLines++;
-			countVcfEntries++;
+			countInputLines++; // Count input VCF lines (not including comment lines)
+			countVcfEntries++; // Count VCF entries (same as input lines)
 
 			// Find if there is a pedigree and if it has any 'derived' entry
 			if (vcfFile.isHeadeSection()) {
@@ -187,19 +187,15 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			// ---
 			// Analyze all changes in this VCF entry
 			// Note, this is the standard analysis.
 			// Next section deals with cancer: Somatic vs Germline comparisons
-			// ---
 			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
-				// Show progress
-				showProgress();
-
-				// Annotate variant
-				impactLowOrHigher |= annotateVariant(variant);
+				countVariants++;
+				showProgress(); // Show progress
+				impactLowOrHigher |= annotateVariant(variant); // Annotate variant
 			}
 
 			// Perform cancer annotations
@@ -232,9 +228,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Iterate over input file
 		for (Variant variant : variantFileIterator) {
 			try {
-				countInputLines++;
-
-				countVariants++;
+				countInputLines++; // Count input BED lines (not including comment lines)
+				countVariants++; // Count BED variants (same as input lines)
 				if (verbose && (countVariants % SHOW_EVERY == 0)) Log.info("\t" + countVariants + " variants");
 
 				// Skip if there are filter intervals and they are not matched
@@ -286,7 +281,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			if (verbose) Log.info("Creating summary file: " + summaryFileHtml);
 			ok &= summary(SUMMARY_TEMPLATE, summaryFileHtml, false);
 		}
-
 		// Creates genes output file
 		if (createSummaryHtml || createSummaryCsv) {
 			if (verbose) Log.info("Creating genes file: " + summaryGenesFile);
@@ -389,7 +383,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Create new 'section'
 		outputFormatter.startSection(variant);
 
-		// Show results
+		// Add variat effects to output
 		for (VariantEffect variantEffect : variantEffects) {
 			if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
 
@@ -953,7 +947,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Show annotation progress
 	 */
 	void showProgress() {
-		countVariants++;
 		if (verbose && (countVariants % SHOW_EVERY == 0)) {
 			int millisec = ((int) annotateTimer.elapsed());
 			int secs = millisec / 1000;

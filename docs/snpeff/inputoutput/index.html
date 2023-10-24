@@ -555,22 +555,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#effect-prediction-details" class="md-nav__link">
-    Effect prediction details
+  <a href="#variant-annotaiton-details" class="md-nav__link">
+    Variant annotaiton details
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#details-about-rare-amino-acid-effect" class="md-nav__link">
-    Details about Rare amino acid effect
+  <a href="#details-about-rare-amino-acid-annotaitons" class="md-nav__link">
+    Details about Rare amino acid annotaitons
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#details-about-protein-interaction-effects" class="md-nav__link">
-    Details about Protein interaction effects
+  <a href="#details-about-protein-interaction-annotaitons" class="md-nav__link">
+    Details about Protein interaction annotaitons
   </a>
   
 </li>
@@ -1474,7 +1474,7 @@ chr1    123457  .   C    G    .     .       ANN=C-chr1:123456_A&gt;T|...
 
 </li>
 <li>
-<p><strong>Putative_impact:</strong> A simple estimation of putative impact / deleteriousness : {HIGH, MODERATE, LOW, MODIFIER}</p>
+<p><strong>Putative_impact:</strong> A simple estimation of putative impact / deleteriousness : <code>{HIGH, MODERATE, LOW, MODIFIER}</code></p>
 </li>
 <li><strong>Gene Name:</strong> Common gene name (HGNC). Optional: use closest gene when the variant is "intergenic".</li>
 <li><strong>Gene ID:</strong> Gene ID</li>
@@ -1511,69 +1511,8 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 <li>Histone mark / Histone state: Distance to summit (or peak center)</li>
 </ul>
 </li>
-<li><strong>Errors, Warnings or Information messages:</strong> Add errors, warnings or informative message that can affect annotation accuracy. It can be added using either 'codes' (as shown in column 1, e.g. W1) or 'message types' (as shown in column 2, e.g. WARNING_REF_DOES_NOT_MATCH_GENOME). All these errors, warnings or information messages messages are optional.</li>
+<li><strong>Errors, Warnings or Information messages:</strong> Add errors, warnings or informative message that can affect annotation accuracy. <a href="#errors-and-warnings">See details here</a></li>
 </ol>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Message type</th>
-<th>Description / Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>E1</td>
-<td>ERROR_CHROMOSOME_NOT_FOUND</td>
-<td>Chromosome does not exists in reference genome database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference genome.</td>
-</tr>
-<tr>
-<td>E2</td>
-<td>ERROR_OUT_OF_CHROMOSOME_RANGE</td>
-<td>The variant's genomic coordinate is greater than chromosome's length.</td>
-</tr>
-<tr>
-<td>W1</td>
-<td>WARNING_REF_DOES_NOT_MATCH_GENOME</td>
-<td>This means that the 'REF' field in the input VCF file does not match the reference genome. This warning may indicate a conflict between input data and data from reference genome (for instance is the input VCF was aligned to a different reference genome).</td>
-</tr>
-<tr>
-<td>W2</td>
-<td>WARNING_SEQUENCE_NOT_AVAILABLE</td>
-<td>Reference sequence is not available, thus no inference could be performed.</td>
-</tr>
-<tr>
-<td>W3</td>
-<td>WARNING_TRANSCRIPT_INCOMPLETE</td>
-<td>A protein coding transcript having a non-multiple of 3 length. It indicates that the reference genome has missing information about this particular transcript.</td>
-</tr>
-<tr>
-<td>W4</td>
-<td>WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS</td>
-<td>A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the reference genome may have an error in this transcript.</td>
-</tr>
-<tr>
-<td>W5</td>
-<td>WARNING_TRANSCRIPT_NO_START_CODON</td>
-<td>A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates an error or missing information in the reference genome.</td>
-</tr>
-<tr>
-<td>I1</td>
-<td>INFO_REALIGN_3_PRIME</td>
-<td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.</td>
-</tr>
-<tr>
-<td>I2</td>
-<td>INFO_COMPOUND_ANNOTATION</td>
-<td>This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).</td>
-</tr>
-<tr>
-<td>I3</td>
-<td>INFO_NON_REFERENCE_ANNOTATION</td>
-<td>An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).</td>
-</tr>
-</tbody>
-</table>
 <p><strong>Consistency between HGVS and functional annotations:</strong></p>
 <p>In some cases there might be inconsistent reporting between 'annotation' and HGVS.
 This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGSV recommends aligning to the "most 3-prime coordinate".
@@ -1711,8 +1650,8 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 <li>Canonical transcript before non-canonical.</li>
 <li>Marker genomic coordinates (e.g. genes starting before first).</li>
 </ul>
-<h3 id="effect-prediction-details">Effect prediction details</h3>
-<p>Detailed description of the effect predicted by SnpEff in the <code>Effect</code> and <code>Effect_Impact</code> sub-fields.</p>
+<h3 id="variant-annotaiton-details">Variant annotaiton details</h3>
+<p>Detailed description of the variant's functional annotation predicted by SnpEff in the <code>Effect</code> and <code>Effect_Impact</code> sub-fields.</p>
 <p>Notes:</p>
 <ul>
 <li><strong>Effect (Sequence Ontology)</strong>
@@ -2090,7 +2029,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 </tr>
 </tbody>
 </table>
-<h3 id="details-about-rare-amino-acid-effect">Details about Rare amino acid effect</h3>
+<h3 id="details-about-rare-amino-acid-annotaitons">Details about Rare amino acid annotaitons</h3>
 <p>These are amino acids that occurs very rarely in an organism. For instance, humans are supposed to use 20 amino acids, but
 there is also one rare AA. Selenocysteine, single letter code 'U', appears roughly 100 times in the whole genome.
 The amino acid is so rare that usually it does not appear in codon translation tables. It is encoded as UGA, which usually
@@ -2104,12 +2043,12 @@ be paid in these cases.</p>
 <p>When the variant hits a RARE_AMINO_ACID mark, it is likely that the 'old_AA/new_AA' field will be incorrect. This may happen because
 the amino acid is not predictable using a codon table.</p>
 </div>
-<h3 id="details-about-protein-interaction-effects">Details about Protein interaction effects</h3>
+<h3 id="details-about-protein-interaction-annotaitons">Details about Protein interaction annotaitons</h3>
 <p>Protein interactions are calculated from <a href="http://www.rcsb.org/">PDB</a> or <a href="https://alphafold.ebi.ac.uk/download">AlphaFold</a>. There are two main types of interactions:</p>
 <ul>
-<li><strong>protein_protein_contact:</strong> These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
+<li><code>protein_protein_contact:</code> These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
   in different proteins that have atoms closer than 3 Angstrom from each other.</li>
-<li><strong>structural_interaction_variant:</strong> These are "within protein" interaction loci, which are likely to be supporting the protein structure.
+<li><code>structural_interaction_variant:</code> These are "within protein" interaction loci, which are likely to be supporting the protein structure.
   They are calculated from single protein PDB entries, by selecting amino acids that are:
   a) atom within 3 Angstrom of each other; and b) are far away in the AA sequence (over 20 AA distance).
   The assumption is that, since they are very close in distance, they must be "interacting" and thus important for protein structure.</li>
@@ -2292,7 +2231,7 @@ Here is a description of the errors and warnings:</p>
 <tbody>
 <tr>
 <td><code>ERROR_CHROMOSOME_NOT_FOUND</code></td>
-<td>Chromosome does not exits in reference database. See this <a href="../faq/#error-chromosome-not-found">FAQ</a> for more details.</td>
+<td>Chromosome does not exits in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this <a href="../faq/#error-chromosome-not-found">FAQ</a> for more details.</td>
 </tr>
 <tr>
 <td><code>ERROR_OUT_OF_CHROMOSOME_RANGE</code></td>
@@ -2318,7 +2257,7 @@ Here is a description of the errors and warnings:</p>
 <tbody>
 <tr>
 <td><code>WARNING_REF_DOES_NOT_MATCH_GENOME</code></td>
-<td>This means that the REF field does not match the reference genome.<br> <strong>Warning!</strong> This warning probably indicated there is something really wrong with your data! <br> This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database. If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database). <br><strong>Solution:</strong> Use the right database to annotate! <br>Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons.</td>
+<td>This means that the <code>REF</code> field does not match the reference genome.<br> <strong>Warning!</strong> This warning probably indicated there is something really wrong with your data! <br> This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database. If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database). <br><strong>Solution:</strong> Use the right database to annotate! <br>Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons.</td>
 </tr>
 <tr>
 <td><code>WARNING_SEQUENCE_NOT_AVAILABLE</code></td>
@@ -2335,6 +2274,28 @@ Here is a description of the errors and warnings:</p>
 <tr>
 <td><code>WARNING_TRANSCRIPT_NO_START_CODON</code></td>
 <td>A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL). <br> Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Info</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INFO_REALIGN_3_PRIME</code></td>
+<td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.</td>
+</tr>
+<tr>
+<td><code>INFO_COMPOUND_ANNOTATION</code></td>
+<td>This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).</td>
+</tr>
+<tr>
+<td><code>INFO_NON_REFERENCE_ANNOTATION</code></td>
+<td>An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).</td>
 </tr>
 </tbody>
 </table>

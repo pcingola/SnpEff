@@ -3,7 +3,7 @@ package org.snpeff.stats;
 import org.snpeff.vcf.VcfEntry;
 
 /**
- * VCF statistics: This are usually multi-sample statistics
+ * VCF statistics: These are statisticas at VCF line (i.e. VCFEntry) level, so these are usually across all samples in a VCF line
  *
  * @author pcingola
  */
