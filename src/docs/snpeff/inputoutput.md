@@ -125,7 +125,7 @@ Here is a description of the meaning of each sub-field:
         #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO
         chr1    123456  .   C    A    .     .      ANN=A|intron_variant&nc_transcript_variant|...
 
-3. **Putative_impact:** A simple estimation of putative impact / deleteriousness : {HIGH, MODERATE, LOW, MODIFIER}
+3. **Putative_impact:** A simple estimation of putative impact / deleteriousness : `{HIGH, MODERATE, LOW, MODIFIER}`
 4. **Gene Name:** Common gene name (HGNC). Optional: use closest gene when the variant is "intergenic".
 5. **Gene ID:** Gene ID
 6. **Feature type:** Which type of feature is in the next field (e.g. transcript, motif, miRNA, etc.). It is preferred to use Sequence Ontology (SO) terms, but 'custom' (user defined) are allowed.
@@ -154,20 +154,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
     * Distance to exon-intron boundary in splice_site or splice _region
     * ChipSeq peak: Distance to summit (or peak center)
     * Histone mark / Histone state: Distance to summit (or peak center)
-16. **Errors, Warnings or Information messages:** Add errors, warnings or informative message that can affect annotation accuracy. It can be added using either 'codes' (as shown in column 1, e.g. W1) or 'message types' (as shown in column 2, e.g. WARNING_REF_DOES_NOT_MATCH_GENOME). All these errors, warnings or information messages messages are optional.
-
-| Code | Message type                            | Description / Notes                                                                                                                                                                                                                                            |
-|------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| E1   | ERROR_CHROMOSOME_NOT_FOUND              | Chromosome does not exists in reference genome database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference genome.                                                                  |
-| E2   | ERROR_OUT_OF_CHROMOSOME_RANGE           | The variant's genomic coordinate is greater than chromosome's length.                                                                                                                                                                                          |
-| W1   | WARNING_REF_DOES_NOT_MATCH_GENOME       | This means that the 'REF' field in the input VCF file does not match the reference genome. This warning may indicate a conflict between input data and data from reference genome (for instance is the input VCF was aligned to a different reference genome). |
-| W2   | WARNING_SEQUENCE_NOT_AVAILABLE          | Reference sequence is not available, thus no inference could be performed.                                                                                                                                                                                     |
-| W3   | WARNING_TRANSCRIPT_INCOMPLETE           | A protein coding transcript having a non-multiple of 3 length. It indicates that the reference genome has missing information about this particular transcript.                                                                                                |
-| W4   | WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS | A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the reference genome may have an error in this transcript.                                                     |
-| W5   | WARNING_TRANSCRIPT_NO_START_CODON       | A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates an error or missing information in the reference genome.                                             |
-| I1   | INFO_REALIGN_3_PRIME                    | Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.                                                                         |
-| I2   | INFO_COMPOUND_ANNOTATION                | This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).                                                                                    |
-| I3   | INFO_NON_REFERENCE_ANNOTATION           | An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).                                                                                                                                   |
+16. **Errors, Warnings or Information messages:** Add errors, warnings or informative message that can affect annotation accuracy. [See details here](#errors-and-warnings)
 
 **Consistency between HGVS and functional annotations:**
 
@@ -263,9 +250,9 @@ There are several reasons for this:
 * Canonical transcript before non-canonical.
 * Marker genomic coordinates (e.g. genes starting before first).
 
-### Effect prediction details
+### Variant annotaiton details
 
-Detailed description of the effect predicted by SnpEff in the `Effect` and `Effect_Impact` sub-fields.
+Detailed description of the variant's functional annotation predicted by SnpEff in the `Effect` and `Effect_Impact` sub-fields.
 
 Notes:
 
@@ -343,7 +330,8 @@ Here is a list of effects and some brief explanations:
 | [5_prime_UTR_truncation](http://www.sequenceontology.org/browser/current_svn/term/SO:0002013) + [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572) | `UTR_5_DELETED`                        | The variant deletes an exon which is in the 5'UTR of the transcript                                                                                                 | `MODERATE` |
 | [sequence_feature](http://www.sequenceontology.org/browser/current_svn/term/SO:0002013) + [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572)       | `NEXT_PROT`                            | A 'NextProt' based annotation. Details are provided in the 'feature type' sub-field (ANN), or in the effect details (EFF).                                          | `MODERATE` |
 
-### Details about Rare amino acid effect
+### Details about Rare amino acid annotaitons
+
 These are amino acids that occurs very rarely in an organism. For instance, humans are supposed to use 20 amino acids, but
 there is also one rare AA. Selenocysteine, single letter code 'U', appears roughly 100 times in the whole genome.
 The amino acid is so rare that usually it does not appear in codon translation tables. It is encoded as UGA, which usually
@@ -358,13 +346,13 @@ be paid in these cases.
     When the variant hits a RARE_AMINO_ACID mark, it is likely that the 'old_AA/new_AA' field will be incorrect. This may happen because
     the amino acid is not predictable using a codon table.
 
-### Details about Protein interaction effects
+### Details about Protein interaction annotaitons
 
 Protein interactions are calculated from [PDB](http://www.rcsb.org/) or [AlphaFold](https://alphafold.ebi.ac.uk/download). There are two main types of interactions:
 
-* **protein_protein_contact:** These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
+* `protein_protein_contact:` These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
   in different proteins that have atoms closer than 3 Angstrom from each other.
-* **structural_interaction_variant:** These are "within protein" interaction loci, which are likely to be supporting the protein structure.
+* `structural_interaction_variant:` These are "within protein" interaction loci, which are likely to be supporting the protein structure.
   They are calculated from single protein PDB entries, by selecting amino acids that are:
   a) atom within 3 Angstrom of each other; and b) are far away in the AA sequence (over 20 AA distance).
   The assumption is that, since they are very close in distance, they must be "interacting" and thus important for protein structure.
@@ -476,20 +464,27 @@ The meaning of the LOF tag is:
 As mentioned int the previous section, the last sub-field in EFF field shows errors or warnings (if any).
 Here is a description of the errors and warnings:
 
-| Error                         | Meaning and possible solutions                                                                                                           |
-|-------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `ERROR_CHROMOSOME_NOT_FOUND`    | Chromosome does not exits in reference database. See this [FAQ](faq.md#error-chromosome-not-found) for more details.                  |
+| Error                           | Meaning and possible solutions                                                                                                           |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `ERROR_CHROMOSOME_NOT_FOUND`    | Chromosome does not exits in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this [FAQ](faq.md#error-chromosome-not-found) for more details.                  |
 | `ERROR_OUT_OF_CHROMOSOME_RANGE` | This means that the position is higher than chromosome's length. Probably an indicator that your data is not from this reference genome. |
 | `ERROR_OUT_OF_EXON`             | Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database                                    |
 | `ERROR_MISSING_CDS_SEQUENCE`    | Transcript has no CDS info. Indicates a problem (or even a bug?) in the database                                                         |
 
-| Warning                                 | Meaning and possible solutions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-|-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `WARNING_REF_DOES_NOT_MATCH_GENOME`       | This means that the REF field does not match the reference genome.<br> **Warning!** This warning probably indicated there is something really wrong with your data! <br> This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database. If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database). <br>**Solution:** Use the right database to annotate! <br>Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons. |
+| Warning | Meaning and possible solutions |
+|---------|--------------------------------|
+| `WARNING_REF_DOES_NOT_MATCH_GENOME`       | This means that the `REF` field does not match the reference genome.<br> **Warning!** This warning probably indicated there is something really wrong with your data! <br> This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database. If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database). <br>**Solution:** Use the right database to annotate! <br>Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons. |
 | `WARNING_SEQUENCE_NOT_AVAILABLE`          | For some reason the exon sequence is not available, so we cannot calculate effects.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `WARNING_TRANSCRIPT_INCOMPLETE`           | A protein coding transcript whose length is non-multiple of 3. This means that information is missing for one or more amino acids.<br> This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL). Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                                                                                                  |
 | `WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS` | A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the genomic information may have an error in this transcript. <br> This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL). Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                      |
 | `WARNING_TRANSCRIPT_NO_START_CODON`       | A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL). <br> Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                                                                                 |
+
+
+| Info | Meaning |
+|------|---------|
+| `INFO_REALIGN_3_PRIME`                    | Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.                                                                         |
+| `INFO_COMPOUND_ANNOTATION`                | This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).                                                                                    |
+| `INFO_NON_REFERENCE_ANNOTATION`           | An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).                                                                                            
 
 ### BED files
 

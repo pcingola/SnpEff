@@ -555,16 +555,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#html-summary-snpeff_summaryhtml" class="md-nav__link">
-    HTML summary (snpEff_summary.html)
+  <a href="#summary-file-options" class="md-nav__link">
+    Summary file options
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gene-counts-summary-snpeff_genestxt" class="md-nav__link">
-    Gene counts summary (snpEff_genes.txt)
+  <a href="#summary-report" class="md-nav__link">
+    Summary report
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-summary-table" class="md-nav__link">
+    Main summary table
+  </a>
+  
+    <nav class="md-nav" aria-label="Main summary table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variants-by-type" class="md-nav__link">
+    Variants by type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#histograms" class="md-nav__link">
+    Histograms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotations-region" class="md-nav__link">
+    Annotations &amp; Region
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gene-statistics" class="md-nav__link">
+    Gene statistics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1270,35 +1311,186 @@
                   
 
 
-<h1 id="output-summary-files">Output summary Files</h1>
+<h1 id="output-summary-files">Output summary files</h1>
 <p>SnpEff creates an additional output file showing overall statistics.
 This "stats" file is an HTML file which can be opened using a web browser.
+It can also be created as a CSV file, for easier parsing or manipulation.
 You can find an example of a 'stats' file <a href="../../adds/1kg.html">here</a>.</p>
-<h3 id="html-summary-snpeff_summaryhtml">HTML summary (snpEff_summary.html)</h3>
-<p>The program performs some statistics and saves them to the file 'snpEff_summary.html' on the
-directory where snpEff is being executed. You can see the file, by opening it in your browser.</p>
+<h2 id="summary-file-options">Summary file options</h2>
+<p>By default, SnpEff performs some statistics and saves them to the <code>snpEff_summary.html</code> on the same directory where snpEff is being executed.
+You can see the file, by opening it in your browser. SnpEff also creates a "Genes Statistics" file (<code>snpEff_genes.txt</code>) with gene-level statistics in tabular (tab-separated) format.</p>
+<p>There are some command line options related to the statistics:</p>
+<ul>
+<li><code>-stats &lt;file&gt;</code>: You can change the default name and location of the HTML file. This also changes the name and location of the "genes" (TXT) file.</li>
+<li><code>-noStats</code>: Do not calculate statisticsm, or create stats (summary) files</li>
+<li><code>-csvStats &lt;file&gt;</code>: Create the statistics file in CSV format with the specified name.</li>
+</ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>You can change the default location by using the <code>-stats</code> command line option. This also changes the location of the TXT summary file.</p>
+<p>The "Genes statistics" file path is by default the directory where SnpEff is executed and called <code>snpEff_genes.txt</code>. If you change the summary file name / path by either using <code>-stats</code> or <code>csvStats</code> command line, the "Genes statistics" file path will be the same directory as the summary file and the file name is the same "base name" plus a <code>".genes.txt"</code>.</p>
 </div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Summary can be create in CSV format using command line option <code>-csvStats</code>. This allows easy downstream processing.</p>
+<h2 id="summary-report">Summary report</h2>
+<p>The summary report consist of several sections:</p>
+<ul>
+<li><a href="#main-summary-table">Main summary table</a></li>
+<li>Variant rate by chromosome: A table of number of variants and variants rate per chromosome</li>
+<li><a href="#variants-by-type">Variants by type</a></li>
+<li>Number of variants by impact: A count and percentage of variants by <a href="../inputoutput/#impact-prediction">impact</a></li>
+<li>Number of variants by functional class: A count and percentage of variants by <a href="../inputoutput/#functional-class">functional class</a></li>
+<li><a href="#annotations--region">Number of variants by annotation</a></li>
+<li>Quality histogram: Variant Quality histogram, i.e. a histogram of the VCF's  <code>QUAL</code> field</li>
+<li>InDel length histogram: Length of <code>INS</code> and <code>DEL</code> variants</li>
+<li>Base variant table: Table of SNV variants changes</li>
+<li>Transition vs transversions (ts/tv): Transition vs transversions table, split into "known" and all variants (known variants are the ones with non-empty <code>ID</code> field).</li>
+<li>Allele frequency: Allele frequency histogram</li>
+<li>Allele Count: Allele count histogram</li>
+<li>Codon change table: A table of all codon changes counts</li>
+<li>Amino acid change table: A table of all amino acid changes counts</li>
+<li>Chromosome variants plots: Plots of number of variants for each chromosome location</li>
+<li>Details by gene: Link to "Genes Statistics" file</li>
+</ul>
+<h2 id="main-summary-table">Main summary table</h2>
+<p>The main summary table contains basic information about the SnpEff run and some overall statistics:</p>
+<table>
+<thead>
+<tr>
+<th>Table Entry</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Genome</td>
+<td>Genome name and version, as specified in the command line</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>Date and time when the analysis was performed</td>
+</tr>
+<tr>
+<td>SnpEff version</td>
+<td>SnpEff version</td>
+</tr>
+<tr>
+<td>Command line arguments</td>
+<td>Command line arguments and options used to annotate</td>
+</tr>
+<tr>
+<td>Warnings</td>
+<td>Number of <a href="../inputoutput/#errors-and-warnings">WARNING</a> annotation messages (i.e. <code>WARNING</code> messages in the ANN field)</td>
+</tr>
+<tr>
+<td>Errors</td>
+<td>Number of <a href="../inputoutput/#errors-and-warnings">ERROR</a> annotation messages (i.e. <code>ERROR</code> messages in the ANN field)</td>
+</tr>
+<tr>
+<td>Number of lines (input file)</td>
+<td>Number of lines in the input file, excluding comment / header lines</td>
+</tr>
+<tr>
+<td>Number of variants (before filter)</td>
+<td>Number of variants in the input file. Note that this can differ from the number of lines; e.g. VCF allows for <a href="../faq/#counting-variants-vs-lines-in-a-vcf-file">multiple variants per line</a> and <a href="./faq#iupac-expansion">IUPAC expansion</a>.</td>
+</tr>
+<tr>
+<td>Number of not variants</td>
+<td>Number of non-variants, e.g. if the <code>REF</code> and <code>ALT</code> fields are the same</td>
+</tr>
+<tr>
+<td>Number of variants processed</td>
+<td>Number of variants processed. This can be different than the number of variants due to filtering and non-variants entries.</td>
+</tr>
+<tr>
+<td>Number of known variants</td>
+<td>Variants that have a non-empty <code>ID</code> field.</td>
+</tr>
+<tr>
+<td>Number of multi-allelic VCF entries</td>
+<td>Variants that have mode then two alleles. Most variants have only two alleles: <code>REF</code> and one <code>ALT</code>. Multi-allelic variants have multiple <code>ALT</code> entries.</td>
+</tr>
+<tr>
+<td>Number of annotations</td>
+<td>Total number of variant annotations. Note that this is typically <a href="../faq/#counting-variants-vs-annotations">higher than the number of variant</a></td>
+</tr>
+<tr>
+<td>Genome total length</td>
+<td>Total genome length (in bases)</td>
+</tr>
+<tr>
+<td>Genome effective length</td>
+<td>Total length of the chromosomes (in bases). This only counts chromosomes that had varinats</td>
+</tr>
+<tr>
+<td>Variant rate</td>
+<td>Number of variants per genomic length: <code>Number of variants</code> / <code>Genome effeective length</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The number of input lines, number of variants, and number of annotation are different counts and typically are not equal, <a href="../faq/#number-of-variants-in-vcf-and-html-summary-do-not-match">see details in this FAQ</a></p>
 </div>
+<h3 id="variants-by-type">Variants by type</h3>
+<p>This table contains a list of the number of variants, grouped by variant type:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SNP</code></td>
+<td>SNP / SNV is a single nucleotide variant, e.g. 'A -&gt; G'</td>
+</tr>
+<tr>
+<td><code>MNP</code></td>
+<td>MNP / MNV is a multiple nucleotide variant, e.g. 'AC -&gt; GT'</td>
+</tr>
+<tr>
+<td><code>INS</code></td>
+<td>Insertion, e.g. 'A -&gt; AT'</td>
+</tr>
+<tr>
+<td><code>DEL</code></td>
+<td>Deletion, e.g. 'AT -&gt; A'</td>
+</tr>
+<tr>
+<td><code>MIXED</code></td>
+<td>A mixed vairant is a combination of SNP / MNP / INS / DEL, for example '</td>
+</tr>
+<tr>
+<td><code>INV</code></td>
+<td>An inversion of reference sequence</td>
+</tr>
+<tr>
+<td><code>DUP</code></td>
+<td>A duplication is a region of elevated copy number relative to the reference</td>
+</tr>
+<tr>
+<td><code>BND</code></td>
+<td>An arbitrary rearrangement</td>
+</tr>
+<tr>
+<td><code>INTERVAL</code></td>
+<td>An interval marke, e.g. an interval from a BED file</td>
+</tr>
+</tbody>
+</table>
+<h3 id="histograms">Histograms</h3>
 <p>E.g.: In the stats file, you can see coverage histogram plots like this one:</p>
-<p><img alt="" src="http://chart.apis.google.com/chart?cht=bvg&amp;chbh=8,4,2&amp;chs=800x300&amp;chxt=y,y,x,x&amp;chg=11.0,40.0,3,2&amp;chxp=1,50.0|3,50.0&amp;chtt=Coverage+histogram&amp;chxr=0,1.0,409.0|1,0.0,100.0|3,0.0,100.0&amp;chxl=1:|Count|2:|1||||||||||11||||||||||21||||||||||31||||||||||41||||||||||51||||||||||61||||||||||76||||||||||3:|Coverage&amp;chd=e:DNBSEfGaI9MKRSWZfXnrlwmZuE1wvW630e6O..638y3r7g8JsKxRlHgAkeZmY9XCR7PXRSOuOFMzNcIUJmHrHrFIFIFxEfCkDNDNBSBSB7BSB7BSApApApBSBSApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></p>
-<p><strong>"Effects by type" vs "Effects by region"</strong></p>
-<p>SnpEff annotates variants.
-Variants produce effect of difference "types" (e.g. NON_SYNONYMOUS_CODING, STOP_GAINED).
-These variants affect regions of the genome (e.g. EXON, INTRON).
+<p><img alt="" src="../../images/coverage_hitogram.png" /></p>
+<h3 id="annotations-region">Annotations &amp; Region</h3>
+<p>SnpEff annotates variants using <a href="../inputoutput/#variant-annotaiton-details">"functional annotaions"</a>, e.g. <code>NON_SYNONYMOUS_CODING</code>, <code>STOP_GAINED</code>, etc..
+These variants affect regions of the genome (e.g. <code>EXON</code>, <code>INTRON</code>).
 The two tables count how many effects for each type and for each region exists.</p>
-<p>E.g.: In an EXON region, you can have all the following effect types: NON_SYNONYMOUS_CODING, SYNONYMOUS_CODING, FRAME_SHIFT, STOP_GAINED, etc.</p>
-<p>The complicated part is that some effect types affect a region that has the same name (yes, I know, this is confusing).</p>
-<p>E.g.: In a UTR_5_PRIME region you can have UTR_5_PRIME and START_GAINED effect type.</p>
+<p>E.g.: In an <code>EXON</code> region, you can have all the following effect types: <code>NON_SYNONYMOUS_CODING</code>, <code>SYNONYMOUS_CODING</code>, <code>FRAME_SHIFT</code>, <code>STOP_GAINED</code>, etc.</p>
+<p>The complicated part is that some annotaitons affect a region that has the same name (yes, I know, this is confusing).</p>
+<p>E.g.: In a <code>UTR_5_PRIME</code> region you can have <code>UTR_5_PRIME</code> and <code>START_GAINED</code> effect type.</p>
 <p>This means that the number of both tables are not exactly the same, because the labels don't mean the same.
 See the next figure as an example:</p>
 <p><img alt="type_vs_region" class="center" src="../../images/type_vs_region.png" /></p>
-<p>So the number of effects that affect a UTR_5_PRIME <em>region</em> is 206. Of those, 57 are effects <em>type</em> START_GAINED and 149 are effects <em>type</em> UTR_5_PRIME.</p>
+<p>So the number of effects that affect a UTR_5_PRIME <em>region</em> is 206. Of those, 57 are effects <em>type</em> <code>START_GAINED</code> and 149 are effects <em>type</em> <code>UTR_5_PRIME</code>.</p>
 <p>How exactly are effect <em>type</em> and effect <em>region</em> related? See the following table:</p>
 <table>
 <thead>
@@ -1309,60 +1501,60 @@ See the next figure as an example:</p>
 </thead>
 <tbody>
 <tr>
-<td>NONE<br>CHROMOSOME<br>CUSTOM<br>CDS</td>
-<td>NONE</td>
+<td><code>NONE</code>, <code>CHROMOSOME</code>, <code>CUSTOM</code>, <code>CDS</code></td>
+<td><code>NONE</code></td>
 </tr>
 <tr>
-<td>INTERGENIC<br>INTERGENIC_CONSERVED</td>
-<td>INTERGENIC</td>
+<td><code>INTERGENIC</code>, <code>INTERGENIC_CONSERVED</code></td>
+<td><code>INTERGENIC</code></td>
 </tr>
 <tr>
-<td>UPSTREAM</td>
-<td>UPSTREAM</td>
+<td><code>UPSTREAM</code></td>
+<td><code>UPSTREAM</code></td>
 </tr>
 <tr>
-<td>UTR_5_PRIME<br>UTR_5_DELETED<br>START_GAINED</td>
-<td>UTR_5_PRIME</td>
+<td><code>UTR_5_PRIME</code>, <code>UTR_5_DELETED</code>, <code>START_GAINED</code></td>
+<td><code>UTR_5_PRIME</code></td>
 </tr>
 <tr>
-<td>SPLICE_SITE_ACCEPTOR</td>
-<td>SPLICE_SITE_ACCEPTOR</td>
+<td><code>SPLICE_SITE_ACCEPTOR</code></td>
+<td><code>SPLICE_SITE_ACCEPTOR</code></td>
 </tr>
 <tr>
-<td>SPLICE_SITE_DONOR</td>
-<td>SPLICE_SITE_DONOR</td>
+<td><code>SPLICE_SITE_DONOR</code></td>
+<td><code>SPLICE_SITE_DONOR</code></td>
 </tr>
 <tr>
-<td>SPLICE_SITE_REGION</td>
-<td>SPLICE_SITE_REGION</td>
+<td><code>SPLICE_SITE_REGION</code></td>
+<td><code>SPLICE_SITE_REGION</code></td>
 </tr>
 <tr>
-<td>INTRAGENIC<br>START_LOST<br>SYNONYMOUS_START<br>NON_SYNONYMOUS_START<br>GENE<br>TRANSCRIPT</td>
-<td>EXON or NONE</td>
+<td><code>INTRAGENIC</code>, <code>START_LOST</code>, <code>SYNONYMOUS_START</code>, <code>NON_SYNONYMOUS_START</code>, <code>GENE</code>, <code>TRANSCRIPT</code></td>
+<td><code>EXON</code> or <code>NONE</code></td>
 </tr>
 <tr>
-<td>EXON<br>EXON_DELETED<br>NON_SYNONYMOUS_CODING<br>SYNONYMOUS_CODING<br>FRAME_SHIFT<br>CODON_CHANGE<br>CODON_INSERTION<br>CODON_CHANGE_PLUS_CODON_INSERTION<br>CODON_DELETION<br>CODON_CHANGE_PLUS_CODON_DELETION<br>STOP_GAINED<br>SYNONYMOUS_STOP<br> STOP_LOST<br>RARE_AMINO_ACID</td>
-<td>EXON</td>
+<td><code>EXON</code>, <code>EXON_DELETED</code>, <code>NON_SYNONYMOUS_CODING</code>, <code>SYNONYMOUS_CODING</code>, <code>FRAME_SHIFT</code>, <code>CODON_CHANGE</code>, <code>CODON_INSERTION</code>, <code>CODON_CHANGE_PLUS_CODON_INSERTION</code>, <code>CODON_DELETION</code>, <code>CODON_CHANGE_PLUS_CODON_DELETION</code>, <code>STOP_GAINED</code>, <code>SYNONYMOUS_STOP</code>, <code>STOP_LOST</code>, <code>RARE_AMINO_ACID</code></td>
+<td><code>EXON</code></td>
 </tr>
 <tr>
-<td>INTRON<br>INTRON_CONSERVED</td>
-<td>INTRON</td>
+<td><code>INTRON</code>, <code>INTRON_CONSERVED</code></td>
+<td><code>INTRON</code></td>
 </tr>
 <tr>
-<td>UTR_3_PRIME<br>UTR_3_DELETED</td>
-<td>UTR_3_PRIME</td>
+<td><code>UTR_3_PRIME</code>, <code>UTR_3_DELETED</code></td>
+<td><code>UTR_3_PRIME</code></td>
 </tr>
 <tr>
-<td>DOWNSTREAM</td>
-<td>DOWNSTREAM</td>
+<td><code>DOWNSTREAM</code></td>
+<td><code>DOWNSTREAM</code></td>
 </tr>
 <tr>
-<td>REGULATION</td>
-<td>REGULATION</td>
+<td><code>REGULATION</code></td>
+<td><code>REGULATION</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="gene-counts-summary-snpeff_genestxt">Gene counts summary (snpEff_genes.txt)</h3>
+<h3 id="gene-statistics">Gene statistics</h3>
 <p>SnpEff also generates a TXT (tab separated) file having counts of number of variants affecting each transcript and gene.
 By default, the file name is <code>snpEff_genes.txt</code>, but it can be changed using the <code>-stats</code> command line option.</p>
 <p>Here is an example of this file:

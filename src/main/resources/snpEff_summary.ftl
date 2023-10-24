@@ -150,7 +150,7 @@ th a:active, th a:hover {
 	<a href="#changesByType">Variants by type</a><br>
 	<a href="#effectsImpact"> Number of variants by impact </a><br>
 	<a href="#effectsImpact"> Number of variants by functional class </a><br>
-	<a href="#effects"> Number of variants by effect </a><br>
+	<a href="#effects"> Number of variants by annotation </a><br>
 	<a href="#quality">Quality histogram</a><br>
 	<a href="#indels">InDel length histogram</a><br>
 	<a href="#baseChages">Base variant table</a><br>
@@ -226,25 +226,25 @@ th a:active, th a:hover {
 		( ${ ( 100 * variantStats.getKnownRatio() )?string("0.###") }% ) 
 		</td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of multi-allelic VCF entries <br>(i.e. more than two alleles) </b> </td>
 		<td> 
 		${vcfStats.countMultiallelic}
 		</td>
 	</tr>
-	<tr bgcolor=dddddd>
-		<td valign=top> <b> Number of effects </b> </td>
+	<tr bgcolor=ffffff>
+		<td valign=top> <b> Number of annotations </b> </td>
 		<td> ${countEffects} </td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome total length </b> </td>
 		<td> ${variantStats.genomeLen} </td>
 	</tr>
-	<tr bgcolor=dddddd>
+	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome effective length </b> </td>
 		<td> ${variantStats.genomeLenEffective} </td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Variant rate </b> </td>
 		<td> 1 variant every ${variantStats.rateOfChange} bases </td>
 	</tr>
@@ -350,11 +350,11 @@ Missense / Silent ratio: ${changeStats.silentRatio?string("0.####")}
 <hr> 
 <a name="effects"> 
 <center>
-<b> Number of effects by type and region </b> <p> 
+<b> Number of annotaitons and region counts </b> <p> 
 
 <table border=0>
 	<tr>
-		<th> Type </th>
+		<th> Annotation </th>
 		<th> Region </th>
 	</tr>
 	<tr>

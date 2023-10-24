@@ -281,7 +281,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			if (verbose) Log.info("Creating summary file: " + summaryFileHtml);
 			ok &= summary(SUMMARY_TEMPLATE, summaryFileHtml, false);
 		}
-
 		// Creates genes output file
 		if (createSummaryHtml || createSummaryCsv) {
 			if (verbose) Log.info("Creating genes file: " + summaryGenesFile);

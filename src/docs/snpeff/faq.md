@@ -280,7 +280,7 @@ So the comment is indicating that this is Ensembl's release 32.
 
 First of all, SnpEff is probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.
 
-**Counting variants vs lines in a VCF file**
+### Counting variants vs lines in a VCF file
 
 It is important to remember that the VCF format specification allows having multiple variants in a single line.
 For example, here is a VCF line with multiple variants:
@@ -298,7 +298,7 @@ This means that the line contains two variants:
 
 So counting the number of non-comment lines in the VCF file will not give you the exact number of variants (it does give a lower bound on the number of variants).
 
-**Counting variants vs annotations**
+### Counting variants vs annotations
 
 Also, a single variant can have more than one annotation, due to:
 
@@ -309,7 +309,7 @@ Also, a single variant can have more than one annotation, due to:
 So counting the number of variants is not equivalent to counting the number of annotations.
 SnpEff does consider all these factors when counting the variants and annotations for the summary HTML.
 
-**IUPAC expansion**
+### IUPAC expansion
 
 Sometimes either the `REF` or `ALT` fields have [IUPAC/IUB](https://en.wikipedia.org/wiki/Nucleic_acid_notation) bases.
 A common example is when you see an `N` character, which means that the base could be any of `{A, C, G, T}`.
@@ -340,7 +340,7 @@ In this case the ambiguous variant `T -> N` will be expanded into three variants
 	Currently SnpEff will not expand more than `MAX_IUB_BASES=10` bases
 
 
-**Typical counting mistakes**
+### Typical counting mistakes
 
 Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previously discussed items.
 
@@ -358,7 +358,6 @@ grep missense file.vcf | wc -l
 ```
 
 This is counting _"lines in a VCF file that have at least one missense variants"_, as opposed to counting _"missense annotations"_ and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.
-
 
 
 ## SnpEff taking too long

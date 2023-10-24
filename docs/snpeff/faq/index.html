@@ -727,6 +727,40 @@
     Number of variants in VCF and HTML summary do not match
   </a>
   
+    <nav class="md-nav" aria-label="Number of variants in VCF and HTML summary do not match">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#counting-variants-vs-lines-in-a-vcf-file" class="md-nav__link">
+    Counting variants vs lines in a VCF file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#counting-variants-vs-annotations" class="md-nav__link">
+    Counting variants vs annotations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iupac-expansion" class="md-nav__link">
+    IUPAC expansion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typical-counting-mistakes" class="md-nav__link">
+    Typical counting mistakes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1510,7 +1544,7 @@ If you scroll up in the config file, you'll see a comment like this:</p>
 So the comment is indicating that this is Ensembl's release 32.</p>
 <h2 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h2>
 <p>First of all, SnpEff is probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
-<p><strong>Counting variants vs lines in a VCF file</strong></p>
+<h3 id="counting-variants-vs-lines-in-a-vcf-file">Counting variants vs lines in a VCF file</h3>
 <p>It is important to remember that the VCF format specification allows having multiple variants in a single line.
 For example, here is a VCF line with multiple variants:</p>
 <div class="highlight"><pre><span></span><code>#CHROM  POS         ID  REF  ALT       QUAL  FILTER  INFO
@@ -1523,7 +1557,7 @@ This means that the line contains two variants: </p>
 <li><code>G -&gt; GTT</code></li>
 </ul>
 <p>So counting the number of non-comment lines in the VCF file will not give you the exact number of variants (it does give a lower bound on the number of variants).</p>
-<p><strong>Counting variants vs annotations</strong></p>
+<h3 id="counting-variants-vs-annotations">Counting variants vs annotations</h3>
 <p>Also, a single variant can have more than one annotation, due to:</p>
 <ul>
 <li>Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)</li>
@@ -1532,7 +1566,7 @@ This means that the line contains two variants: </p>
 </ul>
 <p>So counting the number of variants is not equivalent to counting the number of annotations.
 SnpEff does consider all these factors when counting the variants and annotations for the summary HTML.</p>
-<p><strong>IUPAC expansion</strong></p>
+<h3 id="iupac-expansion">IUPAC expansion</h3>
 <p>Sometimes either the <code>REF</code> or <code>ALT</code> fields have <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC/IUB</a> bases.
 A common example is when you see an <code>N</code> character, which means that the base could be any of <code>{A, C, G, T}</code>.
 There are several IUPAC characters, please see details in <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC degenarate base symbols table</a>.</p>
@@ -1557,7 +1591,7 @@ chr1    102947631   .   T    N    30    PASS    ...
 <p>If the number of degenerate symbols increases, the number of variants expanded will increase exponentiallly.
 Currently SnpEff will not expand more than <code>MAX_IUB_BASES=10</code> bases</p>
 </div>
-<p><strong>Typical counting mistakes</strong></p>
+<h3 id="typical-counting-mistakes">Typical counting mistakes</h3>
 <p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previously discussed items.</p>
 <p>The most typical mistake is counting the number of non-comment Lines in a VCF file:</p>
 <div class="highlight"><pre><span></span><code># This does NOT give the exact number of variants (only a lower bound on the number of variants)
