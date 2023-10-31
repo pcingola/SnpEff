@@ -37,7 +37,7 @@ azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entr
 azureContainer		:= 'databases'								help Azure container for databases
 azureQueryString	:= ''										help Azure 'query string' containing a security token.
 
-# Process us one CPU
+# Process on one CPU
 cpus = 1
 
 # Versions
