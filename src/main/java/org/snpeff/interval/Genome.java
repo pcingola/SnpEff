@@ -13,6 +13,7 @@ import java.util.Properties;
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.serializer.MarkerSerializer;
+import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
 
@@ -91,7 +92,8 @@ public class Genome extends Marker implements Iterable<Chromosome> {
 		setGenomeId();
 	}
 
-	public Genome(String version, Properties properties) {
+	// public Genome(String version, Properties properties) {
+	public Genome(String version, Config config) {
 		super(null, 0, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
@@ -99,17 +101,16 @@ public class Genome extends Marker implements Iterable<Chromosome> {
 		genomicSequences = new GenomicSequences(this);
 		genomicSequences.build();
 
-		species = properties.getProperty(version + ".genome");
-		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found");
+		species = config.getProperty(version + ".genome");
+		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found in config file '" + config.getConfigFileCanonicaPath() + "'");
 		species = species.trim();
 
-		//		chromosomeNames = new ArrayList<String>();
-		String[] chromosomeNames = propertyToStringArray(properties, version + ".chromosomes");
+		String[] chromosomeNames = config.propertyToStringArray(version + ".chromosomes");
 
 		// Fasta file & dir (optional)
-		if (properties.getProperty(version + ".fasta_dir") != null) fastaDir = properties.getProperty(version + ".fasta_dir").trim();
+		if (config.getProperty(version + ".fasta_dir") != null) fastaDir = config.getProperty(version + ".fasta_dir").trim();
 		else fastaDir = "";
-		if (properties.getProperty(version + ".chromo_fasta_files") != null) chromoFastaFiles = propertyToStringArray(properties, version + ".chromo_fasta_files");
+		if (config.getProperty(version + ".chromo_fasta_files") != null) chromoFastaFiles = config.propertyToStringArray(version + ".chromo_fasta_files");
 		else chromoFastaFiles = new String[0];
 
 		chromosomes = new HashMap<>();
@@ -336,21 +337,6 @@ public class Genome extends Marker implements Iterable<Chromosome> {
 		}
 
 		return length;
-	}
-
-	/**
-	 * Parse a comma separated property as a string array
-	 */
-	String[] propertyToStringArray(Properties properties, String attr) {
-		String value = properties.getProperty(attr);
-		if (value == null) return new String[0];
-
-		String values[] = value.split("[\\s+,]");
-		LinkedList<String> list = new LinkedList<>();
-		for (String val : values)
-			if (val.length() > 0) list.add(val);
-
-		return list.toArray(new String[0]);
 	}
 
 	/**

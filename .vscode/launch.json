@@ -12,116 +12,11 @@
         },
         {
             "type": "java",
-            "name": "Fastq2Fastq",
-            "request": "launch",
-            "mainClass": "org.snpeff.Fastq2Fastq",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "PromoterSequences",
-            "request": "launch",
-            "mainClass": "org.snpeff.PromoterSequences",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "Qseq2Fastq",
-            "request": "launch",
-            "mainClass": "org.snpeff.Qseq2Fastq",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
             "name": "SnpEff",
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "ann GRCh38.mane.1.0.ensembl tests/integration/zzz/test.splice_region_01.vcf"
+            "args": "build -v test_GRCh38.mane.1.0.refseq.chr21"
         },
-        {
-            "type": "java",
-            "name": "Zzz",
-            "request": "launch",
-            "mainClass": "org.snpeff.Zzz",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "FastqSplit",
-            "request": "launch",
-            "mainClass": "org.snpeff.fastq.FastqSplit",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "Genotypes",
-            "request": "launch",
-            "mainClass": "org.snpeff.genotypes.Genotypes",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "Hypergeometric",
-            "request": "launch",
-            "mainClass": "org.snpeff.probablility.Hypergeometric",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "RankSumNoReplacementSimulate",
-            "request": "launch",
-            "mainClass": "org.snpeff.probablility.RankSumNoReplacementSimulate",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "RankSumPdf",
-            "request": "launch",
-            "mainClass": "org.snpeff.probablility.RankSumPdf",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "Reactome",
-            "request": "launch",
-            "mainClass": "org.snpeff.reactome.Reactome",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "IntHisto",
-            "request": "launch",
-            "mainClass": "org.snpeff.snpEffect.IntHisto",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "PurityChange",
-            "request": "launch",
-            "mainClass": "org.snpeff.snpEffect.PurityChange",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "SnpEffCmdGenes2Bed",
-            "request": "launch",
-            "mainClass": "org.snpeff.snpEffect.commandLine.SnpEffCmdGenes2Bed",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "CompareToEnsembl",
-            "request": "launch",
-            "mainClass": "org.snpeff.snpEffect.testCases.integration.CompareToEnsembl",
-            "projectName": "SnpEff"
-        },
-        {
-            "type": "java",
-            "name": "CreateSpliceSiteTestCase",
-            "request": "launch",
-            "mainClass": "org.snpeff.snpEffect.testCases.integration.CreateSpliceSiteTestCase",
-            "projectName": "SnpEff"
-        }
     ]
 }

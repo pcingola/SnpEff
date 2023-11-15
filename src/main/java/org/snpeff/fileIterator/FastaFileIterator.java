@@ -82,9 +82,7 @@ public class FastaFileIterator extends FileIterator<String> {
 	public String getTranscriptId() {
 		Matcher mmatcher = transcriptPattern.matcher(getHeader());
 		if (mmatcher.find()) return mmatcher.group(1);
-
-		// Nothing found? just return the name
-		return getName();
+		return getName();  // Nothing found? just return the name
 	}
 
 	/**

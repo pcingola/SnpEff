@@ -57,6 +57,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     int[] cds2pos; // CDS to genomic possition mapping
     TranscriptSupportLevel transcriptSupportLevel = null;
     String tags; // Transcript tags. Multiple tags separated by MULTIPLE_VALUES_SEPARATOR
+    String proteinId; // Transcript protein ID
 
     public Transcript() {
         super();
@@ -1119,10 +1120,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return bioType;
     }
 
-    public void setBioType(BioType bioType) {
-        this.bioType = bioType;
-    }
-
     /**
      * Get all CDSs
      */
@@ -1176,6 +1173,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return (Gene) findParent(Gene.class);
     }
 
+    public String getProteinId() {
+        return proteinId;
+    }
+
     public String[] getTags() {
         if (tags == null || tags.isEmpty()) return new String[0];
         return tags.split(GffMarker.MULTIPLE_VALUES_SEPARATOR);
@@ -1183,10 +1184,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
     public TranscriptSupportLevel getTranscriptSupportLevel() {
         return transcriptSupportLevel;
-    }
-
-    public void setTranscriptSupportLevel(TranscriptSupportLevel transcriptSupportLevel) {
-        this.transcriptSupportLevel = transcriptSupportLevel;
     }
 
     /**
@@ -1312,10 +1309,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return canonical;
     }
 
-    public void setCanonical(boolean canonical) {
-        this.canonical = canonical;
-    }
-
     /**
      * Is this variant in the CDS part of this transcript?
      */
@@ -1414,10 +1407,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
     public boolean isProteinCoding() {
         return proteinCoding;
-    }
-
-    public void setProteinCoding(boolean proteinCoding) {
-        this.proteinCoding = proteinCoding;
     }
 
     public boolean isRibosomalSlippage() {
@@ -1686,8 +1675,28 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 ;
     }
 
+    public void setBioType(BioType bioType) {
+        this.bioType = bioType;
+    }
+
+    public void setCanonical(boolean canonical) {
+        this.canonical = canonical;
+    }
+
+    public void setProteinCoding(boolean proteinCoding) {
+        this.proteinCoding = proteinCoding;
+    }
+
+    public void setProteinId(String proteinId) {
+        this.proteinId = proteinId;
+    }
+
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public void setTranscriptSupportLevel(TranscriptSupportLevel transcriptSupportLevel) {
+        this.transcriptSupportLevel = transcriptSupportLevel;
     }
 
     public void sortCds() {

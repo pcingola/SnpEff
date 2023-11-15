@@ -21,6 +21,23 @@ public class GffMarker extends Custom {
 
 	private static final long serialVersionUID = -164502778854644537L;
 	public static final String MULTIPLE_VALUES_SEPARATOR = ";";
+	public static final String FIELD_BIOTYPE = "biotype";
+	public static final String FIELD_DB_XREF = "db_xref";
+	public static final String FIELD_EXON_ID = "exon_id";
+	public static final String FIELD_GENE = "gene";
+	public static final String FIELD_GENE_BIOTYPE = "gene_biotype";
+	public static final String FIELD_GENE_ID = "gene_id";
+	public static final String FIELD_GENE_NAME = "gene_name";
+	public static final String FIELD_GENE_TYPE = "gene_type";
+	public static final String FIELD_ID = "ID";
+	public static final String FIELD_NAME = "name";
+	public static final String FIELD_NAMEU = "Name";
+	public static final String FIELD_PARENT = "Parent";
+	public static final String FIELD_PROTEIN_ID = "protein_id";
+	public static final String FIELD_TAG = "tag";
+	public static final String FIELD_TRANSCRIPT_ID = "transcript_id";
+	public static final String FIELD_TRANSCRIPT_TSL = "transcript_support_level";
+	public static final String FIELD_TRANSCRIPT_VERSION = "transcript_version";
 
 	String source;
 	int frame;
@@ -91,14 +108,14 @@ public class GffMarker extends Custom {
 	}
 
 	protected String getBioType() {
-		return getAttr("biotype");
+		return getAttr(FIELD_BIOTYPE);
 	}
 
 	protected BioType getBiotypeGeneric() {
 		BioType bioType = null;
 
 		// Use generic biotype field
-		if (hasAttr("biotype")) return BioType.parse(getAttr("biotype"));
+		if (hasAttr(FIELD_BIOTYPE)) return BioType.parse(getAttr(FIELD_BIOTYPE));
 
 		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
 		bioType = BioType.parse(source);
@@ -115,7 +132,7 @@ public class GffMarker extends Custom {
 	public BioType getGeneBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "gene_biotype" and GenCode uses "gene_type"
-		String keys[] = { "gene_biotype", "gene_type", "biotype" };
+		String keys[] = { FIELD_GENE_BIOTYPE, FIELD_GENE_TYPE, FIELD_BIOTYPE };
 
 		for (String key : keys)
 			if (hasAttr(key)) return BioType.parse(getAttr(key));
@@ -124,17 +141,15 @@ public class GffMarker extends Custom {
 	}
 
 	public String getGeneId() {
-		String key = "gene_id";
-		if (hasAttr(key)) return getAttr(key);
+		if (hasAttr(FIELD_GENE_ID)) return getAttr(FIELD_GENE_ID);
 		if (gffType == GffType.GENE) return id;
 		if (gffType == GffType.TRANSCRIPT) return getGffParentId(true);
-
 		return GffType.GENE + "_" + id;
 	}
 
 	public String getGeneName() {
-		if (hasAttr("gene_name")) return getAttr("gene_name");
-		if (gffType == GffType.GENE && hasAttr("name")) return getAttr("name");
+		if (hasAttr(FIELD_GENE_NAME)) return getAttr(FIELD_GENE_NAME);
+		if (gffType == GffType.GENE && hasAttr(FIELD_NAME)) return getAttr(FIELD_NAME);
 		if (gffType == GffType.TRANSCRIPT) {
 			String pid = getGffParentId(true);
 			if (pid != null) return pid;
@@ -143,12 +158,12 @@ public class GffMarker extends Custom {
 	}
 
 	public String getGffParentId(boolean doNotRecurse) {
-		if (hasAttr("Parent")) return getAttr("Parent");
+		if (hasAttr(FIELD_PARENT)) return getAttr(FIELD_PARENT);
 
 		switch (gffType) {
 		case TRANSCRIPT:
 		case INTRON_CONSERVED:
-			if (hasAttr("gene")) return getAttr("gene");
+			if (hasAttr(FIELD_GENE)) return getAttr(FIELD_GENE);
 			return doNotRecurse ? null : getGeneId(); // Avoid infinite recursion
 
 		case EXON:
@@ -168,7 +183,7 @@ public class GffMarker extends Custom {
 	 * Parent can have multiple, comma separated entries
 	 */
 	public String[] getGffParentIds() {
-		String ids = getAttr("Parent");
+		String ids = getAttr(FIELD_PARENT);
 		if (ids != null) return ids.split(",");
 
 		// Nothing found? Try to find parentId
@@ -184,6 +199,10 @@ public class GffMarker extends Custom {
 		return gffType;
 	}
 
+	public String getProteinId() {
+		return getAttr(FIELD_PROTEIN_ID);
+	}
+
 	public BioType getTranscriptBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "transcript_biotype" and GenCode uses "transcript_type"
@@ -195,16 +214,23 @@ public class GffMarker extends Custom {
 		return getBiotypeGeneric();
 	}
 
+	public String getTags() {
+        return getAttr(FIELD_TAG);
+    }
+
+	public String getTranscriptTsl() {
+        return getAttr(FIELD_TRANSCRIPT_TSL);
+    }
+
 	public String getTranscriptId() {
-		String key = "transcript_id";
-		if (hasAttr(key)) return getAttr(key);
+		if (hasAttr(FIELD_TRANSCRIPT_ID)) return getAttr(FIELD_TRANSCRIPT_ID);
 		if (gffType == GffType.TRANSCRIPT) return id;
 		if (gffType == GffType.EXON) return getGffParentId(true);
 		return GffType.TRANSCRIPT + "_" + id;
 	}
 
 	public String getTranscriptVersion() {
-		return getAttr("transcript_version");
+		return getAttr(FIELD_TRANSCRIPT_VERSION);
 	}
 
 	/**
@@ -323,12 +349,12 @@ public class GffMarker extends Custom {
 	protected String parseId() {
 		String id = "";
 
-		if (hasAttr("ID")) id = getAttr("ID");
-		else if (gffType == GffType.GENE && hasAttr("gene_id")) id = getAttr("gene_id");
-		else if (gffType == GffType.TRANSCRIPT && hasAttr("transcript_id")) id = getAttr("transcript_id");
-		else if (gffType == GffType.EXON && hasAttr("exon_id")) id = getAttr("exon_id");
-		else if (hasAttr("db_xref")) id = getAttr("db_xref");
-		else if (hasAttr("Name")) id = getAttr("Name");
+		if (hasAttr(FIELD_ID)) id = getAttr(FIELD_ID);
+		else if (gffType == GffType.GENE && hasAttr(FIELD_GENE_ID)) id = getAttr(FIELD_GENE_ID);
+		else if (gffType == GffType.TRANSCRIPT && hasAttr(FIELD_TRANSCRIPT_ID)) id = getAttr(FIELD_TRANSCRIPT_ID);
+		else if (gffType == GffType.EXON && hasAttr(FIELD_EXON_ID)) id = getAttr(FIELD_EXON_ID);
+		else if (hasAttr(FIELD_DB_XREF)) id = getAttr(FIELD_DB_XREF);
+		else if (hasAttr(FIELD_NAMEU)) id = getAttr(FIELD_NAMEU);
 		else id = gffType + "_" + getChromosomeName() + "_" + (start + 1) + "_" + (end + 1); // No ID => create one
 
 		return id.trim(); // Sometimes names or IDs may have spaces, we have to get rid of them
