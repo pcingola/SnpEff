@@ -109,6 +109,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
                 case CDS:
                     Cds cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id);
                     cds.setFrame(gffMarker.getFrame());
+                    // Is there protein ID information? Usually this is in CDS lines (instead of 'transcript' or 'exon' lines
+                    var protein_id = gffMarker.getProteinId();
+                    if( protein_id != null ) tr.setProteinId(protein_id);
                     add(cds);
                     break;
 
