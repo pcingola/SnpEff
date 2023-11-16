@@ -278,7 +278,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         if (protein_id != null ) {
             tr.setProteinId(protein_id);
             // Check it it is protein coding
-            if(!tr.isProteinCoding()) Log.warning("Transcript is not marked as 'protein codin' but has a protein ID '" + protein_id + "'");
+            if(!tr.isProteinCoding()) Log.warning("Transcript is not marked as 'protein coding' but has a protein ID '" + protein_id + "'");
         }
 
         // Add transcript
