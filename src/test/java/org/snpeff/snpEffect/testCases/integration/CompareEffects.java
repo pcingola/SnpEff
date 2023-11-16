@@ -25,31 +25,24 @@ public class CompareEffects {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
-
 	boolean createOutputFile = false;
 	boolean useAaNoNum = false;
 	boolean shiftHgvs = false;
 	Config config;
 	Genome genome;
-	Random rand;
-	long randSeed;
 	String genomeName;
 	SnpEffectPredictor snpEffectPredictor;
 
-	public CompareEffects(SnpEffectPredictor snpEffectPredictor, long randSeed, boolean verbose) {
+	public CompareEffects(SnpEffectPredictor snpEffectPredictor, boolean verbose) {
 		genomeName = "test";
-		this.randSeed = randSeed;
 		this.verbose = verbose;
 		this.snpEffectPredictor = snpEffectPredictor;
-		initRand();
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 	}
 
-	public CompareEffects(String genomeName, long randSeed, boolean verbose) {
+	public CompareEffects(String genomeName, boolean verbose) {
 		this.genomeName = genomeName;
-		this.randSeed = randSeed;
 		this.verbose = verbose;
-		initRand();
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 	}
 
@@ -116,10 +109,6 @@ public class CompareEffects {
 
 	public Config getConfig() {
 		return config;
-	}
-
-	void initRand() {
-		rand = new Random(randSeed);
 	}
 
 	public void initSnpEffPredictor() {

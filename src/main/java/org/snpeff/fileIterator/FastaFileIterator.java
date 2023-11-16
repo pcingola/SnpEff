@@ -79,12 +79,10 @@ public class FastaFileIterator extends FileIterator<String> {
 	 * Format example:
 	 *     '>ENSP00000356130 pep:known chromosome:GRCh37:1:205111633:205180694:-1 gene:ENSG00000133059 transcript:ENST00000367162'
 	 */
-	public String getTranscriptId() {
+	public String getIdFromFastaHeader() {
 		Matcher mmatcher = transcriptPattern.matcher(getHeader());
 		if (mmatcher.find()) return mmatcher.group(1);
-
-		// Nothing found? just return the name
-		return getName();
+		return getName();  // Nothing found? just return the name
 	}
 
 	/**

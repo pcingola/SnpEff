@@ -43,9 +43,6 @@ public class FindRareAaIntervals {
 
 	/**
 	 * Add a rare amino acid (if not already added)
-	 * @param tr
-	 * @param start
-	 * @param end
 	 */
 	void addRareAa(Transcript tr, int start, int end) {
 		int s = Math.min(start, end);
@@ -81,24 +78,26 @@ public class FindRareAaIntervals {
 
 	/**
 	 * Find interval AA index in a transcript
-	 * @param trId
-	 * @param aaIdx
 	 */
-	void findRareAaSites(String trId, int aaIdx) {
+	void findRareAaSites(String id, int aaIdx) {
 		// Create index?
 		if (trById == null) {
 			trById = new HashMap<String, Transcript>();
 			for (Gene gene : genome.getGenome().getGenes())
-				for (Transcript tr : gene)
+				for (Transcript tr : gene) {
+					// Add trascript by transcript_id and protein_id
 					trById.put(tr.getId(), tr);
+					if(tr.hasProteinId()) trById.put(tr.getProteinId(), tr);
+				}
 		}
 
 		// Find transcript
-		Transcript tr = trById.get(trId);
+		Transcript tr = trById.get(id);
 		if (tr == null) {
-			Log.warning(ErrorWarningType.WARNING_RARE_AA_POSSITION_NOT_FOUND, "Cannot find transcript '" + trId + "'");
+			Log.warning(ErrorWarningType.WARNING_RARE_AA_POSSITION_NOT_FOUND, "Cannot find transcript '" + id + "'");
 			return;
 		}
+		if( verbose ) Log.info("Found rare amino acid transcript ID '" + tr.getId() + "'" + ( tr.hasProteinId() ? ", protein ID '" + tr.getProteinId() + "'" : ""));
 
 		// Create markers. There might be more than one interval since an intron can be in the middle of the codon.
 		int cds2pos[] = tr.baseNumberCds2Pos();
@@ -132,8 +131,8 @@ public class FindRareAaIntervals {
 			for (char aa : rareAaChr) {
 				int aaIdx = seq.indexOf(aa);
 				if (aaIdx >= 0) { // Has this protein sequence any rare AA?
-					String trId = ffi.getTranscriptId();
-					findRareAaSites(trId, aaIdx);
+					String fastaId = ffi.getIdFromFastaHeader();  // This could be transcript_id or protein_id
+					findRareAaSites(fastaId, aaIdx);
 				}
 			}
 		}

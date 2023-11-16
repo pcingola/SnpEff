@@ -127,7 +127,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 //        if (verbose) Log.info("effTypes:" + effTypes);
 //        assertTrue(effTypes.contains(EffectType.SPLICE_SITE_REGION), "Effect type 'SPLICE_SITE_REGION' not found");
 
-        throw new RuntimeException("UNIMPLEMENT !!!!!!! ");
+        throw new RuntimeException("UNIMPLEMENTED !!!!!!! ");
     }
 
     /**

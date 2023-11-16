@@ -109,6 +109,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
                 case CDS:
                     Cds cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id);
                     cds.setFrame(gffMarker.getFrame());
+                    // Is there protein ID information? Usually this is in CDS lines (instead of 'transcript' or 'exon' lines
+                    var protein_id = gffMarker.getProteinId();
+                    if( protein_id != null ) tr.setProteinId(protein_id);
                     add(cds);
                     break;
 
@@ -255,16 +258,28 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         tr.setBioType(gffMarker.getTranscriptBiotype());
 
         // Transcript support level  (TSL)
-        String tslStr = gffMarker.getAttr("transcript_support_level");
+        String tslStr = gffMarker.getTranscriptTsl();
         if (tslStr != null) tr.setTranscriptSupportLevel(TranscriptSupportLevel.parse(tslStr));
 
         // Transcript version
         String ver = gffMarker.getTranscriptVersion();
         if (ver != null) tr.setVersion(ver);
 
+        // Update gene bio-type (if needed)
+        BioType geneBioType = gffMarker.getGeneBiotype();
+        if (gene.getBioType() == null && geneBioType != null) gene.setBioType(geneBioType);
+
         // Tags: Tab separated tags in one string
-        String tags = gffMarker.getAttr("tag");
+        String tags = gffMarker.getTags();
         if(tags != null) tr.setTags(tags);
+
+        // Add protein ID
+        String protein_id = gffMarker.getProteinId();
+        if (protein_id != null ) {
+            tr.setProteinId(protein_id);
+            // Check it it is protein coding
+            if(!tr.isProteinCoding()) Log.warning("Transcript is not marked as 'protein coding' but has a protein ID '" + protein_id + "'");
+        }
 
         // Add transcript
         add(tr);
@@ -272,10 +287,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
         //---
         // Sanity check and updates for gene
         //---
-
-        // Update gene bio-type (if needed)
-        BioType geneBioType = gffMarker.getGeneBiotype();
-        if (gene.getBioType() == null && geneBioType != null) gene.setBioType(geneBioType);
 
         // Check that gene and transcript are in the same chromosome
         if (!gene.getChromosomeName().equals(tr.getChromosomeName())) {

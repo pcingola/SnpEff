@@ -49,42 +49,31 @@ public class SnpEffCmdProtein extends SnpEff {
 	int totalNotFound = 0;
 	String configFile = Config.DEFAULT_CONFIG_FILE;
 	String proteinFile = "";
-	Map<String, String> proteinByTrId;
+	Map<String, String> proteinById; // Protein sequence by ID (transcript ID, protein ID, etc.)
 	AutoHashMap<String, List<Transcript>> trByChromo;
 	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<>();
 
 	public SnpEffCmdProtein() {
 	}
 
-//	public SnpEffCmdProtein(Config config) {
-//		this.config = config;
-//		proteinFile = config.getFileNameProteins();
-//	}
-
 	public SnpEffCmdProtein(Config config, String proteinFile) {
 		this.config = config;
 		this.proteinFile = proteinFile;
 	}
 
-//	public SnpEffCmdProtein(String genomeVer, String configFile, String proteinFile) {
-//		this.configFile = configFile;
-//		this.genomeVer = genomeVer;
-//		this.proteinFile = proteinFile;
-//	}
-
 	void add(String trId, String seq, int lineNum, boolean check) {
 		// Repeated transcript Id? => Check that Protein is the same
-		if (check && (proteinByTrId.get(trId) != null) && (!proteinByTrId.get(trId).equals(seq))) //
+		if (check && (proteinById.get(trId) != null) && (!proteinById.get(trId).equals(seq))) //
 			System.err.println("ERROR: Different protein for the same transcript ID. This should never happen!!!"//
 					+ "\n\tLine number   : " + lineNum //
 					+ "\n\tTranscript ID : '" + trId + "'"//
-					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
+					+ "\n\tProtein       : " + proteinById.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
 			);
 
 		// Use whole trId
-		proteinByTrId.put(trId, seq); // Add it to the hash
-		if (debug) Log.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
+		proteinById.put(trId, seq); // Add it to the hash
+		if (debug) Log.debug("Adding proteinById{'" + trId + "'} :\t" + seq);
 	}
 
 	/**
@@ -268,7 +257,12 @@ public class SnpEffCmdProtein extends SnpEff {
 		for (Transcript tr : trList) {
 			char status = ' ';
 			String protein = tr.protein();
-			String proteinReference = proteinByTrId.get(tr.getId());
+			String proteinReference = proteinById.get(tr.getId());
+
+			// Not found using transcript ID? Try protein ID
+			if( proteinReference == null && tr.hasProteinId()) {
+				proteinReference = proteinById.get(tr.getProteinId());
+            }
 
 			if (proteinReference == null) {
 				if (tr.isProteinCoding()) {
@@ -404,14 +398,14 @@ public class SnpEffCmdProtein extends SnpEff {
 	 */
 	void readProteinFile() {
 		if (verbose) Log.info("Reading proteins from file '" + proteinFile + "'...");
-		proteinByTrId = new HashMap<>();
+		proteinById = new HashMap<>();
 
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK)) readProteinFileGenBank();
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryEmbl.EXTENSION_EMBL)) readProteinFileEmbl();
 		else readProteinFileFasta();
 
-		if (verbose) Log.info("done (" + proteinByTrId.size() + " Proteins).");
+		if (verbose) Log.info("done (" + proteinById.size() + " Proteins).");
 	}
 
 	/**
@@ -430,8 +424,8 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Load file
 		FastaFileIterator ffi = new FastaFileIterator(proteinFile);
 		for (String seq : ffi) {
-			String trId = ffi.getTranscriptId();
-			add(trId, seq, ffi.getLineNum(), true);
+			String fastaId = ffi.getIdFromFastaHeader(); // Note that this could be transcript_id or protein_id
+			add(fastaId, seq, ffi.getLineNum(), true);
 
 			// Also try processing header line using different separators
 			List<String> ids = ffi.fastaHeader2Ids();
@@ -529,7 +523,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) Log.info("Checking database using protein sequences");
 
 		loadConfig(); // Load config
-		if (proteinByTrId == null) readProteinFile(); // Read proteins
+		if (proteinById == null) readProteinFile(); // Read proteins
 		loadDb(); // Load database
 		return checkProteins(); // Compare proteins
 	}
@@ -554,7 +548,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	String sampleTrIdsFasta(int maxTrIds) {
 		StringBuilder sb = new StringBuilder();
 		int count = 0;
-		for (String trid : proteinByTrId.keySet()) {
+		for (String trid : proteinById.keySet()) {
 			sb.append("\t'" + trid + "'\n");
 			if (count++ > maxTrIds) return sb.toString();
 		}
@@ -576,8 +570,8 @@ public class SnpEffCmdProtein extends SnpEff {
 			tr.resetCache();
 	}
 
-	public void setProteinByTrId(Map<String, String> proteinByTrId) {
-		this.proteinByTrId = proteinByTrId;
+	public void setProteinByTrId(Map<String, String> proteinById) {
+		this.proteinById = proteinById;
 	}
 
 	public void setMaxErrorRate(double maxErrorRate) { this.maxErrorRate = maxErrorRate; }

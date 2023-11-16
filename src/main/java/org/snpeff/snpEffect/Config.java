@@ -70,6 +70,7 @@ public class Config implements Serializable, Iterable<String> {
     double lofIgnoreProteinCodingBefore;
     double lofDeleteProteinCodingBases;
     String configFileName = "";
+    String configFileCanonicaPath;
     String configDirPath = ""; // Configuration file directory
     String dataDir; // Directory containing all databases and genomes
     String genomeVersion;
@@ -247,6 +248,35 @@ public class Config implements Serializable, Iterable<String> {
     }
 
     /**
+     * Find config file in different locations
+     * @param configFileName
+     * @return Canonical path to config file
+     */
+    String findConfigFile(String configFile) {
+        try {
+            // Build error message
+            File confFile = new File(configFile);
+            if (verbose) Log.info("Looking for config file: '" + confFile.getCanonicalPath() + "'");
+            if( confFile.exists() && confFile.canRead() ) return confFile.getCanonicalPath();
+
+            // Absolute path? Nothing else to do...
+            if (confFile.isAbsolute())
+                throw new RuntimeException("Cannot find config file '" + confFile.getCanonicalPath() + "'");
+
+            // Try reading from current execution directory
+            String confPath = getRelativeConfigPath() + "/" + configFile;
+            confFile = new File(confPath);
+            if( confFile.exists() && confFile.canRead() ) return confFile.getCanonicalPath();
+
+            throw new RuntimeException("Cannot find config file '" + configFile + "'\n");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Cannot find config file '" + configFile + "'");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Genes file path (no extension)
      */
     public String getBaseFileNameGenes() {
@@ -277,6 +307,10 @@ public class Config implements Serializable, Iterable<String> {
 
     public String getConfigFileName() {
         return configFileName;
+    }
+
+    public String getConfigFileCanonicaPath() {
+        return configFileCanonicaPath;
     }
 
     public String getCoordinates() {
@@ -474,6 +508,29 @@ public class Config implements Serializable, Iterable<String> {
         return nameById.get(genomeVersion);
     }
 
+    public String getProperty(String property) {
+        if (!properties.containsKey(property)) {
+            if( isDebug() ) Log.warning("Property '" + property + "' not found in config file '" + getConfigFileCanonicaPath() + "'");
+            return null;
+        } 
+        return properties.getProperty(property);
+    }
+
+    /**
+	 * Parse a comma separated property as a string array
+	*/
+	public String[] propertyToStringArray(String attr) {
+		String value = properties.getProperty(attr);
+		if (value == null) return new String[0];
+
+		String values[] = value.split("[\\s+,]");
+		LinkedList<String> list = new LinkedList<>();
+		for (String val : values)
+			if (val.length() > 0) list.add(val);
+
+		return list.toArray(new String[0]);
+	}
+
     public String getReference(String genomeVersion) {
         return referenceById.get(genomeVersion);
     }
@@ -529,10 +586,11 @@ public class Config implements Serializable, Iterable<String> {
         this.genomeVersion = genomeVersion;
         this.dataDir = dataDir;
 
-        readConfig(configFileName, override); // Read config file and get a genome
+        configFileCanonicaPath = findConfigFile(configFileName);
+        readConfig(configFileCanonicaPath, override); // Read config file and get a genome
         genome = genomeById.get(genomeVersion); // Set a genome
         if (!genomeVersion.isEmpty() && (genome == null))
-            throw new RuntimeException("No such genome '" + genomeVersion + "' in config file '" + configFileName + "'");
+            throw new RuntimeException("No such genome '" + genomeVersion + "' in config file '" + configFileCanonicaPath + "'");
 
         // Make this the current singleton instance
         configInstance = this;
@@ -652,12 +710,12 @@ public class Config implements Serializable, Iterable<String> {
      *
      * @return true if success
      */
-    boolean loadProperties(String configFileName) {
+    boolean loadProperties(String configPath) {
         try {
-            File confFile = new File(configFileName);
+            File confFile = new File(configPath);
             if (verbose) Log.info("Reading config file: " + confFile.getCanonicalPath());
 
-            if (Gpr.canRead(configFileName)) {
+            if (Gpr.canRead(configPath)) {
                 // Load properties
                 var freader = new FileReader(confFile);
                 properties.load(freader);
@@ -691,11 +749,11 @@ public class Config implements Serializable, Iterable<String> {
     /**
      * Read configuration file and create all 'genomes'
      */
-    private void readConfig(String configFileName, Map<String, String> override) {
+    private void readConfig(String configPath, Map<String, String> override) {
         //---
         // Read properties file
         //---
-        configFileName = readProperties(configFileName, override);
+        readProperties(configPath, override);
 
         //---
         // Set attributes
@@ -754,7 +812,7 @@ public class Config implements Serializable, Iterable<String> {
         // Genome specified?
         if (!genomeVersion.isEmpty()) {
             readGenomeConfig(genomeVersion, properties); // Read configuration file for genome version (if any)
-            genome = new Genome(genomeVersion, properties); // Create genome object
+            genome = new Genome(genomeVersion, this); // Create genome object
             genomeById.put(genomeVersion, genome);
             createCodonTables(genomeVersion, properties); // Codon tables
         }
@@ -790,47 +848,17 @@ public class Config implements Serializable, Iterable<String> {
     }
 
     /**
-     * Reads a properties file
-     *
-     * @return The path where config file is located
-     */
-    String readProperties(String configFileName) {
-        properties = new Properties();
-        try {
-            // Build error message
-            File confFile = new File(configFileName);
-            if (loadProperties(configFileName)) return configFileName;
-
-            // Absolute path? Nothing else to do...
-            if (confFile.isAbsolute())
-                throw new RuntimeException("Cannot read config file '" + confFile.getCanonicalPath() + "'");
-
-            // Try reading from current execution directory
-            String confPath = getRelativeConfigPath() + "/" + configFileName;
-            confFile = new File(confPath);
-            if (loadProperties(confPath)) return confPath;
-
-            throw new RuntimeException("Cannot read config file '" + configFileName + "'\n");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Cannot find config file '" + configFileName + "'");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Read config file
      */
-    String readProperties(String configFileName, Map<String, String> override) {
-        String configFile = readProperties(configFileName);
+    void readProperties(String configPath, Map<String, String> override) {
+        properties = new Properties();
+        if (!loadProperties(configPath)) throw new RuntimeException("Cannot read config file '" + configPath + "'\n");
 
         if (override != null) {
             for (String key : override.keySet()) {
                 properties.setProperty(key, override.get(key));
             }
         }
-
-        return configFile;
     }
 
     /**
