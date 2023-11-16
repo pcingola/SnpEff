@@ -510,7 +510,7 @@ public class Config implements Serializable, Iterable<String> {
 
     public String getProperty(String property) {
         if (!properties.containsKey(property)) {
-            Log.warning("Property '" + property + "' not found in config file '" + getConfigFileCanonicaPath() + "'");
+            if( isDebug() ) Log.warning("Property '" + property + "' not found in config file '" + getConfigFileCanonicaPath() + "'");
             return null;
         } 
         return properties.getProperty(property);

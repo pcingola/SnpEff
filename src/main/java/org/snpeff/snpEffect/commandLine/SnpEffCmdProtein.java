@@ -424,8 +424,8 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Load file
 		FastaFileIterator ffi = new FastaFileIterator(proteinFile);
 		for (String seq : ffi) {
-			String trId = ffi.getTranscriptId();
-			add(trId, seq, ffi.getLineNum(), true);
+			String fastaId = ffi.getIdFromFastaHeader(); // Note that this could be transcript_id or protein_id
+			add(fastaId, seq, ffi.getLineNum(), true);
 
 			// Also try processing header line using different separators
 			List<String> ids = ffi.fastaHeader2Ids();
