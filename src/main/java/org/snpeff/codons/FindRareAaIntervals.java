@@ -43,9 +43,6 @@ public class FindRareAaIntervals {
 
 	/**
 	 * Add a rare amino acid (if not already added)
-	 * @param tr
-	 * @param start
-	 * @param end
 	 */
 	void addRareAa(Transcript tr, int start, int end) {
 		int s = Math.min(start, end);
@@ -90,7 +87,7 @@ public class FindRareAaIntervals {
 				for (Transcript tr : gene) {
 					// Add trascript by transcript_id and protein_id
 					trById.put(tr.getId(), tr);
-					if(tr.getProteinId()!= null) trById.put(tr.getProteinId(), tr);
+					if(tr.hasProteinId()) trById.put(tr.getProteinId(), tr);
 				}
 		}
 
@@ -100,7 +97,7 @@ public class FindRareAaIntervals {
 			Log.warning(ErrorWarningType.WARNING_RARE_AA_POSSITION_NOT_FOUND, "Cannot find transcript '" + id + "'");
 			return;
 		}
-		Log.debug("FOUND RARE AMINO ACIDS IN TRANSCRIPT '" + tr.getId() + "' PROTEIN: " + tr.getProteinId());
+		if( verbose ) Log.info("Found rare amino acid transcript ID '" + tr.getId() + "'" + ( tr.hasProteinId() ? ", protein ID '" + tr.getProteinId() + "'" : ""));
 
 		// Create markers. There might be more than one interval since an intron can be in the middle of the codon.
 		int cds2pos[] = tr.baseNumberCds2Pos();

@@ -1,5 +1,6 @@
 package org.snpeff.snpEffect.testCases.integration;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
@@ -36,7 +37,7 @@ public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
     }
 
     @Test
-    public void test_start_codon_translate() {
+    public void test_02_start_codon_translate() {
         Log.debug("Test");
 
         // Initialize
@@ -56,4 +57,26 @@ public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
         }
         assertTrue(checked);
     }
+
+    /**
+     * Check proteins using MANE genome with RefSeq IDs and 'NP_*' identifiers in the protein fasta file
+     */
+    @Test
+    public void test_03_build_mane_refseq_check_proteins() {
+        var genome = "test_GRCh38.mane.1.0.refseq.chr21";
+        var sep = build(genome);
+        // Check that all transcripts have protein IDs
+        var count = 0;
+        for(Gene g:sep.getGenome().getGenes()) {
+            for(Transcript tr: g) {
+                if( tr.isProteinCoding() ) {
+                    Assertions.assertNotNull(tr.getProteinId());
+                    count++;
+                }
+            }
+        }
+        Assertions.assertEquals(count, 213);
+    }
+
+
 }

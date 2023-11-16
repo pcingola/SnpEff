@@ -260,7 +260,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			String proteinReference = proteinById.get(tr.getId());
 
 			// Not found using transcript ID? Try protein ID
-			if( proteinReference == null && tr.getProteinId() != null) {
+			if( proteinReference == null && tr.hasProteinId()) {
 				proteinReference = proteinById.get(tr.getProteinId());
             }
 

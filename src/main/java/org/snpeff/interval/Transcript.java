@@ -1173,6 +1173,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return (Gene) findParent(Gene.class);
     }
 
+    public boolean hasProteinId() {
+        return proteinId!= null && !proteinId.isEmpty();
+    }
+
     public String getProteinId() {
         return proteinId;
     }
@@ -1650,6 +1654,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
             cdss.add((Cds) m);
         
         tags = markerSerializer.getNextField();
+        proteinId = markerSerializer.getNextField();
     }
 
     /**
@@ -1672,6 +1677,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
                 + "\t" + markerSerializer.save((Iterable) utrs)//
                 + "\t" + markerSerializer.save((Iterable) cdss)//
                 + "\t" + tags //
+                + "\t" + proteinId //
                 ;
     }
 
