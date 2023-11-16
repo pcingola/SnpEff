@@ -1182,7 +1182,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
     }
 
     public String[] getTags() {
-        if (tags == null || tags.isEmpty()) return new String[0];
+        if (!hasTags()) return new String[0];
         return tags.split(GffMarker.MULTIPLE_VALUES_SEPARATOR);
     }
 
@@ -1240,11 +1240,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
      * Does this transcript have 'tag'?
      */
     public boolean hasTag(String tag) {
-        if( tags == null ) return false;
+        if( !hasTags() ) return false;
         for(String t: getTags())
             if( t.equals(tag) ) return true;
         return false;
     }
+
+    public boolean hasTags() {
+        return tags != null && !tags.isEmpty();
+    }
+
 
     public boolean hasTranscriptSupportLevelInfo() {
         return (transcriptSupportLevel != null) && (transcriptSupportLevel != TranscriptSupportLevel.TSL_NA);
@@ -1737,6 +1742,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         if (isProteinCoding()) sb.append(", Protein");
         if (isAaCheck()) sb.append(", AA check");
         if (isDnaCheck()) sb.append(", DNA check");
+        if (hasTags()) sb.append(", tags: '" + tags + "'");
+        if (hasProteinId()) sb.append(", protein ID: " + getProteinId());
 
         if (numChilds() > 0) {
             sb.append("\n");
