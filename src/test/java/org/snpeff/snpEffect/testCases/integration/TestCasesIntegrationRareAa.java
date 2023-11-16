@@ -1,7 +1,5 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +17,7 @@ import org.snpeff.util.Log;
 /**
  * Test case
  */
-public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
+public class TestCasesIntegrationRareAa extends TestCasesIntegrationBase {
 
     /**
      * This is used to create the test case for one chromomsome out of a genome.
@@ -51,30 +49,22 @@ public class TestCasesIntegrationZzz2 extends TestCasesIntegrationBase {
     }
 
     /**
-     * Check proteins using MANE genome with RefSeq IDs and 'NP_*' identifiers in the protein fasta file
+     * Rare Amino acid
      */
     @Test
-    public void test_01_build_mane_refseq_check_proteins() {
-        var genome = "test_GRCh38.mane.1.0.refseq.chr21";
-        var sep = build(genome);
-        // Check that all transcripts have protein IDs
-        var count = 0;
-        for(Gene g:sep.getGenome().getGenes()) {
-            for(Transcript tr: g) {
-                if( tr.isProteinCoding() ) {
-                    Assertions.assertNotNull(tr.getProteinId());
-                    count++;
-                }
-            }
-        }
-        Assertions.assertEquals(count, 213);
+    public void test_01_RareAa() {
+        Log.debug("Test");
+        String genomeName = "testHg3765Chr22";
+        CompareEffects comp = new CompareEffects(genomeName, verbose);
+        comp.snpEffect(path("rareAa.txt"), null, true);
     }
+
 
     /**
      * Rare amino acids when building with MANE genome with RefSeq IDs
      */
     @Test
-    public void test_01_build_mane_refseq_rare_aa() {
+    public void test_02_build_mane_refseq_rare_aa() {
         var genome = "test_GRCh38.mane.1.0.refseq.chr19";
         var sep = build(genome);
         // Expected transcripts with rare amino acids
