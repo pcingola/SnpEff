@@ -1743,7 +1743,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         if (isAaCheck()) sb.append(", AA check");
         if (isDnaCheck()) sb.append(", DNA check");
         if (hasTags()) sb.append(", tags: '" + tags + "'");
-        if (hasProteinId()) sb.append(", protein ID: " + getProteinId());
+        if (hasProteinId()) sb.append(", protein id: " + getProteinId());
 
         if (numChilds() > 0) {
             sb.append("\n");
