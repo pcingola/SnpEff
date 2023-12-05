@@ -441,3 +441,20 @@ Transcript (codon table: Standard ) :   16:21834582-21857656, strand: -, id:NM_0
     ...                                                                                                                                                  | NM_001135865.1.4 has a 'V'
 
 ```
+
+
+## Cannot build database: `ERROR: Database check failed.`
+
+When building databases, SnpEff will attempt to check the database against a CDS FASTA file and a Protein FASTA file.
+Please see details in ['Building databases', section 'Step 3: Checking the database'](./build_db.md#step-3-checking-the-database)
+
+If neither a CDS FASTA file nor a Protein FASTA file is provided, this check will fail and SnpEff will refuse to save the database, by showing error message like this one:
+
+```
+ERROR: CDS check file './data/MY_GENOME/cds.fa' not found.
+ERROR: Protein check file './data/MY_GENOME/protein.fa' not found.
+ERROR: Database check failed.
+```
+
+To disable these checks, you need to specify *BOTH* commmand line options `-noCheckCds -noCheckProtein`.
+

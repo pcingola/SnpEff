@@ -333,10 +333,24 @@ In order to build a genome using UCSC tables, you can follow these instructions:
 SnpEff makes sure that the database is built correctly by comparing the internal representation with CDS and Protein sequences.
 The CDS and Protein sequences are obtained from the same source as the genome reference and gene annotation files.
 
+IMPORTANT: When building databases, SnpEff will attempt to check the database against a CDS FASTA file and a Protein FASTA file.
+If neither a CDS FASTA file nor a Protein FASTA file is provided, this check will fail and SnpEff will refuse to save the database, by showing error message like this one:
+
+```
+ERROR: CDS check file './data/MY_GENOME/cds.fa' not found.
+ERROR: Protein check file './data/MY_GENOME/protein.fa' not found.
+ERROR: Database check failed.
+```
+
 !!! warning
     If neither a "Protein" nor a "CDS" sequences are provided, SnpEff will not be able to check the database.
     By default, SnpEff will refuse to save any unchecked database.
 
+You can override this behaviour by using the `build` command with these command line options:
+
+- `-noCheckCds`: Skip CDS sequences check.
+- `-noCheckProtein`: Skip Protein sequences check.
+- `-noCheckCds -noCheckProtein`: When using *BOTH* command line options, SnpEff to save the new database without checking it (i.e. neither CDS nor protein sequences are checked).
 
 #### Checking CDS sequences
 

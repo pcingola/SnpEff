@@ -1717,11 +1717,23 @@ java -jar snpEff.jar build -refSeq -v hg19
 <h3 id="step-3-checking-the-database">Step 3: Checking the database</h3>
 <p>SnpEff makes sure that the database is built correctly by comparing the internal representation with CDS and Protein sequences.
 The CDS and Protein sequences are obtained from the same source as the genome reference and gene annotation files.</p>
+<p>IMPORTANT: When building databases, SnpEff will attempt to check the database against a CDS FASTA file and a Protein FASTA file.
+If neither a CDS FASTA file nor a Protein FASTA file is provided, this check will fail and SnpEff will refuse to save the database, by showing error message like this one:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDS check file &#39;./data/MY_GENOME/cds.fa&#39; not found.
+ERROR: Protein check file &#39;./data/MY_GENOME/protein.fa&#39; not found.
+ERROR: Database check failed.
+</code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>If neither a "Protein" nor a "CDS" sequences are provided, SnpEff will not be able to check the database.
 By default, SnpEff will refuse to save any unchecked database.</p>
 </div>
+<p>You can override this behaviour by using the <code>build</code> command with these command line options:</p>
+<ul>
+<li><code>-noCheckCds</code>: Skip CDS sequences check.</li>
+<li><code>-noCheckProtein</code>: Skip Protein sequences check.</li>
+<li><code>-noCheckCds -noCheckProtein</code>: When using <em>BOTH</em> command line options, SnpEff to save the new database without checking it (i.e. neither CDS nor protein sequences are checked).</li>
+</ul>
 <h4 id="checking-cds-sequences">Checking CDS sequences</h4>
 <p>When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when</p>
 <ul>

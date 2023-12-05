@@ -784,6 +784,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#cannot-build-database-error-database-check-failed" class="md-nav__link">
+    Cannot build database: ERROR: Database check failed.
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1665,6 +1672,15 @@ Transcript (codon table: Standard ) :   16:21834582-21857656, strand: -, id:NM_0
     Protein :   MVKLSIVLTPQFLSHDQGQLTKELQQHVKSVTCPCEYLRKVINTLADHHHRGTDFGGSPWLHVIIAFPTSYKVVITLWIVYLWVSLLKTIFWSRNGHDGSTDVQQRAWRSNRRRQEGLRSICMHTKKRVSSFRGNKIVLKDVITLRRHVETKVRAKIRKRKVTTKINHHDKINGKRKTARKQKMFQRAQELRRRAEDYHKCKIPPSARKALCNWVRMA...
     ...                                                                                                                                                  | NM_001135865.1.4 has a &#39;V&#39;
 </code></pre></div>
+<h2 id="cannot-build-database-error-database-check-failed">Cannot build database: <code>ERROR: Database check failed.</code></h2>
+<p>When building databases, SnpEff will attempt to check the database against a CDS FASTA file and a Protein FASTA file.
+Please see details in <a href="../build_db/#step-3-checking-the-database">'Building databases', section 'Step 3: Checking the database'</a></p>
+<p>If neither a CDS FASTA file nor a Protein FASTA file is provided, this check will fail and SnpEff will refuse to save the database, by showing error message like this one:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDS check file &#39;./data/MY_GENOME/cds.fa&#39; not found.
+ERROR: Protein check file &#39;./data/MY_GENOME/protein.fa&#39; not found.
+ERROR: Database check failed.
+</code></pre></div>
+<p>To disable these checks, you need to specify <em>BOTH</em> commmand line options <code>-noCheckCds -noCheckProtein</code>.</p>
 
 
 
