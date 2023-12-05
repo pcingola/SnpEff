@@ -457,4 +457,3 @@ ERROR: Database check failed.
 ```
 
 To disable these checks, you need to specify *BOTH* commmand line options `-noCheckCds -noCheckProtein`.
-
