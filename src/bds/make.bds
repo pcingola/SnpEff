@@ -52,7 +52,7 @@ ensemblReleases			:= [ensemblRelease]
 help MANE 
 downloadMane			:= false		help Download MANE
 maneGenome				:= 'GRCh38'		help MANE genome
-maneReleases			:= ['1.0', '1.2']		help MANE release version
+maneReleases			:= ['1.0', '1.2', '1.3']		help MANE release version
 maneSelect				:= false		help MANE 'select' or regular version
 maneTrIdTypes			:= ['ensembl', 'refseq']	help MANE release transcript ID type: {'ensembl', 'refseq'}
 
