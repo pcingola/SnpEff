@@ -9,7 +9,7 @@
 urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz"
 urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"
 urlDbSnpGrch37     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.25.gz"
-urlDbSnpGrch38     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.39.gz"
+urlDbSnpGrch38     := "https://ftp.ncbi.nih.gov/snp/latest_release/VCF/GCF_000001405.40.gz"
 urlGwasCatalog     := "https://www.ebi.ac.uk/gwas/api/search/downloads/alternative"
 urlJaspar          := "https://jaspar.genereg.net/download/data/2022/CORE/JASPAR2022_CORE_non-redundant_pfms_jaspar.txt"
 urlNextProt        := "https://download.nextprot.org/pub/current_release/xml/nextprot_all.xml.gz"
