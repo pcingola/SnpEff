@@ -115,7 +115,7 @@ void downloadEnsemblBulk(int ensemblRelease) {
 # Download ENSEMBL genomes via rsync
 #-------------------------------------------------------------------------------
 void downloadEnsemblRsync(int ensemblRelease) {
-	println "Downloading ENSEMBL (ftp) $ensemblRelease"
+	println "Downloading ENSEMBL (rsync) $ensemblRelease"
 
 	# Download GTF files
 	sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
@@ -246,7 +246,7 @@ void downloadEnsemblBfmpp() {
 		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
 			task( retry := retryRsync ) {
-				sys rsync -av\
+				sys rsync -av \
 						--include='*.$ensemblBfmppRelease\.gtf.gz' \
 						--include='*/' \
 						--exclude='*' \
@@ -256,7 +256,7 @@ void downloadEnsemblBfmpp() {
 
 			# Download FASTA files (reference genomes)
 			task(retry := retryRsync) {
-				sys rsync -av\
+				sys rsync -av \
 						--include='*.dna.toplevel.fa.gz' \
 						--include='*.cdna.all.fa.gz' \
 						--include='*.pep.all.fa.gz' \

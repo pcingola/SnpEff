@@ -20,9 +20,14 @@ distroCore 			:= false		help Create distribution files (zip only 'core')
 make	 			:= false		help Make (build JAR files)
 test	 			:= false		help Run SnpEff / SnpSift test cases
 
-help Data download options
-download 			:= false		help Download all genomes
-downloadSet			:= ''			help Download one genomes set
+help Download options
+download 			    := false		help Download all genomes
+downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
+downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
+downloadMane			:= false		help Download MANE
+downloadNcbi		    := ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
+downloadUcsc		    := ''			help Download genome files from UCSC (genome name)
+downloadSet			    := ''			help Download one genomes set
 
 help Upload options
 uploadCore			:= false		help Upload 'core' package
@@ -42,25 +47,18 @@ cpus = 1
 
 # Versions
 help Ensembl
-downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
-downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
 ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
 ensemblRelease			:= 110			help Vertebrate release number
 #ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
 ensemblReleases			:= [ensemblRelease]
 
 help MANE 
-downloadMane			:= false		help Download MANE
 maneGenome				:= 'GRCh38'		help MANE genome
 maneReleases			:= ['1.0', '1.2', '1.3']		help MANE release version
 maneSelect				:= false		help MANE 'select' or regular version
 maneTrIdTypes			:= ['ensembl', 'refseq']	help MANE release transcript ID type: {'ensembl', 'refseq'}
 
-help UCSC
-downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
-
 help NCBI
-downloadNcbi		:= ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
 ncbiId				:= ''			help Download genome ID from NCBI (both 'genome name' and 'genome ID' are required)
 
 help Flybase
@@ -558,17 +556,7 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'ucsc':
-			for( string ref : ucscGenomes ) {
-				dg := new DownloadUcsc(ref)
-				dg.download()
-			}
-			break
-
-		case 'ucsckg':
-			for( string ref : ucscGenomesKg ) {
-				dg := new DownloadUcscKg(ref)
-				dg.download()
-			}
+			downloadUcscGenomes()
 			break
 
 		default:
