@@ -67,11 +67,9 @@ void downloadUcscGenomesRsync() {
 			--include='*/bigZips/refMrna.fa.gz' \
 			--include='*/bigZips/mrna.fa.gz' \
 			--include='*/bigZips/*.fa.gz' \
-			--include='*/bigZips/chromFa.tar.gz'\
 			--include='*/bigZips/genes/*.refGene.gtf.gz' \
 			--include='*/bigZips/genes/*.ncbiRefSeq.gtf.gz' \
 			--include='*/bigZips/genes/*.knownGene.gtf.gz' \
-			--include='*/database/cytoBand.txt.gz' \
 			--include='*/' \
 			\
 			--exclude='*' \
@@ -94,12 +92,10 @@ void downloadUcscGenomeRsync(string genome) {
 			\
 			--include='$genome/bigZips/refMrna.fa.gz' \
 			--include='$genome/bigZips/mrna.fa.gz' \
-			--include='$genome/bigZips/*.fa.gz' \
-			--include='$genome/bigZips/chromFa.tar.gz'\
+			--include='$genome/bigZips/$genome\.fa.gz' \
 			--include='$genome/bigZips/genes/*.refGene.gtf.gz' \
 			--include='$genome/bigZips/genes/*.ncbiRefSeq.gtf.gz' \
 			--include='$genome/bigZips/genes/*.knownGene.gtf.gz' \
-			--include='$genome/*/database/cytoBand.txt.gz' \
 			--include='*/' \
 			\
 			--exclude='*' \
