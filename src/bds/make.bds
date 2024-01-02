@@ -202,6 +202,13 @@ void buildConfig() {
 
 	sys echo >> '$conf'
 	sys echo "#---" >> '$conf'
+	sys echo "# UCSC genomes" >> '$conf'
+	sys echo "#---" >> '$conf'
+	println("Adding configs '$confDir/snpEff.UCSC.config'")
+	sys cat	$confDir/snpEff.UCSC.config >> '$conf'
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
 	sys echo "# NCBI genomes" >> '$conf'
 	sys echo "#---" >> '$conf'
 	println("Adding configs '$confDir/snpEff.NCBI.*.config'")
