@@ -120,8 +120,11 @@ string[] getUcscDownloadedGenomes() {
 	downloadUcscDir.chdir()
 	string[] genomes
 	for(string genome: downloadUcscDir.dir()) {
-		genomeFasta := "$downloadUcscDir/$genome/bigZips/$genome\.fa.gz"
-		if( genomeFasta.exists() ) {
+		dirIn := "$downloadUcscDir/$genome"
+		genomeFasta := "$dirIn/bigZips/$genome\.fa.gz"
+		gtf := "$dirIn/bigZips/genes/$genome\.refGene.gtf.gz"
+		cdsFasta := "$dirIn/bigZips/refMrna.fa.gz"
+		if( genomeFasta.exists() && gtf.exists() && cdsFasta.exists() ) {
 			genomes += genome
 		}
 	}
