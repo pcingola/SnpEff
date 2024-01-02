@@ -19,7 +19,17 @@ void downloadUcscGenome(string genome) {
 	dir.mkdir()
 	dir.chdir()
 
-	downloadUcscGenomeRsync(genome)
+	# Download files
+	downloadOk := "$dirDownload/ucsc/$genome/download.ok"
+	if( downloadOk.exists() ) {
+		println "\tDownload OK file '$downloadOk' exists. Skipping download"
+	} else {
+		downloadUcscGenomeRsync(genome)
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Install files
+	installdUcscGenome(genome)
 }
 
 # Download all UCSC genomes
@@ -63,12 +73,11 @@ void downloadUcscGenomesRsync() {
 			--exclude='*/*hardmasked.fa.gz' \
 			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/statistics' \
 			\
 			--include='*/bigZips/refMrna.fa.gz' \
-			--include='*/bigZips/mrna.fa.gz' \
 			--include='*/bigZips/*.fa.gz' \
 			--include='*/bigZips/genes/*.refGene.gtf.gz' \
-			--include='*/bigZips/genes/*.ncbiRefSeq.gtf.gz' \
 			--include='*/bigZips/genes/*.knownGene.gtf.gz' \
 			--include='*/' \
 			\
@@ -89,12 +98,11 @@ void downloadUcscGenomeRsync(string genome) {
 			--exclude='*/*hardmasked.fa.gz' \
 			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/statistics' \
 			\
 			--include='$genome/bigZips/refMrna.fa.gz' \
-			--include='$genome/bigZips/mrna.fa.gz' \
 			--include='$genome/bigZips/$genome\.fa.gz' \
 			--include='$genome/bigZips/genes/*.refGene.gtf.gz' \
-			--include='$genome/bigZips/genes/*.ncbiRefSeq.gtf.gz' \
 			--include='$genome/bigZips/genes/*.knownGene.gtf.gz' \
 			--include='*/' \
 			\
@@ -104,3 +112,28 @@ void downloadUcscGenomeRsync(string genome) {
 		
 }
 
+# Install a single genome
+void installdUcscGenome(string genome) {
+	dirIn := "$dirDownload/ucsc/$genome"
+	dirOut := "$dirData/$genome"
+
+	dirOut.mkdir()
+
+	# Copy genome FASTA file
+	genomeFasta := "$dirData/genomes/$genome\.fa.gz"
+	if( !genomeFasta.exists() ) {
+		sys cp -vf $dirIn/bigZips/$genome\.fa.gz $genomeFasta
+	}
+
+	# Copy GTF file
+	gtf := "$dirOut/genes.gtf.gz"
+	if( !gtf.exists() ) {
+		sys cp -vf $dirIn/bigZips/genes/$genome\.refGene.gtf.gz $gtf
+	}
+
+	# Copy CDS file
+	cds := "$dirOut/cds.fa.gz"
+	if( !cds.exists() ) {
+		sys cp -vf $dirIn/bigZips/refMrna.fa.gz $cds
+	}
+}

@@ -410,6 +410,20 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
         // Found a gene? Check if gene includes gffMarker
         if (gene != null) {
+            if (gene.includes(gffMarker)) {
+                // OK, the gene includes the transcript
+            } else if(gene.intersects(gffMarker)) {
+                // Gene partially includes the transcript? Expand the gene
+                var start = Math.min(gene.getStart(), gffMarker.getStart()); 
+                var end = Math.max(gene.getEnd(), gffMarker.getEnd());
+                warning(ErrorWarningType.WARNING_GENE_COORDINATES, //
+                        "Gene '" + gene.getId() + "' (" + gene.toStrPos() + ")" //
+                                + " partially includes '" + gffMarker.getId() + "' (" + gffMarker.toStrPos() + "). " //
+                                + "Expanding gene coordinates to " + gene.toStrPos() //
+                );
+                gene.setStart(start);
+                gene.setEnd(end);
+            }
             if (!gene.includes(gffMarker)) {
                 // Gene does not include transcript? Create a new gene
                 Gene geneOri = gene;

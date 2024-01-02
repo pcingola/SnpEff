@@ -6,17 +6,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
             "name": "SnpEff",
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "build -v test_GRCh38.mane.1.0.refseq.chr21"
+            "args": "build -v hg19"
         },
     ]
 }
