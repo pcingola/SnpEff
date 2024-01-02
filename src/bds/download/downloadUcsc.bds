@@ -68,13 +68,14 @@ void downloadUcscGenomesRsync() {
 
 	sys rsync -av -P \
 			\
-			--exclude='*/est.fa.gz' \
-			--exclude='*/upstream*.fa.gz' \
-			--exclude='*/*RefMrna.fa.gz' \
-			--exclude='*/*hardmasked.fa.gz' \
-			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/est.fa.gz' \
+			--exclude='*/*hardmasked.fa.gz' \
+			--exclude='*/*RefMrna.fa.gz' \
+			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/statistics' \
+			--exclude='*/upstream*.fa.gz' \
+			--exclude='*/xenoMrna.fa.gz' \
 			\
 			--include='*/bigZips/refMrna.fa.gz' \
 			--include='*/bigZips/*.fa.gz' \
@@ -93,13 +94,14 @@ void downloadUcscGenomeRsync(string genome) {
 	println "Downloading UCSC (rsync): '$genome'"
 
 	sys rsync -av -P \
-			--exclude='*/est.fa.gz' \
-			--exclude='*/upstream*.fa.gz' \
-			--exclude='*/*RefMrna.fa.gz' \
-			--exclude='*/*hardmasked.fa.gz' \
-			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/est.fa.gz' \
+			--exclude='*/*hardmasked.fa.gz' \
+			--exclude='*/*RefMrna.fa.gz' \
+			--exclude='*/*softmasked*.fa.gz' \
 			--exclude='*/statistics' \
+			--exclude='*/upstream*.fa.gz' \
+			--exclude='*/xenoMrna.fa.gz' \
 			\
 			--include='$genome/bigZips/refMrna.fa.gz' \
 			--include='$genome/bigZips/$genome\.fa.gz' \
