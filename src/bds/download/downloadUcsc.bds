@@ -13,6 +13,20 @@ ftpUcscSoe         := "ftp://$soe/goldenPath"
 rsyncUcscSoe       := "rsync://$soe/goldenPath"
 
 
+# Create UCSC config file
+void createUcscConfigFile(string configFile) {
+	println "Writing config file $configFile"
+	today := sys date +"%Y-%m-%d"
+	string[] configLines
+	for(string genome: getUcscDownloadedGenomes()) {
+		configLines += "$genome\.genome : $genome"
+		configLines += "$genome\.reference : $rsyncUcscSoe/$genome/bigZips"
+		configLines += "$genome\.retrieval_date : $today"
+	}
+	configFile.write( configLines.join("\n") )
+}
+
+# Download a single genome from UCSC
 void downloadUcscGenome(string genome) {
 	println "Downloading UCSC: '$genome'"
 
@@ -30,6 +44,8 @@ void downloadUcscGenome(string genome) {
 
 	# Install files
 	installdUcscGenome(genome)
+
+	# Create config file
 }
 
 # Download all UCSC genomes
@@ -58,6 +74,12 @@ void downloadUcscGenomes() {
 
 	# Install downloaded files
 	installdUcscGenomes()
+
+	if( configFile.exists() ) {
+		println "WARNING: Config file exists, skipping ('$configFile')"
+	} else {
+		createUcscConfigFile(configFile);
+	}
 
 	doneFile.write('OK')	# Mark as all downloaded and installed
 }
@@ -115,8 +137,9 @@ void downloadUcscGenomeRsync(string genome) {
 		
 }
 
+# Get the names of all downloaded genomes.
+# Only include the directories that have all FASTA and GTF files.
 string[] getUcscDownloadedGenomes() {
-	# Check all downloaded genomes (only include the directories that have FASTA files)
 	downloadUcscDir.chdir()
 	string[] genomes
 	for(string genome: downloadUcscDir.dir()) {
@@ -158,8 +181,8 @@ void installdUcscGenome(string genome) {
 	}
 }
 
+# Install ALL UCSC genomes
 void installdUcscGenomes() {
-	# Install ALL UCSC genomes
 	for(string genome: getUcscDownloadedGenomes()) {
 		installdUcscGenome(genome)
 	}
