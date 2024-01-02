@@ -6,6 +6,7 @@
 #
 #-------------------------------------------------------------------------------
 
+downloadUcscDir 	:= "$dirDownload/ucsc"
 soe                := "hgdownload.soe.ucsc.edu"
 urlUcscSoe         := "http://$soe/goldenPath"
 ftpUcscSoe         := "ftp://$soe/goldenPath"
@@ -15,12 +16,11 @@ rsyncUcscSoe       := "rsync://$soe/goldenPath"
 void downloadUcscGenome(string genome) {
 	println "Downloading UCSC: '$genome'"
 
-	dir := "$dirDownload/ucsc"
-	dir.mkdir()
-	dir.chdir()
+	downloadUcscDir.mkdir()
+	downloadUcscDir.chdir()
 
 	# Download files
-	downloadOk := "$dirDownload/ucsc/$genome/download.ok"
+	downloadOk := "$downloadUcscDir/$genome/download.ok"
 	if( downloadOk.exists() ) {
 		println "\tDownload OK file '$downloadOk' exists. Skipping download"
 	} else {
@@ -44,9 +44,8 @@ void downloadUcscGenomes() {
 		return
 	}
 
-	dir := "$dirDownload/ucsc"
-	dir.mkdir()
-	dir.chdir()
+	downloadUcscDir.mkdir()
+	downloadUcscDir.chdir()
 
 	# Download all files
 	downloadOk := "download.ok"
@@ -58,7 +57,9 @@ void downloadUcscGenomes() {
 	}
 
 	# Install downloaded files
-	error "INSTALL DOWNLOADED FILES!!!"
+	installdUcscGenomes()
+
+	doneFile.write('OK')	# Mark as all downloaded and installed
 }
 
 # Download all UCSC genomes using rsync
@@ -112,9 +113,23 @@ void downloadUcscGenomeRsync(string genome) {
 		
 }
 
+string[] getUcscDownloadedGenomes() {
+	# Check all downloaded genomes (only include the directories that have FASTA files)
+	downloadUcscDir.chdir()
+	string[] genomes
+	for(string genome: downloadUcscDir.dir()) {
+		genomeFasta := "$downloadUcscDir/$genome/bigZips/$genome\.fa.gz"
+		if( genomeFasta.exists() ) {
+			genomes += genome
+		}
+	}
+	return genomes
+}
+
 # Install a single genome
 void installdUcscGenome(string genome) {
-	dirIn := "$dirDownload/ucsc/$genome"
+	println("Installing UCSC genome: '$genome'")
+	dirIn := "$downloadUcscDir/$genome"
 	dirOut := "$dirData/$genome"
 
 	dirOut.mkdir()
@@ -136,4 +151,12 @@ void installdUcscGenome(string genome) {
 	if( !cds.exists() ) {
 		sys cp -vf $dirIn/bigZips/refMrna.fa.gz $cds
 	}
+}
+
+void installdUcscGenomes() {
+	# Install ALL UCSC genomes
+	for(string genome: getUcscDownloadedGenomes()) {
+		installdUcscGenome(genome)
+	}
+
 }
