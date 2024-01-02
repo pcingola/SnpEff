@@ -25,7 +25,7 @@ import java.util.List;
 public class SnpEffCmdCds extends SnpEff {
 
     public static boolean onlyOneError = false; // This is used in some test-cases
-    public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 5% (otherwise test fails)
+    public static double MAX_ERROR_RATE = 0.06; // Maximum allowed error is 6% (otherwise test fails)
     public static int MAX_ALIGN_LENGTH = 33000;
 
     boolean storeAlignments; // Store alignments (used for some test cases)

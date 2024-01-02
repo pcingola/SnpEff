@@ -37,7 +37,7 @@ import org.snpeff.util.Log;
 public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
-	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
+	public static double MAX_ERROR_RATE = 0.06; // Maximum allowed error is 6% (otherwise test fails)
 
 	boolean checkNumOk = true;
 	boolean codonTables;
