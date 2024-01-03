@@ -7,9 +7,7 @@
 #-------------------------------------------------------------------------------
 
 downloadUcscDir 	:= "$dirDownload/ucsc"
-cse                := "hgdownload.cse.ucsc.edu"
 soe                := "hgdownload.soe.ucsc.edu"
-urlUcscCse         := "http://$cse/goldenPath"
 urlUcscSoe         := "http://$soe/goldenPath"
 ftpUcscSoe         := "ftp://$soe/goldenPath"
 rsyncUcscSoe       := "rsync://$soe/goldenPath"
@@ -27,21 +25,6 @@ void createUcscConfigFile(string configFile) {
 	}
 	configFile.write( configLines.join("\n") )
 }
-
-void downloadCytoBands() {
-	// downloadCytoBand()
-}
-
-// # Download cytobands from UCSC
-// void downloadCytoBands() {
-// 	cytoBandFile := "$downloadDir/cytoBand.txt.gz"
-// 	cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
-// 	if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
-// 		wget(cytoBandUrl, cytoBandFile, true, true, false, true)
-// 		return cytoBandFile
-// 	}
-// 	return '';
-// }
 
 # Download a single genome from UCSC
 void downloadUcscGenome(string genome) {
@@ -116,10 +99,11 @@ void downloadUcscGenomesRsync() {
 			--exclude='*/upstream*.fa.gz' \
 			--exclude='*/xenoMrna.fa.gz' \
 			\
-			--include='*/bigZips/refMrna.fa.gz' \
 			--include='*/bigZips/*.fa.gz' \
+			--include='*/bigZips/refMrna.fa.gz' \
 			--include='*/bigZips/genes/*.refGene.gtf.gz' \
 			--include='*/bigZips/genes/*.knownGene.gtf.gz' \
+			--include='*/database/cytoBand.txt.gz' \
 			--include='*/' \
 			\
 			--exclude='*' \
@@ -211,5 +195,4 @@ void installdUcscGenomes() {
 	for(string genome: getUcscDownloadedGenomes()) {
 		installdUcscGenome(genome)
 	}
-
 }

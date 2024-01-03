@@ -517,7 +517,7 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'cytobands':
-			downloadCytoBands()
+			downloadCytoBandsHuman()
 			break
 
 		case 'dbnsfp':
