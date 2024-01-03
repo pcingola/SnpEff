@@ -72,7 +72,7 @@ GRCHs				:= ["GRCh37", "GRCh38"]
 GRCh2Hg				:= {"GRCh37" => "hg19", "GRCh38" => "hg38"}
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
-dbNsfpVersion		:= '4.2a'
+dbNsfpVersion		:= '4.4a'
 # UCSC full list of genomes from "curl ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 # ucscGenomesKg		:= [ 'hg19', 'hg38', 'mm9', 'mm10', 'mm39' ]
 
