@@ -79,7 +79,8 @@ class DbNsfp {
 		log("Downloading dbNSFP\n\tURL: '$urlDbNsfp'\n\tLocal file: '$dbNsfp'")
 
 		dbNsfpDir.mkdir()
-		zip := dbNsfpDir + '/' + urlDbNsfp.baseName()
+		basefile := urlDbNsfp.split('/')[-1]
+		zip := dbNsfpDir + '/' + basefile
 
 		# Download
         dbNsfpDir.chdir()
