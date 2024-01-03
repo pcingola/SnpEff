@@ -43,14 +43,15 @@ void downloadClinvar() {
 # Download human cytobands
 #-------------------------------------------------------------------------------
 void downloadCytoBandsHuman() {
-	downloadCytoBandHuman('hg19', "$dirDb/GRCh37")
-	downloadCytoBandHuman('hg38', "$dirDb/GRCh38")
+	downloadCytoBandHuman('hg19', "$dirDb/GRCh37/cytoBand")
+	downloadCytoBandHuman('hg38', "$dirDb/GRCh38/cytoBand")
 }
 
 # Download cytobands from UCSC
 void downloadCytoBandHuman(string genome, string destDir) {
 	cytoBandFile := "$destDir/cytoBand.txt.gz"
 	cytoBandUrl := "$urlUcscCse/$genome/database/cytoBand.txt.gz"
+	destDir.mkdir()
 	if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
 		wget(cytoBandUrl, cytoBandFile, true, true, false, true)
 	}
