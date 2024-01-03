@@ -516,6 +516,10 @@ void downloadOneSet(string setToDownload) {
 			downloadClinvar()
 			break
 
+		case 'cytobands':
+			downloadCytoBands()
+			break
+
 		case 'dbnsfp':
 			downloadDbNsfp()
 			break
