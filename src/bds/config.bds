@@ -98,6 +98,7 @@ void buildConfig() {
 void buildConfigFromLines(string configFile, string[] configLines) {
 	if( configFile.exists() ) {
 		timestamp := sys date +"%Y%m%d_%H%M%S"
+		timestamp = timestamp.trim()
 		configFileTimestamp := configFile + "." + timestamp
 		println "WARNING: Config file '$configFile' exists, using '$configFileTimestamp' instead"
 		configFile = configFileTimestamp
