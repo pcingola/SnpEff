@@ -14,8 +14,8 @@ rsyncUcscSoe       := "rsync://$soe/goldenPath"
 
 
 # Create UCSC config file
-void createUcscConfigFile(string configFile) {
-	println "Writing config file $configFile"
+void createUcscConfigFile() {
+	configFile := "$dirSnpEff/config/snpEff.UCSC.config"
 	today := sys date +"%Y-%m-%d"
 	string[] configLines
 	for(string genome: getUcscDownloadedGenomes()) {
@@ -23,7 +23,7 @@ void createUcscConfigFile(string configFile) {
 		configLines += "$genome\.reference : $rsyncUcscSoe/$genome/bigZips"
 		configLines += "$genome\.retrieval_date : $today"
 	}
-	configFile.write( configLines.join("\n") )
+	buildConfigFromLines(configFile, configLines)
 }
 
 # Download a single genome from UCSC
@@ -52,8 +52,6 @@ void downloadUcscGenome(string genome) {
 void downloadUcscGenomes() {
 	println "Downloading UCSC: All genomes"
 
-	configFile := "$dirSnpEff/config/snpEff.UCSC.config"
-
 	doneFile := "$dirDownload/ucsc.done"
 	if( doneFile.exists() ) {
 		println "\tDone file '$doneFile' exists: nothing done"
@@ -75,11 +73,8 @@ void downloadUcscGenomes() {
 	# Install downloaded files
 	installdUcscGenomes()
 
-	if( configFile.exists() ) {
-		println "WARNING: Config file exists, skipping ('$configFile')"
-	} else {
-		createUcscConfigFile(configFile);
-	}
+	# Create config file
+	createUcscConfigFile()
 
 	doneFile.write('OK')	# Mark as all downloaded and installed
 }

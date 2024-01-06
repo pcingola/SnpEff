@@ -223,8 +223,7 @@ void downloadNcbiBacteria() {
 		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
 	}
 
-	println "Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+	buildConfigFromLines(configFile, configLines)
 
 	# Copy files to data directory
 	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
