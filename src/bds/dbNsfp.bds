@@ -22,7 +22,7 @@ class DbNsfp {
 
 	# Create a compressed (bgzip) and indexed (tabix) dbNSFP file
 	void compressAndIndex() {
-		logd "Compress + index:\n\t: dbNsfp: $dbNsfp\n\tfiles: $txts"
+		logd "Compressing:\n\t: dbNsfp: $dbNsfp\n\tfiles: $txts"
 		# Compress
 		txtsStr := txts.join(' ')
 		task(dbNsfp <- txts, cpus := dbNsfpCpusCompress, taskName := "compress") {
@@ -30,6 +30,7 @@ class DbNsfp {
 		}
 
 		# Create index
+		logd "Indexing file '$dbNsfp'"
 		tbidx := dbNsfp + '.tbi'
 		task(tbidx <- dbNsfp, taskName := "index") {
 			sys tabix -s 1 -b 2 -e 2 $dbNsfp
