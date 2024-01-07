@@ -96,7 +96,7 @@ void buildConfig() {
 
 # Create a 'config' file
 void buildConfigFromLines(string configFile, string[] configLines) {
-	if( configFile.exists() ) {
+	if( configFile.exists() && (configFile.size() > 0)) {
 		timestamp := sys date +"%Y%m%d_%H%M%S"
 		timestamp = timestamp.trim()
 		configFileTimestamp := configFile + "." + timestamp

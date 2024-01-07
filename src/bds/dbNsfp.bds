@@ -111,7 +111,7 @@ class DbNsfp {
 			
 			# Sort file
 			cat := whichCat(file)
-			task(sorted <- file, cpus := 2, mem := 10*G, taskName := "sort_" + file.baseName()) {
+			task(sorted <- file, cpus := 2, mem := 16*G, taskName := "sort_" + file.baseName()) {
 				sys $cat '$file' \
 					| $dirScriptsBuild/dbNSFP_sort.pl \
 					| grep -v "^#" \
