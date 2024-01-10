@@ -709,7 +709,7 @@ void zipDb(string gen) {
 
 		task( zip <- bin )	sys zip -r $zip data/$gen/*.bin $cyto
 	} else {
-		println "\tERROR: database $bin not found"
+		println "\tWARNING: database $bin not found"
 	}
 }
 
