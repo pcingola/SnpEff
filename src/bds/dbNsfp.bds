@@ -151,7 +151,7 @@ class DbNsfp {
 		for(string ext: DBNSFP_EXTENSIONS) {
 			file := "db/$genome/dbNSFP/dbNSFP$dbNsfpVersion\.txt.$ext"
 			logd "Uploading file '$file'"
-			println("COMMAND:\tcd '$dirSnpEff' ; azcopy cp '$file' '$azureBlobEndpoint/$azureContainer/$file$aqs'")
+			sys cd '$dirSnpEff' ; azcopy cp '$file' '$azureBlobEndpoint/$azureContainer/$file$aqs'
 		}
 	}
 }
