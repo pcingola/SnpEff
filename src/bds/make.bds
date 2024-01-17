@@ -584,7 +584,7 @@ void uploadDbNsfp2Azure() {
 
 	# Create dbNsfp37 using 'dbNsfp38File'
 	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
-	dbNsfp38.upload2Azure()
+	dbNsfp37.upload2Azure()
 }
 
 #-------------------------------------------------------------------------------
