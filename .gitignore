@@ -2,6 +2,7 @@
 /config/data
 /db
 /target
+.venv
 snpEff_genes.txt
 snpEff_summary.html
 **/*.swp
