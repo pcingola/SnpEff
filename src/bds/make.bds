@@ -579,7 +579,12 @@ void uploadCore2Sf() {
 # Upload dbNSFP to Azure
 #-------------------------------------------------------------------------------
 void uploadDbNsfp2Azure() {
-	error "Unimplamented!"
+	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
+	dbNsfp38.upload2Azure()
+
+	# Create dbNsfp37 using 'dbNsfp38File'
+	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
+	dbNsfp38.upload2Azure()
 }
 
 #-------------------------------------------------------------------------------

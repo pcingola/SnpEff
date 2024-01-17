@@ -11,13 +11,14 @@ class DbNsfp {
 	string header
 	string genome
 	string[] txts
-	string dbNsfp
+	string dbNsfp, dbNsfpIndex
 	string dbNsfpDir
 
 	void DbNsfp(string dirDb, string genome) {
 		this.genome = genome
 		this.dbNsfpDir = "$dirDb/$genome/dbNSFP"
 		this.dbNsfp = "$dbNsfpDir/dbNSFP$dbNsfpVersion\.txt.gz"
+		this.dbNsfpIndex = this.dbNsfp + ".tbi"
 	}
 
 	# Create a compressed (bgzip) and indexed (tabix) dbNSFP file
@@ -31,8 +32,7 @@ class DbNsfp {
 
 		# Create index
 		logd "Indexing file '$dbNsfp'"
-		tbidx := dbNsfp + '.tbi'
-		task(tbidx <- dbNsfp, taskName := "index") {
+		task(dbNsfpIndex <- dbNsfp, taskName := "index") {
 			sys tabix -s 1 -b 2 -e 2 $dbNsfp
 		}
 	}
@@ -142,5 +142,16 @@ class DbNsfp {
 			log("Unzipping file '$zip'")
 			sys cd '$dbNsfpDir' ; unzip '$zip'
 		} else log("Unzipped files seem to be present, skipping")
+	}
+
+	void upload2Azure() {
+		logd "Uploading dbNSFP files to Azure"
+		aqs := getAzureQueryString('databases')
+		DBNSFP_EXTENSIONS := ['gz', 'gz.tbi']
+		for(string ext: DBNSFP_EXTENSIONS) {
+			file := "db/$genome/dbNSFP/dbNSFP$dbNsfpVersion\.txt.$ext"
+			logd "Uploading file '$file'"
+			println("COMMAND:\tcd '$dirSnpEff' ; azcopy cp '$file' '$azureBlobEndpoint/$azureContainer/$file$aqs'")
+		}
 	}
 }
