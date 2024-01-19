@@ -1,16 +1,13 @@
 package org.snpeff.snpEffect.commandLine;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -22,7 +19,6 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.filter.VariantEffectFilter;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantNonRef;
 import org.snpeff.interval.tree.IntervalForest;
@@ -31,6 +27,7 @@ import org.snpeff.outputFormatter.BedOutputFormatter;
 import org.snpeff.outputFormatter.OutputFormatter;
 import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ProteinFastaWriter;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
@@ -89,9 +86,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
-	String fastaProt = null;
-	BufferedWriter fastaProtWriter;
-	Set<String> fastaProtTranscriptsReferenceDone;
+	String fastaProt; // Write protein seuqnces to this file
+	ProteinFastaWriter proteinFastaWriter = null; // Writed protein sequences to file
 	String summaryFileCsv; // HTML Summary file name
 	String summaryFileHtml; // CSV Summary file name
 	String summaryGenesFile; // Gene table file
@@ -277,13 +273,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (vcfFile != null) vcfFile.close();
 
 		// Close output protein file
-		if(fastaProtWriter != null) {
-			try {
-				fastaProtWriter.close();
-			} catch (IOException e) {
-				throw new RuntimeException("Error closing Protein FASTA output file '" + fastaProt + "'", e);
-			}
-		}
+		if(proteinFastaWriter != null) proteinFastaWriter.close();
 
 		// Creates a summary output file
 		if (createSummaryCsv) {
@@ -327,16 +317,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfStats = new VcfStats();
 
 		if (fastaProt != null) {
-			// Initialize protein fasta output file
-			if ((new File(fastaProt)).delete() && verbose) {
-				Log.warning("Deleted protein fasta output file '" + fastaProt + "'");
-			}
-			try {
-				fastaProtWriter = new BufferedWriter(new FileWriter(fastaProt, true));
-			} catch (IOException e) {
-				throw new RuntimeException("Error trying to open Protein Fasta output file '" + fastaProt + "'", e);
-			}
-			fastaProtTranscriptsReferenceDone = new HashSet<>();
+			this.proteinFastaWriter = new ProteinFastaWriter(fastaProt, verbose);
 		}
 
 		// Create output formatter
@@ -423,7 +404,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		outputFormatter.printSection(variant);
 
 		// Output protein changes to FASTA file
-		if (fastaProtWriter != null && impactModerateOrHigh) proteinAltSequence(variant, variantEffects);
+		if (proteinFastaWriter != null && impactModerateOrHigh) proteinFastaWriter.write(variant, variantEffects);
 
 		return impactLowOrHigher;
 	}
@@ -810,49 +791,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (multiThreaded && cancer) usage("Cancer analysis is currently not supported in multi-threaded mode.");
 		if (multiThreaded && !isOutVcf) usage("Multi-threaded option is only supported when when output is in VCF format");
 		if (multiThreaded && (createSummaryHtml || createSummaryCsv)) usage("Multi-threaded option should be used with 'noStats'.");
-	}
-
-	/**
-	 * Append ALT protein sequence to 'fastaProt' file
-	 */
-	void proteinAltSequence(Variant var, VariantEffects variantEffects) {
-		Set<String> doneTr = new HashSet<>();
-		for (VariantEffect varEff : variantEffects) {
-			Transcript tr = varEff.getTranscript();
-			if (tr == null || doneTr.contains(tr.getId())) continue;
-
-			// Calculate sequence after applying variant
-			Transcript trAlt = tr.apply(var);
-
-			// Build fasta entries and append to file
-			StringBuilder sb = new StringBuilder();
-			if (!fastaProtTranscriptsReferenceDone.contains(tr.getId())) {
-				// Add protein sequence for transcript reference, if not already added in a previous entry
-				sb.append(">" + tr.getId() + " Reference\n" + tr.protein() + "\n");
-			}
-			// Add protein sequence for transcript variant
-			sb.append(">" + tr.getId() + " Variant " //
-					+ var.getChromosomeName() //
-					+ ":" + (var.getStart() + 1) //
-					+ "-" + (var.getEnd() + 1) //
-					+ " Ref:" + var.getReference() //
-					+ " Alt:" + var.getAlt() //
-					+ " HGVS.p:" + varEff.getHgvsProt() //
-					+ "\n" //
-					+ trAlt.protein() + "\n" //
-			);
-
-			// Write fasta entries
-			try {
-				fastaProtWriter.write(sb.toString());
-			} catch (IOException e) {
-				throw new RuntimeException("Error while trying to write to Protein Fasta file '" + fastaProt + "'", e);
-			}
-
-			// Update transcript IDs
-			fastaProtTranscriptsReferenceDone.add(tr.getId());
-			doneTr.add(tr.getId());
-		}
 	}
 
 	/**
