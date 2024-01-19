@@ -99,7 +99,7 @@ public class ProteinFastaWriter {
 				sb.append(">" + tr.getId() //
 						+ (tr.getGene() != null ? ", gene: " + tr.getGene().getGeneName() : "") //
 						+ (tr.getProteinId() != null ? ", protein_id: " + tr.getProteinId() : "") //
-						+ ", variant: " //
+						+ ", variant:q " //
 						+ var.getChromosomeName() //
 						+ ":" + (var.getStart() + 1) //
 						+ "-" + (var.getEnd() + 1) //
