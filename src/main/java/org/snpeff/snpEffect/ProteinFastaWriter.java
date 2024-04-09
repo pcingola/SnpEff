@@ -22,11 +22,13 @@ public class ProteinFastaWriter {
 	BufferedWriter writer;
 	Set<String> transcriptIDsReferenceDone; // Set of transcript IDs, whose protein sequence has been written
 	Set<String> proteinSequenceDone; // Protein sequences that have has been written to the FASTA file
+	boolean noRef; // Do not write protein sequences for reference transcripts
 	boolean verbose;
 
-	public ProteinFastaWriter(String fileName, boolean verbose) {
+	public ProteinFastaWriter(String fileName, boolean noRef, boolean verbose) {
 		this.fileName = fileName;
 		this.verbose = verbose;
+		this.noRef = noRef;
 		transcriptIDsReferenceDone = new HashSet<>();
 		proteinSequenceDone = new HashSet<>();
 
@@ -79,8 +81,9 @@ public class ProteinFastaWriter {
 
 			// Build fasta entries and append to file
 			StringBuilder sb = new StringBuilder();
-			if (!transcriptIDsReferenceDone.contains(tr.getId())) {
-				// Add protein sequence for transcript reference, if not already added in a previous entry
+
+			// Add protein sequence for transcript reference, if not already added in a previous entry (skip if 'noRef' is set)
+			if (!noRef && !transcriptIDsReferenceDone.contains(tr.getId())) {
 				var proteinSequence = proteinSequence(tr);
 				sb.append(">" + tr.getId() //
 					+ (tr.getGene() != null ? ", gene: " + tr.getGene().getGeneName() : "") //
@@ -93,9 +96,9 @@ public class ProteinFastaWriter {
 				proteinSequenceDone.add(proteinSequence);
 			}
 
+			// Add protein sequence for transcript variant, if the sequence has not already been added in a previous entry
 			var proteinSequence = proteinSequence(trAlt);
 			if( ! proteinSequenceDone.contains(proteinSequence) ) {
-				// Add protein sequence for transcript variant, if the sequence has not already been added in a previous entry
 				sb.append(">" + tr.getId() //
 						+ (tr.getGene() != null ? ", gene: " + tr.getGene().getGeneName() : "") //
 						+ (tr.getProteinId() != null ? ", protein_id: " + tr.getProteinId() : "") //
@@ -124,5 +127,4 @@ public class ProteinFastaWriter {
 			doneTr.add(tr.getId());
 		}
 	}
-
 }
