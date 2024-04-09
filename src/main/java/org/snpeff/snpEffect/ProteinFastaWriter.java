@@ -83,22 +83,22 @@ public class ProteinFastaWriter {
 			StringBuilder sb = new StringBuilder();
 
 			// Add protein sequence for transcript reference, if not already added in a previous entry (skip if 'noRef' is set)
+			var proteinSequenceRef = proteinSequence(tr);
 			if (!noRef && !transcriptIDsReferenceDone.contains(tr.getId())) {
-				var proteinSequence = proteinSequence(tr);
 				sb.append(">" + tr.getId() //
 					+ (tr.getGene() != null ? ", gene: " + tr.getGene().getGeneName() : "") //
 					+ (tr.getProteinId() != null ? ", protein_id: " + tr.getProteinId() : "") //
 					+ ", reference" //
 					+ "\n" //
-					+ proteinSequence //
+					+ proteinSequenceRef //
 					+ "\n" //
 				);
-				proteinSequenceDone.add(proteinSequence);
 			}
+			proteinSequenceDone.add(proteinSequenceRef); // Always add the reference protein sequence so we avoid writing changes that have no effect on the refrence protein sequence
 
 			// Add protein sequence for transcript variant, if the sequence has not already been added in a previous entry
-			var proteinSequence = proteinSequence(trAlt);
-			if( ! proteinSequenceDone.contains(proteinSequence) ) {
+			var proteinSequenceAlt = proteinSequence(trAlt);
+			if( ! proteinSequenceDone.contains(proteinSequenceAlt) ) {
 				sb.append(">" + tr.getId() //
 						+ (tr.getGene() != null ? ", gene: " + tr.getGene().getGeneName() : "") //
 						+ (tr.getProteinId() != null ? ", protein_id: " + tr.getProteinId() : "") //
@@ -110,9 +110,9 @@ public class ProteinFastaWriter {
 						+ ", alt:'" + var.getAlt() + "'" //
 						+ ", HGVS.p: " + varEff.getHgvsProt() //
 						+ "\n" //
-						+ proteinSequence + "\n" //
+						+ proteinSequenceAlt + "\n" //
 				);
-				proteinSequenceDone.add(proteinSequence);
+				proteinSequenceDone.add(proteinSequenceAlt);
 			}
 
 			// Write fasta entries
