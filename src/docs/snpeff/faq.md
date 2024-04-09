@@ -174,7 +174,6 @@ Chromosome: 'CP003278'	length: 4768352
 ```
 
 
-
 ## Creating a protein sequence FASTA file
 
 SnpEff `ann` command has a command line option called `-fastaProt` that tells SnpEff to output the "original" and "resulting" protein sequences for each variant into a FASTA file.

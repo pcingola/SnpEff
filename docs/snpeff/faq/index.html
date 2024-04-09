@@ -1491,17 +1491,18 @@ Chromosome: &#39;CP003278&#39;  length: 4768352
 <p>This means that for each variant, the output FASTA file will have an entry with protein sequence resulting from applying that variant to the reference sequence.</p>
 <p>Here is an example:
 <div class="highlight"><pre><span></span><code>$ cat z.vcf
-1   889455  .   G   A   .   .   .
+17  39684602    .   C   T   .   .   .
 
-$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa hg19 z.vcf &gt; z.ann.vcf
+$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa GRCh38.mane.1.2.ensembl z.vcf &gt; z.ann.vcf
 </code></pre></div></p>
 <p>The resulting fasta file <code>z.prot.fa</code> looks like this (lines edited for readibility):</p>
-<div class="highlight"><pre><span></span><code>&gt;NM_015658.3 Ref
-MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
-
-&gt;NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
-MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
-</code></pre></div>
+<p>Notice the difference in the protemic sequeces ('VAF<strong>A</strong>WVS' -&gt; 'VAF<strong>T</strong>WVS')
+<div class="highlight"><pre><span></span><code>&gt;ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, reference
+MAGL....VAFAWVS...
+&gt;ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant:q 17:39684602-39684602, ref:&#39;C&#39;, alt:&#39;T&#39;, HGVS.p: p.Ala143Thr
+MAGL....VAFTWVS...
+</code></pre></div></p>
+<p>When given the command line option <code>-fastaProtNoRef</code>, no reference sequence is written to the output FASTA protein sequences file.</p>
 <h2 id="genome-reference">Genome reference</h2>
 <p>Having a standard reference sequence is the key to establish comparisons and analysis.
 In order to compare DNA from different individuals (or samples), we need a <em>reference genome sequence</em> and <em>genomic annotations</em>.</p>
