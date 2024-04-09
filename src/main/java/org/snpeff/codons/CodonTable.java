@@ -231,6 +231,10 @@ public class CodonTable {
 		return isStart(codon.substring(0, 3));
 	}
 
+	public boolean isStopAaSymbol(char aaSymbol) {
+		return aaSymbol == '*' || aaSymbol == 'X' || aaSymbol == 'x';
+	}
+
 	/**
 	 * Is 'codon' a stop codon in this table?
 	 */

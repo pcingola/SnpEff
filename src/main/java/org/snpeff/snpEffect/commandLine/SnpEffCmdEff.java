@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -20,7 +19,6 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.filter.VariantEffectFilter;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantNonRef;
 import org.snpeff.interval.tree.IntervalForest;
@@ -29,6 +27,7 @@ import org.snpeff.outputFormatter.BedOutputFormatter;
 import org.snpeff.outputFormatter.OutputFormatter;
 import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ProteinFastaWriter;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
@@ -75,6 +74,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean createSummaryCsv = false;
 	boolean createSummaryHtml = true;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
+	boolean fastaProtNoRef = false; // Do not write protein sequences in `-fastaProt` file
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useOicr = false; // Use OICR tag
@@ -87,7 +87,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
-	String fastaProt = null;
+	String fastaProt; // Write protein seuqnces to this file
+	ProteinFastaWriter proteinFastaWriter = null; // Writed protein sequences to file
 	String summaryFileCsv; // HTML Summary file name
 	String summaryFileHtml; // CSV Summary file name
 	String summaryGenesFile; // Gene table file
@@ -272,6 +273,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		if (vcfFile != null) vcfFile.close();
 
+		// Close output protein file
+		if(proteinFastaWriter != null) proteinFastaWriter.close();
+
 		// Creates a summary output file
 		if (createSummaryCsv) {
 			if (verbose) Log.info("Creating summary file: " + summaryFileCsv);
@@ -314,9 +318,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfStats = new VcfStats();
 
 		if (fastaProt != null) {
-			if ((new File(fastaProt)).delete() && verbose) {
-				Log.info("Deleted protein fasta output file '" + fastaProt + "'");
-			}
+			this.proteinFastaWriter = new ProteinFastaWriter(fastaProt, fastaProtNoRef, verbose);
 		}
 
 		// Create output formatter
@@ -403,7 +405,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		outputFormatter.printSection(variant);
 
 		// Output protein changes to FASTA file
-		if (fastaProt != null && impactModerateOrHigh) proteinAltSequence(variant, variantEffects);
+		if (proteinFastaWriter != null && impactModerateOrHigh) proteinFastaWriter.write(variant, variantEffects);
 
 		return impactLowOrHigher;
 	}
@@ -556,9 +558,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 					arg = arg.toLowerCase();
 
 					switch (arg) {
-					// ---
+					//---
 					// Output options
-					// ---
+					//---
 					case "-chr":
 						chrStr = args[++i];
 						break;
@@ -577,6 +579,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						if ((i + 1) < args.length) fastaProt = args[++i]; // Output protein sequences in fasta files
 						else usage("Missing -cancerSamples argument");
 						break;
+
+					case "-fastaprotnoref":
+					    fastaProtNoRef = true;
 
 					case "-nochromoplots":
 						chromoPlots = false;
@@ -629,9 +634,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						useLocalTemplate = true;
 						break;
 
-					// ---
+					//---
 					// Annotation options
-					// ---
+					//---
 					case "-cancer":
 						cancer = true; // Perform cancer comparisons
 						break;
@@ -681,9 +686,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						useSequenceOntology = true; // Use SO temrs
 						break;
 
-					// ---
+					//---
 					// Input options
-					// ---
+					//---
 					case "-fi":
 					case "-filterinterval":
 						if ((i + 1) < args.length) filterIntervalFiles.add(args[++i]);
@@ -707,9 +712,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						} else usage("Missing input format in command line option '-i'");
 						break;
 
-					// ---
+					//---
 					// Filters
-					// ---
+					//---
 					case "-no-downstream":
 						variantEffectResutFilter.add(EffectType.DOWNSTREAM);
 						break;
@@ -758,9 +763,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			else usage("Unknown parameter '" + arg + "'");
 		}
 
-		// ---
+		//---
 		// Sanity checks
-		// ---
+		//---
 
 		// Check: Do we have all required parameters?
 		if (genomeVer == null || genomeVer.isEmpty()) usage("Missing genomer_version parameter");
@@ -790,37 +795,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (multiThreaded && cancer) usage("Cancer analysis is currently not supported in multi-threaded mode.");
 		if (multiThreaded && !isOutVcf) usage("Multi-threaded option is only supported when when output is in VCF format");
 		if (multiThreaded && (createSummaryHtml || createSummaryCsv)) usage("Multi-threaded option should be used with 'noStats'.");
-	}
-
-	/**
-	 * Append ALT protein sequence to 'fastaProt' file
-	 */
-	void proteinAltSequence(Variant var, VariantEffects variantEffects) {
-		Set<Transcript> doneTr = new HashSet<>();
-		for (VariantEffect varEff : variantEffects) {
-			Transcript tr = varEff.getTranscript();
-			if (tr == null || doneTr.contains(tr)) continue;
-
-			// Calculate sequence after applying variant
-			Transcript trAlt = tr.apply(var);
-
-			// Build fasta entries and append to file
-			StringBuilder sb = new StringBuilder();
-			sb.append(">" + tr.getId() + " Ref\n" + tr.protein() + "\n");
-			sb.append(">" + tr.getId() + " Variant " //
-					+ var.getChromosomeName() //
-					+ ":" + (var.getStart() + 1) //
-					+ "-" + (var.getEnd() + 1) //
-					+ " Ref:" + var.getReference() //
-					+ " Alt:" + var.getAlt() //
-					+ " HGVS.p:" + varEff.getHgvsProt() //
-					+ "\n" //
-					+ trAlt.protein() + "\n" //
-			);
-			Gpr.toFile(fastaProt, sb, true);
-
-			doneTr.add(tr);
-		}
 	}
 
 	/**
@@ -1059,6 +1033,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
 		System.err.println("\t-fastaProt <file>               : Create an output file containing the resulting protein sequences.");
+		System.err.println("\t-fastaProtNoRef                 : Do not add reference sequences to the output (only valid when -fastaProt). Default: " + fastaProtNoRef);
 		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
