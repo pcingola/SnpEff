@@ -184,20 +184,23 @@ This means that for each variant, the output FASTA file will have an entry with 
 Here is an example:
 ```
 $ cat z.vcf
-1	889455	.	G	A	.	.	.
+17  39684602    .   C   T   .   .   .
 
-$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa hg19 z.vcf > z.ann.vcf
+$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa GRCh38.mane.1.2.ensembl z.vcf > z.ann.vcf
 ```
 
 The resulting fasta file `z.prot.fa` looks like this (lines edited for readibility):
 
+Notice the difference in the protemic sequeces ('VAF**A**WVS' -> 'VAF**T**WVS')
 ```
->NM_015658.3 Ref
-MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
+>ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, reference
+MAGL....VAFAWVS...
+>ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant:q 17:39684602-39684602, ref:'C', alt:'T', HGVS.p: p.Ala143Thr
+MAGL....VAFTWVS...
+```
 
->NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
-MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
-```
+When given the command line option `-fastaProtNoRef`, no reference sequence is written to the output FASTA protein sequences file.
+
 
 ## Genome reference
 
