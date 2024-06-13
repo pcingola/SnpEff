@@ -105,7 +105,7 @@ Options:
 	-download                       : Download reference genome if not available. Default: true
 	-i <format>                     : Input format [ vcf, bed ]. Default: VCF.
 	-fileList                       : Input actually contains a list of files to process.
-	-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.
+	-o <format>                     : Output format [ vcf, gatk, bed, bedAnn ]. Default: VCF.
 	-s , -stats                     : Name of stats file (summary). Default is 'snpEff_summary.html'
 	-noStats                        : Do not create stats (summary) file
 	-csvStats                       : Create CSV summary file instead of HTML
