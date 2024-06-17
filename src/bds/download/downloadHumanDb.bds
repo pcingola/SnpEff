@@ -15,6 +15,9 @@ urlJaspar          := "https://jaspar.genereg.net/download/data/2022/CORE/JASPAR
 urlNextProt        := "https://download.nextprot.org/pub/current_release/xml/nextprot_all.xml.gz"
 urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
 
+cse                := "hgdownload.cse.ucsc.edu"
+urlUcscCse         := "http://$cse/goldenPath"
+
 #-------------------------------------------------------------------------------
 # Download ClinVar
 #-------------------------------------------------------------------------------
@@ -35,6 +38,25 @@ void downloadClinvar() {
 
 	wait
 }
+
+#-------------------------------------------------------------------------------
+# Download human cytobands
+#-------------------------------------------------------------------------------
+void downloadCytoBandsHuman() {
+	downloadCytoBandHuman('hg19', "$dirDb/GRCh37/cytoBand")
+	downloadCytoBandHuman('hg38', "$dirDb/GRCh38/cytoBand")
+}
+
+# Download cytobands from UCSC
+void downloadCytoBandHuman(string genome, string destDir) {
+	cytoBandFile := "$destDir/cytoBand.txt.gz"
+	cytoBandUrl := "$urlUcscCse/$genome/database/cytoBand.txt.gz"
+	destDir.mkdir()
+	if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
+		wget(cytoBandUrl, cytoBandFile, true, true, false, true)
+	}
+}
+
 
 #-------------------------------------------------------------------------------
 # Download and build dbNsfp

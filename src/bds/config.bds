@@ -1,0 +1,117 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+# Build configuration files (config/snpEff.*.config)
+#-------------------------------------------------------------------------------
+
+# Build main configuration file (snpEff.config)
+void buildConfig() {
+	confDir := "$dirSnpEff/config"
+	conf := "$dirSnpEff/snpEff.config"
+
+	println "Building config file '$conf'"
+
+	conf.rm()
+	for(string c: ["snpEff.core.config", "snpEff.dbs.config", "snpEff.test.config"] ) {
+		println("Adding config '$c'")
+		sys cat '$confDir/$c' >> '$conf'
+	}
+
+	for(int release : ensemblReleases ) {
+		sys echo >> '$conf'
+		sys echo "#---" >> '$conf'
+		sys echo "# ENSEMBL release $release" >> '$conf'
+		sys echo "#---" >> '$conf'
+		c := "$confDir/snpEff.ENSEMBL_$release\.config"
+		println("Adding config '$c'")
+		sys cat '$c' >> '$conf'
+	}
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# UCSC genomes" >> '$conf'
+	sys echo "#---" >> '$conf'
+	println("Adding configs '$confDir/snpEff.UCSC.config'")
+	sys cat	$confDir/snpEff.UCSC.config >> '$conf'
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# NCBI genomes" >> '$conf'
+	sys echo "#---" >> '$conf'
+	println("Adding configs '$confDir/snpEff.NCBI.*.config'")
+	sys cat	$confDir/snpEff.NCBI.*.config >> '$conf'
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> '$conf'
+	sys echo "#---" >> '$conf'
+	c := "$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
+	println("Adding config '$c'")
+	sys cat "$c" >> '$conf'
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# FLYBASE release $flybaseRelease" >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.FLYBASE_$flybaseRelease\.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
+
+	for( string b : bundles) {
+		sys echo >> '$conf'
+		sys echo "#---" >> '$conf'
+		sys echo "# ENSEMBL Bundles $b" >> '$conf'
+		sys echo "#---" >> '$conf'
+		c = "$confDir/snpEff.bundles.$b\.config"
+		println("Adding config '$c'")
+		sys cat '$c' >> '$conf'
+	}
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# Custom requests " >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.custom_requests.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
+
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# COVID19 " >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.covid19.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
+
+	for(string dbv: dbCompatibleVersions) {
+        sys echo >> '$conf'
+        sys echo "#---" >> '$conf'
+        sys echo "# Compatible versions: $dbv " >> '$conf'
+        sys echo "#---" >> '$conf'
+        c = "$confDir/snpEff.version.$dbv\.config"
+        println("Adding config '$c'")
+        sys cat	'$c' >> '$conf'
+	}
+}
+
+# Create a 'config' file
+void buildConfigFromLines(string configFile, string[] configLines) {
+	if( configFile.exists() && (configFile.size() > 0)) {
+		timestamp := sys date +"%Y%m%d_%H%M%S"
+		timestamp = timestamp.trim()
+		configFileTimestamp := configFile + "." + timestamp
+		println "WARNING: Config file '$configFile' exists, using '$configFileTimestamp' instead"
+		configFile = configFileTimestamp
+	}
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+}
+
+# Create 'software vesion' file
+string createVersionFile(string htmlDir) {
+	verFile := "$htmlDir/versions.txt"
+	println "Creating versions file: '$verFile'"
+	snpEffVer  := sys $snpeff -version 2>&1
+	verFile.write(snpEffVer.trim().toUpper() + "\t$snpeffDownload\n");
+	return verFile
+}

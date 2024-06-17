@@ -905,6 +905,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#doenloading" class="md-nav__link">
+    Doenloading
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dbnsfp-annotation-example" class="md-nav__link">
     dbNSFP Annotation example
   </a>
@@ -1286,19 +1293,23 @@ This allows for faster annotations.
 <p><strong>Database:</strong> In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file.
 dbNSFP is large (several GB) so it might take a while to download it.
 The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data <em>.gz file and the </em>.gz.tbi index file).</p>
-<p>You can download the files from SnpEff's site (remember that you need both the database and the index file):</p>
-<ul>
-<li>GRCh37 / hg19 (dbNSFP Academic):<ul>
-<li><a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code></li>
-<li><a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></li>
-</ul>
-</li>
-<li>GRCh38 / hg38  (dbNSFP Academic):<ul>
-<li><a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code></li>
-<li><a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></li>
-</ul>
-</li>
-</ul>
+<h3 id="doenloading">Doenloading</h3>
+<p>You can download the files from SnpEff's site.</p>
+<p>WARNING: Remember that you need both the database and the index files</p>
+<p>DbNSFP Version 4.5:
+* GRCh37 / hg19:
+    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
+    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code>
+* GRCh38 / hg38:
+    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
+    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></p>
+<p>DbNSFP Version 4.1
+* GRCh37 / hg19 (dbNSFP Academic):
+    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
+    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code>
+* GRCh38 / hg38 (dbNSFP Academic):
+    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
+    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></p>
 <h3 id="dbnsfp-annotation-example">dbNSFP Annotation example</h3>
 <p>Here is a full example how to perform annotations:</p>
 <div class="highlight"><pre><span></span><code># Annotate using dbNSFP

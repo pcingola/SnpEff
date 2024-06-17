@@ -46,8 +46,8 @@ void downloadFlyBase() {
 		sys cp $organism-all-$version\.gff.gz $dataDir/genes.gff.gz
 	}
 
-	println "Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+	# Build config file
+	buildConfigFromLines(configFile, configLines)
 
 	# Copy files to snpEff/data directory
 	sys cd data ; cp -rvf . $dirData

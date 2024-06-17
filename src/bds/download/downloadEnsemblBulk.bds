@@ -21,8 +21,6 @@ ensemblVer1     := 75
 void downloadEnsemblBulk(int ensemblRelease) {
 	println "Download ENSEMBL $ensemblRelease"
 
-	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
-
 	doneFile := "$dirDownload/ensembl_$ensemblRelease\.done"
 	if( doneFile.exists() ) {
 		println "\tConfig file '$doneFile' exists: nothing done"
@@ -38,8 +36,6 @@ void downloadEnsemblBulk(int ensemblRelease) {
 	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		# downloadEnsemblRsync(ensemblRelease)
-		# downloadEnsemblFtp(ensemblRelease)
 		downloadEnsemblHttp(ensemblRelease)
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
@@ -100,12 +96,8 @@ void downloadEnsemblBulk(int ensemblRelease) {
 	sys $cp mus_musculus/MotifFeatures.gff.gz $genomeDir/motif.gff.gz || true
 
 	# Create config file
-	if( configFile.exists() ) {
-		println "WARNING: Config file exists, skipping ('$configFile')"
-	} else {
-		println "Writing config file $configFile"
-		configFile.write( configLines.join("\n") )
-	}
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
+	buildConfigFromLines(configFile, configLines)
 
 	# Create 'done' file
 	doneFile.write('OK')
@@ -115,7 +107,7 @@ void downloadEnsemblBulk(int ensemblRelease) {
 # Download ENSEMBL genomes via rsync
 #-------------------------------------------------------------------------------
 void downloadEnsemblRsync(int ensemblRelease) {
-	println "Downloading ENSEMBL (ftp) $ensemblRelease"
+	println "Downloading ENSEMBL (rsync) $ensemblRelease"
 
 	# Download GTF files
 	sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
@@ -246,7 +238,7 @@ void downloadEnsemblBfmpp() {
 		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
 			task( retry := retryRsync ) {
-				sys rsync -av\
+				sys rsync -av \
 						--include='*.$ensemblBfmppRelease\.gtf.gz' \
 						--include='*/' \
 						--exclude='*' \
@@ -256,7 +248,7 @@ void downloadEnsemblBfmpp() {
 
 			# Download FASTA files (reference genomes)
 			task(retry := retryRsync) {
-				sys rsync -av\
+				sys rsync -av \
 						--include='*.dna.toplevel.fa.gz' \
 						--include='*.cdna.all.fa.gz' \
 						--include='*.pep.all.fa.gz' \
@@ -312,12 +304,7 @@ void downloadEnsemblBfmpp() {
 	}
 
 	# Create config file
-	if( configFile.exists() && configFile.size() > 0) {
-		warning("ENSEMBL BFMPP $ensemblBfmppRelease: Config file '$configFile' exists, skipping")
-	} else {
-		log("ENSEMBL BFMPP $ensemblBfmppRelease: Creating config file '$configFile'")
-		configFile.write( configLines.join("\n") )
-	}
+	buildConfigFromLines(configFile, configLines)
 
 	# Create 'done' file
 	doneFile.write('OK')

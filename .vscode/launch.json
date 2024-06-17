@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "ann -v -fastaprot /Users/kqrw311/production_informatics/proteogenomics/data/erbb2.uniq.ann.fa GRCh38.mane.1.2.ensembl /Users/kqrw311/production_informatics/proteogenomics/data/erbb2.uniq.vcf"
+            "args": "build -v hg19"
         },
     ]
 }

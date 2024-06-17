@@ -20,9 +20,14 @@ distroCore 			:= false		help Create distribution files (zip only 'core')
 make	 			:= false		help Make (build JAR files)
 test	 			:= false		help Run SnpEff / SnpSift test cases
 
-help Data download options
-download 			:= false		help Download all genomes
-downloadSet			:= ''			help Download one genomes set
+help Download options
+download 			    := false		help Download all genomes
+downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
+downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
+downloadMane			:= false		help Download MANE
+downloadNcbi		    := ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
+downloadUcsc		    := ''			help Download genome files from UCSC (genome name)
+downloadSet			    := ''			help Download one genomes set
 
 help Upload options
 uploadCore			:= false		help Upload 'core' package
@@ -42,25 +47,18 @@ cpus = 1
 
 # Versions
 help Ensembl
-downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
-downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
 ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
 ensemblRelease			:= 110			help Vertebrate release number
 #ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
 ensemblReleases			:= [ensemblRelease]
 
 help MANE 
-downloadMane			:= false		help Download MANE
 maneGenome				:= 'GRCh38'		help MANE genome
 maneReleases			:= ['1.0', '1.2', '1.3']		help MANE release version
 maneSelect				:= false		help MANE 'select' or regular version
 maneTrIdTypes			:= ['ensembl', 'refseq']	help MANE release transcript ID type: {'ensembl', 'refseq'}
 
-help UCSC
-downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
-
 help NCBI
-downloadNcbi		:= ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
 ncbiId				:= ''			help Download genome ID from NCBI (both 'genome name' and 'genome ID' are required)
 
 help Flybase
@@ -74,15 +72,9 @@ GRCHs				:= ["GRCh37", "GRCh38"]
 GRCh2Hg				:= {"GRCh37" => "hg19", "GRCh38" => "hg38"}
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
-dbNsfpVersion		:= '4.2a'
+dbNsfpVersion		:= '4.5c'
 # UCSC full list of genomes from "curl ftp://hgdownload.cse.ucsc.edu/goldenPath/"
-#ucscGenomes			:= ['ailMel1', 'allMis1', 'anoCar2', 'anoGam3', 'apiMel2', 'aplCal1', 'aptMan1', 'bisBis1', 'bosTau9', 'braFlo1', 'caeJap1', 'caePb2', 'caeRem3', 'calJac4', 'calMil1', 'cavPor3', 'cb3', 'ce11', 'ce2', 'ce4', 'ce6', 'cerSim1', 'chlSab2', 'choHof1', 'chrPic1', 'ci3', 'criGri1', 'criGriChoV1', 'criGriChoV2', 'danRer11', 'dasNov3', 'dipOrd1', 'dm6', 'dp3', 'droAna2', 'droEre1', 'droMoj2', 'droPer1', 'droSec1', 'droSim1', 'droVir2', 'droYak2', 'eboVir3', 'echTel2', 'enhLutNer1', 'equCab3', 'eriEur2', 'felCat9', 'fr3', 'gadMor1', 'galGal6', 'galVar1', 'gasAcu1', 'geoFor1', 'gorGor6', 'hetGla2', 'hg19', 'hg38', 'latCha1', 'loxAfr3', 'macEug2', 'macFas5', 'manPen1', 'melGal5', 'melUnd1', 'micMur2', 'mm9', 'mm10', 'mm39', 'mm9', 'monDom5', 'musFur1', 'nanPar1', 'nasLar1', 'neoSch1', 'nomLeu3', 'ochPri3', 'oreNil2', 'ornAna2', 'oryCun2', 'oryLat2', 'otoGar3', 'oviAri4', 'panPan3', 'panTro6', 'papAnu4', 'papHam1', 'petMar3', 'ponAbe3', 'proCap1', 'pteVam1', 'rheMac10', 'rhiRox1', 'rn7', 'sacCer3', 'saiBol1', 'sarHar1', 'sorAra2', 'speTri2', 'strPur2', 'susScr11', 'taeGut2', 'tarSyr2', 'tetNig2', 'thaSir1', 'triMan1', 'tupBel1', 'turTru2', 'vicPac2', 'wuhCor1', 'xenLae2', 'xenTro10']
-ucscGenomes			:= ['ailMel1', 'allMis1', 'anoCar2', 'anoGam3', 'apiMel3', 'aplCal1', 'aptMan1', 'aquChr2', 'balAcu1', 'bisBis1', 'bosTau9', 'braFlo1', 'caeJap1', 'caePb2', 'caeRem3', 'calJac4', 'calMil1', 'canFam6', 'cavPor3', 'cb3', 'ce11', 'cerSim1', 'chlSab2', 'choHof1', 'chrPic1', 'ci3', 'criGriChoV2', 'danRer11', 'dasNov3', 'dipOrd1', 'dm6', 'dp3', 'droAna2', 'droEre1', 'droGri1', 'droMoj2', 'droPer1', 'droSec1', 'droSim1', 'droVir2', 'droYak2', 'eboVir3', 'echTel2', 'enhLutNer1', 'equCab3', 'eriEur2', 'felCat9', 'fr3', 'gadMor1', 'galGal6', 'galVar1', 'gasAcu1', 'geoFor1', 'gorGor6', 'hetGla2', 'latCha1', 'loxAfr3', 'macEug2', 'macFas5', 'manPen1', 'melGal5', 'melUnd1', 'micMur2', 'monDom5', 'mpxvRivers', 'musFur1', 'myoLuc2', 'nanPar1', 'nasLar1', 'neoSch1', 'nomLeu3', 'ochPri3', 'oreNil2', 'ornAna2', 'oryCun2', 'oryLat2', 'otoGar3', 'oviAri4', 'panPan3', 'panTro6', 'papAnu4', 'papHam1', 'petMar3', 'ponAbe3', 'priPac1', 'proCap1', 'pteVam1', 'rheMac10', 'rhiRox1', 'rn7', 'sacCer3', 'saiBol1', 'sarHar1', 'sorAra2', 'speTri2', 'strPur2', 'susScr11', 'taeGut2', 'tarSyr2', 'tetNig2', 'thaSir1', 'triMan1', 'tupBel1', 'turTru2', 'vicPac2', 'xenLae2', 'xenTro10']
-# Removed:
-#       aquChr2: Missing CDS fasta
-#       balAcu1: Missing CDS fasta
-ucscGenomesRefGene	:= [ 'hg19', 'hg38', 'mm9', 'mm10', 'mm39' ]
-ucscGenomesKg		:= [ 'hg19', 'hg38', 'mm9', 'mm10', 'mm39' ]
+# ucscGenomesKg		:= [ 'hg19', 'hg38', 'mm9', 'mm10', 'mm39' ]
 
 help Compatible databases
 dbCompatibleVersions := ['5.0'] help List of database compatible versions
@@ -124,6 +116,7 @@ snpeffDownload		:= "$azureBlobEndpoint/versions/snpEff_latest_core.zip"
 buildSummary		:= "build.out"
 
 # Include (depends on some of the variables defined above)
+include 'config'
 include 'dbNsfp'
 include 'download/download.bds'
 include 'util'
@@ -181,91 +174,6 @@ void build() {
 
 	println("Building SnpEff & SnpSift")
 	sys ./scripts_build/make.sh
-}
-
-#-------------------------------------------------------------------------------
-# Build configuration file (snpEff.config)
-#-------------------------------------------------------------------------------
-void buildConfig() {
-	confDir := "$dirSnpEff/config"
-	conf := "$dirSnpEff/snpEff.config"
-
-	println "Building config file '$conf'"
-
-	conf.rm()
-	for(string c: ["snpEff.core.config", "snpEff.dbs.config", "snpEff.test.config"] ) {
-		println("Adding config '$c'")
-		sys cat '$confDir/$c' >> '$conf'
-	}
-
-	for(int release : ensemblReleases ) {
-		sys echo >> '$conf'
-		sys echo "#---" >> '$conf'
-		sys echo "# ENSEMBL release $release" >> '$conf'
-		sys echo "#---" >> '$conf'
-		c := "$confDir/snpEff.ENSEMBL_$release\.config"
-		println("Adding config '$c'")
-		sys cat '$c' >> '$conf'
-	}
-
-	sys echo >> '$conf'
-	sys echo "#---" >> '$conf'
-	sys echo "# NCBI genomes" >> '$conf'
-	sys echo "#---" >> '$conf'
-	println("Adding configs '$confDir/snpEff.NCBI.*.config'")
-	sys cat	$confDir/snpEff.NCBI.*.config >> '$conf'
-
-	sys echo >> '$conf'
-	sys echo "#---" >> '$conf'
-	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> '$conf'
-	sys echo "#---" >> '$conf'
-	c := "$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
-	println("Adding config '$c'")
-	sys cat "$c" >> '$conf'
-
-	sys echo >> '$conf'
-	sys echo "#---" >> '$conf'
-	sys echo "# FLYBASE release $flybaseRelease" >> '$conf'
-	sys echo "#---" >> '$conf'
-	c = "$confDir/snpEff.FLYBASE_$flybaseRelease\.config"
-	println("Adding config '$c'")
-	sys cat	'$c' >> '$conf'
-
-	for( string b : bundles) {
-		sys echo >> '$conf'
-		sys echo "#---" >> '$conf'
-		sys echo "# ENSEMBL Bundles $b" >> '$conf'
-		sys echo "#---" >> '$conf'
-		c = "$confDir/snpEff.bundles.$b\.config"
-		println("Adding config '$c'")
-		sys cat '$c' >> '$conf'
-	}
-
-	sys echo >> '$conf'
-	sys echo "#---" >> '$conf'
-	sys echo "# Custom requests " >> '$conf'
-	sys echo "#---" >> '$conf'
-	c = "$confDir/snpEff.custom_requests.config"
-	println("Adding config '$c'")
-	sys cat	'$c' >> '$conf'
-
-	sys echo >> '$conf'
-	sys echo "#---" >> '$conf'
-	sys echo "# COVID19 " >> '$conf'
-	sys echo "#---" >> '$conf'
-	c = "$confDir/snpEff.covid19.config"
-	println("Adding config '$c'")
-	sys cat	'$c' >> '$conf'
-
-	for(string dbv: dbCompatibleVersions) {
-        sys echo >> '$conf'
-        sys echo "#---" >> '$conf'
-        sys echo "# Compatible versions: $dbv " >> '$conf'
-        sys echo "#---" >> '$conf'
-        c = "$confDir/snpEff.version.$dbv\.config"
-        println("Adding config '$c'")
-        sys cat	'$c' >> '$conf'
-	}
 }
 
 #-------------------------------------------------------------------------------
@@ -482,17 +390,6 @@ void copyPwm() {
 }
 
 #-------------------------------------------------------------------------------
-# Create 'software vesion' file
-#-------------------------------------------------------------------------------
-string createVersionFile(string htmlDir) {
-	verFile := "$htmlDir/versions.txt"
-	println "Creating versions file: '$verFile'"
-	snpEffVer  := sys $snpeff -version 2>&1
-	verFile.write(snpEffVer.trim().toUpper() + "\t$snpeffDownload\n");
-	return verFile
-}
-
-#-------------------------------------------------------------------------------
 # Human genomes data dirs
 #-------------------------------------------------------------------------------
 string[] dirsHg() {
@@ -517,6 +414,10 @@ void downloadOneSet(string setToDownload) {
 			downloadClinvar()
 			break
 
+		case 'cytobands':
+			downloadCytoBandsHuman()
+			break
+
 		case 'dbnsfp':
 			downloadDbNsfp()
 			break
@@ -526,7 +427,9 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'ensembl':
-			for( int ensemblRelease : ensemblReleases ) downloadEnsemblBulk(ensemblRelease)
+			for( int ensemblRelease : ensemblReleases ) {
+				downloadEnsemblBulk(ensemblRelease)
+			}
 			break
 
 		case 'ensemblBfmpp':
@@ -558,17 +461,7 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'ucsc':
-			for( string ref : ucscGenomes ) {
-				dg := new DownloadUcsc(ref)
-				dg.download()
-			}
-			break
-
-		case 'ucsckg':
-			for( string ref : ucscGenomesKg ) {
-				dg := new DownloadUcscKg(ref)
-				dg.download()
-			}
+			downloadUcscGenomes()
 			break
 
 		default:
@@ -686,7 +579,12 @@ void uploadCore2Sf() {
 # Upload dbNSFP to Azure
 #-------------------------------------------------------------------------------
 void uploadDbNsfp2Azure() {
-	error "Unimplamented!"
+	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
+	dbNsfp38.upload2Azure()
+
+	# Create dbNsfp37 using 'dbNsfp38File'
+	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
+	dbNsfp37.upload2Azure()
 }
 
 #-------------------------------------------------------------------------------
@@ -816,7 +714,7 @@ void zipDb(string gen) {
 
 		task( zip <- bin )	sys zip -r $zip data/$gen/*.bin $cyto
 	} else {
-		println "\tERROR: database $bin not found"
+		println "\tWARNING: database $bin not found"
 	}
 }
 

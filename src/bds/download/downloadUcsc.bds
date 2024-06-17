@@ -2,259 +2,192 @@
 
 #-------------------------------------------------------------------------------
 #
-# Download genome data
+# Download genome data fro UCSC
 #
 #-------------------------------------------------------------------------------
 
-ucscMysqlServer    := "genome-mysql.cse.ucsc.edu"
-cse                := "hgdownload.cse.ucsc.edu"
+downloadUcscDir 	:= "$dirDownload/ucsc"
 soe                := "hgdownload.soe.ucsc.edu"
-urlUcscCse         := "http://$cse/goldenPath"
 urlUcscSoe         := "http://$soe/goldenPath"
 ftpUcscSoe         := "ftp://$soe/goldenPath"
+rsyncUcscSoe       := "rsync://$soe/goldenPath"
 
+
+# Create UCSC config file
+void createUcscConfigFile() {
+	configFile := "$dirSnpEff/config/snpEff.UCSC.config"
+	today := sys date +"%Y-%m-%d"
+	string[] configLines
+	for(string genome: getUcscDownloadedGenomes()) {
+		configLines += "$genome\.genome : $genome"
+		configLines += "$genome\.reference : $rsyncUcscSoe/$genome/bigZips"
+		configLines += "$genome\.retrieval_date : $today"
+	}
+	buildConfigFromLines(configFile, configLines)
+}
+
+# Download a single genome from UCSC
 void downloadUcscGenome(string genome) {
-	if( genome.endsWith('kg') ) {
-		dg := new DownloadUcscKg(genome)
-		dg.download()
+	println "Downloading UCSC: '$genome'"
+
+	downloadUcscDir.mkdir()
+	downloadUcscDir.chdir()
+
+	# Download files
+	downloadOk := "$downloadUcscDir/$genome/download.ok"
+	if( downloadOk.exists() ) {
+		println "\tDownload OK file '$downloadOk' exists. Skipping download"
 	} else {
-		dg := new DownloadUcsc(genome)
-		dg.download()
+		downloadUcscGenomeRsync(genome)
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Install files
+	installdUcscGenome(genome)
+
+	# Create config file
+}
+
+# Download all UCSC genomes
+void downloadUcscGenomes() {
+	println "Downloading UCSC: All genomes"
+
+	doneFile := "$dirDownload/ucsc.done"
+	if( doneFile.exists() ) {
+		println "\tDone file '$doneFile' exists: nothing done"
+		return
+	}
+
+	downloadUcscDir.mkdir()
+	downloadUcscDir.chdir()
+
+	# Download all files
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		downloadUcscGenomesRsync()
+		downloadOk.write("OK")	# Mark as all downloads OK
+	} else {
+		println "\tDownload OK file '$downloadOk' exists: skipping dowonload"
+	}
+
+	# Install downloaded files
+	installdUcscGenomes()
+
+	# Create config file
+	createUcscConfigFile()
+
+	doneFile.write('OK')	# Mark as all downloaded and installed
+}
+
+# Download all UCSC genomes using rsync
+void downloadUcscGenomesRsync() {
+	println "Downloading UCSC (rsync)"
+
+	sys rsync -av -P \
+			\
+			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/est.fa.gz' \
+			--exclude='*/*hardmasked.fa.gz' \
+			--exclude='*/*RefMrna.fa.gz' \
+			--exclude='*/*softmasked*.fa.gz' \
+			--exclude='*/statistics' \
+			--exclude='*/upstream*.fa.gz' \
+			--exclude='*/xenoMrna.fa.gz' \
+			\
+			--include='*/bigZips/*.fa.gz' \
+			--include='*/bigZips/refMrna.fa.gz' \
+			--include='*/bigZips/genes/*.refGene.gtf.gz' \
+			--include='*/bigZips/genes/*.knownGene.gtf.gz' \
+			--include='*/database/cytoBand.txt.gz' \
+			--include='*/' \
+			\
+			--exclude='*' \
+			$rsyncUcscSoe \
+			.
+		
+}
+
+# Download a single genome from UCSC using rsync
+void downloadUcscGenomeRsync(string genome) {
+	println "Downloading UCSC (rsync): '$genome'"
+
+	sys rsync -av -P \
+			--exclude='*/*ensGene.gtf.gz' \
+			--exclude='*/est.fa.gz' \
+			--exclude='*/*hardmasked.fa.gz' \
+			--exclude='*/*RefMrna.fa.gz' \
+			--exclude='*/*softmasked*.fa.gz' \
+			--exclude='*/statistics' \
+			--exclude='*/upstream*.fa.gz' \
+			--exclude='*/xenoMrna.fa.gz' \
+			\
+			--include='$genome/bigZips/refMrna.fa.gz' \
+			--include='$genome/bigZips/$genome\.fa.gz' \
+			--include='$genome/bigZips/genes/*.refGene.gtf.gz' \
+			--include='$genome/bigZips/genes/*.knownGene.gtf.gz' \
+			--include='$genome/database/cytoBand.txt.gz' \
+			--include='*/' \
+			\
+			--exclude='*' \
+			$rsyncUcscSoe \
+			.
+		
+}
+
+# Get the names of all downloaded genomes.
+# Only include the directories that have all FASTA and GTF files.
+string[] getUcscDownloadedGenomes() {
+	downloadUcscDir.chdir()
+	string[] genomes
+	for(string genome: downloadUcscDir.dir()) {
+		dirIn := "$downloadUcscDir/$genome"
+		genomeFasta := "$dirIn/bigZips/$genome\.fa.gz"
+		gtf := "$dirIn/bigZips/genes/$genome\.refGene.gtf.gz"
+		cdsFasta := "$dirIn/bigZips/refMrna.fa.gz"
+		if( genomeFasta.exists() && gtf.exists() && cdsFasta.exists() ) {
+			genomes += genome
+		}
+	}
+	return genomes
+}
+
+# Install a single genome
+void installdUcscGenome(string genome) {
+	println("Installing UCSC genome: '$genome'")
+	dirIn := "$downloadUcscDir/$genome"
+	dirOut := "$dirData/$genome"
+
+	dirOut.mkdir()
+
+	# Copy genome FASTA file
+	genomeFasta := "$dirData/genomes/$genome\.fa.gz"
+	if( !genomeFasta.exists() ) {
+		sys cp -vf $dirIn/bigZips/$genome\.fa.gz $genomeFasta
+	}
+
+	# Copy GTF file
+	gtf := "$dirOut/genes.gtf.gz"
+	if( !gtf.exists() ) {
+		sys cp -vf $dirIn/bigZips/genes/$genome\.refGene.gtf.gz $gtf
+	}
+
+	# Copy CDS file
+	cds := "$dirOut/cds.fa.gz"
+	if( !cds.exists() ) {
+		sys cp -vf $dirIn/bigZips/refMrna.fa.gz $cds
+	}
+
+	# Copy cytoband file
+	cytobands := "$dirOut/cytoBand.txt.gz"
+	cytobandsIn := "$dirIn/database/cytoBand.txt.gz"
+	if( !cytobands.exists() && cytobandsIn.exists() ) {
+		sys cp -vf $cytobandsIn $cytobands
 	}
 }
 
-
-# Class to download files and query MySql database from UCSC
-class DownloadUcsc extends DownloadGenome {
-	string fastaUrl
-	string fastaTarUrl
-	string cytoBandUrl
-	string[] cdsUrls
-	string[] genesUrls
-
-	void DownloadUcsc(string genome) {
-		super.DownloadGenome(genome)
-		cdsUrl = "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
-		cdsUrls = [cdsUrl, "$urlUcscSoe/$genome/bigZips/mrna.fa.gz"]
-		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
-		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
-		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
-		genesUrls = [genesUrl, "$urlUcscSoe/$genome/bigZips/genes/$genome\.ncbiRefSeq.gtf.gz"]
-		cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
-		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
-	}
-
-	string downloadCdsFasta() {
-        for(string cdsUrl: cdsUrls) {
-			log("Downloading CDS FASTA '$cdsUrl'")
-            if( cdsUrl.exists() ) return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
-			else log("WARNING: Could not download CDS FASTA '$cdsUrl'")
-        }
-	    error "Could not find CDS / mRNA FASTA file from any of $cdsUrls"
-	}
-
-	string downloadCytoBand() {
-		cytoBandFile := "$downloadDir/cytoBand.txt.gz"
-		if( !cytoBandFile.exists() && cytoBandUrl.exists() ) {
-			wget(cytoBandUrl, cytoBandFile, true, true, false, true)
-			return cytoBandFile
-		}
-		return '';
-	}
-
-	# Download FASTA geome from UCSC
-	string downloadFasta() {
-		if( fastaUrl.exists() ) {
-			wgetTask(fastaUrl, fastaLocal)
-		} else if( fastaTarUrl.exists() ) {
-			localTar := "$downloadDir/chromFa.tar.gz"
-			wgetTask(fastaTarUrl, localTar)
-			fastaLocal = fastaFromTar(localTar) # Create fasta from tar
-		} else {
-			log("Could not download FASTA reference genome file\n\tFASTA: '$fastaUrl'\n\tTAR: '$fastaTarUrl'")
-		}
-
-		return fastaLocal
-	}
-
-	# Download genes file. Either download GTF or query MySql server
-	string downloadGenes() {
-		genes := downloadGtf()
-		if( genes.isEmpty() ) {
-			# GTF not found, let's query MySql database
-			genes = query()
-		}
-		return genes
-	}
-
-	# Download geome from UCSC, ony if it has a GTF file
-	string downloadGtf() {
-		log("Downloading '$genome' (UCSC): GTF file")
-		for(string genesUrl: genesUrls) {
-			log("Downloading Genes file '$genesUrl'")
-		    if( genesUrl.exists() ) return downloadFile(genesUrl, genesLocal, "Genes GTF", true)
-			else log("WARNING: Could not download Genes file '$genesUrl'")
-		}
-		log("Could not download genes from any of: $genesUrls")
-		return ''
-	}
-
-	string downloadProteinFasta() {
-		# We don't get protein fasta files from UCSC: Nothing to do
-		return ''
-	}
-
-	# Download other files
-	string[] downloadOther() {
-		string[] files
-		cyto := downloadCytoBand()
-		if( !cyto.isEmpty() ) files += cyto
-		return files
-	}
-
-	# Create a single fasta file from a set of fasta in a tar
-	string fastaFromTar(string tar) {
-		log("Creating '$genome' FASTA file from tarball")
-		fasta := "$downloadDir/$genome\.fa.gz"
-		dirChr := "$downloadDir/chr"
-		dirChr.mkdir()
-
-		task( fasta <- tar ) {
-			sys echo "Creating fasta file '$fasta' from tar file '$tar'"
-			sys cd '$dirChr'
-			sys tar -xvzf '$tar'
-			sys rm -f '$fasta'
-			sys cat `find . -iname "*.fa"` | gzip -c > '$fasta'
-		}
-
-		return fasta
-	}
-
-	# Download mRNA file and create a 'cds.fa.gz'
-	string processCds(string cdsLocal) {
-		cds := "$downloadDir/cds.fa.gz"
-		task(cds <- cdsLocal) {
-			sys echo 'Creating CDS FASTA from "$cdsLocal"'
-			sys gunzip -c '$cdsLocal' | tr " " "." | gzip -c > '$cds'
-		}
-		return cds
-	}
-
-	string query() {
-		# Query gene database
-		if( ucscGenomesRefGene.has(genome) ) return queryUcscRefGene()
-		return queryUcscXenoRefGene()
-	}
-
-	# Query MySql's database (RefSeq)
-	string queryUcscRefGene() {
-		refSeq := "$downloadDir/genes.refseq.gz"
-		if( !refSeq.exists() ) {
-			log("Querying UCSC database for RefSeq genes: $genome")
-			query := "
-				use $genome;
-				select rg.bin as 'binNum'
-						, CONCAT(rg.name,'.',gi.version) as 'name'
-						, rg.chrom
-						, rg.strand
-						, rg.txStart
-						, rg.txEnd
-						, rg.cdsStart
-						, rg.cdsEnd
-						, rg.exonCount
-						, rg.exonStarts
-						, rg.exonEnds
-						, rg.score
-						, rg.name2
-						, rg.cdsStartStat
-						, rg.cdsEndStat
-						, rg.exonFrames
-				from refGene rg
-					inner join hgFixed.gbCdnaInfo gi
-					on rg.name=gi.acc
-				;
-				"
-			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $genome | gzip -c > '$refSeq'
-		}
-		return refSeq
-	}
-
-	# Query MySql's database (dump xenoRefGene table)
-	string queryUcscXenoRefGene() {
-		refSeq := "$downloadDir/genes.refseq\.gz"
-		if( !refSeq.exists() ) {
-			log("Querying database for xenoRefGene genes: $genome")
-			query := "
-				use $genome;
-				select rg.bin as 'binNum'
-						, rg.name as 'name'
-						, rg.chrom
-						, rg.strand
-						, rg.txStart
-						, rg.txEnd
-						, rg.cdsStart
-						, rg.cdsEnd
-						, rg.exonCount
-						, rg.exonStarts
-						, rg.exonEnds
-						, rg.score
-						, rg.name2
-						, rg.cdsStartStat
-						, rg.cdsEndStat
-						, rg.exonFrames
-				from xenoRefGene rg
-				;
-				"
-			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $genome | gzip -c > '$refSeq' || true
-		}
-		return refSeq
-	}
-}
-
-# Download a 'knaownGenes' version of the genome
-class DownloadUcscKg extends DownloadUcsc {
-	string refdb
-
-	void DownloadUcscKg(string genome) {
-		super.DownloadUcsc(genome)
-		this.refdb = genome.substr(0, genome.length() - 2)	# Remove the 'kg' trailing
-
-		genesUrl = "$urlUcscSoe/$this.genome/bigZips/genes/$this.refdb\.knownGene.gtf.gz"
-		cdsUrl = ''   # It looks like there is no CDS file with knownGene transcripts at this moment
-		protUrl = ''  # It looks like there is no protein file with knownGene transcripts at this moment
-		cytoBandUrl = "$urlUcscCse/$refdb/database/cytoBand.txt.gz"
-
-		fastaDataEq = "$dirData/genomes/$refdb\.fa.gz"
-	}
-
-	string query() {
-		return queryUcscKg()
-	}
-
-	# Query MySql's database (KnonwGene)
-	string queryUcscKg() {
-		refSeq := "$downloadDir/genes.kg.gz"
-		if( !refSeq.exists() ) {
-			log("Querying database for KnownGenes genes: $genome")
-			query := "
-				use $genome;
-				select kg.name as '#name'
-						, kg.chrom
-						, kg.strand
-						, kg.txStart
-						, kg.txEnd
-						, kg.cdsStart
-						, kg.cdsEnd
-						, kg.exonCount
-						, kg.exonStarts
-						, kg.exonEnds
-						, kg.proteinID
-						, kg.alignID
-				from knownGene kg
-				;
-				"
-			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $genome | gzip -c > '$refSeq'
-		}
-		return refSeq
+# Install ALL UCSC genomes
+void installdUcscGenomes() {
+	for(string genome: getUcscDownloadedGenomes()) {
+		installdUcscGenome(genome)
 	}
 }

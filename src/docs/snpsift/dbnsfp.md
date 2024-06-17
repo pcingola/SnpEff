@@ -12,12 +12,25 @@ This allows for faster annotations.
 dbNSFP is large (several GB) so it might take a while to download it.
 The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
 
-You can download the files from SnpEff's site (remember that you need both the database and the index file):
+### Doenloading
 
+You can download the files from SnpEff's site.
+
+WARNING: Remember that you need both the database and the index files
+
+DbNSFP Version 4.5:
+* GRCh37 / hg19:
+    * [Database](https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+* GRCh38 / hg38:
+    * [Database](https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+
+DbNSFP Version 4.1
 * GRCh37 / hg19 (dbNSFP Academic):
     * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
     * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
-* GRCh38 / hg38  (dbNSFP Academic):
+* GRCh38 / hg38 (dbNSFP Academic):
     * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
     * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 
