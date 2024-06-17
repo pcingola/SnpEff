@@ -15,7 +15,6 @@ db					:= false		help Build databases
 string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
-distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
 make	 			:= false		help Make (build JAR files)
 test	 			:= false		help Run SnpEff / SnpSift test cases
@@ -48,9 +47,7 @@ cpus = 1
 # Versions
 help Ensembl
 ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
-ensemblRelease			:= 110			help Vertebrate release number
-#ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
-ensemblReleases			:= [ensemblRelease]
+ensemblRelease			:= 112			help Vertebrate release number
 
 help MANE 
 maneGenome				:= 'GRCh38'		help MANE genome
@@ -81,9 +78,6 @@ dbCompatibleVersions := ['5.0'] help List of database compatible versions
 
 # Mouse
 GRCM				:= "GRCm38"
-
-# Configuration parameters
-bundles				:= ["ENSEMBL_BFMPP_$ensemblBfmppRelease"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -427,9 +421,7 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'ensembl':
-			for( int ensemblRelease : ensemblReleases ) {
-				downloadEnsemblBulk(ensemblRelease)
-			}
+			downloadEnsemblBulk(ensemblRelease)
 			break
 
 		case 'ensemblBfmpp':
@@ -497,7 +489,6 @@ void makeDistro() {
 	dirZip.mkdir()	# Make sure zip dir exists
 	zipCore()
 	zipDbs()
-	# zipBundles()	# As of 2020-08 we'll stop using "bundles" because these were only used to reduce the number of files on SourceForge
 }
 
 #-------------------------------------------------------------------------------
@@ -642,37 +633,6 @@ string versionSubUnd() {
 	return ver.replace("\.","_").trim()
 }
 
-#-------------------------------------------------------------------------------
-# Create bundle's ZIP files
-#-------------------------------------------------------------------------------
-void zipBundles() {
-	println "Create bundles ZIP files"
-
-	bundleList := "bundles.txt"
-	bundleLines := sys cat $dirSnpEff/snpEff.config | grep .bundle. > $bundleList
-	bundleList.rmOnExit()
-
-	for( string bline : bundleList.read().lines() ) {
-		bfields := bline.split(':')
-
-		# Bundle name
-		bname := bfields[0].trim().removeExt('.bundle')
-
-		string[] bins
-		for( string gen : bfields[1].split(' ') ) {
-			bin := "$dirData/$gen/snpEffectPredictor.bin"
-			if( bin.exists() ) bins.add( bin )
-		}
-
-		# Zip files
-		zipList := bins.join(' ')
-		zipName := "$dirZip/snpEff_v" + versionUnd() + "_" + bname + ".zip"
-		if( zipName <- bins ) {
-			println "\tZIP Bundle: $zipName"
-			task zip $zipName $zipList
-		}
-	}
-}
 
 #-------------------------------------------------------------------------------
 # Create SnpEff core Zip file
@@ -699,7 +659,7 @@ void zipCore() {
 }
 
 #-------------------------------------------------------------------------------
-# Create databases (non-bundled) Zip files
+# Create databases Zip files
 #-------------------------------------------------------------------------------
 void zipDb(string gen) {
 	bin := "data/$gen/snpEffectPredictor.bin"
@@ -719,7 +679,7 @@ void zipDb(string gen) {
 }
 
 #-------------------------------------------------------------------------------
-# Create databases (non-bundled) Zip files
+# Create databases Zip files
 #-------------------------------------------------------------------------------
 void zipDbs(string[] gens) {
 	for( string gen : gens ) {
@@ -728,7 +688,7 @@ void zipDbs(string[] gens) {
 }
 
 #-------------------------------------------------------------------------------
-# Create databases (non-bundled) Zip files
+# Create databases Zip files
 #-------------------------------------------------------------------------------
 void zipDbs() {
 	println "Create database ZIP files"
@@ -759,7 +719,6 @@ if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
 if( dbTest )					buildDbTest()								# Build databases used in test cases
 if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
-if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
 if( !downloadEnsembl.isEmpty() )	downloadEnsembl.downloadEnsemblGenome(downloadEnsemblSpecies)		# Download a specific ENSEMBL genome
 if( downloadMane )				downloadManeGenome()						# Download MANE genome
