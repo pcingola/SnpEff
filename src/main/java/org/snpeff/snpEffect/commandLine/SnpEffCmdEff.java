@@ -1018,7 +1018,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
-		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
+		System.err.println("\t-o <format>                     : Output format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
 		System.err.println("\t-s , -stats, -htmlStats         : Create HTML summary file.  Default is '" + DEFAULT_SUMMARY_HTML_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\nResults filter options:");

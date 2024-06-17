@@ -16,7 +16,7 @@ public class OsCmdRunner extends Thread {
 	long defaultWaitTime = 100; // Default time to use in 'wait' calls when initialting the command
 	long defaultLoopWaitTime = 1000; // Default time to use in 'wait' calls
 	String jobId = "";
-	String head = ""; // Ouput's head
+	String head = ""; // Output's head
 	String headStderr = ""; // Stderr's head
 	String error; // Latest error message
 	String stdout = "", stderr = "";
