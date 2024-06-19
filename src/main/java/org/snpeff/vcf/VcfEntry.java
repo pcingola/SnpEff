@@ -1521,6 +1521,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (alt == null || alt.isEmpty() || alt.equals(reference)) {
 			// Non-variant
 			list = Variant.factory(chromo, start, reference, null, id, false);
+		} else if (reference.length() == 1 && alt.length() == 1) {
+			// The most common case: SNPs
+			// SNPs
+			// 20     3 .         C      G       .   PASS  DP=100
+			list = Variant.factory(chromo, start, reference, alt, id, vcfFileIterator.isExpandIub());
 		} else if (alt.charAt(0) == '<') {
 			// Structural variants
 			if (alt.startsWith("<DEL")) {
@@ -1574,29 +1579,23 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			list = new LinkedList<>();
 			list.add(var);
 		} else if (reference.length() == alt.length()) {
-			// Case: SNP, MNP
-			if (reference.length() == 1) {
-				// SNPs
-				// 20     3 .         C      G       .   PASS  DP=100
-				list = Variant.factory(chromo, start, reference, alt, id, vcfFileIterator.isExpandIub());
-			} else {
-				// MNPs
-				// 20     3 .         TC     AT      .   PASS  DP=100
-				// Sometimes the first bases are the same and we can trim them
-				int startDiff = Integer.MAX_VALUE;
-				for (int i = 0; i < reference.length(); i++)
-					if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
+			// Case: MNP (note that SNPs were covers at the beginning of this if/else clause)
+			// MNPs
+			// 20     3 .         TC     AT      .   PASS  DP=100
+			// Sometimes the first bases are the same and we can trim them
+			int startDiff = Integer.MAX_VALUE;
+			for (int i = 0; i < reference.length(); i++)
+				if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
 
-				// MNPs
-				// Sometimes the last bases are the same and we can trim them
-				int endDiff = 0;
-				for (int i = reference.length() - 1; i >= 0; i--)
-					if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
+			// MNPs
+			// Sometimes the last bases are the same and we can trim them
+			int endDiff = 0;
+			for (int i = reference.length() - 1; i >= 0; i--)
+				if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
 
-				String newRef = reference.substring(startDiff, endDiff + 1);
-				String newAlt = alt.substring(startDiff, endDiff + 1);
-				list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, vcfFileIterator.isExpandIub());
-			}
+			String newRef = reference.substring(startDiff, endDiff + 1);
+			String newAlt = alt.substring(startDiff, endDiff + 1);
+			list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, vcfFileIterator.isExpandIub());
 		} else {
 			// Short Insertions, Deletions or Mixed Variants (substitutions)
 			VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
