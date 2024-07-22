@@ -312,7 +312,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (!infoStr.endsWith(SUB_FIELD_SEP)) infoStr += SUB_FIELD_SEP; // Do we need to add a semicolon?
 			infoStr += addInfoStr; // Add info string
 		}
-
 	}
 
 	/**
