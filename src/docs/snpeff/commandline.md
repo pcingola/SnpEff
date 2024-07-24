@@ -19,7 +19,7 @@ Command       |  Meaning
 `eff | ann`   | This is the default command. It is used for annotating variant filed (e.g. VCF files).
 `build`         | Build a SnpEff database from reference genome files (FASTA, GTF, etc.).
 `buildNextProt` | Build NextProt database using XML files
-`cds`           | Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database).
+`cds`           | Compare CDS sequences calculated from a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database).
 `closest`       | Annotate the closest genomic region.
 `count`         | Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.
 `databases`     | Show currently available databases (from local config file).
