@@ -36,17 +36,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public static final String FILTER_PASS = "PASS";
-
 	public static final char WITHIN_FIELD_SEP = ',';
 	public static final String SUB_FIELD_SEP = ";";
-
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
-
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
-
 	public static final Pattern INFO_KEY_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}._]*");
-
 	public static final String VCF_INFO_END = "END"; // Imprecise variants
 
 	// In order to report sequencing data evidence for both variant and non-variant positions in the genome, the VCF
