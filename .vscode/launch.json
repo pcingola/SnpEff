@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "-v -tag MANE_Select GRCh38.mane.1.2.ensembl /Users/kqrw311/snpEff/z.vcf"
+            "args": "-v -noOut -tag MANE_Select GRCh38.mane.1.2.ensembl /Users/kqrw311/snpEff/z.vcf"
         },
     ]
 }
