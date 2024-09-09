@@ -1007,7 +1007,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 
 		System.err.println("snpEff version " + VERSION);
-		System.err.println("Usage: snpEff [eff] [options] genome_version [input_file]");
+		System.err.println("Usage: snpEff [ann] [options] genome_version [input_file]");
 		System.err.println("\n");
 		System.err.println("\tvariants_file                   : Default is STDIN");
 		System.err.println("\n");

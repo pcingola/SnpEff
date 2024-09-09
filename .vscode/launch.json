@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "build -v hg19"
+            "args": "-v -tag MANE_Select GRCh38.mane.1.2.ensembl /Users/kqrw311/snpEff/z.vcf"
         },
     ]
 }

@@ -128,7 +128,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 		try {
 			if (line.startsWith("#")) { // Header?
 				header.addLine(line);
-			} else if ((line.length() > 0) && (!line.startsWith("#"))) { // Vcf entry?
+			} else if (line.length() > 0) { // Vcf entry?
 				return new VcfEntry(this, line, lineNum, parseNow);
 			}
 		} catch (Throwable t) {
