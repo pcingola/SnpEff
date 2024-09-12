@@ -53,10 +53,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final String VCF_ALT_NON_REF = "<*>"; // See VCF 4.2 section "5.5 Representing unspecified alleles and REF-only blocks (gVCF)"
 	public static final String VCF_ALT_NON_REF_gVCF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields)
 	public static final String VCF_ALT_MISSING_REF = "*"; // The '*' allele is reserved to indicate that the allele is missing due to a upstream deletion (see VCF 4.3 spec., ALT definition)
+	public static final String VCF_ALT_INV = "<INV>"; // Inversion
 
 	public static final String[] VCF_ALT_NON_REF_gVCF_ARRAY = { VCF_ALT_NON_REF_gVCF };
 	public static final String[] VCF_ALT_NON_REF_ARRAY = { VCF_ALT_NON_REF };
 	public static final String[] VCF_ALT_MISSING_REF_ARRAY = { VCF_ALT_MISSING_REF };
+	public static final String[] VCF_ALT_INV_ARRAY = { VCF_ALT_INV };
 
 	public static final String VCF_INFO_HOMS = "HO";
 	public static final String VCF_INFO_HETS = "HE";
@@ -1074,6 +1076,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
 		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
 		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) { return VCF_ALT_NON_REF_gVCF_ARRAY; }
+		if (altsStr.equals(VCF_ALT_INV)) { return VCF_ALT_INV_ARRAY; }
 
 		// SNP IUB conversion table
 		String alts[];
@@ -1539,8 +1542,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				list = Variant.factory(chromo, startNew, ch, "", id, false);
 			} else if (alt.startsWith("<INV")) {
 				// Inversion
-				int startNew = start + reference.length();
-				Variant var = new Variant(chromo, startNew, end, id);
+				var altInv = new StringBuffer(ref).reverse().toString();
+				Variant var = new Variant(chromo, start, reference, altInv, id);
 				var.setVariantType(VariantType.INV);
 				list = new LinkedList<>();
 				list.add(var);

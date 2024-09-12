@@ -9,6 +9,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

@@ -715,4 +715,42 @@ public class TestCasesVcf extends TestCasesBase {
         assertEquals("a1_b2c3_d4", VcfEntry.cleanUnderscores("_____a1_b2c3_______d4________"));
     }
 
+    @Test
+    public void test_37_inversions_parsing() {
+        Log.debug("Test");
+        String vcfFile = path("test_inv.vcf");
+
+        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+        // Read the first entry
+        VcfEntry ve = vcf.next();
+        if (verbose) Log.info(ve);
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        var refExpected = "GTGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC";
+        var startExpected = 27360852;
+        var endExpected = startExpected + refExpected.length() - 1;
+        var altExpected = new StringBuilder(refExpected).reverse().toString();
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(refExpected, inv.getReference());
+        assertEquals(altExpected, inv.getAlt());
+        assertEquals(startExpected, inv.getStart());
+        assertEquals(endExpected, inv.getEnd());
+
+        // Read the second entry
+        ve = vcf.next();
+        if (verbose) Log.info(ve);
+        vars = ve.variants();
+        inv = (Variant) vars.get(0);
+        refExpected = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
+        altExpected = new StringBuilder(refExpected).reverse().toString();
+        startExpected = 37973491;
+        endExpected = startExpected + refExpected.length() - 1;
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(refExpected, inv.getReference());
+        assertEquals(altExpected, inv.getAlt());
+        assertEquals(startExpected, inv.getStart());
+        assertEquals(endExpected, inv.getEnd());        
+    }
+
+
 }
