@@ -726,15 +726,18 @@ public class TestCasesVcf extends TestCasesBase {
         if (verbose) Log.info(ve);
         var vars = ve.variants();
         var inv = (Variant) vars.get(0);
+        if (verbose) Log.info(inv);
         var refExpected = "GTGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC";
         var startExpected = 27360852;
         var endExpected = startExpected + refExpected.length() - 1;
         var altExpected = new StringBuilder(refExpected).reverse().toString();
+        assertEquals(1, vars.size());
         assertEquals(VariantType.INV, inv.getVariantType());
         assertEquals(refExpected, inv.getReference());
         assertEquals(altExpected, inv.getAlt());
         assertEquals(startExpected, inv.getStart());
         assertEquals(endExpected, inv.getEnd());
+
 
         // Read the second entry
         ve = vcf.next();
@@ -745,12 +748,12 @@ public class TestCasesVcf extends TestCasesBase {
         altExpected = new StringBuilder(refExpected).reverse().toString();
         startExpected = 37973491;
         endExpected = startExpected + refExpected.length() - 1;
+        assertEquals(1, vars.size());
         assertEquals(VariantType.INV, inv.getVariantType());
         assertEquals(refExpected, inv.getReference());
         assertEquals(altExpected, inv.getAlt());
         assertEquals(startExpected, inv.getStart());
         assertEquals(endExpected, inv.getEnd());        
     }
-
 
 }

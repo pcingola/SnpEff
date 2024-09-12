@@ -1549,8 +1549,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				list.add(var);
 			} else if (alt.startsWith("<DUP")) {
 				// Duplication
-				int startNew = start + reference.length();
-				Variant var = new Variant(chromo, startNew, end, id);
+				var altDup = ref + ref;
+				Variant var = new Variant(chromo, start, ref, altDup, id);
 				var.setVariantType(VariantType.DUP);
 				list = new LinkedList<>();
 				list.add(var);
