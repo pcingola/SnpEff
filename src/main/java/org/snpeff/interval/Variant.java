@@ -369,7 +369,6 @@ public class Variant extends Marker {
         // We only check if: a) that the chromosome exists and b) chromosome it is not small
         if (chr != null && chr.size() > HUGE_DELETION_SIZE_THRESHOLD) {
             double ratio = size() / ((double) chr.size());
-            Log.debug("Structural variant size: " + size() + ", chromosome size: " + chr.size() + ", ratio: " + ratio);
             return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
         }
 
