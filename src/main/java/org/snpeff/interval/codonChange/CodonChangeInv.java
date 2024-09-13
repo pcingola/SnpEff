@@ -58,18 +58,11 @@ public class CodonChangeInv extends CodonChange {
 				// If so, then this is a HIGH impact effect.
 				if (cdsMarker != null ) {
 					var intersect = variant.intersect(ex);
-					Log.debug("INTERSECT:" //
-								+ "\n\tCDS marker: " + cdsMarker 
-								+ "\n\tExon: " + ex 
-								+ "\n\tVariant: " + variant
-								+ "\n\tIntersect: " + intersect
-								);
 					if (intersect != null && intersect.intersects(cdsMarker)) impact = EffectImpact.HIGH;
 				}
 
 				// Is the whole exon inverted or just part of it?
 				EffectType effType = variant.includes(ex) ? EffectType.EXON_INVERSION : EffectType.EXON_INVERSION_PARTIAL;
-
 				effectNoCodon(ex, effType, impact);
 			}
 	}

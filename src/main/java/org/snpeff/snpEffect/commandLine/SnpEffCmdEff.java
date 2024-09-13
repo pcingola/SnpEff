@@ -209,6 +209,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		} catch (Throwable t) {
 			totalErrs++;
 			Log.error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+			if( testing ) throw new RuntimeException("Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t, t);
 		} finally {
 			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 		}
@@ -1004,6 +1005,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (message != null) {
 			System.err.println("Error        :\t" + message);
 			System.err.println("Command line :\t" + commandLineStr(false) + "\n");
+			if( testing ) throw new RuntimeException("Error: " + message);
 		}
 
 		System.err.println("snpEff version " + VERSION);

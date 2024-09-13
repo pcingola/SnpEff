@@ -6,6 +6,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.IubString;
+import org.snpeff.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -367,7 +368,8 @@ public class Variant extends Marker {
 
         // We only check if: a) that the chromosome exists and b) chromosome it is not small
         if (chr != null && chr.size() > HUGE_DELETION_SIZE_THRESHOLD) {
-            double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
+            double ratio = size() / ((double) chr.size());
+            Log.debug("Structural variant size: " + size() + ", chromosome size: " + chr.size() + ", ratio: " + ratio);
             return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
         }
 

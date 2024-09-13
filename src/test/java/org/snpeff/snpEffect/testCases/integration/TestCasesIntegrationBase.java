@@ -907,9 +907,11 @@ public class TestCasesIntegrationBase {
         args.add(vcfFile);
 
         SnpEff cmd = new SnpEff(args.toArray(new String[0]));
+        cmd.setTesting(true);
         SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
         cmdEff.setVerbose(verbose);
         cmdEff.setSupressOutput(!verbose);
+        cmdEff.setTesting(true);
         if (effFormatVersion != null) cmdEff.setFormatVersion(effFormatVersion);
 
         // Run command
