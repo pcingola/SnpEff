@@ -46,7 +46,7 @@ public class TestCasesIntegrationInv extends TestCasesIntegrationBase {
     @Test
     public void test_02() {
         verbose = true;
-        var vcfEntries = snpEffect("testHg3882Chr22", path("test_inv_02.vcf"));
+        var vcfEntries = snpEffect("test_GRCh38.mane.1.2.ensembl.chr1", path("test_inv_02.vcf"));
         hasInv(vcfEntries);
     }
 
