@@ -42,7 +42,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
 	public static final Pattern INFO_KEY_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}._]*");
-	public static final String VCF_INFO_END = "END"; // Imprecise variants
+	public static final String VCF_INFO_END = "END"; // Imprecise variants. Deprecated: "END has been deprecated in favour of INFO SVLEN and FORMAT LEN."
+	public static final String VCF_INFO_SVLEN = "SVLEN"; // "SVLEN must be specified for symbolic structural variant alleles"
+	public static final String VCF_INFO_IMPRECISE = "IMPRECISE"; // IMPRECISE must be specified for imprecise structural variant alleles
 
 	// In order to report sequencing data evidence for both variant and non-variant positions in the genome, the VCF
 	// specification allows to represent blocks of reference-only calls in a single record using the END INFO tag, an idea
@@ -51,11 +53,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	// other possible alternate allele (both SNP, indel, or otherwise). A symbolic alternate allele <*> is used to represent
 	// this unspecified alternate allele
 	public static final String VCF_ALT_NON_REF = "<*>"; // See VCF 4.2 section "5.5 Representing unspecified alleles and REF-only blocks (gVCF)"
-	public static final String VCF_ALT_NON_REF_gVCF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields)
+	public static final String VCF_ALT_NON_REF_OLD = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields (olf version of '<*>')
 	public static final String VCF_ALT_MISSING_REF = "*"; // The '*' allele is reserved to indicate that the allele is missing due to a upstream deletion (see VCF 4.3 spec., ALT definition)
 	public static final String VCF_ALT_INV = "<INV>"; // Inversion
 
-	public static final String[] VCF_ALT_NON_REF_gVCF_ARRAY = { VCF_ALT_NON_REF_gVCF };
+	public static final String[] VCF_ALT_NON_REF_OLD_ARRAY = { VCF_ALT_NON_REF_OLD };
 	public static final String[] VCF_ALT_NON_REF_ARRAY = { VCF_ALT_NON_REF };
 	public static final String[] VCF_ALT_MISSING_REF_ARRAY = { VCF_ALT_MISSING_REF };
 	public static final String[] VCF_ALT_INV_ARRAY = { VCF_ALT_INV };
@@ -167,6 +169,16 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
+	 * Pad with 'N' characters up length 'len'
+	 */
+	String padNs(String ref, int len) {
+		if( ref.length() <= len ) return ref;
+		char[] bases = new char[len];
+		for( int i = 0; i < len; i++ ) bases[i] = (i < ref.length() ? ref.charAt(i) : 'N');
+		return new String(bases);
+	}
+
+	/**
 	 * Decode INFO value
 	 */
 	public static String vcfInfoDecode(String str) {
@@ -224,13 +236,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		super(parent, start, start + ref.length() - 1, false, id);
 		this.chromosomeName = chromosomeName;
 		this.ref = ref;
-		parseAlts(altsStr);
+		this.alts = parseAlts(altsStr);
 		this.quality = quality;
 		filter = filterPass;
 		this.infoStr = infoStr;
 		parseInfo();
 		this.format = format;
-		parseEnd(altsStr);
+		parseEnd();
 	}
 
 	/**
@@ -814,6 +826,16 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return vcfInfo.getVcfInfoType();
 	}
 
+	public boolean hasAltNonRef() {
+		if (alts == null || alts.length == 0) return false;
+
+		// Is any ALT is variant?
+		for (String alt : alts)
+			if (isAltNonRef(alt)) return true;
+
+		return false;
+	}
+
 	public boolean hasField(String filedName) {
 		return vcfFileIterator.getVcfHeader().getVcfHeaderInfo(filedName) != null;
 	}
@@ -829,6 +851,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public boolean hasQuality() {
 		return quality != null;
+	}
+
+	/**
+	 * Is this ALT string a NON_REF? (gVCF)
+	 */
+	public boolean isAltNonRef(String alt) {
+		return alt != null && (alt.equals(VCF_ALT_NON_REF) || alt.equals(VCF_ALT_NON_REF_OLD));
 	}
 
 	/**
@@ -909,9 +938,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return alt != null //
 				&& !alt.isEmpty() //
 				&& !alt.equals(VcfFileIterator.MISSING) // Missing ALT (".")?
-				&& !alt.equals(VCF_ALT_NON_REF) // '*'
-				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
-				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
+				&& !alt.equals(VCF_ALT_NON_REF) // '<*>'
+				&& !alt.equals(VCF_ALT_NON_REF_OLD) // '<NON_REF>'
+				&& !alt.equals(VCF_ALT_MISSING_REF) // '*'
 				&& !alt.equals(ref) // Is ALT different than REF?
 		;
 	}
@@ -1006,7 +1035,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			// ALT
 			altStr = vcfFileIterator.readField(fields, 4).toUpperCase();
-			parseAlts(altStr);
+			this.alts = parseAlts(altStr);
 
 			// Quality
 			String qStr = vcfFileIterator.readField(fields, 5);
@@ -1021,7 +1050,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			info = null;
 
 			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
-			parseEnd(altStr);
+			parseEnd();
 
 			// Genotype format
 			format = null;
@@ -1035,11 +1064,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Parse ALT field
 	 */
-	void parseAlts(String altsStr) {
+	String[] parseAlts(String altsStr) {
 		if (altsStr.length() == 1 || altsStr.indexOf(',') < 0) {
 			// SNP or single field (no commas)
 			alts = parseAltSingle(altsStr);
-			if (alts == null) alts = new String[0];
+			return alts != null ? alts : new String[0];
 		} else {
 			// Multiple fields (comma separated)
 			List<String> altsList = new ArrayList<>();
@@ -1056,7 +1085,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				}
 			}
 
-			alts = altsList.toArray(EMPTY_STRING_ARRAY);
+			return altsList.toArray(EMPTY_STRING_ARRAY);
 		}
 	}
 
@@ -1075,7 +1104,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Not a variant?
 		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
 		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
-		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) { return VCF_ALT_NON_REF_gVCF_ARRAY; }
+		if (altsStr.equals(VCF_ALT_NON_REF_OLD)) { return VCF_ALT_NON_REF_OLD_ARRAY; }
 		if (altsStr.equals(VCF_ALT_INV)) { return VCF_ALT_INV_ARRAY; }
 
 		// SNP IUB conversion table
@@ -1173,17 +1202,43 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Parse 'end' coordinate
 	 */
-	void parseEnd(String altStr) {
-		end = start + ref.length() - 1;
-
+	void parseEnd() {
 		// Imprecise variants are indicated by an angle brackets '<...>'
-		if (altStr.indexOf('<') >= 0) {
-			// If there is an 'END' tag, we should use it
-			if ((getInfo(VCF_INFO_END) != null)) {
+		if (altStr.indexOf('<') >= 0 ) {
+			!!!!!!!! MOVE TO PARSE START
+			if( hasAltNonRef() ) {
+				// Non-ref alt: '<*>' or <NON_REF>
+			} else {
+				// <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar
+				// "Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant."
+				start++;
+			}
+
+			if ( hasInfo(VCF_INFO_SVLEN) ) {
+				// From VCF specification:
+				//   ```
+				//   SVLEN must be specified for symbolic structural variant alleles. SVLEN is defined for INS, DUP, 
+				//   INV, and DEL symbolic alleles as the number of the inserted, duplicated, inverted, and deleted
+				//   bases respectively. SVLEN is defined for CNV symbolic alleles as the length of the segment over
+				//   which the copy number variant is defined. The missing value . should be used for all other ALT
+				//   alleles, including ALT alleles using breakend notation.
+				//   ```
+				var svlen = (int) getInfoInt(VCF_INFO_SVLEN);
+				// 	"For backwards compatibility, the absolute value of SVLEN should be taken and a negative SVLEN
+				//	should be treated as positive values."
+				if (svlen < 0) svlen = -svlen;
+				end = start + svlen - 1;
+			} else if ( hasInfo(VCF_INFO_END) ) {
+				// "For backwards compatibility, a missing SVLEN should be inferred from the END field."
 				// Get 'END' field and do some sanity check
 				end = (int) getInfoInt(VCF_INFO_END) - 1;
 				if (end < start) { throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start); }
+			} else {
+				// If no SVLEN or END field is present, we can't infer the end position, we'll use 'ref' length
+				end = start + ref.length() - 1;
 			}
+		} else {
+			end = start + ref.length() - 1;
 		}
 	}
 
@@ -1520,86 +1575,39 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			list = Variant.factory(chromo, start, reference, null, id, false);
 		} else if (reference.length() == 1 && alt.length() == 1) {
 			// The most common case: SNPs
-			// SNPs
-			// 20     3 .         C      G       .   PASS  DP=100
+			// VCF entry example:
+			//		20     3 .         C      G       .   PASS  DP=100
 			list = Variant.factory(chromo, start, reference, alt, id, vcfFileIterator.isExpandIub());
 		} else if (alt.charAt(0) == '<') {
-			// Structural variants
-			if (alt.startsWith("<DEL")) {
-				// Case: Deletion
-				// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
-				String ch = ref;
-				int startNew = start;
-
-				if (end > start) {
-					startNew = start + reference.length();
-					int size = end - startNew + 1;
-					char change[] = new char[size];
-					for (int i = 0; i < change.length; i++)
-						change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-					ch = new String(change);
-				}
-				list = Variant.factory(chromo, startNew, ch, "", id, false);
-			} else if (alt.startsWith("<INV")) {
-				// Inversion
-				var altInv = new StringBuffer(ref).reverse().toString();
-				Variant var = new Variant(chromo, start, reference, altInv, id);
-				var.setVariantType(VariantType.INV);
-				list = new LinkedList<>();
-				list.add(var);
-			} else if (alt.startsWith("<DUP")) {
-				// Duplication
-				var altDup = ref + ref;
-				Variant var = new Variant(chromo, start, ref, altDup, id);
-				var.setVariantType(VariantType.DUP);
-				list = new LinkedList<>();
-				list.add(var);
-			}
+			list = variantsStructural(chromo, start, reference, alt, id);
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
-			// Translocations
-			
-			// Parse ALT string
-			boolean left = alt.indexOf(']') >= 0;
-			String sep = (left ? "\\]" : "\\[");
-			String tpos[] = alt.split(sep);
-			String pos = tpos[1];
-			boolean before = (alt.indexOf(']') == 0) || (alt.indexOf('[') == 0);
-			String altBases = (before ? tpos[2] : tpos[0]);
-
-			// Parse 'chr:start'
-			String posSplit[] = pos.split(":");
-			String trChrName = posSplit[0];
-			Chromosome trChr = chromo.getGenome().getOrCreateChromosome(trChrName);
-			int trStart = Gpr.parseIntSafe(posSplit[1]) - 1;
-
-			VariantBnd var = new VariantBnd(chromo, start, ref, altBases, trChr, trStart, left, before);
-			list = new LinkedList<>();
-			list.add(var);
+			list = variantsTranslocation(chromo, start, reference, alt, id);
 		} else if (reference.length() == alt.length()) {
-			// Case: MNP (note that SNPs were covers at the beginning of this if/else clause)
-			// MNPs
-			// 20     3 .         TC     AT      .   PASS  DP=100
-			// Sometimes the first bases are the same and we can trim them
-			int startDiff = Integer.MAX_VALUE;
-			for (int i = 0; i < reference.length(); i++)
-				if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
-
-			// MNPs
-			// Sometimes the last bases are the same and we can trim them
-			int endDiff = 0;
-			for (int i = reference.length() - 1; i >= 0; i--)
-				if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
-
-			String newRef = reference.substring(startDiff, endDiff + 1);
-			String newAlt = alt.substring(startDiff, endDiff + 1);
-			list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, vcfFileIterator.isExpandIub());
+			list = variantsMnp(chromo, start, reference, alt, id);
 		} else {
-			// Short Insertions, Deletions or Mixed Variants (substitutions)
-			VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
-			align.align();
-			int startDiff = align.getOffset();
+			list = variantsInDelMixed(chromo, start, reference, alt, id);
+		}
 
-			switch (align.getVariantType()) {
+		if (list == null) list = new LinkedList<>();
+		else {
+			// Assign the original 'ALT' to the genotype field, so we can trace it back even if we changed the 'ALT' when creating the variant
+			for (Variant variant : list) {
+				variant.setGenotype(alt);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * Create a list of Ins/Del/Mixed variants
+	 */
+	List<Variant> variantsInDelMixed(Chromosome chromo, int start, String reference, String alt, String id) {
+		// Short Insertions, Deletions or Mixed Variants (substitutions)
+		VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
+		align.align();
+		int startDiff = align.getOffset();
+
+		switch (align.getVariantType()) {
 			case DEL:
 				// Case: Deletion
 				// 20     2 .         TC      T      .   PASS  DP=100
@@ -1607,8 +1615,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				String ref = "";
 				String ch = align.getAlignment();
 				if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-				list = Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
-				break;
+				return Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
 
 			case INS:
 				// Case: Insertion of A { tC ; tCA } tC is the reference allele
@@ -1616,28 +1623,160 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				ch = align.getAlignment();
 				ref = "";
 				if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-				list = Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
-				break;
+				return Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
 
 			case MIXED:
 				// Case: Mixed variant (substitution)
 				reference = reference.substring(startDiff);
 				alt = alt.substring(startDiff);
-				list = Variant.factory(chromo, start + startDiff, reference, alt, id, vcfFileIterator.isExpandIub());
-				break;
-
+				return Variant.factory(chromo, start + startDiff, reference, alt, id, vcfFileIterator.isExpandIub());
+			
 			default:
-				// Other change type?
-				throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
-			}
+				throw new RuntimeException("Expecting either 'INS', 'DEL', or 'MIXED'. Unsupported type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
+		}
+	}
+	
+	/**
+	 * Create a list of MNP variants
+	 * Example of VCF MNP entry:
+	 * 		20     3 .         TC     AT      .   PASS  DP=100
+	 */
+	List<Variant> variantsMnp(Chromosome chromo, int start, String reference, String alt, String id) {
+		// Sometimes the first bases are the same and we can trim them
+		int startDiff = Integer.MAX_VALUE;
+		for (int i = 0; i < reference.length(); i++)
+			if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
+
+		// Sometimes the last bases are the same and we can trim them
+		int endDiff = 0;
+		for (int i = reference.length() - 1; i >= 0; i--)
+			if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
+
+		String newRef = reference.substring(startDiff, endDiff + 1);
+		String newAlt = alt.substring(startDiff, endDiff + 1);
+		List<Variant> list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, vcfFileIterator.isExpandIub());
+		return list;
+	}
+
+	/**
+	 * Create a list of structural variants
+	 * See VCF specification sections 3 "INFO keys used for structural variants", and 4 "FORMAT keys used for structural variants"
+	 * 
+	 * From section 3:
+	 * 		```
+	 * 		The following INFO keys are reserved for encoding structural variants. In general, when these keys are used by imprecise
+	 * 		variants, the values should be best estimates
+	 * 		
+	 * 		##INFO=<ID=IMPRECISE,Number=0,Type=Flag,Description="Imprecise structural variation">
+	 * 		Indicates that this record contains an imprecise structural variant ALT allele...
+	 * 
+	 * 		##INFO=<ID=END,Number=1,Type=Integer,Description="Deprecated. Present for backwards compatibility with earlier versions of VCF.">
+	 * 		END has been deprecated in favour of INFO SVLEN and FORMAT LEN.
+	 * 
+	 * 		##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+	 * 		This field has been deprecated due to redundancy with ALT. Refer to section 1.4.5 for the set of 
+	 * 		valid ALT field symbolic structural variant alleles.
+	 * 
+	 * 		##INFO=<ID=SVLEN,Number=A,Type=Integer,Description="Length of structural variant">
+	 * 		SVLEN must be specified for symbolic structural variant alleles. SVLEN is defined for INS, DUP, INV, 
+	 * 		and DEL symbolic alleles as the number of the inserted, duplicated, inverted, and deleted bases
+	 * 		respectively. SVLEN is defined for CNV symbolic alleles as the length of the segment over which the
+	 * 		copy number variant is defined.
+	 * 		For backwards compatibility, a missing SVLEN should be inferred from the END field.
+	 * 		For backwards compatibility, the absolute value of SVLEN should be taken and a negative SVLEN should
+	 * 		be treated as positive values.
+	 * 		```
+	 */
+	List<Variant> variantsStructural(Chromosome chromo, int start, String reference, String alt, String id) {
+		List<Variant> list = null;
+
+		// Structural variants
+		if (alt.startsWith("<DEL")) {
+			list = variantsStructuralDel(chromo, start, reference, alt, id);
+		} else if (alt.startsWith("<DUP")) {
+			list = variantsStructuralDup(chromo, start, reference, alt, id);
+		} else if (alt.startsWith("<INV")) {
+			list = variantsStructuralInv(chromo, start, reference, alt, id);
+		} else {
+			// Unknown structural variants?
+			throw new RuntimeException("Unsupported structural variant type '" + alt + "'");
 		}
 
-		//---
-		// Add original 'ALT' field as genotype
-		//---
-		if (list == null) list = new LinkedList<>();
-		for (Variant variant : list)
-			variant.setGenotype(alt);
+		// Assign 'imprecise' flag
+		if (hasInfo(VCF_INFO_IMPRECISE)) {
+			for (Variant var : list)
+				var.setImprecise(true);
+		}
+
+		return list;
+	}
+
+	/**
+	 * Create a list of <DEL> variants
+	 * 		2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
+	 */
+	List<Variant> variantsStructuralDel(Chromosome chromo, int start, String reference, String alt, String id) {
+		String refVariant = ref;
+
+		if (end > start) {
+			int svlen = end - start + 1;
+			refVariant = padNs(ref, svlen);
+		}
+		return Variant.factory(chromo, start, refVariant, "", id, false);
+	}
+
+	/**
+	 * Create a list of <DUP> variants
+	 */
+	List<Variant> variantsStructuralDup(Chromosome chromo, int start, String reference, String alt, String id) {
+		// VCF Specification (version 4.5) FORMAT keys used for structural variants
+		int svlen = end - start + 1;
+		var altDup = padNs(ref + ref, svlen);
+		Variant var = new Variant(chromo, start, ref, altDup, id);
+		var.setVariantType(VariantType.DUP);
+		List<Variant> list = new LinkedList<>();
+		list.add(var);
+		return list;
+	}
+
+	/**
+	 * Create a list of <INV> variants
+	 */
+	List<Variant> variantsStructuralInv(Chromosome chromo, int start, String reference, String alt, String id) {
+		// Inversion
+		var altInv = new StringBuffer(ref).reverse().toString();
+		int svlen = end - start + 1;
+		altInv = padNs(altInv, svlen);
+		Variant var = new Variant(chromo, start, reference, altInv, id);
+		var.setVariantType(VariantType.INV);
+		List<Variant> list = new LinkedList<>();
+		list.add(var);
+		return list;
+	}
+
+	/**
+	 * Create a list of translocation variants
+	 */
+	List<Variant>  variantsTranslocation(Chromosome chromo, int start, String reference, String alt, String id) {
+		List<Variant> list = null;
+			
+		// Parse ALT string
+		boolean left = alt.indexOf(']') >= 0;
+		String sep = (left ? "\\]" : "\\[");
+		String tpos[] = alt.split(sep);
+		String pos = tpos[1];
+		boolean before = (alt.indexOf(']') == 0) || (alt.indexOf('[') == 0);
+		String altBases = (before ? tpos[2] : tpos[0]);
+
+		// Parse 'chr:start'
+		String posSplit[] = pos.split(":");
+		String trChrName = posSplit[0];
+		Chromosome trChr = chromo.getGenome().getOrCreateChromosome(trChrName);
+		int trStart = Gpr.parseIntSafe(posSplit[1]) - 1;
+
+		VariantBnd var = new VariantBnd(chromo, start, ref, altBases, trChr, trStart, left, before);
+		list = new LinkedList<>();
+		list.add(var);
 
 		return list;
 	}

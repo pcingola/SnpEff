@@ -6,7 +6,6 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.IubString;
-import org.snpeff.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class Variant extends Marker {
     protected VariantType variantType; // Variant type
     protected String ref; // Reference (i.e. original bases in the genome)
     protected String alt; // Changed bases
-    protected String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
+    protected String genotype; // Genotype (i.e. the original 'ALT' in the VCF file). A VCF entry may encode multiple ALTs, and 'ALT' migh get modified when creating the variant. Here we store ALT as originaly show in the VCF.
     protected boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 
     public Variant() {

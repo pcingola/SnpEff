@@ -21,10 +21,9 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 		super();
 	}
 
-	/**
-	 */
 	@Test
 	public void test_01_dup() {
+		verbose = true;
 		Log.debug("Test");
 
 		String genome = "testHg19Chr8";
@@ -38,6 +37,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setFormatVersion(EffFormatVersion.FORMAT_ANN_1);
+		snpeff.setTesting(true);
 
 		// The problem appears when splice site is large (in this example)
 		snpeff.setUpDownStreamLength(0);
