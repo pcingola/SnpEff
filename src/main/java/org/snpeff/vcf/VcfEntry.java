@@ -1042,6 +1042,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			parent = chromo;
 			vcfFileIterator.sanityCheckChromo(chromosomeName, chromo); // Sanity check
 
+			// Start
+			start = vcfFileIterator.parsePosition(vcfFileIterator.readField(fields, 1));
 
 			// ID (e.g. might indicate dbSnp)
 			id = vcfFileIterator.readField(fields, 2);
@@ -1068,7 +1070,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
 			// But INFO fields can affect Start & End coordinates, for example in cases of imprecise variants
-			this.start = parseStart(vcfFileIterator.readField(fields, 1));
 			this.end = parseEnd();
 
 			// Genotype format
@@ -1163,24 +1164,24 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 	}
 
-	/**
-	 * Parse 'start' coordinate
-	 */
-	int parseStart(String startStr) {
-		int start = vcfFileIterator.parsePosition(startStr);
+	// /**
+	//  * Parse 'start' coordinate
+	//  */
+	// int parseStart(String startStr) {
+	// 	int start = vcfFileIterator.parsePosition(startStr);
 
-		// In some cases we need to adjust the start possition
-		// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
-		// Imprecise variants are indicated by an angle brackets '<...>', for example
-		// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
-		// From VCF specification:
-		//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
-		if (altStr.indexOf('<') >= 0 && !hasAltNonRef() ) {
-			start++;
-		}
+	// 	// In some cases we need to adjust the start possition
+	// 	// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
+	// 	// Imprecise variants are indicated by an angle brackets '<...>', for example
+	// 	// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
+	// 	// From VCF specification:
+	// 	//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
+	// 	if (altStr.indexOf('<') >= 0 && !hasAltNonRef() ) {
+	// 		start++;
+	// 	}
 
-		return start;
-	}
+	// 	return start;
+	// }
 
 	/**
 	 * Parse 'end' coordinate
@@ -1712,8 +1713,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// VCF Specification (version 4.5) FORMAT keys used for structural variants
 		int svlen = end - start + 1;
 		var altDup = padNs(ref + ref, svlen);
+
+		// Create the variant and set the type
 		Variant var = new Variant(chromo, start, ref, altDup, id);
 		var.setVariantType(VariantType.DUP);
+		
+		// Create a list of varinats
 		List<Variant> list = new LinkedList<>();
 		list.add(var);
 		return list;
@@ -1723,12 +1728,30 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Create a list of <INV> variants
 	 */
 	List<Variant> variantsStructuralInv(Chromosome chromo, int start, String reference, String alt, String id) {
-		// Inversion
-		var altInv = new StringBuffer(ref).reverse().toString();
+		// In some cases we need to adjust the start possition
+		// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
+		// Imprecise variants are indicated by an angle brackets '<...>', for example
+		// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
+		// From VCF specification:
+		//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
+		start++;
+
+		// Calculate the 'ALT' sequence
+		// 		If 'REF' is more than a single character, then 'ALT' is 'REF' reversed
+		var altInv = alt;
 		int svlen = end - start + 1;
-		altInv = padNs(altInv, svlen);
+		if(reference.length() > 1 ) {
+			reference = reference.substring(1); // Remove the first base
+			altInv = (new StringBuffer(reference)).reverse().toString();
+			// Check that the length of the inverted sequence is the same as the reference
+			if( svlen > altInv.length() )	altInv = padNs(altInv, svlen); // Pad with Ns if necessary
+		}
+
+		// Create the variant and set the type
 		Variant var = new Variant(chromo, start, reference, altInv, id);
 		var.setVariantType(VariantType.INV);
+		
+		// Create a list of varinats
 		List<Variant> list = new LinkedList<>();
 		list.add(var);
 		return list;

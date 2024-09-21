@@ -697,8 +697,8 @@ public class TestCasesVcf extends TestCasesBase {
         var vars = ve.variants();
         var inv = (Variant) vars.get(0);
         if (verbose) Log.info(inv);
-        var refExpected = "GTGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC";
-        var startExpected = 27360852;
+        var refExpected = "TGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC"; // In VCF the first base on an <INV> is not included
+        var startExpected = 27360853;
         var endExpected = startExpected + refExpected.length() - 1;
         var altExpected = new StringBuilder(refExpected).reverse().toString();
         assertEquals(1, vars.size());
@@ -717,9 +717,9 @@ public class TestCasesVcf extends TestCasesBase {
         if (verbose) Log.info(ve);
         var vars = ve.variants();
         var inv = (Variant) vars.get(0);
-        var refExpected = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
+        var refExpected = "CTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT"; // In VCF the first base on an <INV> is not included
         var altExpected = new StringBuilder(refExpected).reverse().toString();
-        var startExpected = 37973491;
+        var startExpected = 37973492;
         var endExpected = startExpected + refExpected.length() - 1;
         assertEquals(1, vars.size());
         assertEquals(VariantType.INV, inv.getVariantType());
