@@ -41,10 +41,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
+
 	public static final Pattern INFO_KEY_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}._]*");
-	public static final String VCF_INFO_END = "END"; // Imprecise variants. Deprecated: "END has been deprecated in favour of INFO SVLEN and FORMAT LEN."
-	public static final String VCF_INFO_SVLEN = "SVLEN"; // "SVLEN must be specified for symbolic structural variant alleles"
-	public static final String VCF_INFO_IMPRECISE = "IMPRECISE"; // IMPRECISE must be specified for imprecise structural variant alleles
 
 	// In order to report sequencing data evidence for both variant and non-variant positions in the genome, the VCF
 	// specification allows to represent blocks of reference-only calls in a single record using the END INFO tag, an idea
@@ -55,18 +53,39 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final String VCF_ALT_NON_REF = "<*>"; // See VCF 4.2 section "5.5 Representing unspecified alleles and REF-only blocks (gVCF)"
 	public static final String VCF_ALT_NON_REF_OLD = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields (olf version of '<*>')
 	public static final String VCF_ALT_MISSING_REF = "*"; // The '*' allele is reserved to indicate that the allele is missing due to a upstream deletion (see VCF 4.3 spec., ALT definition)
+	
 	public static final String VCF_ALT_INV = "<INV>"; // Inversion
+
+	public static final String[] VCF_ALT_A_ARRAY = { "A" };
+	public static final String[] VCF_ALT_C_ARRAY = { "C" };
+	public static final String[] VCF_ALT_G_ARRAY = { "G" };
+	public static final String[] VCF_ALT_T_ARRAY = { "T" };
+	public static final String[] VCF_ALT_N_ARRAY = { "A", "C", "G", "T" }; // aNy base
+	public static final String[] VCF_ALT_B_ARRAY = {      "C", "G", "T" }; // B: Not 'A'
+	public static final String[] VCF_ALT_D_ARRAY = { "A",      "G", "T" }; // D: not 'C'
+	public static final String[] VCF_ALT_H_ARRAY = { "A", "C",      "T" }; // H: No 'G'
+	public static final String[] VCF_ALT_V_ARRAY = { "A", "C", "G"      }; // V: Not 'T'
+	public static final String[] VCF_ALT_M_ARRAY = { "A", "C"           }; 
+	public static final String[] VCF_ALT_R_ARRAY = { "A",      "G"      }; 
+	public static final String[] VCF_ALT_W_ARRAY = { "A",           "T" }; // Weak
+	public static final String[] VCF_ALT_S_ARRAY = {      "C", "G"      }; // Strong
+	public static final String[] VCF_ALT_Y_ARRAY = {      "C",      "T" }; 
+	public static final String[] VCF_ALT_K_ARRAY = {           "G", "T" }; 
+	public static final String[] VCF_ALT_ASTERISK_ARRAY = { "*" };
+	public static final String[] VCF_ALT_MISSING_ARRAY = { "." };
 
 	public static final String[] VCF_ALT_NON_REF_OLD_ARRAY = { VCF_ALT_NON_REF_OLD };
 	public static final String[] VCF_ALT_NON_REF_ARRAY = { VCF_ALT_NON_REF };
-	public static final String[] VCF_ALT_MISSING_REF_ARRAY = { VCF_ALT_MISSING_REF };
+	// public static final String[] VCF_ALT_MISSING_REF_ARRAY = { VCF_ALT_MISSING_REF };
 	public static final String[] VCF_ALT_INV_ARRAY = { VCF_ALT_INV };
 
+	public static final String VCF_INFO_END = "END"; // Imprecise variants. Deprecated: "END has been deprecated in favour of INFO SVLEN and FORMAT LEN."
+	public static final String VCF_INFO_SVLEN = "SVLEN"; // "SVLEN must be specified for symbolic structural variant alleles"
+	public static final String VCF_INFO_IMPRECISE = "IMPRECISE"; // IMPRECISE must be specified for imprecise structural variant alleles
 	public static final String VCF_INFO_HOMS = "HO";
 	public static final String VCF_INFO_HETS = "HE";
 	public static final String VCF_INFO_NAS = "NA";
-
-	public static final String VCF_INFO_PRIVATE = "Private";
+	public static final String VCF_INFO_PRIVATE = "Private"; // Private variant
 
 	private static final Map<String, String> INFO_VALUE_ENCODE;
 
@@ -242,7 +261,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.infoStr = infoStr;
 		parseInfo();
 		this.format = format;
-		parseEnd();
+		this.end = parseEnd();
 	}
 
 	/**
@@ -866,7 +885,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	public boolean isBiAllelic() {
 		if (alts == null) return false;
-		return alts.length == 1; // Only one ALT option? => homozygous
+		return alts.length == 1; // Only one ALT option?
 	}
 
 	/**
@@ -886,7 +905,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	public boolean isMultiallelic() {
 		if (alts == null) return false;
-		return alts.length > 1; // More than one ALT option? => not homozygous
+		return alts.length > 1; // More than one ALT option?
 	}
 
 	@Override
@@ -1023,8 +1042,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			parent = chromo;
 			vcfFileIterator.sanityCheckChromo(chromosomeName, chromo); // Sanity check
 
-			// Start
-			start = vcfFileIterator.parsePosition(vcfFileIterator.readField(fields, 1));
 
 			// ID (e.g. might indicate dbSnp)
 			id = vcfFileIterator.readField(fields, 2);
@@ -1050,7 +1067,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			info = null;
 
 			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
-			parseEnd();
+			// But INFO fields can affect Start & End coordinates, for example in cases of imprecise variants
+			this.start = parseStart(vcfFileIterator.readField(fields, 1));
+			this.end = parseEnd();
 
 			// Genotype format
 			format = null;
@@ -1065,8 +1084,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse ALT field
 	 */
 	String[] parseAlts(String altsStr) {
-		if (altsStr.length() == 1 || altsStr.indexOf(',') < 0) {
-			// SNP or single field (no commas)
+		if (altsStr.length() == 1) {
+			// Probably a SNP (single character)
+			return parseAltSingleChar(altsStr);
+		} else if (altsStr.indexOf(',') < 0) {
+			// Single field (no commas)
 			alts = parseAltSingle(altsStr);
 			return alts != null ? alts : new String[0];
 		} else {
@@ -1090,130 +1112,85 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * Parse single ALT record, return parsed ALTS
+	 * Parse single ALT record which is NOT a SNP, return parsed ALTS
+	 * Return null if it is not a variant
 	 */
 	String[] parseAltSingle(String altsStr) {
-		if (altsStr.length() != 1 // Not a SNP? Do not expand
-				|| !isVariant(altsStr) // Not a variant? Do not expand
-				|| !vcfFileIterator.isExpandIub() // Do not expand IUB option?
-		) {
-			String alts[] = { altsStr };
-			return alts;
+		if (altsStr.length() == 1) return parseAltSingleChar(altsStr);
+		// // TODO: Remove? 
+		// // Not a variant?
+		// if (altsStr.equals(VCF_ALT_NON_REF)) return VCF_ALT_NON_REF_ARRAY;
+		// if (altsStr.equals(VCF_ALT_NON_REF_OLD)) return VCF_ALT_NON_REF_OLD_ARRAY;
+		// if (altsStr.equals(VCF_ALT_INV)) return VCF_ALT_INV_ARRAY;
+
+		// Other cases
+		return new String[] { altsStr };
+	}
+
+	/**
+	 * Parse single ALT record which is a SNP, expand IUB codes
+	 * Return parsed ALTS
+	 */
+	String[] parseAltSingleChar(String altsStr) {
+		// Standard SNPs, no IUB expansion
+		switch (altsStr) {
+			case "A": return VCF_ALT_A_ARRAY;
+			case "C": return VCF_ALT_C_ARRAY;
+			case "G": return VCF_ALT_G_ARRAY;
+			case "T": return VCF_ALT_T_ARRAY;
+			case "*": return VCF_ALT_ASTERISK_ARRAY;
+			case ".": return VCF_ALT_MISSING_ARRAY;
 		}
 
-		// Not a variant?
-		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
-		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
-		if (altsStr.equals(VCF_ALT_NON_REF_OLD)) { return VCF_ALT_NON_REF_OLD_ARRAY; }
-		if (altsStr.equals(VCF_ALT_INV)) { return VCF_ALT_INV_ARRAY; }
+		// Is IUB expantion enabled?
+		if(!vcfFileIterator.isExpandIub() ) return new String[] { altsStr };
 
 		// SNP IUB conversion table
-		String alts[];
 		switch (altsStr) {
-		case "A":
-		case "C":
-		case "G":
-		case "T":
-		case "*":
-		case ".":
-			alts = new String[1];
-			alts[0] = altsStr;
-			break;
+			case "N": return VCF_ALT_N_ARRAY;
+			case "B": return VCF_ALT_B_ARRAY;
+			case "D": return VCF_ALT_D_ARRAY;
+			case "H": return VCF_ALT_H_ARRAY;
+			case "V": return VCF_ALT_V_ARRAY;
+			case "M": return VCF_ALT_M_ARRAY;
+			case "R": return VCF_ALT_R_ARRAY;
+			case "W": return VCF_ALT_W_ARRAY;
+			case "S": return VCF_ALT_S_ARRAY;
+			case "Y": return VCF_ALT_Y_ARRAY;
+			case "K": return VCF_ALT_K_ARRAY;
+			default:
+				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
+		}
+	}
 
-		case "N": // aNy base
-			alts = new String[4];
-			alts[0] = "A";
-			alts[1] = "C";
-			alts[2] = "G";
-			alts[3] = "T";
-			break;
+	/**
+	 * Parse 'start' coordinate
+	 */
+	int parseStart(String startStr) {
+		int start = vcfFileIterator.parsePosition(startStr);
 
-		case "B": // B: not A
-			alts = new String[3];
-			alts[0] = "C";
-			alts[1] = "G";
-			alts[2] = "T";
-			break;
-
-		case "D": // D: not C
-			alts = new String[3];
-			alts[0] = "A";
-			alts[1] = "G";
-			alts[2] = "T";
-			break;
-
-		case "H": // H: not G
-			alts = new String[3];
-			alts[0] = "A";
-			alts[1] = "C";
-			alts[2] = "T";
-			break;
-
-		case "V": // V: not T
-			alts = new String[3];
-			alts[0] = "A";
-			alts[1] = "C";
-			alts[2] = "G";
-			break;
-
-		case "M":
-			alts = new String[2];
-			alts[0] = "A";
-			alts[1] = "C";
-			break;
-
-		case "R":
-			alts = new String[2];
-			alts[0] = "A";
-			alts[1] = "G";
-			break;
-
-		case "W": // Weak
-			alts = new String[2];
-			alts[0] = "A";
-			alts[1] = "T";
-			break;
-
-		case "S": // Strong
-			alts = new String[2];
-			alts[0] = "C";
-			alts[1] = "G";
-			break;
-
-		case "Y":
-			alts = new String[2];
-			alts[0] = "C";
-			alts[1] = "T";
-			break;
-
-		case "K":
-			alts = new String[2];
-			alts[0] = "G";
-			alts[1] = "T";
-			break;
-
-		default:
-			throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
+		// In some cases we need to adjust the start possition
+		// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
+		// Imprecise variants are indicated by an angle brackets '<...>', for example
+		// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
+		// From VCF specification:
+		//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
+		if (altStr.indexOf('<') >= 0 && !hasAltNonRef() ) {
+			start++;
 		}
 
-		return alts;
+		return start;
 	}
 
 	/**
 	 * Parse 'end' coordinate
 	 */
-	void parseEnd() {
+	int parseEnd() {
+		// SNP or single char variant?
+		if( altStr.length() == 1 ) return start;
+
 		// Imprecise variants are indicated by an angle brackets '<...>'
 		if (altStr.indexOf('<') >= 0 ) {
-			!!!!!!!! MOVE TO PARSE START
-			if( hasAltNonRef() ) {
-				// Non-ref alt: '<*>' or <NON_REF>
-			} else {
-				// <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar
-				// "Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant."
-				start++;
-			}
-
 			if ( hasInfo(VCF_INFO_SVLEN) ) {
 				// From VCF specification:
 				//   ```
@@ -1227,19 +1204,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				// 	"For backwards compatibility, the absolute value of SVLEN should be taken and a negative SVLEN
 				//	should be treated as positive values."
 				if (svlen < 0) svlen = -svlen;
-				end = start + svlen - 1;
+				return start + svlen - 1;
 			} else if ( hasInfo(VCF_INFO_END) ) {
 				// "For backwards compatibility, a missing SVLEN should be inferred from the END field."
 				// Get 'END' field and do some sanity check
 				end = (int) getInfoInt(VCF_INFO_END) - 1;
 				if (end < start) { throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start); }
+				return end;
 			} else {
 				// If no SVLEN or END field is present, we can't infer the end position, we'll use 'ref' length
-				end = start + ref.length() - 1;
+				return start + ref.length() - 1;
 			}
-		} else {
-			end = start + ref.length() - 1;
 		}
+		
+		// Normal variants (i.e. not imprecise)
+		// We use 'ref' length to calculate 'end' position
+		return start + ref.length() - 1;
 	}
 
 	/**

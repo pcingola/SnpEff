@@ -404,7 +404,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_25_Genomic_VCF() {
-        verbose = true;
         String vcfFileName = path("genomic_vcf.gvcf");
 
         VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -425,7 +424,6 @@ public class TestCasesVcf extends TestCasesBase {
             }
             if (!ok) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "'\n" + ve);
 
-            System.out.println("START: " + start + "\tve.START: " + ve.getStart() + "\tEND:" + ve.getEnd() + "\tSIZE: " + ve.size());
             start = ve.getEnd() + 1;
         }
     }
@@ -675,7 +673,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_36_cleanupUnderscores() {
-        verbose = true;
         debug = true;
         assertEquals("", VcfEntry.cleanUnderscores(""));
         assertEquals("", VcfEntry.cleanUnderscores("_"));
@@ -710,17 +707,20 @@ public class TestCasesVcf extends TestCasesBase {
         assertEquals(altExpected, inv.getAlt());
         assertEquals(startExpected, inv.getStart());
         assertEquals(endExpected, inv.getEnd());
+    }
 
-
-        // Read the second entry
-        ve = vcf.next();
+    @Test
+    public void test_37_inversions_parsing_2() {
+        String vcfFile = path("test_inv_2.vcf");
+        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+        VcfEntry ve = vcf.next();
         if (verbose) Log.info(ve);
-        vars = ve.variants();
-        inv = (Variant) vars.get(0);
-        refExpected = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
-        altExpected = new StringBuilder(refExpected).reverse().toString();
-        startExpected = 37973491;
-        endExpected = startExpected + refExpected.length() - 1;
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        var refExpected = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
+        var altExpected = new StringBuilder(refExpected).reverse().toString();
+        var startExpected = 37973491;
+        var endExpected = startExpected + refExpected.length() - 1;
         assertEquals(1, vars.size());
         assertEquals(VariantType.INV, inv.getVariantType());
         assertEquals(refExpected, inv.getReference());
