@@ -12,8 +12,6 @@ import org.snpeff.util.Timer;
 import org.snpeff.vcf.*;
 import org.snpeff.vcf.VcfHeaderInfo.VcfInfoNumber;
 
-import htsjdk.variant.variantcontext.Allele;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -913,5 +911,28 @@ public class TestCasesVcf extends TestCasesBase {
         assertEquals(var.getReference(), "");
         assertEquals(var.getAlt(), "");
     }
+
+    @Test
+    public void test_44_deletion() {
+        String vcfContent = "chr11\t66326794\t.\tAGAGC\tA\t.\t.\t.";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+        
+        // Check coordinates
+        assertEquals("11", ve.getChromosomeName());
+        assertEquals(66326794 - 1, ve.getStart());
+        assertEquals(66326794 + 4 - 1, ve.getEnd());
+        assertEquals(5, ve.getRef().length());
+        assertEquals(1, ve.getAltsStr().length());
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(66326794, var.getStart());
+        assertEquals(66326794 + 4 - 1, var.getEnd());
+        assertEquals("GAGC", var.getReference());
+        assertEquals("", var.getAlt());
+    }
+
+
 
 }

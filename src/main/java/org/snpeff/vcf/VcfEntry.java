@@ -1183,7 +1183,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	int parseEnd() {
 		// SNP or single char variant?
-		if( altStr.length() == 1 ) return start;
+		if( ref.length() == 1 && altStr.length() == 1 ) return start;
 
 		// Imprecise variants are indicated by an angle brackets '<...>'
 		if (altStr.indexOf('<') >= 0 ) {
