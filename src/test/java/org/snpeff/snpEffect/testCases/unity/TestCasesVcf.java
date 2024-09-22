@@ -12,6 +12,8 @@ import org.snpeff.util.Timer;
 import org.snpeff.vcf.*;
 import org.snpeff.vcf.VcfHeaderInfo.VcfInfoNumber;
 
+import htsjdk.variant.variantcontext.Allele;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -687,76 +689,167 @@ public class TestCasesVcf extends TestCasesBase {
     }
 
     @Test
-    public void test_37_inversions_parsing() {
+    public void test_37_INV() {
         String vcfFile = path("test_inv.vcf");
 
-        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
-        // Read the first entry
-        VcfEntry ve = vcf.next();
-        if (verbose) Log.info(ve);
-        var vars = ve.variants();
-        var inv = (Variant) vars.get(0);
-        if (verbose) Log.info(inv);
-        var refExpected = "TGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC"; // In VCF the first base on an <INV> is not included
-        var startExpected = 27360853;
-        var endExpected = startExpected + refExpected.length() - 1;
-        var altExpected = new StringBuilder(refExpected).reverse().toString();
-        assertEquals(1, vars.size());
-        assertEquals(VariantType.INV, inv.getVariantType());
-        assertEquals(refExpected, inv.getReference());
-        assertEquals(altExpected, inv.getAlt());
-        assertEquals(startExpected, inv.getStart());
-        assertEquals(endExpected, inv.getEnd());
-    }
+        // Parameters as in the VCF file
+        var ref = "GTGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC";
+        var start = 27360853;
+        var end = 27360932;
+        var svlen = 79;
 
-    @Test
-    public void test_37_inversions_parsing_2() {
-        String vcfFile = path("test_inv_2.vcf");
+        // Read the first entry
         VcfFileIterator vcf = new VcfFileIterator(vcfFile);
         VcfEntry ve = vcf.next();
-        if (verbose) Log.info(ve);
-        var vars = ve.variants();
-        var inv = (Variant) vars.get(0);
-        var refExpected = "CTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT"; // In VCF the first base on an <INV> is not included
-        var altExpected = new StringBuilder(refExpected).reverse().toString();
-        var startExpected = 37973492;
-        var endExpected = startExpected + refExpected.length() - 1;
-        assertEquals(1, vars.size());
-        assertEquals(VariantType.INV, inv.getVariantType());
-        assertEquals(refExpected, inv.getReference());
-        assertEquals(altExpected, inv.getAlt());
-        assertEquals(startExpected, inv.getStart());
-        assertEquals(endExpected, inv.getEnd());        
-    }
-    
-    @Test
-    public void test_38_DEL_01() {
-        String vcfContent = "2\t321682\t.\tT\t<DEL>\t6\tPASS\tIMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-205;CIPOS=-56,20;CIEND=-10,62";
-        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
-        VcfEntry ve = vi.next();
 
         // Check VCF entry
-        assertEquals("2", ve.getChromosomeName());
-        assertEquals(321682, ve.getStart());
-        assertEquals(321887 - 1, ve.getEnd());
-        assertEquals(321887 - 321682, Math.abs(ve.getInfoInt("SVLEN")));
-        Variant var = ve.variants().get(0);
-        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(start - 1, ve.getStart());
+        assertEquals(end - 1, ve.getEnd());
+        assertEquals(ref, ve.getRef());
+        assertEquals(svlen, Math.abs(ve.getInfoInt("SVLEN")));
+        assertEquals("<INV>", ve.getAltsStr());
+        // Check variant
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        assertEquals(1, vars.size());
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(ref.substring(1), inv.getReference());
+        var altVariant = new StringBuilder(ref.substring(1)).reverse().toString();
+        assertEquals(altVariant, inv.getAlt());
+        assertEquals(start + 1 - 1, inv.getStart()); // In VCF the first base on an <INV> is not included, so we add 1. It's zero-based, so we substract 1
+        assertEquals(end - 1, inv.getEnd());
     }
 
     @Test
-    public void test_39_DEL_02() {
-        String vcfContent = "chrA\t2\t.\tT\t<DEL>\t.\t.\tSVLEN=2;SVCLAIM=DJ;EVENT=DEL_symbolic";
+    public void test_37_INV_2() {
+        String vcfFile = path("test_inv_2.vcf");
+
+        // Parameters as in the VCF file
+        var ref = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
+        var start = 37973492;
+        var end = start + (ref.length() - 1);
+        
+        // Read the first entry
+        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+        VcfEntry ve = vcf.next();
+
+        // Check VCF entry
+        assertEquals(start - 1, ve.getStart());
+        assertEquals(end - 1, ve.getEnd());
+        assertEquals(ref, ve.getRef());
+        assertEquals("<INV>", ve.getAltsStr());
+        // Check variant
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        var refExpected = ref.substring(1); // In VCF the first base on an <INV> is not included
+        var altExpected = new StringBuilder(refExpected).reverse().toString();
+        assertEquals(1, vars.size());
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(refExpected, inv.getReference());
+        assertEquals(altExpected, inv.getAlt());
+        assertEquals(start + 1 - 1, inv.getStart()); // In VCF the first base on an <INV> is not included, so we add 1. It's zero-based, so we substract 1
+        assertEquals(end - 1, inv.getEnd());        
+    }
+
+    @Test
+    public void test_37_INV_3() {
+        String vcfContent = "chrA\t14\t.\tT\t<INV>\t.\t.\tIMPRECISE;SVLEN=100";
         VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
         VcfEntry ve = vi.next();
 
         // Check VCF entry
         assertEquals("A", ve.getChromosomeName());
-        assertEquals(2, ve.getStart());
-        assertEquals(3, ve.getEnd());
-        assertEquals(2, Math.abs(ve.getInfoInt("SVLEN")));
+        assertEquals(14 - 1, ve.getStart());
+        assertEquals(14 + (100 - 1) - 1, ve.getEnd());
+        assertEquals(100, Math.abs(ve.getInfoInt("SVLEN")));
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.INV, var.getVariantType());
+        assertEquals(14, var.getStart());
+        assertEquals(14 + (100 - 1) - 1, var.getEnd());
+    }
+
+    @Test
+    public void test_38_DEL_01() {
+        // In this case we have both 'END' and 'SVLEN' fields
+        String vcfContent = "2\t321682\t.\tT\t<DEL>\t6\tPASS\tIMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-206";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("2", ve.getChromosomeName());
+        assertEquals(321682 - 1, ve.getStart());
+        assertEquals(321887 - 1, ve.getEnd());
+        assertEquals(321887 - 321682 + 1, Math.abs(ve.getInfoInt("SVLEN"))); // SVLEN is the number of bases in the REF field, including the first and last base
+        // Check variant
         Variant var = ve.variants().get(0);
         assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(321682, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(321887 - 1, var.getEnd());
+        assertTrue(var.getReference().startsWith("NNNNNNNNNNN")); // Ref was padded with Ns
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_02() {
+        // In this case we have 'SVLEN', but not 'END'
+        String vcfContent = "chrA\t2\t.\tT\t<DEL>\t.\t.\tSVLEN=2";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(2 - 1, ve.getStart());
+        assertEquals(3 - 1, ve.getEnd());  // END = start + (SVLEN - 1) = 2 + (2 - 1) = 3. To zero-base index => 3 - 1
+        assertEquals(2, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(2, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(2, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_03() {
+        // In this case we have 'END', but not 'SVLEN'
+        String vcfContent = "chrA\t2\t.\tT\t<DEL>\t.\t.\tEND=3";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(2 - 1, ve.getStart());
+        assertEquals(3 - 1, ve.getEnd());  // END = start + (SVLEN - 1) = 2 + (2 - 1) = 3. To zero-base index => 3 - 1
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(2, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(2, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_04() {
+        // Long SVLEN (i.e. more than MAX_PADN bases). This tests for maximum 'padNs' when padding the REF field in the variant
+        String vcfContent = "2\t321682\t.\tT\t<DEL>\t6\tPASS\tIMPRECISE;SVTYPE=DEL;END=323687;SVLEN=-2006;CIPOS=-56,20;CIEND=-10,62";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("2", ve.getChromosomeName());
+        assertEquals(321681, ve.getStart());
+        assertEquals(323687 - 1, ve.getEnd());
+        assertEquals(2006, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(321682, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(323687 - 1, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertTrue(var.getReference().length() >= VcfEntry.MAX_PADN); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
     }
 
     @Test
@@ -767,41 +860,58 @@ public class TestCasesVcf extends TestCasesBase {
 
         // Check VCF entry
         assertEquals("A", ve.getChromosomeName());
-        assertEquals(5, ve.getStart());
-        assertEquals(7, ve.getEnd());
+        assertEquals(5 - 1, ve.getStart());
+        assertEquals(7 - 1, ve.getEnd());
         assertEquals(3, Math.abs(ve.getInfoInt("SVLEN")));
         Variant var = ve.variants().get(0);
         assertEquals(VariantType.DUP, var.getVariantType());
+        assertEquals(5 - 1 + 1, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(7 - 1, var.getEnd());
+        assertEquals("G", var.getReference()); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("NNNN", var.getAlt());
     }
 
-    // @Test
-    // public void test_41_INS() {
-    //     String vcfContent = "chrA\t14\t.\tT\t<INS>\t.\t.\tIMPRECISE;SVLEN=100;CILEN=-50,50;CIPOS=-10,10";
-    //     VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
-    //     VcfEntry ve = vi.next();
-
-    //     // Check VCF entry
-    //     assertEquals("A", ve.getChromosomeName());
-    //     assertEquals(14, ve.getStart());
-    //     assertEquals(113, ve.getEnd());
-    //     assertEquals(100, Math.abs(ve.getInfoInt("SVLEN")));
-    //     Variant var = ve.variants().get(0);
-    //     assertEquals(VariantType.INS, var.getVariantType());
-    // }
-
     @Test
-    public void test_42_INV() {
-        String vcfContent = "chrA\t14\t.\tT\t<INV>\t.\t.\tIMPRECISE;SVLEN=100;CILEN=-50,50;CIPOS=-10,10";
+    public void test_41_INS() {
+        String vcfContent = "chrA\t14\t.\tT\t<INS>\t.\t.\tIMPRECISE;SVLEN=100;CILEN=-50,50;CIPOS=-10,10";
         VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
         VcfEntry ve = vi.next();
 
         // Check VCF entry
         assertEquals("A", ve.getChromosomeName());
-        assertEquals(14, ve.getStart());
-        assertEquals(113, ve.getEnd());
+        assertEquals(14 - 1, ve.getStart());
+        assertEquals(14 - 1, ve.getEnd());
         assertEquals(100, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
         Variant var = ve.variants().get(0);
-        assertEquals(VariantType.INV, var.getVariantType());
+        assertEquals(VariantType.INS, var.getVariantType());
+        assertEquals(14 - 1, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(14 - 1, var.getEnd());
+        assertEquals("", var.getReference());
+        assertEquals("<INS>", var.getAlt());
+    }
+
+    @Test
+    public void test_43_CNV_01() {
+        //  From the VCF Spec:
+        //      For example, a region on chr1 from position 101 to 130 (both inclusive) with allele-specific copy numbers of 1 and 2 can be represented as follows:
+        //          chr1 100 . T <CNV>,<CNV> . . SVLEN=30,30;CN=1,2 GT:CN 1/2:3
+        String vcfContent = "chr1\t100\t.\tT\t<CNV>\t.\t.\tSVLEN=30";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("1", ve.getChromosomeName());
+        assertEquals(100 - 1, ve.getStart());
+        assertEquals(100 + (30 -1) - 1, ve.getEnd());
+        assertEquals(30, Math.abs(ve.getInfoInt("SVLEN"))); // SVLEN is the number of bases in the REF field, including the first and last base
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.CNV, var.getVariantType());
+        assertEquals(100, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(100 + (30 -1) - 1, var.getEnd());
+        assertEquals(var.getReference(), "");
+        assertEquals(var.getAlt(), "");
     }
 
 }

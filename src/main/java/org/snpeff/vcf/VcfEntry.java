@@ -1,6 +1,7 @@
 package org.snpeff.vcf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +28,11 @@ import org.snpeff.util.Log;
  * A VCF entry is a line in a VCF file
  * A VCF line can have multiple variants, and multiple genotypes
  * 
+ * The VcfEntry represents the VCF line, NOT the variant itself. for example, if the `START` field
+ * in the VCF line may differ from the `start` possition of the variant because the first base of
+ * the `REF` field is used as an "anchor".
+ * 
+ * 
  * @author pablocingolani
  */
 public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
@@ -41,6 +47,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
+	public static final int MAX_PADN = 1000;
 
 	public static final Pattern INFO_KEY_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}._]*");
 
@@ -50,6 +57,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	// likelihoods against an unknown alternate allele. Think of this as the likelihood for reference as compared to any
 	// other possible alternate allele (both SNP, indel, or otherwise). A symbolic alternate allele <*> is used to represent
 	// this unspecified alternate allele
+	//
+	// From the VCF Spec: "To retain backwards compatibility with with gVCF, the symbolic allele <NON REF> should be treated as an alias of <*>"
+	//
 	public static final String VCF_ALT_NON_REF = "<*>"; // See VCF 4.2 section "5.5 Representing unspecified alleles and REF-only blocks (gVCF)"
 	public static final String VCF_ALT_NON_REF_OLD = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields (olf version of '<*>')
 	public static final String VCF_ALT_MISSING_REF = "*"; // The '*' allele is reserved to indicate that the allele is missing due to a upstream deletion (see VCF 4.3 spec., ALT definition)
@@ -191,10 +201,19 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Pad with 'N' characters up length 'len'
 	 */
 	String padNs(String ref, int len) {
-		if( ref.length() <= len ) return ref;
-		char[] bases = new char[len];
-		for( int i = 0; i < len; i++ ) bases[i] = (i < ref.length() ? ref.charAt(i) : 'N');
-		return new String(bases);
+		if(len > MAX_PADN) len = MAX_PADN;
+		if(ref == null || ref.isEmpty()) {
+			// No reference, create a string of 'N' characters
+			char[] bases = new char[len];
+			Arrays.fill(bases, 'N');
+			return new String(bases);
+		} else {
+			// Extend reference
+			if( ref.length() >= len ) return ref;
+			char[] bases = new char[len];
+			for( int i = 0; i < len; i++ ) bases[i] = (i < ref.length() ? ref.charAt(i) : 'N');
+			return new String(bases);
+		}
 	}
 
 	/**
@@ -1099,6 +1118,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// Parse each one
 			String altsSplit[] = altsStr.split(",");
 			for (String altSingle : altsSplit) {
+				// Each `altSingle` can be expanded into multiple ALTs because of IUB codes
 				String altsTmp[] = parseAltSingle(altSingle);
 
 				// Append all to list
@@ -1118,13 +1138,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	String[] parseAltSingle(String altsStr) {
 		if (altsStr.length() == 1) return parseAltSingleChar(altsStr);
-		// // TODO: Remove? 
-		// // Not a variant?
-		// if (altsStr.equals(VCF_ALT_NON_REF)) return VCF_ALT_NON_REF_ARRAY;
-		// if (altsStr.equals(VCF_ALT_NON_REF_OLD)) return VCF_ALT_NON_REF_OLD_ARRAY;
-		// if (altsStr.equals(VCF_ALT_INV)) return VCF_ALT_INV_ARRAY;
-
-		// Other cases
+		// All other cases
 		return new String[] { altsStr };
 	}
 
@@ -1164,25 +1178,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 	}
 
-	// /**
-	//  * Parse 'start' coordinate
-	//  */
-	// int parseStart(String startStr) {
-	// 	int start = vcfFileIterator.parsePosition(startStr);
-
-	// 	// In some cases we need to adjust the start possition
-	// 	// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
-	// 	// Imprecise variants are indicated by an angle brackets '<...>', for example
-	// 	// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
-	// 	// From VCF specification:
-	// 	//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
-	// 	if (altStr.indexOf('<') >= 0 && !hasAltNonRef() ) {
-	// 		start++;
-	// 	}
-
-	// 	return start;
-	// }
-
 	/**
 	 * Parse 'end' coordinate
 	 */
@@ -1192,7 +1187,27 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Imprecise variants are indicated by an angle brackets '<...>'
 		if (altStr.indexOf('<') >= 0 ) {
-			if ( hasInfo(VCF_INFO_SVLEN) ) {
+			if( altStr.indexOf("<INS") >= 0 ) return start; // Insertions happen at one position (right after POS)
+			
+			// For other imprecise variants, we need to check INFO fields
+			if ( hasInfo(VCF_INFO_END) ) {
+				// From VCF specification:
+				//	```
+				// 	For backwards compatibility, a missing SVLEN should be inferred from the END field.
+				//	...
+				//	This is a computed field that, when present, must be set to the maximum end reference position (1-based) of: 
+				//		the position of the final base of the REF allele, 
+				//		the end position corresponding to the SVLEN of a symbolic SV allele, 
+				//		and the end positions calculated from FORMAT LEN for the <*> symbolic allele.
+				//	```
+				// This means that the END possition includes the last base of the REF allele, i.e. `[start, end]` is a 
+				// closed interval (not half-open as in BED format).
+
+				// Get 'END' field and do some sanity check
+				end = (int) getInfoInt(VCF_INFO_END) - 1;	// END is closed 1-based (includes the last base from REF)
+				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
+				return end;
+			} else if ( hasInfo(VCF_INFO_SVLEN) ) {
 				// From VCF specification:
 				//   ```
 				//   SVLEN must be specified for symbolic structural variant alleles. SVLEN is defined for INS, DUP, 
@@ -1205,15 +1220,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				// 	"For backwards compatibility, the absolute value of SVLEN should be taken and a negative SVLEN
 				//	should be treated as positive values."
 				if (svlen < 0) svlen = -svlen;
-				return start + svlen - 1;
-			} else if ( hasInfo(VCF_INFO_END) ) {
-				// "For backwards compatibility, a missing SVLEN should be inferred from the END field."
-				// Get 'END' field and do some sanity check
-				end = (int) getInfoInt(VCF_INFO_END) - 1;
-				if (end < start) { throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start); }
-				return end;
+				return start + (svlen - 1);	// END is closed interval (i.e. the last base from REF is included)
 			} else {
-				// If no SVLEN or END field is present, we can't infer the end position, we'll use 'ref' length
+				// If neither SVLEN nor END fields are present, we can't infer the end position, we'll use 'ref' length
 				return start + ref.length() - 1;
 			}
 		}
@@ -1671,48 +1680,81 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	List<Variant> variantsStructural(Chromosome chromo, int start, String reference, String alt, String id) {
 		List<Variant> list = null;
 
+		// Update start position
+		// from VCF spec.: "Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant."
+		var startVariant = Math.min(start + 1, end);
+
+		// Variant's reference
+		var refVariant = reference;
+		// If the reference allele is longer than the variant, pad with Ns
+		int svlen = (end >= startVariant ? end - startVariant + 1 : 0);
+		// Variant's reference: Remove anchor base ("... POS corresponds to the base immediately preceding the variant")
+		if( refVariant.length() > 1 ) {
+			refVariant = reference.substring(1); // Remove the first base
+			refVariant = padNs(refVariant, svlen); // Pad with Ns if necessary
+		} else {
+			// If it's one base, we need to remove the anchor base and pad with Ns, which is the same as creating a new string with Ns
+			refVariant = padNs(null, svlen);
+		}
+
 		// Structural variants
+		VariantType vaType = null;
+		boolean hasImprecise = hasInfo(VCF_INFO_IMPRECISE);
 		if (alt.startsWith("<DEL")) {
-			list = variantsStructuralDel(chromo, start, reference, alt, id);
+			list = Variant.factory(chromo, startVariant, refVariant, "", id, false);
+			vaType = VariantType.DEL;
 		} else if (alt.startsWith("<DUP")) {
-			list = variantsStructuralDup(chromo, start, reference, alt, id);
+			list = variantsStructuralDup(chromo, startVariant, refVariant, alt, id);
+			vaType = VariantType.DUP;
 		} else if (alt.startsWith("<INV")) {
-			list = variantsStructuralInv(chromo, start, reference, alt, id);
+			list = variantsStructuralInv(chromo, startVariant, refVariant, alt, id);
+			vaType = VariantType.INV;
+		} else if (alt.startsWith("<CNV")) {
+			list = variantsStructuralCnv(chromo, startVariant, refVariant, alt, id);
+			vaType = VariantType.CNV;
+		} else if (alt.startsWith("<INS")) {
+			// Note that we use the original 'start' allele instead of 'startVariant' because the <INS> happens right after the anchor base
+			list = variantsStructuralIns(chromo, start, alt, id);
+			vaType = VariantType.INS;
 		} else {
 			// Unknown structural variants?
 			throw new RuntimeException("Unsupported structural variant type '" + alt + "'");
 		}
 
-		// Assign 'imprecise' flag
-		if (hasInfo(VCF_INFO_IMPRECISE)) {
-			for (Variant var : list)
-				var.setImprecise(true);
+		// Adjust variants: Set variant type, adjust 'end' coordinate, set 'imprecise' flag
+		for (Variant var : list) {
+			// Set variant type
+			var.setVariantType(vaType);
+			// Make sure the `end` coordinate is correct
+			// Why is this necessary? 
+			// 	When padding with Ns, `padNs` function will add at most `MAX_PADNS` Ns, since the `end` coordinate 
+			// 	is based on the length of the reference allele, we may need to adjust it
+			var.setEnd(end);
+			// Set 'imprecise' flag if INFO field 'IMPRECISE' is present
+			if( hasImprecise ) var.setImprecise(true);
 		}
 
 		return list;
 	}
 
-	/**
-	 * Create a list of <DEL> variants
-	 * 		2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
-	 */
-	List<Variant> variantsStructuralDel(Chromosome chromo, int start, String reference, String alt, String id) {
-		String refVariant = ref;
+	List<Variant> variantsStructuralCnv(Chromosome chromo, int start, String reference, String alt, String id) {
+		// Create the variant and set the type
+		Variant var = new Variant(chromo, start, end, id);
+		var.setVariantType(VariantType.CNV);
 
-		if (end > start) {
-			int svlen = end - start + 1;
-			refVariant = padNs(ref, svlen);
-		}
-		return Variant.factory(chromo, start, refVariant, "", id, false);
+		// Create a list of varinats
+		List<Variant> list = new LinkedList<>();
+		list.add(var);
+		return list;
 	}
 
 	/**
 	 * Create a list of <DUP> variants
+	 * VCF Specification (version 4.5) FORMAT keys used for structural variants
 	 */
 	List<Variant> variantsStructuralDup(Chromosome chromo, int start, String reference, String alt, String id) {
-		// VCF Specification (version 4.5) FORMAT keys used for structural variants
 		int svlen = end - start + 1;
-		var altDup = padNs(ref + ref, svlen);
+		var altDup = padNs(reference + reference, svlen);
 
 		// Create the variant and set the type
 		Variant var = new Variant(chromo, start, ref, altDup, id);
@@ -1724,32 +1766,32 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return list;
 	}
 
+	List<Variant> variantsStructuralIns(Chromosome chromo, int start, String alt, String id) {
+		// Create the variant and set the type
+		Variant var = new Variant(chromo, start, "", alt, id);
+		var.setVariantType(VariantType.INS);
+
+		// Create a list of varinats
+		List<Variant> list = new LinkedList<>();
+		list.add(var);
+		return list;
+	}
+
 	/**
 	 * Create a list of <INV> variants
 	 */
 	List<Variant> variantsStructuralInv(Chromosome chromo, int start, String reference, String alt, String id) {
-		// In some cases we need to adjust the start possition
-		// In "non-ref" (i.e. '<*>' or <NON_REF>) cases, we don't need to adjust the start position
-		// Imprecise variants are indicated by an angle brackets '<...>', for example
-		// when we have <DUP>, <INS>, <DEL>, <INV>, <CNV> or similar, we need to adjust the 'start'possition
-		// From VCF specification:
-		//		```Note that for structural variant symbolic alleles, POS corresponds to the base immediately preceding the variant.```
-		start++;
-
 		// Calculate the 'ALT' sequence
-		// 		If 'REF' is more than a single character, then 'ALT' is 'REF' reversed
+		// If 'REF' is more than a single character, then 'ALT' is 'REF' reversed
 		var altInv = alt;
-		int svlen = end - start + 1;
 		if(reference.length() > 1 ) {
-			reference = reference.substring(1); // Remove the first base
 			altInv = (new StringBuffer(reference)).reverse().toString();
-			// Check that the length of the inverted sequence is the same as the reference
-			if( svlen > altInv.length() )	altInv = padNs(altInv, svlen); // Pad with Ns if necessary
+			int svlen = end - start + 1;
+			altInv = padNs(altInv, svlen); // Pad with Ns if necessary
 		}
 
 		// Create the variant and set the type
 		Variant var = new Variant(chromo, start, reference, altInv, id);
-		var.setVariantType(VariantType.INV);
 		
 		// Create a list of varinats
 		List<Variant> list = new LinkedList<>();

@@ -88,15 +88,15 @@ public class Variant extends Marker {
 
         // Add each alt
         for (String alt : alts) {
-            // Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
-            // have tons of 'N' bases. In such cases, it is impractical (and useless) to
-            // produce all possible combinations
             boolean refIub, altIub;
             if (!expand) {
                 // Non-IUB expansion needed
                 Variant var = new Variant(chromo, start, ref, alt, id);
                 list.add(var);
             } else {
+                // Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
+                // have tons of 'N' bases. In such cases, it is impractical (and useless) to
+                // produce all possible combinations
                 refIub = IubString.hasIUBMax(ref);
                 altIub = IubString.hasIUBMax(alt);
 
@@ -494,9 +494,9 @@ public class Variant extends Marker {
         , MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. substitution)
         , INV // Inversion (structural variant)
         , DUP // Duplication (structural variant)
+        , CNV // Copy number variation
         , BND // Break-ends (rearrangement)
-        , INTERVAL
-        // Just analyze interval hits. Not a variant (e.g. BED input format)
+        , INTERVAL // Just analyze interval hits. Not a variant (e.g. BED input format)
     }
 
 }
