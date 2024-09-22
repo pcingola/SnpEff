@@ -442,9 +442,7 @@ public class TestCasesDnaOverlap {
 		int numTests = 100000;
 		int maxLen, minLen = 10;
 
-		System.err.print("\nDnaCoder.copyBases test:");
 		for (int numWords = 1; numWords < 10; numWords++) {
-			System.err.print("\n\tMax words: " + numWords + "\t");
 			for (int i = 1; i < numTests; i++) {
 				maxLen = 32 * numWords;
 				int seqlensrc = Math.max(rand.nextInt(maxLen), minLen);
@@ -454,7 +452,6 @@ public class TestCasesDnaOverlap {
 				Gpr.showMarkStderr(i, 10000);
 			}
 		}
-		System.err.print("\nDone.\n");
 	}
 
 	@Test

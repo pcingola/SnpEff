@@ -32,7 +32,6 @@ public class TestCasesSeekableReader extends TestCasesBase {
         while ((line = sbr.readLine()) != null) {
             hash += line.hashCode();
         }
-
         sbr.close();
         return hash;
     }
@@ -61,8 +60,6 @@ public class TestCasesSeekableReader extends TestCasesBase {
         String fileName = path("testLukas.vcf");
         long hashExp = calcHashBufferedReader(fileName);
         long hash = calcHash(fileName);
-        System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
-
         assertEquals(hashExp, hash);
     }
 
@@ -75,7 +72,6 @@ public class TestCasesSeekableReader extends TestCasesBase {
         String fileName = path("testLukas.vcf");
         long hashExp = calcHashBufferedReader(fileName);
         long hash = calcHash(fileName);
-        System.out.printf("%016x\t%016x\t%s%n", hashExp, hash, fileName);
         assertEquals(hashExp, hash);
     }
 }

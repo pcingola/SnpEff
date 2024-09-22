@@ -103,7 +103,6 @@ public class TestCasesAlign {
         var s2 = "XcgtactgatagtcagtcatgctagtcagX";
         StringDiff sd = new StringDiff(s1, "Sequence 1", s2, "Name2");
         var sdToStr = "Sequence 1 : " + s1 + "\n      diff : " + di + "\n     Name2 : " + s2 + "\n";
-        Log.debug("\n" + sd);
         assertEquals(3, sd.count(), "Mismatches count error");
         assertEquals(sdToStr, sd.toString(), "Mismatches count error");
     }
