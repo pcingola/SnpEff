@@ -153,6 +153,11 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		return number;
 	}
 
+	public String getNumberString() {
+		if(number > 0) return Integer.toString(number);
+		return vcfInfoNumber.toString();
+	}
+
 	public VcfInfoNumber getVcfInfoNumber() {
 		return vcfInfoNumber;
 	}
