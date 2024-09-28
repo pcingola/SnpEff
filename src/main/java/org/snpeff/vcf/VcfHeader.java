@@ -1,5 +1,6 @@
 package org.snpeff.vcf;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import org.snpeff.util.Log;
  *
  * @author pablocingolani
  */
-public class VcfHeader {
+public class VcfHeader implements Serializable {
 
 	public static final String INFO_PREFIX = "##INFO=";
 	public static final String FORMAT_PREFIX = "##FORMAT=";

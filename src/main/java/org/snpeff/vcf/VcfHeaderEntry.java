@@ -1,5 +1,7 @@
 package org.snpeff.vcf;
 
+import java.io.Serializable;
+
 /**
  * Represents a info elements in a VCF file's header
  *
@@ -9,7 +11,7 @@ package org.snpeff.vcf;
  *
  * @author pablocingolani
  */
-public class VcfHeaderEntry {
+public class VcfHeaderEntry implements Serializable {
 
 	protected String line;
 	protected String id;

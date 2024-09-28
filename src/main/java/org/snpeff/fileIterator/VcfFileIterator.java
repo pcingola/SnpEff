@@ -1,7 +1,9 @@
 package org.snpeff.fileIterator;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,6 +70,20 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	String chrPrev = "";
 	int posPrev = -1;
 
+
+	/**
+     * Create a VcfFileIterator from a string containig VCF lines
+     */
+    public static VcfFileIterator fromString(String vcfLines) {
+        try (var bais = new ByteArrayInputStream(vcfLines.getBytes("UTF-8"))) {
+            InputStreamReader isr = new InputStreamReader(bais);
+            BufferedReader br = new BufferedReader(isr);
+            return new VcfFileIterator(br);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 	public VcfFileIterator() {
 		super((String) null, 1);
 		init();
@@ -128,7 +144,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 		try {
 			if (line.startsWith("#")) { // Header?
 				header.addLine(line);
-			} else if ((line.length() > 0) && (!line.startsWith("#"))) { // Vcf entry?
+			} else if (line.length() > 0) { // Vcf entry?
 				return new VcfEntry(this, line, lineNum, parseNow);
 			}
 		} catch (Throwable t) {

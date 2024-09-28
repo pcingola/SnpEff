@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "org.snpeff.SnpEff",
             "projectName": "SnpEff",
-            "args": "build -v hg19"
+            "args": "-v -noOut testHg3882Chr22 /Users/kqrw311/snpEff/z.vcf"
         },
     ]
 }

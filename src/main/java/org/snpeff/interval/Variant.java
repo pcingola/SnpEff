@@ -29,7 +29,7 @@ public class Variant extends Marker {
     protected VariantType variantType; // Variant type
     protected String ref; // Reference (i.e. original bases in the genome)
     protected String alt; // Changed bases
-    protected String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
+    protected String genotype; // Genotype (i.e. the original 'ALT' in the VCF file). A VCF entry may encode multiple ALTs, and 'ALT' migh get modified when creating the variant. Here we store ALT as originaly show in the VCF.
     protected boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 
     public Variant() {
@@ -88,15 +88,15 @@ public class Variant extends Marker {
 
         // Add each alt
         for (String alt : alts) {
-            // Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
-            // have tons of 'N' bases. In such cases, it is impractical (and useless) to
-            // produce all possible combinations
             boolean refIub, altIub;
             if (!expand) {
                 // Non-IUB expansion needed
                 Variant var = new Variant(chromo, start, ref, alt, id);
                 list.add(var);
             } else {
+                // Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
+                // have tons of 'N' bases. In such cases, it is impractical (and useless) to
+                // produce all possible combinations
                 refIub = IubString.hasIUBMax(ref);
                 altIub = IubString.hasIUBMax(alt);
 
@@ -367,7 +367,7 @@ public class Variant extends Marker {
 
         // We only check if: a) that the chromosome exists and b) chromosome it is not small
         if (chr != null && chr.size() > HUGE_DELETION_SIZE_THRESHOLD) {
-            double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
+            double ratio = size() / ((double) chr.size());
             return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
         }
 
@@ -494,9 +494,9 @@ public class Variant extends Marker {
         , MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. substitution)
         , INV // Inversion (structural variant)
         , DUP // Duplication (structural variant)
+        , CNV // Copy number variation
         , BND // Break-ends (rearrangement)
-        , INTERVAL
-        // Just analyze interval hits. Not a variant (e.g. BED input format)
+        , INTERVAL // Just analyze interval hits. Not a variant (e.g. BED input format)
     }
 
 }
