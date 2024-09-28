@@ -13,6 +13,8 @@ import java.io.Serializable;
  */
 public class VcfHeaderEntry implements Serializable {
 
+	private static final long serialVersionUID = 2024092601L;
+
 	protected String line;
 	protected String id;
 
