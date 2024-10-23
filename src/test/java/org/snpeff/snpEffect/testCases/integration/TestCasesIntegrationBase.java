@@ -882,6 +882,10 @@ public class TestCasesIntegrationBase {
         return sb.toString();
     }
 
+    public List<VcfEntry> snpEffect(String genome, String vcfFile) {
+        return snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_EFF_4);
+    }
+
     /**
      * Calculate snp effect for an input VCF file
      */
@@ -903,9 +907,11 @@ public class TestCasesIntegrationBase {
         args.add(vcfFile);
 
         SnpEff cmd = new SnpEff(args.toArray(new String[0]));
+        cmd.setTesting(true);
         SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
         cmdEff.setVerbose(verbose);
         cmdEff.setSupressOutput(!verbose);
+        cmdEff.setTesting(true);
         if (effFormatVersion != null) cmdEff.setFormatVersion(effFormatVersion);
 
         // Run command

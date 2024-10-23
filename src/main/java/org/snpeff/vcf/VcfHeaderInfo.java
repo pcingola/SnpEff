@@ -31,6 +31,8 @@ import org.snpeff.util.Gpr;
  */
 public class VcfHeaderInfo extends VcfHeaderEntry {
 
+	private static final long serialVersionUID = 2024092501L;
+
 	/**
 	 * Number of values in an INFO field.
 	 * Reference
@@ -151,6 +153,11 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 	public int getNumber() {
 		return number;
+	}
+
+	public String getNumberString() {
+		if(number > 0) return Integer.toString(number);
+		return vcfInfoNumber.toString();
 	}
 
 	public VcfInfoNumber getVcfInfoNumber() {

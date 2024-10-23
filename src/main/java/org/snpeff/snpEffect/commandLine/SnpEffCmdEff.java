@@ -209,6 +209,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		} catch (Throwable t) {
 			totalErrs++;
 			Log.error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+			if( testing ) throw new RuntimeException("Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t, t);
 		} finally {
 			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 		}
@@ -1004,10 +1005,11 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (message != null) {
 			System.err.println("Error        :\t" + message);
 			System.err.println("Command line :\t" + commandLineStr(false) + "\n");
+			if( testing ) throw new RuntimeException("Error: " + message);
 		}
 
 		System.err.println("snpEff version " + VERSION);
-		System.err.println("Usage: snpEff [eff] [options] genome_version [input_file]");
+		System.err.println("Usage: snpEff [ann] [options] genome_version [input_file]");
 		System.err.println("\n");
 		System.err.println("\tvariants_file                   : Default is STDIN");
 		System.err.println("\n");
@@ -1043,6 +1045,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
 		System.err.println("\t-noHgvs                         : Do not add HGVS annotations.");
 		System.err.println("\t-noLof                          : Do not add LOF and NMD annotations.");
+		System.err.println("\t-noOut                          : Do not write the output resuts to STDOUT (maybe used for debugging).");
 		System.err.println("\t-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
 		System.err.println("\t-sequenceOntology               : Use Sequence Ontology terms. Default: " + useSequenceOntology);

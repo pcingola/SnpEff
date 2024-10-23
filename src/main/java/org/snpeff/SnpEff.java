@@ -94,7 +94,7 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "c";
+	public static final String REVISION = "e";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
 	public static final String VERSION_MAJOR = "5.2";
@@ -130,6 +130,7 @@ public class SnpEff implements CommandLine {
 	protected boolean strict = false; // Only use transcript that have been validated
 	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
 	protected boolean suppressOutput = false; // Only used for debugging purposes
+	protected boolean testing = false; // Testing mode
 	protected boolean verbose; // Be verbose
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
@@ -392,6 +393,7 @@ public class SnpEff implements CommandLine {
 		cmd.configOverride = configOverride;
 		cmd.tags = tags;
 		cmd.tagsNo = tagsNo;
+		cmd.testing = testing;
 	}
 
 	/**
@@ -1261,6 +1263,10 @@ public class SnpEff implements CommandLine {
 		this.suppressOutput = suppressOutput;
 	}
 
+	public void setTesting(boolean testing) {
+		this.testing = testing;
+	}
+
 	public void setUpDownStreamLength(int upDownStreamLength) {
 		this.upDownStreamLength = upDownStreamLength;
 	}
@@ -1274,7 +1280,12 @@ public class SnpEff implements CommandLine {
 	 */
 	@Override
 	public void usage(String message) {
-		if (message != null) System.err.println("Error: " + message + "\n");
+		if (message != null) {
+			System.err.println("Error: " + message + "\n");
+			System.err.println("Command line :\t" + commandLineStr(false) + "\n");
+			if( testing ) throw new RuntimeException("Error: " + message);
+		}
+
 		System.err.println("SnpEff version " + VERSION);
 		System.err.println("Usage: snpEff [command] [options] [files]");
 		System.err.println("\nRun 'java -jar snpEff.jar command' for help on each specific command");

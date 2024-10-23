@@ -229,7 +229,8 @@ public class SnpEffCmdCds extends SnpEff {
         );
 
         // Sanity check
-        if (checkNumOk && totalOk <= 0) fatalErrorNoTranscriptsChecked();
+        
+        if (checkNumOk && (totalOk + totalErrors) <= 0 && (totalNotFound > 0)) fatalErrorNoTranscriptsChecked();
 
         return perc;
     }
@@ -244,7 +245,7 @@ public class SnpEffCmdCds extends SnpEff {
         int maxTrIds = 20;
         sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
         sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
-        Log.fatalError("No CDS checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
+        Log.fatalError("No CDS checked. This might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
     }
 
     /**

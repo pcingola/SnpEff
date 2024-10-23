@@ -37,7 +37,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_00() {
-        Log.debug("Test");
         String fileName = path("1kg_head.vcf");
         VcfFileIterator vcf = new VcfFileIterator(fileName);
 
@@ -51,7 +50,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_01() {
-        Log.debug("Test");
         String fileName = path("vcf.vcf");
         VcfFileIterator vcf = new VcfFileIterator(fileName);
         vcf.setCreateChromos(true);
@@ -69,7 +67,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_04_del() {
-        Log.debug("Test");
         String fileName = path("vcf_04_del.vcf");
         VcfFileIterator vcf = new VcfFileIterator(fileName);
         vcf.setCreateChromos(true);
@@ -86,7 +83,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_05_choking_on_dot_slash_dot() {
-        Log.debug("Test");
         String fileName = path("choking_on_dot_slash_dot.vcf");
         VcfFileIterator vcf = new VcfFileIterator(fileName);
         vcf.setCreateChromos(true);
@@ -118,7 +114,6 @@ public class TestCasesVcf extends TestCasesBase {
     @Test
     public void test_06_mixed_change() {
         // WARNING: This test is expected to fail, because this functionality is unimplemented
-        Log.debug("Test");
         String file = path("array_out_of_bounds.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(file);
@@ -140,7 +135,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_07_long_lines() {
-        Log.debug("Test");
 
         String file = path("long.vcf");
 
@@ -166,7 +160,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_08_alt_del() {
-        Log.debug("Test");
 
         String file = path("alt_del.vcf");
 
@@ -192,7 +185,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_09_empty_ALT() {
-        Log.debug("Test");
         String file = path("empty.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(file);
@@ -207,7 +199,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_10_empty_QUAL() {
-        Log.debug("Test");
         String file = path("empty.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(file);
@@ -222,7 +213,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_11_empty() {
-        Log.debug("Test");
         String file = path("empty.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(file);
@@ -234,7 +224,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_12_readHeader() {
-        Log.debug("Test");
         String file = path("test.chr1.1line.vcf");
 
         VcfFileIterator vcfFile = new VcfFileIterator(file);
@@ -254,7 +243,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_12_readHeader_NL() {
-        Log.debug("Test");
         String file = path("test.chr1.1line.vcf");
 
         VcfFileIterator vcfFile = new VcfFileIterator(file);
@@ -265,7 +253,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_13_chrOri() {
-        Log.debug("Test");
         String file = path("test.chr1.1line.vcf");
 
         VcfFileIterator vcfFile = new VcfFileIterator(file);
@@ -280,7 +267,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_14_VcfInfoKey() {
-        Log.debug("Test");
         new VcfOutputFormatter((List<VcfEntry>) null);
         String testIn[] = {"Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)", ".ann"};
         String testOut[] = {"Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._", "_.ann"};
@@ -293,7 +279,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_14_VcfInfoValue() {
-        Log.debug("Test");
         new VcfOutputFormatter((List<VcfEntry>) null);
         String testIn[] = {"Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)"};
         String testOut[] = {"Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._"};
@@ -306,7 +291,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_15_Eff_format_version_guess() {
-        Log.debug("Test");
         String vcfFileName = path("test.EFF_V2.vcf");
         EffFormatVersion formatVersion = formatVersion(vcfFileName);
         assertEquals(EffFormatVersion.FORMAT_EFF_2, formatVersion);
@@ -318,7 +302,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_16_indels() {
-        Log.debug("Test");
         String vcfFile = path("1kg.indels.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -345,7 +328,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_18_vcf_tabix() {
-        Log.debug("Test");
         VcfFileIterator vcf = new VcfFileIterator(path("test_tabix.vcf.gz"));
 
         String chrpos = "";
@@ -360,7 +342,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_22_huge_headers() {
-        Log.debug("Test");
         String vcfFile = path("huge_header_slow.vcf.gz");
 
         Timer timer = new Timer();
@@ -376,7 +357,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_23_VcfUnsorted() {
-        Log.debug("Test");
         String vcfFile = path("out_of_order.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -444,7 +424,7 @@ public class TestCasesVcf extends TestCasesBase {
             }
             if (!ok) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "'\n" + ve);
 
-            start += ve.size();
+            start = ve.getEnd() + 1;
         }
     }
 
@@ -453,7 +433,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_26_vcfInfoHeaderAdd() {
-        Log.debug("Test");
         String vcfFileName = path("example_42.vcf");
 
         // Create a new INFO field
@@ -486,7 +465,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_27_vcfInfoHeaderReplace() {
-        Log.debug("Test");
 
         String infoFieldName = "NEW_INFO";
         String vcfFileName = path("example_42.vcf");
@@ -530,7 +508,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_28_vcfInfoReplace() {
-        Log.debug("Test");
 
         String vcfFileName = path("example_42.vcf");
 
@@ -565,7 +542,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_29() {
-        Log.debug("Test");
         String fileName = path("test_vcf_ann_plus_sign.vcf");
         VcfFileIterator vcf = new VcfFileIterator(fileName);
 
@@ -587,7 +563,6 @@ public class TestCasesVcf extends TestCasesBase {
      */
     @Test
     public void test_30_gVCF_NON_REF() {
-        Log.debug("Test");
 
         String vcfFileName = path("test_gVCF_NON_REF.vcf");
 
@@ -649,7 +624,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_33_translocations() {
-        Log.debug("Test");
         String vcfFile = path("vcf_translocation.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -677,7 +651,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_35_translocations_parsing() {
-        Log.debug("Test");
         String vcfFile = path("vcf_translocation_parsing.vcf");
 
         VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -700,8 +673,6 @@ public class TestCasesVcf extends TestCasesBase {
 
     @Test
     public void test_36_cleanupUnderscores() {
-        Log.debug("Test");
-        verbose = true;
         debug = true;
         assertEquals("", VcfEntry.cleanUnderscores(""));
         assertEquals("", VcfEntry.cleanUnderscores("_"));
@@ -714,5 +685,254 @@ public class TestCasesVcf extends TestCasesBase {
         assertEquals("a1_b2_c3_d4", VcfEntry.cleanUnderscores("_a1__b2__c3__d4__"));
         assertEquals("a1_b2c3_d4", VcfEntry.cleanUnderscores("_____a1_b2c3_______d4________"));
     }
+
+    @Test
+    public void test_37_INV() {
+        String vcfFile = path("test_inv.vcf");
+
+        // Parameters as in the VCF file
+        var ref = "GTGAGATGGGAGTTCAGCAGGGCCCGCGGCCCCTCGCCCTCCGCGAGCTCCCAGTCCCGCGTCCTCACCTCCAACATCTC";
+        var start = 27360853;
+        var end = 27360932;
+        var svlen = 79;
+
+        // Read the first entry
+        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+        VcfEntry ve = vcf.next();
+
+        // Check VCF entry
+        assertEquals(start - 1, ve.getStart());
+        assertEquals(end - 1, ve.getEnd());
+        assertEquals(ref, ve.getRef());
+        assertEquals(svlen, Math.abs(ve.getInfoInt("SVLEN")));
+        assertEquals("<INV>", ve.getAltsStr());
+        // Check variant
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        assertEquals(1, vars.size());
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(ref.substring(1), inv.getReference());
+        var altVariant = new StringBuilder(ref.substring(1)).reverse().toString();
+        assertEquals(altVariant, inv.getAlt());
+        assertEquals(start + 1 - 1, inv.getStart()); // In VCF the first base on an <INV> is not included, so we add 1. It's zero-based, so we substract 1
+        assertEquals(end - 1, inv.getEnd());
+    }
+
+    @Test
+    public void test_37_INV_2() {
+        String vcfFile = path("test_inv_2.vcf");
+
+        // Parameters as in the VCF file
+        var ref = "CCTTTAGGGCCGGGACAGTGTCGTATATACTGGCTGCTCCCAGTGTGTGGGGCTGTGGGACT";
+        var start = 37973492;
+        var end = start + (ref.length() - 1);
+        
+        // Read the first entry
+        VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+        VcfEntry ve = vcf.next();
+
+        // Check VCF entry
+        assertEquals(start - 1, ve.getStart());
+        assertEquals(end - 1, ve.getEnd());
+        assertEquals(ref, ve.getRef());
+        assertEquals("<INV>", ve.getAltsStr());
+        // Check variant
+        var vars = ve.variants();
+        var inv = (Variant) vars.get(0);
+        var refExpected = ref.substring(1); // In VCF the first base on an <INV> is not included
+        var altExpected = new StringBuilder(refExpected).reverse().toString();
+        assertEquals(1, vars.size());
+        assertEquals(VariantType.INV, inv.getVariantType());
+        assertEquals(refExpected, inv.getReference());
+        assertEquals(altExpected, inv.getAlt());
+        assertEquals(start + 1 - 1, inv.getStart()); // In VCF the first base on an <INV> is not included, so we add 1. It's zero-based, so we substract 1
+        assertEquals(end - 1, inv.getEnd());        
+    }
+
+    @Test
+    public void test_37_INV_3() {
+        String vcfContent = "chrA\t14\t.\tT\t<INV>\t.\t.\tIMPRECISE;SVLEN=100";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(14 - 1, ve.getStart());
+        assertEquals(14 + (100 - 1) - 1, ve.getEnd());
+        assertEquals(100, Math.abs(ve.getInfoInt("SVLEN")));
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.INV, var.getVariantType());
+        assertEquals(14, var.getStart());
+        assertEquals(14 + (100 - 1) - 1, var.getEnd());
+    }
+
+    @Test
+    public void test_38_DEL_01() {
+        // In this case we have both 'END' and 'SVLEN' fields
+        String vcfContent = "2\t321682\t.\tT\t<DEL>\t6\tPASS\tIMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-206";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("2", ve.getChromosomeName());
+        assertEquals(321682 - 1, ve.getStart());
+        assertEquals(321887 - 1, ve.getEnd());
+        assertEquals(321887 - 321682 + 1, Math.abs(ve.getInfoInt("SVLEN"))); // SVLEN is the number of bases in the REF field, including the first and last base
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(321682, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(321887 - 1, var.getEnd());
+        assertTrue(var.getReference().startsWith("NNNNNNNNNNN")); // Ref was padded with Ns
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_02() {
+        // In this case we have 'SVLEN', but not 'END'
+        String vcfContent = "chrA\t2\t.\tT\t<DEL>\t.\t.\tSVLEN=2";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(2 - 1, ve.getStart());
+        assertEquals(3 - 1, ve.getEnd());  // END = start + (SVLEN - 1) = 2 + (2 - 1) = 3. To zero-base index => 3 - 1
+        assertEquals(2, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(2, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(2, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_03() {
+        // In this case we have 'END', but not 'SVLEN'
+        String vcfContent = "chrA\t2\t.\tT\t<DEL>\t.\t.\tEND=3";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(2 - 1, ve.getStart());
+        assertEquals(3 - 1, ve.getEnd());  // END = start + (SVLEN - 1) = 2 + (2 - 1) = 3. To zero-base index => 3 - 1
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(2, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(2, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_39_DEL_04() {
+        // Long SVLEN (i.e. more than MAX_PADN bases). This tests for maximum 'padNs' when padding the REF field in the variant
+        String vcfContent = "2\t321682\t.\tT\t<DEL>\t6\tPASS\tIMPRECISE;SVTYPE=DEL;END=323687;SVLEN=-2006;CIPOS=-56,20;CIEND=-10,62";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("2", ve.getChromosomeName());
+        assertEquals(321681, ve.getStart());
+        assertEquals(323687 - 1, ve.getEnd());
+        assertEquals(2006, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(321682, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(323687 - 1, var.getEnd());
+        assertTrue(var.getReference().startsWith("N")); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertTrue(var.getReference().length() >= VcfEntry.MAX_PADN); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("", var.getAlt());
+    }
+
+    @Test
+    public void test_40_DUP() {
+        String vcfContent = "chrA\t5\t.\tG\t<DUP>\t.\t.\tSVLEN=3;CIPOS=0,5;EVENT=homology_dup";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(5 - 1, ve.getStart());
+        assertEquals(7 - 1, ve.getEnd());
+        assertEquals(3, Math.abs(ve.getInfoInt("SVLEN")));
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DUP, var.getVariantType());
+        assertEquals(5 - 1 + 1, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(7 - 1, var.getEnd());
+        assertEquals("G", var.getReference()); // Ref was padded with Ns (first base in REF is not included in the variant)
+        assertEquals("NNNN", var.getAlt());
+    }
+
+    @Test
+    public void test_41_INS() {
+        String vcfContent = "chrA\t14\t.\tT\t<INS>\t.\t.\tIMPRECISE;SVLEN=100;CILEN=-50,50;CIPOS=-10,10";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("A", ve.getChromosomeName());
+        assertEquals(14 - 1, ve.getStart());
+        assertEquals(14 - 1, ve.getEnd());
+        assertEquals(100, Math.abs(ve.getInfoInt("SVLEN")));
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.INS, var.getVariantType());
+        assertEquals(14 - 1, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(14 - 1, var.getEnd());
+        assertEquals("", var.getReference());
+        assertEquals("<INS>", var.getAlt());
+    }
+
+    @Test
+    public void test_43_CNV_01() {
+        //  From the VCF Spec:
+        //      For example, a region on chr1 from position 101 to 130 (both inclusive) with allele-specific copy numbers of 1 and 2 can be represented as follows:
+        //          chr1 100 . T <CNV>,<CNV> . . SVLEN=30,30;CN=1,2 GT:CN 1/2:3
+        String vcfContent = "chr1\t100\t.\tT\t<CNV>\t.\t.\tSVLEN=30";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Check VCF entry
+        assertEquals("1", ve.getChromosomeName());
+        assertEquals(100 - 1, ve.getStart());
+        assertEquals(100 + (30 -1) - 1, ve.getEnd());
+        assertEquals(30, Math.abs(ve.getInfoInt("SVLEN"))); // SVLEN is the number of bases in the REF field, including the first and last base
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.CNV, var.getVariantType());
+        assertEquals(100, var.getStart()); // The first base in VCF's REF is not included in the <DEL>
+        assertEquals(100 + (30 -1) - 1, var.getEnd());
+        assertEquals(var.getReference(), "");
+        assertEquals(var.getAlt(), "");
+    }
+
+    @Test
+    public void test_44_deletion() {
+        String vcfContent = "chr11\t66326794\t.\tAGAGC\tA\t.\t.\t.";
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
+        VcfEntry ve = vi.next();
+        
+        // Check coordinates
+        assertEquals("11", ve.getChromosomeName());
+        assertEquals(66326794 - 1, ve.getStart());
+        assertEquals(66326794 + 4 - 1, ve.getEnd());
+        assertEquals(5, ve.getRef().length());
+        assertEquals(1, ve.getAltsStr().length());
+        // Check variant
+        Variant var = ve.variants().get(0);
+        assertEquals(VariantType.DEL, var.getVariantType());
+        assertEquals(66326794, var.getStart());
+        assertEquals(66326794 + 4 - 1, var.getEnd());
+        assertEquals("GAGC", var.getReference());
+        assertEquals("", var.getAlt());
+    }
+
+
 
 }
