@@ -22,7 +22,8 @@ chrs := ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9",
 
 
 #createCmd := 'echo '
-createCmd := "time java -Xmx16G -jar $HOME/snpEff/SnpSift.jar annmem -create "
+memG := 16
+createCmd := "time java -Xmx" + memG + "G -jar $HOME/snpEff/SnpSift.jar annmem -create "
 
 # SnpSift db postfix
 snpsiftDbPostfix := ".snpsift.vardb"
@@ -49,7 +50,7 @@ void createGnomad() {
 
 
 void createAll() {
-    mem = 12 * G
+    mem = memG * G
 
     # Create Clinvar
     task( "$dbClinVar$snpsiftDbPostfix" <- dbClinVar ) {
