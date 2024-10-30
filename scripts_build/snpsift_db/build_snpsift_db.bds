@@ -1,0 +1,86 @@
+#!/usr/bin/env bds
+
+# Create SnpSift databases for various annotations, including:
+# 	- ClinVar
+# 	- Cosmic
+# 	- DbSnp
+# 	- GnomAD
+
+
+# Databases
+dbDir := "$HOME/snpEff/db/GRCh38"
+dbClinVar := "$dbDir/clinVar/clinvar.vcf.gz"
+dbCosmic := "$dbDir/cosmic/cosmic-v92.vcf.gz"
+dbDbSnp := "$dbDir/dbSnp/dbsnp.vcf"
+
+dbGnomadDir := "$dbDir/gnomAD"
+dbGnomadFilePrefix := "gnomad.joint.v4.1.sites."
+dbGnomadFilePostfix := ".vcf"
+
+# Chromosomes (gnomAD)
+chrs := ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chrX", "chrY"]
+
+
+#createCmd := 'echo '
+createCmd := "time java -Xmx16G -jar $HOME/snpEff/SnpSift.jar annmem -create "
+
+# SnpSift db postfix
+snpsiftDbPostfix := ".snpsift.vardb"
+
+# Create GnomAD databases
+void createGnomad() {
+    # List of all gnomAD VCF files
+    string[] dbs
+    for(string chr: chrs) {
+        gdb := "$dbGnomadDir/$dbGnomadFilePrefix$chr$dbGnomadFilePostfix"
+        dbs += gdb
+    }
+    println "GnomAD: $dbs"
+
+    # For each VCF file, create a SnpSift database
+    for(string db: dbs) {
+        ssdb := "$db$snpsiftDbPostfix"
+        task( ssdb <- db ) {
+            # sys $createCmd -dbfile '$db' -fields 'grpmax_joint,AF_grpmax_joint,AF_joint,AF_joint_afr,AF_joint_ami,AF_joint_amr,AF_joint_asj,AF_joint_eas,AF_joint_fin,AF_joint_mid,AF_joint_nfe,AF_joint_raw,AF_joint_remaining,AF_joint_sas'
+            sys $createCmd -dbfile '$db' -fields 'grpmax_joint,AF_grpmax_joint,AF_joint'
+        }
+    }
+}
+
+
+void createAll() {
+    mem = 12 * G
+
+    # Create Clinvar
+    task( "$dbClinVar$snpsiftDbPostfix" <- dbClinVar ) {
+        sys $createCmd -dbfile '$dbClinVar' -fields 'CLNSIG,CLNDN'
+    }
+
+    # Create DbSnp
+    task( "$dbDbSnp$snpsiftDbPostfix" <- dbDbSnp ) {
+        sys $createCmd -dbfile '$dbDbSnp' -fields 'RS,CAF,COMMON'
+    }
+
+    # Create Cosmic
+    task( "$dbCosmic$snpsiftDbPostfix" <- dbCosmic ) {
+        sys $createCmd -dbfile '$dbCosmic' -fields 'CNT,LEGACY_ID'
+    }
+
+    # Create GnomAD
+    # createGnomad()
+}
+
+void unzipGnomAd() {
+    string[] dbs
+    for(string chr: chrs) {
+        gdb := "$dbGnomadDir/$dbGnomadFilePrefix$chr$dbGnomadFilePostfix"
+        gdbgz := gdb + '.gz'
+        task( gdbgz <- gdb ) {
+            sys pv '$gdbgz' | gunzip -c | cat > '$gdb'
+        }
+    }
+}
+
+# Main
+# unzipGnomAd()
+createAll()
