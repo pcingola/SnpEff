@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../gwascatalog/">
+        <link rel="prev" href="../annotate/">
       
       
-        <link rel="next" href="../split/">
+        <link rel="next" href="../casecontrol/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
     
     
       
-        <title>SnpSift dbNSFP - SnpEff & SnpSift</title>
+        <title>SnpSift Annotate Mem - SnpEff & SnpSift</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#snpsift-dbnsfp" class="md-skip">
+        <a href="#snpsift-annotatemem-command-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SnpSift dbNSFP
+              SnpSift Annotate Mem
             
           </span>
         </div>
@@ -736,11 +736,113 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../annotate_mem/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Annotate Mem
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Annotate Mem
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How It Works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-usage" class="md-nav__link">
+    Command Line Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-database" class="md-nav__link">
+    Creating a Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotating-a-vcf-file" class="md-nav__link">
+    Annotating a VCF File
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-options" class="md-nav__link">
+    Command Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage-summary" class="md-nav__link">
+    Usage summary
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -876,73 +978,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          SnpSift dbNSFP
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../dbnsfp/" class="md-nav__link">
         SnpSift dbNSFP
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#typical-usage" class="md-nav__link">
-    Typical usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#doenloading" class="md-nav__link">
-    Doenloading
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dbnsfp-annotation-example" class="md-nav__link">
-    dbNSFP Annotation example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#building-dbnsfp-for-developers" class="md-nav__link">
-    Building dbNSFP (for developers)
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1298,92 +1338,130 @@
                   
 
 
-<h1 id="snpsift-dbnsfp">SnpSift dbNSFP</h1>
-<p>The <a href="https://sites.google.com/site/jpopgen/dbNSFP">dbNSFP</a> is an integrated database of functional predictions from multiple algorithms (SIFT, Polyphen2, LRT and MutationTaster, PhyloP and GERP++, etc.).</p>
-<h3 id="typical-usage">Typical usage</h3>
-<p>One of the main advantages is that you can annotate using multiple prediction tools with just one command.
-This allows for faster annotations.
-<a href="https://sites.google.com/site/jpopgen/dbNSFP">Here</a> is the link to dbNSFP database website for more details.</p>
-<p><strong>Database:</strong> In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file.
-dbNSFP is large (several GB) so it might take a while to download it.
-The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data <em>.gz file and the </em>.gz.tbi index file).</p>
-<h3 id="doenloading">Doenloading</h3>
-<p>You can download the files from SnpEff's site.</p>
-<p>WARNING: Remember that you need both the database and the index files</p>
-<p>DbNSFP Version 4.5:
-* GRCh37 / hg19:
-    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
-    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code>
-* GRCh38 / hg38:
-    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
-    * <a href="https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></p>
-<p>DbNSFP Version 4.1
-* GRCh37 / hg19 (dbNSFP Academic):
-    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
-    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code>
-* GRCh38 / hg38 (dbNSFP Academic):
-    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
-    * <a href="https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></p>
-<h3 id="dbnsfp-annotation-example">dbNSFP Annotation example</h3>
-<p>Here is a full example how to perform annotations:</p>
-<div class="highlight"><pre><span></span><code># Annotate using dbNSFP
-# Note that the first time you run the command, it will attempt to download the dbNSFP database.
-java -jar SnpSift.jar dbnsfp -v myFile.vcf &gt; myFile.annotated.vcf
-</code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can now specify which fields you want to use for annotation using the <code>-f</code> command line option followed by a comma separated list of field names.
-Defaults fields are shown when running the command without any arguments <code>java -jar SnpSift.jar dbNSFP</code></p>
-</div>
-<p>If your dbNSFP file is not in the 'default' path (where SnpEff expects it), you can specify the path to your dbNSFP file using the <code>-db</code> command line option:</p>
-<div class="highlight"><pre><span></span><code># Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.9.txt.gz myFile.vcf &gt; myFile.annotated.vcf
-</code></pre></div>
-<h3 id="building-dbnsfp-for-developers">Building dbNSFP (for developers)</h3>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Users do <strong>NOT</strong> need to do this, since a pre-indexed database can be downloaded from SnpSift's site (see previous sub-section).
-These instructions are mostly for developers.</p>
-</div>
-<p>You can also create dbNSFP files yourself, downloading the files from <a href="https://sites.google.com/site/jpopgen/dbNSFP">DbNsfp</a> site.
-Two files are required:</p>
+<h1 id="snpsift-annotatemem-command-documentation">SnpSift <code>annotateMem</code> Command Documentation</h1>
+<p>The <code>annotateMem</code> command is a, high-performance tool for annotating VCF files using pre-built “databases” such as dbSnp, ClinVar, GnomAD, Cosmic, and more. It is optimized to handle large VCF files—annotating over 1 million VCF lines per minute in many cases. This is achieved by converting database VCF files into memory-optimized dataframes indexed by chromosome and variant type.</p>
+<hr />
+<h2 id="overview">Overview</h2>
+<p>The annotation process is divided into <strong>two steps</strong>:</p>
+<ol>
+<li><strong>Create the Database:</strong></li>
+<li><strong>Purpose:</strong> Convert one or more VCF files (e.g., from ClinVar, dbSnp, Cosmic, etc.) into a database.</li>
+<li>
+<p><strong>Note:</strong> Although the database creation step can take a long time, it only needs to be performed once per database. Subsequent annotations will leverage the pre-built databases, making the overall process very efficient.</p>
+</li>
+<li>
+<p><strong>Annotate VCF Files:</strong></p>
+</li>
+<li><strong>Purpose:</strong> Annotate your input VCF file(s) by querying the databases created in step 1.</li>
+<li><strong>Performance:</strong> During annotation, only the relevant dataframes for the current chromosome are loaded into memory, allowing for quick, in-memory searches for each VCF record.</li>
+</ol>
+<hr />
+<h2 id="how-it-works">How It Works</h2>
 <ul>
-<li>A block-gzipped database file</li>
-<li>The corresponding tabix index for the database file.</li>
+<li>
+<p><strong>Database Creation:</strong><br />
+  The INFO fields from the provided VCF file are extracted and stored in a memory-optimized dataframe. The dataframe is indexed by chromosome and variant type, which facilitates rapid lookups during the annotation step.</p>
+</li>
+<li>
+<p><strong>Annotation:</strong><br />
+  During annotation, each VCF line is enriched with the fields from the corresponding database entries by performing a fast in-memory search of the pre-built dataframes.</p>
+</li>
 </ul>
-<p>Creating a file that SnpSift can use is simple, just follow this guideline:
-<div class="highlight"><pre><span></span><code># Download dbNSFP database
-$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.9.zip
-
-# Uncompress
-$ unzip dbNSFP2.9.zip
-
-# Create a single file version
-$ (head -n 1 dbNSFP2.9_variant.chr1 ; cat dbNSFP2.9_variant.chr* | grep -v &quot;^#&quot; ) &gt; dbNSFP2.9.txt
-
-# Compress using block-gzip algorithm
-bgzip dbNSFP2.9.txt
-
-# Create tabix index
-tabix -s 1 -b 2 -e 2 dbNSFP2.9.txt.gz
+<hr />
+<h2 id="command-line-usage">Command Line Usage</h2>
+<h3 id="creating-a-database">Creating a Database</h3>
+<p>When creating a database, specify the <code>-create</code> option along with one or more <code>-dbfile</code> parameters and the corresponding <code>-fields</code> that you want to include in the database.</p>
+<p><strong>Example:</strong><br />
+Create a database using ClinVar VCF, incorporating the INFO fields <code>CLNSIG</code>, <code>CLNDN</code>, and <code>ID</code>:</p>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-Xmx16G<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>annmem<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-create<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-dbfile<span class="w"> </span><span class="s1">&#39;db/clinvar.2024-11-03.vcf&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-fields<span class="w"> </span><span class="s1">&#39;CLNSIG,CLNDN,ID&#39;</span>
+</code></pre></div>
+<p>When a database is created, it is stored in a dedicated directory named after the original VCF file, with the suffix <code>.snpsift.vardb</code> appended. For example, if your input VCF file is named <code>clinvar.vcf</code>, the resulting database will be saved in a directory called <code>clinvar.vcf.snpsift.vardb</code>.</p>
+<p>Within this directory, the database is partitioned by chromosome. Each chromosome has its own file named following the pattern <code>{chromosomeName}.snpsift.df</code>. These files contain the serialized dataframes that store the selected INFO fields for that specific chromosome, enabling fast and efficient in-memory lookups during the annotation step.</p>
+<p>Example: When creating a database for <code>clinvar.2024-11-03.vcf</code>, the following directory is created
+<div class="highlight"><pre><span></span><code># ls clinvar.2024-11-03.vcf.snpsift.vardb/
+10.snpsift.df
+11.snpsift.df
+12.snpsift.df
+13.snpsift.df
+14.snpsift.df
+15.snpsift.df
+16.snpsift.df
+    ...
+MT.snpsift.df
+X.snpsift.df
+Y.snpsift.df
 </code></pre></div></p>
-<p><strong>Building dbNSFP for hg19/GRCh37 using dbNSFP 3.X:</strong></p>
-<p>Latest dbNSFP versions (3.X) are based on GRCh38/hg38 genomic coordinates.
-In order to use the latest dbNSFP databses with GRCh37/hg19 genome versions you need to create a new dbNSFP file with the right coordinates.
-Fortunately, dbNSFP 3.X provides GRCh37/hg19 coordinates, so we only need to swap coordinates and sort by genomic position.
-You can easily do this by using the <code>dbNSFP_sort.pl</code> script (<a href="https://raw.githubusercontent.com/pcingola/SnpEff/master/scripts_build/dbNSFP_sort.pl">you can find it here</a>) by running something like the following command lines:
-<div class="highlight"><pre><span></span><code># Set to your downloaded dbNSFP version
-version=&quot;3.2a&quot;
-
-# Replace coordinates by columns 7 and 8 (hg19 coordinates) and sort by those coordinates
-cat dbNSFP${version}_variant.chr* \
-    | $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
-    &gt; dbNSFP${version}_hg19.txt
-
-# Compress and index
-bgzip dbNSFP${version}_hg19.txt
-tabix -s 1 -b 2 -e 2 dbNSFP${version}_hg19.txt.gz
+<h3 id="annotating-a-vcf-file">Annotating a VCF File</h3>
+<p>Once the database(s) have been created, use the <code>annmem</code> command to annotate your input VCF file. You can specify multiple databases to annotate the VCF simultaneously.</p>
+<p><strong>Example:</strong><br />
+Annotate an input VCF file using multiple databases:</p>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-Xmx16G<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>annmem<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-dbfile<span class="w"> </span><span class="s1">&#39;db/clinvar.vcf.gz&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-dbfile<span class="w"> </span><span class="s1">&#39;db/dbSnp.151.vcf.gz&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-dbfile<span class="w"> </span><span class="s1">&#39;db/cosmic-v92.vcf.gz&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>input.vcf<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>&gt;<span class="w"> </span>input.ann.vcf
+</code></pre></div>
+<p>During this annotation step, the required dataframes are loaded into memory on a per-chromosome basis, ensuring efficient processing.</p>
+<p><strong>Note:</strong> If no <code>fields</code> parameter is used in the annotation command, all field in the database are used.</p>
+<p><strong>Note:</strong> If a variant from the input VCF file does not have an entry the database/s, then no INFO field is added.</p>
+<p><strong>Note:</strong> You can specify <code>-addAnnotated</code> to add the <code>ANNOTATED</code> flag to every VCF entry, so downstream processes know the VCF entry was annotated.</p>
+<hr />
+<h2 id="command-options">Command Options</h2>
+<p>Below is a summary of the available command options for <code>annotateMem</code>:</p>
+<ul>
+<li>
+<p><code>-addAnnotated</code><br />
+  When annotating, add an <code>ANNOTATED</code> flag to every INFO field, this is added even if there are no annotations from the database/s added (e.g. because the variant doesn't have an entry in the databases).</p>
+</li>
+<li>
+<p><code>-create</code><br />
+  Create one or more databases from the provided VCF file(s) using specific INFO field(s).</p>
+</li>
+<li>
+<p><code>-dbfile file.vcf</code><br />
+  Use the specified VCF file. This file is either used to create a database or to provide annotation data.</p>
+</li>
+<li>
+<p><code>-fields field_1,field_2,...,field_N</code><br />
+  Specify the comma-separated list of VCF INFO fields (without spaces) to use when creating or annotating.</p>
+</li>
+<li>
+<p><code>-prefix prefix_db</code><br />
+  When annotating, prepend the given prefix to each annotated field name. This is useful when using multiple databases to avoid naming conflicts.</p>
+</li>
+</ul>
+<h3 id="usage-summary">Usage summary</h3>
+<p><strong>Create Databases</strong>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span>annmem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_1.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_2.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>...<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_N.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N
 </code></pre></div></p>
+<p><strong>Annotate VCF File</strong>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span>annmem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span>-addAnnotated<span class="o">]</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_1.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N<span class="w"> </span><span class="o">[</span>-prefix<span class="w"> </span>prefix_db_1<span class="o">]</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_2.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N<span class="w"> </span><span class="o">[</span>-prefix<span class="w"> </span>prefix_db_2<span class="o">]</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>...<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dbfile<span class="w"> </span>database_N.vcf<span class="w"> </span>-fields<span class="w"> </span>field_1,field_2,...,field_N<span class="w"> </span><span class="o">[</span>-prefix<span class="w"> </span>prefix_db_N<span class="o">]</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span>input.vcf<span class="o">]</span><span class="w"> </span>&gt;<span class="w"> </span>output.vcf
+</code></pre></div></p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>If <code>input.vcf</code> is not provided, <code>annotateMem</code> reads from standard input (STDIN).</li>
+<li>VCF files can be compressed with Gzip or Bgzip (if so, the file name must have a <code>.gz</code> extension)</li>
+</ul>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>The SnpSift <code>annotateMem</code> command offers a fast and scalable solution for annotating large VCF files with data from multiple external databases. By leveraging memory-optimized dataframes and per-chromosome indexing, it delivers high annotation throughput—making it an essential tool for genomic variant analysis workflows.</p>
 
 
 

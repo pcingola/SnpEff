@@ -71,6 +71,7 @@ nav:
      - Introduction: snpsift/introduction.md
      - SnpSift Filter: snpsift/filter.md
      - SnpSift Annotate: snpsift/annotate.md
+     - SnpSift Annotate Mem: snpsift/annotate_mem.md
      - SnpSift CaseControl: snpsift/casecontrol.md
      - SnpSift Intervals: snpsift/intervals.md
      - SnpSift Intervals Index: snpsift/intervalsindex.md
