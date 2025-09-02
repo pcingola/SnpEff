@@ -2,7 +2,7 @@
 
 Genomic variant annotations, and functional effect prediction toolbox.
 
-[Download](https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip){: .md-button .md-button--primary }
+[Download](https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip){: .md-button .md-button--primary }
 [SnpEff Documentation](snpeff/introduction.md){: .md-button .md-button--primary }
 [SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
 
@@ -79,13 +79,6 @@ BibTex entry:
     publisher={Frontiers Media SA}
 }
 ```
-
-
-## Microsoft Genomics 
-
-<img width=108 src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31">
-
-All SnpEff & SnpSift genomic databases are kindly hosted by Microsoft Genomics and Azure
 
 ## Galaxy & GATK
 

@@ -24,7 +24,7 @@ Before starting the protocol, it is necessary to download and install SnpEff. To
 cd
 
 # Download and install SnpEff
-curl -v -L 'https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip' > snpEff_latest_core.zip
+curl -v -L 'https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip' > snpEff_latest_core.zip
 unzip snpEff_latest_core.zip
 ```
 
@@ -60,7 +60,7 @@ We now download and un-compress the example data used in this protocol, which, f
 cd ~/snpEff
 
 # Download sample data
-curl -v -L `https://datasetsnpeff.blob.core.windows.net/dataset/protocols.zip?sv=2019-10-10&st=2020-09-01T00%3A00%3A00Z&se=2050-09-01T00%3A00%3A00Z&si=prod&sr=c&sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` > protocols.zip
+curl -v -L `https://datasetsnpeff.odsp.astrazeneca.com/dataset/protocols.zip?sv=2019-10-10&st=2020-09-01T00%3A00%3A00Z&se=2050-09-01T00%3A00%3A00Z&si=prod&sr=c&sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` > protocols.zip
 unzip protocols.zip
 ```
 

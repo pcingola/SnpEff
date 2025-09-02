@@ -50,19 +50,19 @@ $ java -jar snpEff.jar download -v GRCm38.99
 00:00:00 Reading config file: /Users/pcingola/snpEff/snpEff.config
 00:00:00 done
 00:00:00 Downloading database for 'GRCm38.99'
-00:00:00 Downloading from 'https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_1_GRCm38.99.zip'
-00:00:00 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
-00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip, using proxy: false
-00:00:01 ERROR while connecting to https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
-00:00:01 Downloading from 'https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
-00:00:01 Connecting to **https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip**
-00:00:01 Connecting to https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip, using proxy: false
+00:00:00 Downloading from 'https://snpeff.odsp.astrazeneca.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_1_GRCm38.99.zip'
+00:00:00 Connecting to https://snpeff.odsp.astrazeneca.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Connecting to https://snpeff.odsp.astrazeneca.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip, using proxy: false
+00:00:01 ERROR while connecting to https://snpeff.odsp.astrazeneca.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip
+00:00:01 Downloading from 'https://snpeff.odsp.astrazeneca.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip' to local file '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
+00:00:01 Connecting to **https://snpeff.odsp.astrazeneca.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip**
+00:00:01 Connecting to https://snpeff.odsp.astrazeneca.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip, using proxy: false
 00:00:02 Local file name: '/var/folders/s9/y0bgs3l55rj_jkkkxr2drz4157r1dz/T//snpEff_v5_0_GRCm38.99.zip'
 ......
 ```
 
-So, it starts searching at `https://snpeff.blob.core.windows.net/databases/v5_1/snpEff_v5_1_GRCm38.99.zip`
-bu`t it doesn't find it there, so it proceeds with the databse `5.0` path `https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.
+So, it starts searching at `https://snpeff.odsp.astrazeneca.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip`
+bu`t it doesn't find it there, so it proceeds with the databse `5.0` path `https://snpeff.odsp.astrazeneca.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.
 
 !!! info
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.

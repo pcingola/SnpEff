@@ -20,19 +20,19 @@ WARNING: Remember that you need both the database and the index files
 
 DbNSFP Version 4.5:
 * GRCh37 / hg19:
-    * [Database](https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
-    * [Index](https://snpeff.blob.core.windows.net/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+    * [Database](https://snpeff.odsp.astrazeneca.com/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.odsp.astrazeneca.com/databases/db/GRCh37/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 * GRCh38 / hg38:
-    * [Database](https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
-    * [Index](https://snpeff.blob.core.windows.net/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+    * [Database](https://snpeff.odsp.astrazeneca.com/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.odsp.astrazeneca.com/databases/db/GRCh38/dbNSFP/dbNSFP4.5c.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 
 DbNSFP Version 4.1
 * GRCh37 / hg19 (dbNSFP Academic):
-    * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
-    * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+    * [Database](https://snpeff.odsp.astrazeneca.com/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.odsp.astrazeneca.com/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 * GRCh38 / hg38 (dbNSFP Academic):
-    * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
-    * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
+    * [Database](https://snpeff.odsp.astrazeneca.com/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
+    * [Index](https://snpeff.odsp.astrazeneca.com/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 
 ### dbNSFP Annotation example
 
