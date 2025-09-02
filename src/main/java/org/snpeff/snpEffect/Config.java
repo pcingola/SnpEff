@@ -42,9 +42,14 @@ public class Config implements Serializable, Iterable<String> {
     //     ---------------+-----------
     //                5.2 | 5.1, 5.0
     //     ---------------+-----------
-    public static final String[] COMPATIBLE_WITH_5_2 = {"5.0", "5.1"};
+    //                5.3 | 5.2, 5.1, 5.0
+    //     ---------------+-----------
+    public static final String[] COMPATIBLE_WITH_5_3 = {"5.2", "5.1", "5.0"};
+    public static final String[] COMPATIBLE_WITH_5_2 = {"5.1", "5.0"};
     public static final String[] COMPATIBLE_WITH_5_1 = {"5.0"};
-    public static final Map<String, String[]> DATABASE_COMPATIBLE_VERSIONS = Map.of("5.1", COMPATIBLE_WITH_5_1, "5.2", COMPATIBLE_WITH_5_2);
+    public static final Map<String, String[]> DATABASE_COMPATIBLE_VERSIONS = Map.of("5.1", COMPATIBLE_WITH_5_1
+                                                                                    , "5.2", COMPATIBLE_WITH_5_2
+                                                                                    , "5.3", COMPATIBLE_WITH_5_3);
 
     private static final long serialVersionUID = 877453207407217465L;
 
@@ -217,7 +222,7 @@ public class Config implements Serializable, Iterable<String> {
     /**
      * Build the URL for downloading a database file
      * <p>
-     * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
+     * Format  : DatabaseRepository / "v{VERSION}" / "snpEff_v{VERSION}_{genomeVersion}.zip"
      * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
      */
     public URL downloadUrl(String genomeVer, String version) {

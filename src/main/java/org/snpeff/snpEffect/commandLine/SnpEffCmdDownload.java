@@ -71,7 +71,6 @@ public class SnpEffCmdDownload extends SnpEff {
     public void parseArgs(String[] args) {
         this.args = args;
         for (String arg : args) {
-
             // Argument starts with '-'?
             if (isOpt(arg))
                 usage("Unknown option '" + arg + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
