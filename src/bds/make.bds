@@ -41,6 +41,11 @@ azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entr
 azureContainer		:= 'databases'								help Azure container for databases
 azureQueryString	:= ''										help Azure 'query string' containing a security token.
 
+help S3 options
+s3Bucket	:= 's3-bucket-snpeff'					help S3 bucket
+s3DatabasesPath := "s3://$s3Bucket/databases"		help S3 path for databases
+s3VersionsPath := "s3://$s3Bucket/versions"			help S3 path for versions
+
 # Process on one CPU
 cpus = 1
 
@@ -541,6 +546,22 @@ void runTestsSnpEffUnity() {
 }
 
 #-------------------------------------------------------------------------------
+# Upload core files to S3
+#-------------------------------------------------------------------------------
+void uploadCore2S3() {
+	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
+	zipLatest := "snpEff_latest_core.zip"
+	azureContainer = 'versions'
+	sys aws s3 cp $zip       "$s3VersionsPath/$zip"
+	sys aws s3 cp $zipLatest "$s3VersionsPath/$zipLatest"
+	# Add version file
+	htmlDir := "$HOME/workspace/SnpEff/docs"
+	verFile := htmlDir.createVersionFile()
+	verBase := verFile.baseName()
+	sys aws s3 cp $verFile "$s3VersionsPath/$verBase"
+}
+
+#-------------------------------------------------------------------------------
 # Upload core files to Azure
 #-------------------------------------------------------------------------------
 void uploadCore2Azure() {
@@ -579,6 +600,18 @@ void uploadDbNsfp2Azure() {
 }
 
 #-------------------------------------------------------------------------------
+# Upload dbNSFP to S3
+#-------------------------------------------------------------------------------
+void uploadDbNsfp2S3() {
+	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
+	dbNsfp38.upload2S3()
+
+	# Create dbNsfp37 using 'dbNsfp38File'
+	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
+	dbNsfp37.upload2S3()
+}
+
+#-------------------------------------------------------------------------------
 # Upload database files to Azure
 #-------------------------------------------------------------------------------
 void uploadDbs2Azure() {
@@ -586,6 +619,15 @@ void uploadDbs2Azure() {
 	ver := 'v' + versionUnd()
 	sys ln -s $dirZip $ver || true
 	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$aqs" --recursive
+}
+
+#-------------------------------------------------------------------------------
+# Upload database files to S3
+#-------------------------------------------------------------------------------
+void uploadDbs2S3() {
+	ver := 'v' + versionUnd()
+	sys ln -s $dirZip $ver || true
+	sys aws s3 cp $ver/ "$s3DatabasesPath/$ver" --recursive
 }
 
 #-------------------------------------------------------------------------------
@@ -605,6 +647,14 @@ void uploadDev2Azure() {
 	azureContainer = 'versions'
 	zipDev := "snpEff_development.zip"
 	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$aqs"
+}
+
+#-------------------------------------------------------------------------------
+# Upload core development files to S3
+#-------------------------------------------------------------------------------
+void uploadDev2S3() {
+	zipDev := "snpEff_development.zip"
+	sys aws s3 cp $zipDev "$s3VersionsPath/$zipDev"
 }
 
 #-------------------------------------------------------------------------------
@@ -632,7 +682,6 @@ string versionSubUnd() {
 	ver := version()
 	return ver.replace("\.","_").trim()
 }
-
 
 #-------------------------------------------------------------------------------
 # Create SnpEff core Zip file
@@ -727,10 +776,10 @@ if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCS
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)
 if( test )						runTests()									# Run test cases 
-if( uploadCore )				uploadCore2Azure()							# Upload 'core' files
-if( uploadDbs )					uploadDbs2Azure()							# Upload all database files in 'zip' dir
-if( uploadDbNsfp )				uploadDbNsfp2Azure()						# Upload dbNsfp database files 
-if( uploadDev )					uploadDev2Azure()							# Upload 'development' version
+if( uploadCore )				uploadCore2S3()								# Upload 'core' files
+if( uploadDbs )					uploadDbs2S3()								# Upload all database files in 'zip' dir
+if( uploadDbNsfp )				uploadDbNsfp2S3()							# Upload dbNsfp database files 
+if( uploadDev )					uploadDev2S3()								# Upload 'development' version
 if( !zipGenome.isEmpty() )		zipDbs(zipGenome)							# Zip only 'zipGenome' database
 
 wait
