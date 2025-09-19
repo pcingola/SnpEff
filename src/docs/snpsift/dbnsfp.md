@@ -12,7 +12,7 @@ This allows for faster annotations.
 dbNSFP is large (several GB) so it might take a while to download it.
 The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
 
-### Doenloading
+### Downloading
 
 You can download the files from SnpEff's site.
 
