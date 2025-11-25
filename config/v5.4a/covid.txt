@@ -1,0 +1,120 @@
+Genome                                                                      | ID          
+----------------------------------------------------------------------------+ ------------
+COVID19: Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1 | NC_045512.2 
+SARS coronavirus TWH genomic RNA, complete genome.                          | AP006557.1  
+SARS coronavirus TWJ genomic RNA, complete genome.                          | AP006558.1  
+SARS coronavirus TWK genomic RNA, complete genome.                          | AP006559.1  
+SARS coronavirus TWS genomic RNA, complete genome.                          | AP006560.1  
+SARS coronavirus TWY genomic RNA, complete genome.                          | AP006561.1  
+SARS coronavirus Urbani, complete genome.                                   | AY278741.1  
+SARS coronavirus TW1, complete genome.                                      | AY291451.1  
+SARS coronavirus SZ3, complete genome.                                      | AY304486.1  
+SARS coronavirus SZ16, complete genome.                                     | AY304488.1  
+SARS coronavirus GZ50, complete genome.                                     | AY304495.1  
+SARS coronavirus FRA, complete genome.                                      | AY310120.1  
+SARS coronavirus GD69, complete genome.                                     | AY313906.1  
+SARS coronavirus Taiwan TC1, complete genome.                               | AY338174.1  
+SARS coronavirus Taiwan TC2, complete genome.                               | AY338175.1  
+SARS coronavirus BJ2232 RNA polymerase gene, partial cds.                   | AY340092.1  
+SARS coronavirus CUHK-AG01, complete genome.                                | AY345986.1  
+SARS coronavirus CUHK-AG02, complete genome.                                | AY345987.1  
+SARS coronavirus CUHK-AG03, complete genome.                                | AY345988.1  
+SARS coronavirus Taiwan TC3, complete genome.                               | AY348314.1  
+SARS coronavirus PUMC01, complete genome.                                   | AY350750.1  
+SARS coronavirus PUMC02, complete genome.                                   | AY357075.1  
+SARS coronavirus PUMC03, complete genome.                                   | AY357076.1  
+SARS coronavirus GZ02, complete genome.                                     | AY390556.1  
+SARS coronavirus GZ-B, complete genome.                                     | AY394978.1  
+SARS coronavirus GZ-C, complete genome.                                     | AY394979.1  
+SARS coronavirus AS, complete genome.                                       | AY427439.1  
+SARS coronavirus ShanghaiQXC1, complete genome.                             | AY463059.1  
+SARS coronavirus ShanghaiQXC2, complete genome.                             | AY463060.1  
+SARS coronavirus Sino1-11, complete genome.                                 | AY485277.1  
+SARS coronavirus Sino3-11, complete genome.                                 | AY485278.1  
+SARS coronavirus TW10, complete genome.                                     | AY502923.1  
+SARS coronavirus TW11, complete genome.                                     | AY502924.1  
+SARS coronavirus TW2, complete genome.                                      | AY502925.1  
+SARS coronavirus TW3, complete genome.                                      | AY502926.1  
+SARS coronavirus TW4, complete genome.                                      | AY502927.1  
+SARS coronavirus TW5, complete genome.                                      | AY502928.1  
+SARS coronavirus TW6, complete genome.                                      | AY502929.1  
+SARS coronavirus TW7, complete genome.                                      | AY502930.1  
+SARS coronavirus TW8, complete genome.                                      | AY502931.1  
+SARS coronavirus TW9, complete genome.                                      | AY502932.1  
+SARS coronavirus NS-1, complete genome.                                     | AY508724.1  
+SARS coronavirus HC/SZ/61/03, complete genome.                              | AY515512.1  
+SARS coronavirus GZ0401, complete genome.                                   | AY568539.1  
+SARS coronavirus civet007, complete genome.                                 | AY572034.1  
+SARS coronavirus civet010, complete genome.                                 | AY572035.1  
+SARS coronavirus civet020, complete genome.                                 | AY572038.1  
+SARS coronavirus LLJ-2004, complete genome.                                 | AY595412.1  
+SARS coronavirus GZ0402, complete genome.                                   | AY613947.1  
+SARS coronavirus TJF, complete genome.                                      | AY654624.1  
+SARS coronavirus A022, complete genome.                                     | AY686863.1  
+SARS coronavirus B039, complete genome.                                     | AY686864.1  
+SARS coronavirus A001 spike glycoprotein gene, complete cds.                | AY687354.1  
+SARS coronavirus A013 spike glycoprotein gene, complete cds.                | AY687355.1  
+SARS coronavirus A021 spike glycoprotein gene, complete cds.                | AY687356.1  
+SARS coronavirus A030 spike glycoprotein gene, complete cds.                | AY687357.1  
+SARS coronavirus A031 spike glycoprotein gene, complete cds.                | AY687358.1  
+SARS coronavirus B012 spike glycoprotein gene, complete cds.                | AY687359.1  
+SARS coronavirus B024 spike glycoprotein gene, complete cds.                | AY687360.1  
+SARS coronavirus B029 spike glycoprotein gene, complete cds.                | AY687361.1  
+SARS coronavirus B033 spike glycoprotein gene, complete cds.                | AY687362.1  
+SARS coronavirus B040 spike glycoprotein gene, complete cds.                | AY687364.1  
+SARS Coronavirus CDC#200301157, complete genome.                            | AY714217.1  
+SARS coronavirus WH20, complete genome.                                     | AY772062.1  
+SARS coronavirus BJ162, complete genome.                                    | AY864805.1  
+SARS coronavirus BJ202, complete genome.                                    | AY864806.1  
+bat SARS coronavirus HKU3-2, complete genome.                               | DQ084199.1  
+bat SARS coronavirus HKU3-3, complete genome.                               | DQ084200.1  
+SARS coronavirus ZJ0301 from China, complete genome.                        | DQ182595.1  
+SARS coronavirus GDH-BJH01, complete genome.                                | DQ640652.1  
+Bat coronavirus (BtCoV/273/2005), complete genome.                          | DQ648856.1  
+Bat coronavirus (BtCoV/279/2005), complete genome.                          | DQ648857.1  
+SARS coronavirus ZJ02, complete genome.                                     | EU371559.1  
+SARS coronavirus BJ182a, complete genome.                                   | EU371560.1  
+SARS coronavirus BJ182b, complete genome.                                   | EU371561.1  
+SARS coronavirus BJ182-4, complete genome.                                  | EU371562.1  
+SARS coronavirus BJ182-8, complete genome.                                  | EU371563.1  
+SARS coronavirus BJ182-12, complete genome.                                 | EU371564.1  
+Bat SARS CoV Rs672/2006, complete genome.                                   | FJ588686.1  
+SARS coronavirus P2, complete genome.                                       | FJ882963.1  
+Bat SARS coronavirus HKU3-4, complete genome.                               | GQ153539.1  
+Bat SARS coronavirus HKU3-5, complete genome.                               | GQ153540.1  
+Bat SARS coronavirus HKU3-6, complete genome.                               | GQ153541.1  
+Bat SARS coronavirus HKU3-7, complete genome.                               | GQ153542.1  
+Bat SARS coronavirus HKU3-8, complete genome.                               | GQ153543.1  
+Bat SARS coronavirus HKU3-9, complete genome.                               | GQ153544.1  
+Bat SARS coronavirus HKU3-10, complete genome.                              | GQ153545.1  
+Bat SARS coronavirus HKU3-11, complete genome.                              | GQ153546.1  
+Bat SARS coronavirus HKU3-12, complete genome.                              | GQ153547.1  
+SARS coronavirus HKU-39849 isolate UOB, complete genome.                    | JQ316196.1  
+Bat coronavirus Rp/Shaanxi2011, complete genome.                            | JX993987.1  
+Bat coronavirus Cp/Yunnan2011, complete genome.                             | JX993988.1  
+Bat SARS-like coronavirus RsSHC014, complete genome.                        | KC881005.1  
+Bat SARS-like coronavirus Rs3367, complete genome.                          | KC881006.1  
+Bat SARS-like coronavirus WIV1, complete genome.                            | KF367457.1  
+Rhinolophus affinis coronavirus isolate LYRa11, complete genome.            | KF569996.1  
+BtRf-BetaCoV/JL2012, complete genome.                                       | KJ473811.1  
+BtRf-BetaCoV/HeB2013, complete genome.                                      | KJ473812.1  
+BtRf-BetaCoV/SX2013, complete genome.                                       | KJ473813.1  
+BtRs-BetaCoV/HuB2013, complete genome.                                      | KJ473814.1  
+BtRs-BetaCoV/GX2013, complete genome.                                       | KJ473815.1  
+BtRs-BetaCoV/YN2013, complete genome.                                       | KJ473816.1  
+Bat SARS-like coronavirus YNLF_31C, complete genome.                        | KP886808.1  
+Bat SARS-like coronavirus YNLF_34C, complete genome.                        | KP886809.1  
+SARS coronavirus Urbani isolate icSARS, complete genome.                    | MK062179.1  
+SARS coronavirus Urbani isolate icSARS-MA, complete genome.                 | MK062180.1  
+SARS coronavirus Urbani isolate icSARS-C3, complete genome.                 | MK062181.1  
+SARS coronavirus Urbani isolate icSARS-C3-MA, complete genome.              | MK062182.1  
+SARS coronavirus Urbani isolate icSARS-C7, complete genome.                 | MK062183.1  
+SARS coronavirus Urbani isolate icSARS-C7-MA, complete genome.              | MK062184.1  
+Bat coronavirus RaTG13, complete genome.                                    | MN996532.1  
+SARS coronavirus BJ01, complete genome.                                     | AY278488.2  
+SARS coronavirus GD01, complete genome.                                     | AY278489.2  
+SARS coronavirus CUHK-W1, complete genome.                                  | AY278554.2  
+SARS coronavirus BJ04, complete genome.                                     | AY279354.2  
+SARS coronavirus CUHK-Su10, complete genome.                                | AY282752.2  
+SARS coronavirus HSR 1, complete genome.                                    | AY323977.2  
+Bat SARS coronavirus HKU3-1, complete genome.                               | DQ022305.2  

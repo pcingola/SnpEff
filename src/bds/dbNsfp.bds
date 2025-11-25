@@ -162,7 +162,7 @@ class DbNsfp {
 		for(string ext: DBNSFP_EXTENSIONS) {
 			file := "db/$genome/dbNSFP/dbNSFP$dbNsfpVersion\.txt.$ext"
 			logd "Uploading file '$file'"
-			sys cd '$dirSnpEff' ; aws s3 cp '$file' '$s3DatabasesPath/$file'
+			sys cd '$dirSnpEff' ; aws s3 cp --profile $awsProfile '$file' '$s3DatabasesPath/$file'
 		}
 	}
 }

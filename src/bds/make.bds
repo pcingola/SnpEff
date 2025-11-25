@@ -41,7 +41,8 @@ string[] zipGenome	= []			help Zip a specific genome
 # azureContainer		:= 'databases'								help Azure container for databases
 # azureQueryString	:= ''										help Azure 'query string' containing a security token.
 
-help S3 options
+help AWS and S3 options
+awsProfile  := 'snpeff'								help AWS profile name
 s3Bucket	:= 'snpeff-public'						help S3 bucket
 s3DatabasesPath := "s3://$s3Bucket/databases"		help S3 path for databases
 s3VersionsPath := "s3://$s3Bucket/versions"			help S3 path for versions
@@ -552,13 +553,13 @@ void runTestsSnpEffUnity() {
 void uploadCore2S3() {
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
-	sys aws s3 cp $zip       "$s3VersionsPath/$zip"
-	sys aws s3 cp $zipLatest "$s3VersionsPath/$zipLatest"
+	sys aws s3 cp --profile $awsProfile $zip       "$s3VersionsPath/$zip"
+	sys aws s3 cp --profile $awsProfile $zipLatest "$s3VersionsPath/$zipLatest"
 	# Add version file
 	htmlDir := "$HOME/workspace/SnpEff/docs"
 	verFile := htmlDir.createVersionFile()
 	verBase := verFile.baseName()
-	sys aws s3 cp $verFile "$s3VersionsPath/$verBase"
+	sys aws s3 cp --profile $awsProfile $verFile "$s3VersionsPath/$verBase"
 }
 
 // #-------------------------------------------------------------------------------
@@ -628,7 +629,7 @@ void uploadDbNsfp2S3() {
 void uploadDbs2S3() {
 	ver := 'v' + versionUnd()
 	sys ln -s $dirZip $ver || true
-	sys aws s3 cp $ver/ "$s3DatabasesPath/$ver" --recursive
+	sys aws s3 cp --profile $awsProfile $ver/ "$s3DatabasesPath/$ver" --recursive
 }
 
 // #-------------------------------------------------------------------------------
@@ -656,7 +657,7 @@ void uploadDbs2S3() {
 #-------------------------------------------------------------------------------
 void uploadDev2S3() {
 	zipDev := "snpEff_development.zip"
-	sys aws s3 cp $zipDev "$s3VersionsPath/$zipDev"
+	sys aws s3 cp --profile $awsProfile $zipDev "$s3VersionsPath/$zipDev"
 }
 
 #-------------------------------------------------------------------------------
