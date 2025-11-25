@@ -8,6 +8,8 @@ Genomic variant annotations, and functional effect prediction toolbox.
 
 Latest version 5.4 (2025-11-25)
 
+Now hosted on [AWS Open Data](https://aws.amazon.com/opendata/)
+
 ## SnpEff
 
 Genetic variant annotation, and functional effect prediction toolbox.
