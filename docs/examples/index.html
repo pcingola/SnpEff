@@ -1460,7 +1460,7 @@ We highly recommend reading their comprehensive documentation available <a href=
 cd
 
 # Download and install SnpEff
-curl -v -L &#39;https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip&#39; &gt; snpEff_latest_core.zip
+curl -v -L &#39;https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip&#39; &gt; snpEff_latest_core.zip
 unzip snpEff_latest_core.zip
 </code></pre></div></p>
 <p><strong>Notes:</strong></p>
@@ -1487,7 +1487,7 @@ The data files come from the publicly available "CEPH_1463" dataset, sequenced b
 cd ~/snpEff
 
 # Download sample data
-curl -v -L `https://datasetsnpeff.odsp.astrazeneca.com/dataset/protocols.zip?sv=2019-10-10&amp;st=2020-09-01T00%3A00%3A00Z&amp;se=2050-09-01T00%3A00%3A00Z&amp;si=prod&amp;sr=c&amp;sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` &gt; protocols.zip
+curl -v -L `https://datasetsnpeff-public.s3.amazonaws.com/dataset/protocols.zip?sv=2019-10-10&amp;st=2020-09-01T00%3A00%3A00Z&amp;se=2050-09-01T00%3A00%3A00Z&amp;si=prod&amp;sr=c&amp;sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` &gt; protocols.zip
 unzip protocols.zip
 </code></pre></div></p>
 <p>The goal in this example is to use SnpEff to find a mutation causing a Mendelian recessive trait. This will be done using a dataset of variant calls for chromosome 7 from a pedigree of 17 healthy individuals, sequenced by Complete Genomics, in which a coding variant causing cystic fibrosis was artificially introduced in three siblings (see Materials). For the purpose of this example, we assume that we do not know the causative variant, but that we know that we are dealing with a Mendelian recessive disorder, where the three siblings are affected (cases), but the 14 parents and grandparents are not (controls).</p>

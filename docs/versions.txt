@@ -1,1 +1,1 @@
-SNPEFF	5.3A	2025-09-02	https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
+SNPEFF	5.4A	2025-11-25	https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip

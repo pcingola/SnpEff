@@ -1334,10 +1334,10 @@ You have to download the core program and then uncompress the ZIP file.
 In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 If you have a Unix or a Mac system, the command line would be:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Download using wget</span>
-wget<span class="w"> </span>https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip
+wget<span class="w"> </span>https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
 
 <span class="c1"># If you prefer to use &#39;curl&#39; instead of &#39;wget&#39;, you can type:</span>
-<span class="c1">#     curl -L https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip &gt; snpEff_latest_core.zip</span>
+<span class="c1">#     curl -L https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip &gt; snpEff_latest_core.zip</span>
 
 <span class="c1"># Install</span>
 unzip<span class="w"> </span>snpEff_latest_core.zip
@@ -1525,7 +1525,7 @@ You should not have any problems at all.</p>
       ___|\___|___|
 
 
-[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip
+[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ unzip snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ cd snpEff/
 [ec2-user@ip-10-2-202-163 snpEff]$ java -jar snpEff.jar download -v hg19
