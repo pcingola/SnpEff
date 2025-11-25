@@ -116,13 +116,13 @@ They will be available later in the project.
 So, for the time being, data has to be downloaded an pre-processed.
 We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
 
-The latest Epigenome project processed information, can be found [here](https://snpeff.odsp.astrazeneca.com/databases/epigenome_latest.tgz/download).
+The latest Epigenome project processed information, can be found [here](https://snpeff-public.s3.amazonaws.com/databases/epigenome_latest.tgz/download).
 This includes genomic intervals for high confidence peaks in form of `BED` files.
 
 To annotate you can do:
 ```
 # Download Epigenome project database (pre-processed as BED files)
-wget https://snpeff.odsp.astrazeneca.com/databases/epigenome_latest.tgz/download
+wget https://snpeff-public.s3.amazonaws.com/databases/epigenome_latest.tgz/download
 
 # Open tar file
 tar -xvzf epigenome_latest.tgz

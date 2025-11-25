@@ -11,10 +11,10 @@ If you have a Unix or a Mac system, the command line would be:
 
 ``` sh
 # Download using wget
-wget https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip
+wget https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
 
 # If you prefer to use 'curl' instead of 'wget', you can type:
-#     curl -L https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip > snpEff_latest_core.zip
+#     curl -L https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip > snpEff_latest_core.zip
 
 # Install
 unzip snpEff_latest_core.zip
@@ -230,7 +230,7 @@ $ ssh -i ./aws_amazon/my_secret_key.pem ec2-user@ec2-54-234-14-244.compute-1.ama
       ___|\___|___|
 
 
-[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip
+[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ unzip snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ cd snpEff/
 [ec2-user@ip-10-2-202-163 snpEff]$ java -jar snpEff.jar download -v hg19

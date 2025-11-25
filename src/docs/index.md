@@ -2,7 +2,7 @@
 
 Genomic variant annotations, and functional effect prediction toolbox.
 
-[Download](https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip){: .md-button .md-button--primary }
+[Download](https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip){: .md-button .md-button--primary }
 [SnpEff Documentation](snpeff/introduction.md){: .md-button .md-button--primary }
 [SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
 

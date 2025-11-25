@@ -144,16 +144,17 @@ class DbNsfp {
 		} else log("Unzipped files seem to be present, skipping")
 	}
 
-	void upload2Azure() {
-		logd "Uploading dbNSFP files to Azure"
-		aqs := getAzureQueryString('databases')
-		DBNSFP_EXTENSIONS := ['gz', 'gz.tbi']
-		for(string ext: DBNSFP_EXTENSIONS) {
-			file := "db/$genome/dbNSFP/dbNSFP$dbNsfpVersion\.txt.$ext"
-			logd "Uploading file '$file'"
-			sys cd '$dirSnpEff' ; azcopy cp '$file' '$azureBlobEndpoint/$azureContainer/$file$aqs'
-		}
-	}
+	// DEPRECATED
+	// void upload2Azure() {
+	// 	logd "Uploading dbNSFP files to Azure"
+	// 	aqs := getAzureQueryString('databases')
+	// 	DBNSFP_EXTENSIONS := ['gz', 'gz.tbi']
+	// 	for(string ext: DBNSFP_EXTENSIONS) {
+	// 		file := "db/$genome/dbNSFP/dbNSFP$dbNsfpVersion\.txt.$ext"
+	// 		logd "Uploading file '$file'"
+	// 		sys cd '$dirSnpEff' ; azcopy cp '$file' '$azureBlobEndpoint/$azureContainer/$file$aqs'
+	// 	}
+	// }
 
 	void upload2S3() {
 		logd "Uploading dbNSFP files to S3"

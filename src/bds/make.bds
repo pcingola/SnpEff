@@ -35,16 +35,17 @@ uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
 string[] zipGenome	= []			help Zip a specific genome
 
-help Azure options
-azureKeysFile		:= "$HOME/snpEff/.azure"					help Azure credentials file
-azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entry point
-azureContainer		:= 'databases'								help Azure container for databases
-azureQueryString	:= ''										help Azure 'query string' containing a security token.
+# help Azure options
+# azureKeysFile		:= "$HOME/snpEff/.azure"					help Azure credentials file
+# azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entry point
+# azureContainer		:= 'databases'								help Azure container for databases
+# azureQueryString	:= ''										help Azure 'query string' containing a security token.
 
 help S3 options
-s3Bucket	:= 's3-bucket-snpeff'					help S3 bucket
+s3Bucket	:= 'snpeff-public'						help S3 bucket
 s3DatabasesPath := "s3://$s3Bucket/databases"		help S3 path for databases
 s3VersionsPath := "s3://$s3Bucket/versions"			help S3 path for versions
+s3HttpUrl	:= "https://$s3Bucket\.s3.amazonaws.com"	help S3 HTTP URL
 
 # Process on one CPU
 cpus = 1
@@ -109,7 +110,7 @@ venvDir	 			:= "$dirSnpEff/.venv"
 venvBin 			:= "$venvDir/bin"
 
 # URLs
-snpeffDownload		:= "$azureBlobEndpoint/versions/snpEff_latest_core.zip"
+snpeffDownload		:= "$s3HttpUrl/versions/snpEff_latest_core.zip"
 
 # Output files
 buildSummary		:= "build.out"
@@ -466,15 +467,15 @@ void downloadOneSet(string setToDownload) {
 	}
 }
 
-#-------------------------------------------------------------------------------
-# Get Azure query string from azure keys file, if not already defined
-#-------------------------------------------------------------------------------
-string getAzureQueryString(string type) {
-	if( !azureQueryString.isEmpty() ) return azureQueryString
-	println "Reading keys from '$azureKeysFile'"
-	azureKeys := azureKeysFile.config()
-	return azureKeys{"$type\_query_string"}
-}
+// #-------------------------------------------------------------------------------
+// # Get Azure query string from azure keys file, if not already defined
+// #-------------------------------------------------------------------------------
+// string getAzureQueryString(string type) {
+// 	if( !azureQueryString.isEmpty() ) return azureQueryString
+// 	println "Reading keys from '$azureKeysFile'"
+// 	azureKeys := azureKeysFile.config()
+// 	return azureKeys{"$type\_query_string"}
+// }
 
 #-------------------------------------------------------------------------------
 # Inger coordinates type fr huma genome: 'GRCh37' or 'GRCh38'
@@ -551,7 +552,6 @@ void runTestsSnpEffUnity() {
 void uploadCore2S3() {
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
-	azureContainer = 'versions'
 	sys aws s3 cp $zip       "$s3VersionsPath/$zip"
 	sys aws s3 cp $zipLatest "$s3VersionsPath/$zipLatest"
 	# Add version file
@@ -561,43 +561,43 @@ void uploadCore2S3() {
 	sys aws s3 cp $verFile "$s3VersionsPath/$verBase"
 }
 
-#-------------------------------------------------------------------------------
-# Upload core files to Azure
-#-------------------------------------------------------------------------------
-void uploadCore2Azure() {
-	aqs := getAzureQueryString('versions')
-	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
-	zipLatest := "snpEff_latest_core.zip"
-	azureContainer = 'versions'
-	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$zip$aqs"
-	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$zipLatest$aqs"
-	# Add version file
-	htmlDir := "$HOME/workspace/SnpEff/docs"
-	verFile := htmlDir.createVersionFile()
-	verBase := verFile.baseName()
-	sys azcopy cp $verFile "$azureBlobEndpoint/$azureContainer/$verBase$aqs"
-}
+// #-------------------------------------------------------------------------------
+// # Upload core files to Azure
+// #-------------------------------------------------------------------------------
+// void uploadCore2Azure() {
+// 	aqs := getAzureQueryString('versions')
+// 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
+// 	zipLatest := "snpEff_latest_core.zip"
+// 	azureContainer = 'versions'
+// 	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$zip$aqs"
+// 	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$zipLatest$aqs"
+// 	# Add version file
+// 	htmlDir := "$HOME/workspace/SnpEff/docs"
+// 	verFile := htmlDir.createVersionFile()
+// 	verBase := verFile.baseName()
+// 	sys azcopy cp $verFile "$azureBlobEndpoint/$azureContainer/$verBase$aqs"
+// }
 
-#-------------------------------------------------------------------------------
-# Upload core files to SourceForge
-#-------------------------------------------------------------------------------
-void uploadCore2Sf() {
-	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
-	zipLatest := "snpEff_latest_core.zip"
-	sys scp -v $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
-}
+// #-------------------------------------------------------------------------------
+// # Upload core files to SourceForge
+// #-------------------------------------------------------------------------------
+// void uploadCore2Sf() {
+// 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
+// 	zipLatest := "snpEff_latest_core.zip"
+// 	sys scp -v $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
+// }
 
-#-------------------------------------------------------------------------------
-# Upload dbNSFP to Azure
-#-------------------------------------------------------------------------------
-void uploadDbNsfp2Azure() {
-	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
-	dbNsfp38.upload2Azure()
+// #-------------------------------------------------------------------------------
+// # Upload dbNSFP to Azure
+// #-------------------------------------------------------------------------------
+// void uploadDbNsfp2Azure() {
+// 	dbNsfp38 := new DbNsfp(dirDb, "GRCh38")
+// 	dbNsfp38.upload2Azure()
 
-	# Create dbNsfp37 using 'dbNsfp38File'
-	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
-	dbNsfp37.upload2Azure()
-}
+// 	# Create dbNsfp37 using 'dbNsfp38File'
+// 	dbNsfp37 := new DbNsfp(dirDb, "GRCh37")
+// 	dbNsfp37.upload2Azure()
+// }
 
 #-------------------------------------------------------------------------------
 # Upload dbNSFP to S3
@@ -611,15 +611,16 @@ void uploadDbNsfp2S3() {
 	dbNsfp37.upload2S3()
 }
 
-#-------------------------------------------------------------------------------
-# Upload database files to Azure
-#-------------------------------------------------------------------------------
-void uploadDbs2Azure() {
-	aqs := getAzureQueryString('databases')
-	ver := 'v' + versionUnd()
-	sys ln -s $dirZip $ver || true
-	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$aqs" --recursive
-}
+// #-------------------------------------------------------------------------------
+// # Upload database files to Azure
+// # DEPRECATED
+// #-------------------------------------------------------------------------------
+// void uploadDbs2Azure() {
+// 	aqs := getAzureQueryString('databases')
+// 	ver := 'v' + versionUnd()
+// 	sys ln -s $dirZip $ver || true
+// 	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$aqs" --recursive
+// }
 
 #-------------------------------------------------------------------------------
 # Upload database files to S3
@@ -630,24 +631,25 @@ void uploadDbs2S3() {
 	sys aws s3 cp $ver/ "$s3DatabasesPath/$ver" --recursive
 }
 
-#-------------------------------------------------------------------------------
-# Upload database files to SourceForge
-# DEPRECATED
-#-------------------------------------------------------------------------------
-void uploadDbs2Sf() {
-	ver := versionUnd()
-	sys scp -v $dirZip/snpEff_v$ver*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$ver/
-}
+// #-------------------------------------------------------------------------------
+// # Upload database files to SourceForge
+// # DEPRECATED
+// #-------------------------------------------------------------------------------
+// void uploadDbs2Sf() {
+// 	ver := versionUnd()
+// 	sys scp -v $dirZip/snpEff_v$ver*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$ver/
+// }
 
-#-------------------------------------------------------------------------------
-# Upload core development files to azure
-#-------------------------------------------------------------------------------
-void uploadDev2Azure() {
-	aqs := getAzureQueryString('versions')
-	azureContainer = 'versions'
-	zipDev := "snpEff_development.zip"
-	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$aqs"
-}
+// #-------------------------------------------------------------------------------
+// # Upload core development files to azure
+// # DEPRECATED
+// #-------------------------------------------------------------------------------
+// void uploadDev2Azure() {
+// 	aqs := getAzureQueryString('versions')
+// 	azureContainer = 'versions'
+// 	zipDev := "snpEff_development.zip"
+// 	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$aqs"
+// }
 
 #-------------------------------------------------------------------------------
 # Upload core development files to S3

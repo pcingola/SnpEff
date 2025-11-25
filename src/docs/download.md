@@ -2,7 +2,7 @@
 
 SnpEff and SnpSift are bundled together.
 
-> [Download SnpEff](https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip)
+> [Download SnpEff](https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip)
 
 > Old versions [here](https://sourceforge.net/projects/snpeff/files/).
 
@@ -31,7 +31,7 @@ It is better if you install SnpEff in `snpEff` directory in your home directory 
 cd
 
 # Download latest version
-wget https://snpeff.odsp.astrazeneca.com/versions/snpEff_latest_core.zip
+wget https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
 
 # Unzip file
 unzip snpEff_latest_core.zip
@@ -152,7 +152,7 @@ Test cases require special "test cases databases and genome", you can find them 
 cd $HOME/snpEff
 
 # Download databases and genome for test cases
-wget https://snpeff.odsp.astrazeneca.com/databases/test_cases.tgz
+wget https://snpeff-public.s3.amazonaws.com/databases/test_cases.tgz
 
 # Uncompress
 tar -xvzf test_cases.tgz
