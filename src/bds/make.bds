@@ -47,7 +47,7 @@ cpus = 1
 
 # Versions
 help Ensembl
-ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
+ensemblBfmppRelease		:= 62			help Ensembl BFMPP release number
 ensemblRelease			:= 115			help Vertebrate release number
 
 help MANE 
