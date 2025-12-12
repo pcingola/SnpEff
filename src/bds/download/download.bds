@@ -79,7 +79,7 @@ bool wget(string url, string localPath, bool doWait, bool canFail, bool skipRemo
 	if( doWait ) {
 		sys $wgetCmd $localStr '$url' $canFailStr
 	} else {
-		task $wgetCmd $localStr '$url' $canFailStr
+		task echo $wgetCmd $localStr '$url' $canFailStr
 	} 
 	return true
 }

@@ -44,7 +44,6 @@ s3HttpUrl	:= "https://$s3Bucket\.s3.amazonaws.com"	help S3 HTTP URL
 
 # Process on one CPU
 cpus = 1
-cpusLocal = 1
 
 # Versions
 help Ensembl
