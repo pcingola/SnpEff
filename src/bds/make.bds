@@ -54,7 +54,7 @@ cpus = 1
 # Versions
 help Ensembl
 ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
-ensemblRelease			:= 112			help Vertebrate release number
+ensemblRelease			:= 115			help Vertebrate release number
 
 help MANE 
 maneGenome				:= 'GRCh38'		help MANE genome
@@ -402,7 +402,7 @@ string[] dirsHg() {
 #-------------------------------------------------------------------------------
 void downloadAll() {
 	dsets := ['ensembl', 'ensemblBfmpp', 'ucsc', 'ucsckg', 'mane', 'pdb', 'dbsnp', 'dbnsfp', 'cytobands', 'jaspar', 'gwasCatalog', 'nextprot', 'clinvar', 'flybase']
-	for(string dset: dsets) dset.downloadOneSet()
+	for(string dset: dsets) downloadOneSet(dset)
 }
 
 #-------------------------------------------------------------------------------
@@ -772,11 +772,11 @@ if( dbTest )					buildDbTest()								# Build databases used in test cases
 if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( download )					downloadAll()								# Perform downloads
-if( !downloadEnsembl.isEmpty() )	downloadEnsembl.downloadEnsemblGenome(downloadEnsemblSpecies)		# Download a specific ENSEMBL genome
+if( !downloadEnsembl.isEmpty() )	downloadEnsemblGenome(downloadEnsembl, downloadEnsemblSpecies)		# Download a specific ENSEMBL genome
 if( downloadMane )				downloadManeGenome()						# Download MANE genome
-if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome(ncbiId)		# Download NCBI genome
-if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome (either refseq or kg)
-if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
+if( !downloadNcbi.isEmpty() )	downloadNcbiGenome(downloadNcbi, ncbiId)	# Download NCBI genome
+if( !downloadUcsc.isEmpty() )	downloadUcscGenome(downloadUcsc)			# Download UCSC genome (either refseq or kg)
+if( !downloadSet.isEmpty() )	downloadOneSet(downloadSet)					# Download one set
 if( make )						build()										# Build (create JAR files)
 if( test )						runTests()									# Run test cases 
 if( uploadCore )				uploadCore2S3()								# Upload 'core' files
