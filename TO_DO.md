@@ -14,5 +14,5 @@ Download
 - [ ] jaspar
 - [ ] gwasCatalog
 - [ ] nextprot
-- [ ] clinvar
+- [x] clinvar
 - [ ] flybase
