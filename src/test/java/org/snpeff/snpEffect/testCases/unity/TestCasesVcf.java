@@ -917,7 +917,7 @@ public class TestCasesVcf extends TestCasesBase {
         String vcfContent = "chr11\t66326794\t.\tAGAGC\tA\t.\t.\t.";
         VcfFileIterator vi = VcfFileIterator.fromString(vcfContent);
         VcfEntry ve = vi.next();
-        
+
         // Check coordinates
         assertEquals("11", ve.getChromosomeName());
         assertEquals(66326794 - 1, ve.getStart());
@@ -933,6 +933,32 @@ public class TestCasesVcf extends TestCasesBase {
         assertEquals("", var.getAlt());
     }
 
+    @Test
+    public void test_45_getInfo_with_alleles() {
+        String vcfHeader = "##INFO=<ID=CAF,Number=R,Type=String,Description=\"Allele frequencies\">\n" +
+                           "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO";
+        String vcfContent = "chr13\t21172461\trs151272242\tTG\tT\t.\t.\tCAF=0.861,0.139";
 
+        VcfFileIterator vi = VcfFileIterator.fromString(vcfHeader + "\n" + vcfContent);
+        VcfEntry ve = vi.next();
+
+        // Test getInfo() for all alleles
+        String cafAll = ve.getInfo("CAF");
+        assertEquals("0.861,0.139", cafAll);
+
+        // Test getInfo() for REF allele (TG)
+        String cafRef = ve.getInfo("CAF", "TG");
+        assertEquals("0.861", cafRef);
+
+        // Test getInfo() for ALT allele (T)
+        String cafAlt = ve.getInfo("CAF", "T");
+        assertEquals("0.139", cafAlt);
+
+        if (verbose) {
+            Log.info("CAF (all): " + cafAll);
+            Log.info("CAF (REF=TG): " + cafRef);
+            Log.info("CAF (ALT=T): " + cafAlt);
+        }
+    }
 
 }
