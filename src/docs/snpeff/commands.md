@@ -1,13 +1,31 @@
 # Commands and utilities
 
-SnpEff provides several other commands and utilities that can be useful for genomic data analysis.
+SnpEff provides several commands and utilities for genomic data analysis.
 
-Most of this manual was dedicated the `SnpEff eff` and `SnpEff build` commands, which annotate effects and build databases respectively.
+The main commands `ann/eff` (variant annotation) and `build` (database building) are described in the [Commands & command line options](commandline.md) and [Building databases](build_db.md) pages respectively.
 Here we describe all the other commands and some scripts provided, that are useful for genomic data analysis.
+
+### SnpEff buildNextProt
+
+Build a NextProt database from NextProt XML files. NextProt provides proteomic annotations for human proteins that can be used to annotate variants with functional information (e.g. active sites, binding sites, post-translational modifications).
+
+```
+Usage: snpEff buildNextProt genome_version nextProt_XML_dir
+```
+
+The `nextProt_XML_dir` argument should point to a directory containing NextProt XML files. The resulting database is stored as `nextProt.bin` in the genome's data directory and is automatically loaded when annotating variants with the `-nextProt` flag.
 
 ### SnpEff closest
 
 Annotates using the closest genomic region (e.g. exon, transcript ID, gene name) and distance in bases.
+
+```
+Usage: snpEff closest [options] genome_version file.vcf
+
+Options:
+    -bed     : Input format is BED. Default: VCF
+    -tss     : Measure distance from TSS (transcription start site)
+```
 
 Example:
 ```
@@ -134,6 +152,12 @@ Example : You want to know how many reads intersect each peak from a peak detect
 
 This command provides a list of configured databases, i.e. available in `snpEff.config` file.
 
+```
+Usage: snpEff databases [galaxy|html]
+```
+
+The output format can be selected: plain text (default), `galaxy` (Galaxy menu format), or `html` (HTML table format).
+
 Example:
 ```
 $ java -jar snpEff.jar databases
@@ -194,6 +218,17 @@ $ java -jar snpEff.jar download -v WBcel215.69
 ### SnpEff dump
 
 Dump the contents of a database to a text file, a BED file or a tab separated TXT file (that can be loaded into R).
+
+```
+Usage: snpEff dump [options] genome_version
+
+Options:
+    -bed             : Dump in BED format
+    -chr <string>    : Prepend 'string' to chromosome name
+    -txt             : Dump as a TXT table
+    -0               : Output zero-based coordinates
+    -1               : Output one-based coordinates
+```
 
 **BED file example**:
 ```
@@ -272,25 +307,62 @@ exonSpliceType            | Exon splice type, if marker is an exon
 
 ### SnpEff genes2bed
 
-Dumps a selected set of genes as BED intervals.
+Dumps a selected set of genes (or all genes) as BED intervals. By default it outputs gene-level coordinates, but can also output exons, CDS regions, introns, or transcripts.
 
-!!! warning
-    The functionality of this command is a subset of `SnpEff dump`, so it is likely to be deprecated in the future.
+```
+Usage: snpEff genes2bed genomeVer [-f genes.txt | geneList]
+
+Options:
+    -cds           : Show coding exons (no UTRs).
+    -e             : Show exons for every transcript.
+    -f <file.txt>  : A TXT file having one gene ID (or name) per line.
+    -i             : Show introns for every transcript.
+    -pc            : Use only protein coding genes.
+    -tr            : Show transcript coordinates.
+    -ud <num>      : Expand gene interval upstream and downstream by 'num' bases.
+    geneList       : A list of gene IDs or names as command line arguments.
+```
+
+!!! info
+    Options `-cds`, `-e`, and `-tr` are mutually exclusive. If no gene list is provided (neither via `-f` nor as arguments), all genes in the genome are used.
 
 Example:
 ```
 $ java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
-#chr	start	end	geneName;geneId
-1	11868	14411	DDX11L1;ENSG00000223972
-1	14362	29805	WASH7P;ENSG00000227232
+#chr	start	end	geneName;geneId;strand
+1	11868	14411	DDX11L1;ENSG00000223972;+
+1	14362	29805	WASH7P;ENSG00000227232;-
 ```
 
-### SnpEff cds &amp; SnpEff protein
+Example showing exons:
+```
+$ java -Xmx8g -jar snpEff.jar genes2bed -e GRCh37.66 DDX11L1
+#chr	start	end	geneName;geneId;transcriptId;exonRank;strand
+```
 
-These commands perform SnpEff database sanity checks.
-They calculate CDS and protein sequences from a SnpEff database and then compare the results to a FASTA file (having the "correct" sequences).
+### SnpEff cds
 
-The commands are invoked automatically when building databases, so there is no need for the user to invoke them manually.
+Performs a database sanity check by calculating CDS sequences from a SnpEff database and comparing them to a FASTA file containing the "correct" sequences.
+
+```
+Usage: snpEff cds [options] genome_version cds_file
+```
+
+This command is invoked automatically when building databases (`snpEff build`), so there is usually no need to invoke it manually.
+
+### SnpEff protein
+
+Performs a database sanity check by calculating protein sequences from a SnpEff database and comparing them to a FASTA file containing the "correct" sequences.
+
+```
+Usage: snpEff protein [options] genome_version protein_file
+
+Options:
+    -codonTables   : Try all codon tables on each chromosome and calculate error rates.
+```
+
+This command is invoked automatically when building databases (`snpEff build`), so there is usually no need to invoke it manually.
+The `-codonTables` option is useful for debugging genomes that may use non-standard codon tables.
 
 ### SnpEff len
 
@@ -298,8 +370,17 @@ Calculates the genomic length of every type of marker (Gene, Exon, Utr, etc.).
 Length is calculated by overlapping all markers and counting the number of bases (e.g. a base is counted as 'Exon' if any exon falls onto that base).
 This command also reports the probability of a Binomial model.
 
+```
+Usage: snpEff len [options] genome_version
+
+Options:
+    -r <num>       : Assume a read size of 'num' bases.
+    -iter <num>    : Perform 'num' iterations of random sampling.
+    -reads <num>   : Each random sampling iteration has 'num' reads.
+```
+
 !!! info
-    Parameter `-r num` adjusts the model for a read length of 'num' bases. That is, if two markers of the same type are closer than 'num' bases, it joins them by inclining the bases separating them.
+    Parameter `-r num` adjusts the model for a read length of 'num' bases. That is, if two markers of the same type are closer than 'num' bases, it joins them by including the bases separating them.
 
 E.g.:
 ```
@@ -326,6 +407,77 @@ Column meaning:
 * count : Number of intervals in the genome, after overlap and join.
 * raw_size : Size of all intervals in the genome. Note that this could be larger than the genome.
 * raw_count : Number of intervals in the genome.
+
+### SnpEff pdb
+
+Build interaction database based on PDB (Protein Data Bank) or AlphaFold structure data.
+This command analyzes protein structures to identify amino acid pairs that are in close physical proximity and adds this interaction information to the SnpEff database for variant annotation.
+
+```
+Usage: snpEff pdb [options] genome_version
+
+Options:
+    -aaSep <number>          : Minimum number of AA separation within sequence.
+    -idMap <file>            : ID map file (PDB ID to transcript ID mapping).
+    -maxDist <number>        : Maximum distance in Angstrom for atom pairs.
+    -maxErr <number>         : Maximum AA sequence difference between PDB and genome.
+    -org <name>              : Organism common name.
+    -orgScientific <name>    : Organism scientific name.
+    -pdbDir <path>           : Path to PDB files.
+    -res <number>            : Maximum PDB file resolution.
+```
+
+For detailed instructions on obtaining PDB/AlphaFold data and building interaction databases, see [Building databases: PDB and AlphaFold](build_pdb.md).
+
+### SnpEff seq
+
+Translates DNA sequences to protein using the genome's codon table.
+This is a simple utility for quick sequence translations from the command line.
+
+```
+Usage: snpEff seq [-r] genome seq_1 seq_2 ... seq_N
+
+Options:
+    -r    : Reverse Watson-Crick complement before translating.
+```
+
+The command shows the protein translation in three formats: 3-letter amino acid code, 1-letter code with spacing, and 1-letter code.
+
+Example:
+```
+$ java -jar snpEff.jar seq GRCh38.105 ATGCGAGCT
+Sequence                   : ATGCGAGCT
+Protein (3-Letter)         : Met-Arg-Ala
+Protein (1-Letter-space)   :  M  R  A
+Protein (1-Letter)         : MRA
+```
+
+### SnpEff show
+
+Show a text representation of genes or transcripts including coordinates, DNA sequence and protein sequence.
+Useful for visual inspection and debugging of gene annotations.
+
+```
+Usage: snpEff show genome_version gene_1 ... gene_N ... trId_1 ... trId_N
+```
+
+The command accepts both gene IDs and transcript IDs. It displays an ASCII-art representation of the transcript structure including exons, introns, coding regions, UTRs, and the corresponding DNA and protein sequences. Coordinates are zero-based.
+
+### SnpEff translocReport
+
+Create a translocation report with SVG visualizations from a VCF file containing structural variants (BND, DUP, DEL).
+The report shows gene fusions and translocations with transcript-level detail.
+
+```
+Usage: snpEff translocReport [options] genome_version input.vcf
+
+Options:
+    -onlyOneTr         : Report only one transcript pair per translocation (used for debugging).
+    -outPath <dir>     : Create individual output SVG files for each translocation in 'dir'.
+    -report <file>     : Output report file name. Default: translocations_report.html
+```
+
+The command generates an HTML report (by default `translocations_report.html`) containing SVG visualizations of each translocation. If `-outPath` is specified, individual SVG files are also saved to that directory.
 
 ### Scripts
 

@@ -169,9 +169,9 @@ The annotated variants will be in the new file "test.chr22.ann.vcf".
     Take a quick look at it.
 
 !!! info
-    We used the java parameter -Xmx8g to increase the memory available to the Java Virtual Machine to 4G.
+    We used the java parameter -Xmx8g to increase the memory available to the Java Virtual Machine to 8G.
     SnpEff's human genome database is large and it has to be loaded into memory.
-    If your computer doesn't have at least 4G of memory, you probably won't be able to run this example.
+    If your computer doesn't have at least 8G of memory, you probably won't be able to run this example.
 
 !!! info
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.

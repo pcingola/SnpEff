@@ -70,6 +70,31 @@ bu`t it doesn't find it there, so it proceeds with the databse `5.0` path `https
 
         java -Xmx8g -jar snpEff.jar download -c path/to/snpEff/snpEff.config -v GRCh37.75
 
+### Build command reference
+
+```
+Usage: snpEff build [options] genome_version
+
+Database format option (default: Auto detect):
+    -embl                        : Use Embl format.
+    -genbank                     : Use GenBank format.
+    -gff2                        : Use GFF2 format (obsolete).
+    -gff3                        : Use GFF3 format.
+    -gtf22                       : Use GTF 2.2 format.
+    -knowngenes                  : Use KnownGenes table from UCSC.
+    -refseq                      : Use RefSeq table from UCSC.
+
+Database build options:
+    -cellType <type>             : Only build regulation tracks for cellType <type>.
+    -maxErrorRate <num>          : Maximum allowed error rate (number between 0.0 and 1.0). Default: 0.05
+    -noCheckCds                  : Skip CDS sequences check.
+    -noCheckProtein              : Skip Protein sequences check.
+    -noStoreSeqs                 : Do not store sequence in binary files.
+    -onlyReg                     : Only build regulation tracks.
+    -regSortedByType             : The 'regulation.gff' file is sorted by 'regulation type' instead of sorted by chromosome:pos.
+    -storeSeqs                   : Store sequence in binary files. Default: true
+```
+
 ### Building a database
 
 In order to build a database for a new genome, you need to:
