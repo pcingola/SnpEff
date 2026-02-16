@@ -149,7 +149,6 @@ bool addBuildDb(string genome) {
 	} else if( db <- geneFile ) {
 		log("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 
-
 		task(cpus := cpusBuild) {
 			sys $snpeffBuild -storeSeqs $genome 2>&1 | tee '$logfile'
 		}

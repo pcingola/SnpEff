@@ -3,9 +3,9 @@
 **SnpEff** is a variant annotation and effect prediction tool.
 It annotates and predicts the effects of genetic variants (such as amino acid changes).
 
-### Download &amp; Install
+### Download & Install
 
-Download and installing SnpEff it pretty easy, take a look at the [download page](../download.md).
+Download and installing SnpEff is pretty easy, take a look at the [download page](../download.md).
 
 ### Building from source
 
@@ -75,20 +75,19 @@ Feature                  | Comment
 Local install            | SnpEff can be installed in your local computer or servers. <br> Local installations are preferred for processing genomic data. <br> As opposed to remote web-based services, running a program locally has many advantages: <ul><li> There no need to upload huge genomic dataset. </li><li> Processing doesn't depend on availability or processing capacity of remote servers. </li><li> Service continuity: no need to worry if a remote service will be maintained in the future. </li><li> Security and confidentiality issues of uploading data to third party servers are not a problem. </li><li> Avoid legal problems of processing clinical data on "outside" servers. </li></ul>
 Multi platform           | SnpEff is written in Java. It runs on Unix / Linux, OS.X and Windows.
 Simple installation      | Installation is as simple as downloading a ZIP file and double clicking on it.
-Genomes                  | Human genome, as well as all model organisms are supported. <br>Over 2,500 genomes are supported, which includes most mammalian, plant, bacterial and fungal genomes with published genomic data.
+Genomes                  | Human genome, as well as all model organisms are supported. <br>Over 20,000 genomes are supported, which includes most mammalian, plant, bacterial and fungal genomes with published genomic data.
 Speed                    | SnpEff is really fast. It can annotate up to 1,000,000 variants per minute.
-GATK&Galaxy integration  | SnpEff can be easily integrated with [GATK](http://www.broadinstitute.org/gatk/) and [Galaxy](http://galaxyproject.org/) pipelines.
-GUI                      | Web based user interface via Galaxy project
+GATK integration         | SnpEff can be easily integrated with [GATK](http://www.broadinstitute.org/gatk/) pipelines (see [Integration](integration.md)).
 Input and Output formats | SnpEff accepts input files in the following format:<ul><li> `VCF` format, which is the de-facto standard for sequencing variants.</li><li>`BED` format: To annotate enrichment experiments (e.g. ChIP-Seq peaks) or other genomic data.</li></ul>
 Variants supported       | SnpEff can annotate SNPs, MNPs, insertions and deletions. Support for mixed variants and structural variants is available (although sometimes limited).
-Effect supported         | Many effects are calculated: such as SYNONYMOUS_CODING, NON_SYNONYMOUS_CODING, FRAME_SHIFT, STOP_GAINED just to name a few.
+Effect supported         | Many effects are calculated using Sequence Ontology terms: such as synonymous_variant, missense_variant, frameshift_variant, stop_gained, just to name a few.
 Variant impact           | SnpEff provides a simple assessment of the putative impact of the variant (e.g. HIGH, MODERATE or LOW impact).
 Cancer tissue analysis   | Somatic vs Germline mutations can be calculated on the fly. This is very useful for the cancer researcher community.
 Loss of Function (LOF) assessment       | SnpEff can estimate if a variant is deemed to have a loss of function on the protein.
 Nonsense mediate decay (NMD) assessment | Some mutations may cause mRNA to be degraded thus not translated into a protein. <br>NMD analysis marks mutations that are estimated to trigger nonsense mediated decay.
-HGVS notation            | SnpEff can provide output in HGVS notation, which is quite popular in clinical and translation research environments.
+HGVS notation            | SnpEff provides HGVS notation by default, which is quite popular in clinical and translational research environments.
 User annotations         | A user can provide custom annotations (by means of BED files).
-Public databases         | SnpEff can annotate using publicly available data from well known databases, for instance:<ul><li>**ENCODE** datasets are supported by SnpEff (by means of BigWig files provided by ENCODE project).</li><li>**Epigenome Roadmap** provides data-sets that can be used with SnpEff.</li><li>**TFBS** Transcription factor binding site predictions can be annotated. Motif data used in this annotations is generates by `Jaspar` and `ENSEBML` projects</li><li>**NextProt** database can be used to annotate protein domains as well as important functional sites in a protein (e.g. phosphorilation site)</li></ul>
+Public databases         | SnpEff can annotate using publicly available data from well known databases, for instance:<ul><li>**Regulation tracks** from ENCODE and Epigenome Roadmap can be used with SnpEff (loaded as BED or GFF regulation files).</li><li>**TFBS** Transcription factor binding site predictions can be annotated. Motif data used in these annotations is generated by `Jaspar` and `ENSEMBL` projects.</li><li>**NextProt** database can be used to annotate protein domains as well as important functional sites in a protein (e.g. phosphorylation site).</li></ul>
 Common variants (dbSnp)  | Annotating "common" variants from **dbSnp** and **1,000 Genomes** can be easily done (see `SnpSift annotate`).
 Gwas catalog             | Support for GWAS catalog annotations (see `SnpSift gwasCat`)
 Conservation scores      | PhastCons conservation score annotations support (see `SnpSift phastCons`)
@@ -105,7 +104,7 @@ We build these databases using information from trusted resources.
 !!! info
     By default SnpEff downloads and installs databases automatically (since version 4.0)
 
-Currently, there are pre-built database for over 20,000 reference genomes.
+Currently, there are pre-built databases for over 20,000 reference genomes.
 This means that most cases are covered.
 
 In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
@@ -117,8 +116,8 @@ Which databases are supported? You can find out all the supported databases by r
 java -jar snpEff.jar databases | less
 ```
 
-This command shows the database name, genome name and source data (where was the genome reference data obtained from).
-Keep in mind that many times I use ENSEMBL reference genomes, so the name would be `GRCh37` instead of `hg19`, or `GRCm38` instead
+This command shows the genome version, organism name, status (whether the database is locally installed), bundle name, and download link.
+Keep in mind that many times ENSEMBL reference genomes are used, so the name would be `GRCh37` instead of `hg19`, or `GRCm38` instead
 of `mm10`, and so on.
 
 **Example: Finding a database:** So, let's say you want to find out the name of the latest mouse (Mus.Musculus) database.
@@ -147,12 +146,10 @@ WSB_EiJ_v1.99                                               	Mus_musculus_wsbeij
 testMm37.61                                                 	Mus_musculus                                                	          	                              	https://snpeff-public.s3.amazonaws.com/databases/v5_0/snpEff_v5_0_testMm37.61.zip
 ```
 
-At the time of writing this, you have 10 options (obviously this will change in the future).
-Some are databases are GRCm version 37 (i.e. mm9) and some are version 38 (i.e. mm10).
-Since it is generally better to use the latest release, you should probably pick `GRCm38.74`.
-Again, this is an example of the version numbers at the time of writing this paragraph, in the future there will be other releases and you
-should update to the corresponding version.
+The output shows several options including strain-specific databases and general GRCm38 databases.
+Since it is generally better to use the latest release, you should probably pick `GRCm38.99` in this example.
+Keep in mind that available versions will change over time, so always check the latest output.
 
 **Unsupported reference genomes:** If your reference genome of interest is not supported yet (i.e. there is no database available),
 you can build a database yourself (see [Building databases](build_db.md)).
-If you have problems adding you own organism, send the issue to SnpEff repository and I'll do my best to help you out.
+If you have problems adding your own organism, send the issue to SnpEff repository and I'll do my best to help you out.

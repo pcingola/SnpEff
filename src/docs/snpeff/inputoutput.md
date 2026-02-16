@@ -1,4 +1,4 @@
-# Input &amp; output files
+# Input & output files
 
 Files used as input to SnpEff must comply with standard formats.
 Here we describe supported input data formats.
@@ -49,11 +49,11 @@ VCF file before annotations
 
 VCF file after being annotated using SnpEff
 ```
-#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-1	889455	.	G	A	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*|749|NOC2L||CODING|NM_015658|)
-1	897062	.	C	T	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO
+1	889455	.	G	A	100.0	PASS	AF=0.0005;ANN=A|stop_gained|HIGH|NOC2L|...|transcript|NM_015658|protein_coding|7/19|c.706C>T|p.Gln236*|...
+1	897062	.	C	T	100.0	PASS	AF=0.0005;ANN=A|stop_gained|HIGH|KLHL17|...|transcript|NM_198317|protein_coding|...|c.421C>T|p.Gln141*|...
 ```
-A you can see, SnpEff added an 'EFF' tag to the INFO field (eight column).
+As you can see, SnpEff added an 'ANN' tag to the INFO field (eighth column). See below for details on the ANN field format.
 
 ### VCF Header lines
 
@@ -71,7 +71,7 @@ Here is an example of some header lines added to an annotated file:
 
 Functional annotations information is added to the INFO field using an `ANN` tag.
 
-**NOTE:** field. SnpEff implements the [**VCF annotation standard 'ANN' field.**](../adds/VCFannotationformat_v1.0.pdf)
+**NOTE:** SnpEff implements the [**VCF annotation standard 'ANN' field.**](../adds/VCFannotationformat_v1.0.pdf)
 
 This format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
 and attempts to:
@@ -120,7 +120,7 @@ Here is a description of the meaning of each sub-field:
         chr1    123456  .   A    T    .     .       ANN=T|...
         chr1    123457  .   C    G    .     .       ANN=C-chr1:123456_A>T|...
 
-2. **Annotation (a.k.a. effect):** Annotated using Sequence Ontology terms. Multiple effects can be concatenated using '&amp;'.
+2. **Annotation (a.k.a. effect):** Annotated using Sequence Ontology terms. Multiple effects can be concatenated using '&'.
 
         #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO
         chr1    123456  .   C    A    .     .      ANN=A|intron_variant&nc_transcript_variant|...
@@ -141,7 +141,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 9. **Rank / total:** Exon or Intron rank / total number of exons or introns.
 10. **HGVS.c:** Variant using HGVS notation (DNA level)
 11. **HGVS.p:** If variant is coding, this field describes the variant using HGVS notation (Protein level). Since transcript ID is already mentioned in 'feature ID', it may be omitted here.
-12. **cDNA_position / cDNA_len:** Position in cDNA and trancript's cDNA length (one based).
+12. **cDNA_position / cDNA_len:** Position in cDNA and transcript's cDNA length (one based).
 13. **CDS_position / CDS_len:** Position and number of coding bases (one based includes START and STOP codons).
 14. **Protein_position / Protein_len:** Position and number of AA (one based, including START, but not STOP).
 15. **Distance to feature:** All items in this field are options, so the field could be empty.
@@ -151,7 +151,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
     * Distance to closest exon boundary in Intron (+/- up/downstream)
     * Distance to first base in MOTIF
     * Distance to first base in miRNA
-    * Distance to exon-intron boundary in splice_site or splice _region
+    * Distance to exon-intron boundary in splice_site or splice_region
     * ChipSeq peak: Distance to summit (or peak center)
     * Histone mark / Histone state: Distance to summit (or peak center)
 16. **Errors, Warnings or Information messages:** Add errors, warnings or informative message that can affect annotation accuracy. [See details here](#errors-and-warnings)
@@ -159,7 +159,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 **Consistency between HGVS and functional annotations:**
 
 In some cases there might be inconsistent reporting between 'annotation' and HGVS.
-This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGSV recommends aligning to the "most 3-prime coordinate".
+This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGVS recommends aligning to the "most 3-prime coordinate".
 For instance, an InDel on the edge of an exon, which has an 'intronic' annotation according to VCF alignment recommendation, can lead to a 'stop_gained' when aligned using HGVS's recommendation (using the most 3-prime possible alignment).
 So the 'annotation' sub-field will report 'intron' whereas HGVS sub-field will report a 'stop_gained'.
 This is obviously inconsistent and must be avoided.
@@ -179,7 +179,7 @@ Notes:
 
 * As of version 4.0, the default output uses Sequence Ontology for 'Effect' names. You can output "old" style effect names by using the `-classic` command line option.
 * When multiple effects are available, they are sorted first by "Effect_Impact", then by "Effect" and finally by "marker's genomic coordinates" (e.g. affected transcript's genomic coordinates).
-* Staring from version 4.0, SnpEff outputs HGVS notation in the 'AA' sub-field by default.
+* Starting from version 4.0, SnpEff outputs HGVS notation in the 'AA' sub-field by default.
 
 There can be multiple effects separated by comma. The format for each effect is:
 ```
@@ -223,7 +223,7 @@ There are several reasons for this:
                                                         ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>T|||||4171|
                                                         ,A|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>T||||||;LOF=(NOC2L|ENSG00000188976|6|0.17);NMD=(NOC2L|ENSG00000188976|6|0.17)
 
-  * A VCF line can have more then one variant.
+  * A VCF line can have more than one variant.
       E.g. If reference genome is 'G', but the sample has either 'A' or 'T' (non-biallelic variant), then this will be reported as one VCF line, having multiple alternative variants (notice that there are two ALTs):
 
           #CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO
@@ -250,7 +250,7 @@ There are several reasons for this:
 * Canonical transcript before non-canonical.
 * Marker genomic coordinates (e.g. genes starting before first).
 
-### Variant annotaiton details
+### Variant annotation details
 
 Detailed description of the variant's functional annotation predicted by SnpEff in the `Effect` and `Effect_Impact` sub-fields.
 
@@ -260,8 +260,8 @@ Notes:
 Sequence ontology ([SO](http://www.sequenceontology.org/)) allows to standardize terminology used for assessing sequence changes and impact.
 This allows for a common language across all variant annotation programs and makes it easier to communicate using a uniform terminology.
 Starting from version 4.0 VCF output uses SO terms by default.
-* **Effect (Classic)** This are the "classic" effect names usd by SnpEff, these can be accessed using the `-classic` command line option.
-* **Effect impact** Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. This are pre-defined categories to help users find more significant variants.
+* **Effect (Classic)** These are the "classic" effect names used by SnpEff, these can be accessed using the `-classic` command line option.
+* **Effect impact** Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. These are pre-defined categories to help users find more significant variants.
 
     !!! warning
         Impact categories must be used with care, they were created only to help and simplify the filtering process.
@@ -272,28 +272,28 @@ Here is a list of effects and some brief explanations:
 | Effect<br>Seq. Ontology                                                                                                                                                                  | Effect<br>Classic                    | Note &amp; Example                                                                                                                                                  | Impact   |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
 | [coding_sequence_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001580)                                                                                           | `CDS`                                  | The variant hits a CDS.                                                                                                                                             | `MODIFIER` |
-| [chromosome](http://www.sequenceontology.org/browser/current_svn/term/SO:0001580)                                                                                                        | `CHROMOSOME_LARGE_DELETION`            | A large parte (over 1%) of the chromosome was deleted.                                                                                                              | `HIGH`     |
+| [chromosome_number_variation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001580)                                                                                        | `CHROMOSOME_LARGE_DELETION`            | A large part (over 1%) of the chromosome was deleted.                                                                                                               | `HIGH`     |
 | [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `CHROMOSOME_LARGE_DUPLICATION`         | Duplication of a large chromosome segment (over 1% or 1,000,000 bases)                                                                                              | `HIGH`     |
 | [inversion](http://www.sequenceontology.org/browser/current_svn/term/SO:1000036)                                                                                                         | `CHROMOSOME_LARGE_INVERSION`           | Inversion of a large chromosome segment (over 1% or 1,000,000 bases).                                                                                               | `HIGH`     |
 | [coding_sequence_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001580)                                                                                           | `CODON_CHANGE`                         | One or many codons are changed <br>e.g.:  An MNP of size multiple of 3                                                                                              | `LOW`      |
-| [inframe_insertion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001821)                                                                                                 | `CODON_INSERTION`                      | One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary                                                                          | `MODERATE` |
+| [conservative_inframe_insertion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001821)                                                                                     | `CODON_INSERTION`                      | One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary                                                                          | `MODERATE` |
 | [disruptive_inframe_insertion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001824)                                                                                      | `CODON_CHANGE_PLUS` `CODON_INSERTION`  | One codon is changed and one or many codons are inserted <br>e.g.:  An insert of size multiple of three, not at codon boundary                                      | `MODERATE` |
-| [inframe_deletion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001822)                                                                                                  | `CODON_DELETION`                       | One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary                                                                            | `MODERATE` |
+| [conservative_inframe_deletion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001822)                                                                                     | `CODON_DELETION`                       | One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary                                                                            | `MODERATE` |
 | [disruptive_inframe_deletion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001826)                                                                                       | `CODON_CHANGE_PLUS` `CODON_DELETION`   | One codon is changed and one or more codons are deleted <br>e.g.:  A deletion of size multiple of three, not at codon boundary                                      | `MODERATE` |
 | [downstream_gene_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001632)                                                                                           | `DOWNSTREAM`                           | Downstream of a gene (default length: 5K bases)                                                                                                                     | `MODIFIER` |
-| [exon_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001791)                                                                                                      | `EXON`                                 | The variant hits an exon (from a non-coding transcript) or a retained intron.                                                                                       | `MODIFIER` |
+| [non_coding_transcript_exon_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001791)                                                                                 | `EXON`                                 | The variant hits an exon (from a non-coding transcript) or a retained intron.                                                                                       | `MODIFIER` |
 | [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572)                                                                                                 | `EXON_DELETED`                         | A deletion removes the whole exon.                                                                                                                                  | `HIGH`     |
 | [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572)                                                                                                 | `EXON_DELETED_PARTIAL`                 | Deletion affecting part of an exon.                                                                                                                                 | `HIGH`     |
 | [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `EXON_DUPLICATION`                     | Duplication of an exon.                                                                                                                                             | `HIGH`     |
 | [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `EXON_DUPLICATION_PARTIAL`             | Duplication affecting part of an exon.                                                                                                                              | `HIGH`     |
 | [inversion](http://www.sequenceontology.org/browser/current_svn/term/SO:1000036)                                                                                                         | `EXON_INVERSION`                       | Inversion of an exon.                                                                                                                                               | `HIGH`     |
 | [inversion](http://www.sequenceontology.org/browser/current_svn/term/SO:1000036)                                                                                                         | `EXON_INVERSION_PARTIAL`               | Inversion affecting part of an exon.                                                                                                                                | `HIGH`     |
-| [frameshift_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001589)                                                                                                | `FRAME_SHIFT`                          | Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3                                                                             | `HIGH`     |
+| [frameshift_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001589)                                                                                                | `FRAME_SHIFT`                          | Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multiple of 3                                                                            | `HIGH`     |
 | [gene_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001564)                                                                                                      | `GENE`                                 | The variant hits a gene.                                                                                                                                            | `MODIFIER` |
 | [feature_ablation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001879)                                                                                                  | `GENE_DELETED`                         | Deletion of a gene.                                                                                                                                                 | `HIGH`     |
-| [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `GENE_DUPLICATION`                     | Duplication of a gene.                                                                                                                                              | `MODIFIER` |
+| [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `GENE_DUPLICATION`                     | Duplication of a gene.                                                                                                                                              | `MODERATE` |
 | [gene_fusion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001565)                                                                                                       | `GENE_FUSION`                          | Fusion of two genes.                                                                                                                                                | `HIGH`     |
-| [gene_fusion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001565)                                                                                                       | `GENE_FUSION_HALF`                     | Fusion of one gene and an intergenic region.                                                                                                                        | `HIGH`     |
+| [transcript_ablation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001893)                                                                                               | `GENE_FUSION_HALF`                     | Fusion of one gene and an intergenic region.                                                                                                                        | `HIGH`     |
 | [bidirectional_gene_fusion](http://www.sequenceontology.org/browser/current_svn/term/SO:0002086)                                                                                         | `GENE_FUSION_REVERSE`                  | Fusion of two genes in opposite directions.                                                                                                                         | `HIGH`     |
 | [rearranged_at_DNA_level](http://www.sequenceontology.org/browser/current_svn/term/SO:0000904)                                                                                           | `GENE_REARRANGEMENT`                   | Rearrangement affecting one or more genes.                                                                                                                          | `HIGH`     |
 | [intergenic_region](http://www.sequenceontology.org/browser/current_svn/term/SO:0000605)                                                                                                 | `INTERGENIC`                           | The variant is in an intergenic region                                                                                                                              | `MODIFIER` |
@@ -306,13 +306,13 @@ Here is a list of effects and some brief explanations:
 | [initiator_codon_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001582)                                                                                           | `NON_SYNONYMOUS_START`                 | Variant causes start codon to be mutated into another start codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) | `LOW`      |
 | [stop_retained_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001567)                                                                                             | `NON_SYNONYMOUS_STOP`                  | Variant causes stop codon to be mutated into another stop codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons)   | `LOW`      |
 | [protein_protein_contact](http://www.sequenceontology.org/browser/current_svn/term/SO:0001093)                                                                                           | `PROTEIN_PROTEIN_INTERACTION_LOCUS`    | Protein-Protein interaction loci.                                                                                                                                   | `HIGH`     |
-| [structural_interaction_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0002093)                                                                                    | `PROTEIN_STRUCTURAL_INTERACTION_LOCUS` | Within protein interacion loci (e.g. two AA that are in contact within the same protein, prossibly helping structural conformation).                                | `HIGH`     |
+| [structural_interaction_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0002093)                                                                                    | `PROTEIN_STRUCTURAL_INTERACTION_LOCUS` | Within protein interaction loci (e.g. two AA that are in contact within the same protein, possibly helping structural conformation).                                | `HIGH`     |
 | [rare_amino_acid_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0002008)                                                                                           | `RARE_AMINO_ACID`                      | The variant hits a rare amino acid thus is likely to produce protein loss of function                                                                               | `HIGH`     |
 | [splice_acceptor_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001574)                                                                                           | `SPLICE_SITE_ACCEPTOR`                 | The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon).                                                        | `HIGH`     |
 | [splice_donor_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001575 )                                                                                             | `SPLICE_SITE_DONOR`                    | The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon).                                                        | `HIGH`     |
 | [splice_region_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001630)                                                                                             | `SPLICE_SITE_REGION`                   | A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron.             | `LOW`      |
-| [splice_region_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001630)                                                                                             | `SPLICE_SITE_BRANCH`                   | A varaint affective putative (Lariat) branch point, located in the intron.                                                                                          | `LOW`      |
-| [splice_region_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001630)                                                                                             | `SPLICE_SITE_BRANCH_U12`               | A varaint affective putative (Lariat) branch point from U12 splicing machinery, located in the intron.                                                              | `MODERATE` |
+| [splice_branch_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001630)                                                                                             | `SPLICE_SITE_BRANCH`                   | A variant affecting putative (Lariat) branch point, located in the intron.                                                                                          | `LOW`      |
+| [splice_branch_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001630)                                                                                             | `SPLICE_SITE_BRANCH_U12`               | A variant affecting putative (Lariat) branch point from U12 splicing machinery, located in the intron.                                                              | `MODERATE` |
 | [stop_lost](http://www.sequenceontology.org/browser/current_svn/term/SO:0001578)                                                                                                         | `STOP_LOST`                            | Variant causes stop codon to be mutated into a non-stop codon <br>e.g.: Tga/Cga, \*/R                                                                               | `HIGH`     |
 | [5_prime_UTR_premature_<br>start_codon_gain_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001988)                                                                | `START_GAINED`                         | A variant in 5'UTR region produces a three base sequence that can be a START codon.                                                                                 | `LOW`      |
 | [start_lost](http://www.sequenceontology.org/browser/current_svn/term/SO:0002012)                                                                                                        | `START_LOST`                           | Variant causes start codon to be mutated into a non-start codon. <br> e.g.: aTg/aGg, M/R                                                                            | `HIGH`     |
@@ -320,7 +320,7 @@ Here is a list of effects and some brief explanations:
 | [synonymous_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001819)                                                                                                | `SYNONYMOUS_CODING`                    | Variant causes a codon that produces the same amino acid <br>e.g.:  Ttg/Ctg, L/L                                                                                    | `LOW`      |
 | [start_retained](http://www.sequenceontology.org/browser/current_svn/term/SO:0002019)                                                                                                    | `SYNONYMOUS_START`                     | Variant causes start codon to be mutated into another start codon. <br>e.g.:  Ttg/Ctg, L/L (TTG and CTG can be START codons)                                        | `LOW`      |
 | [stop_retained_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001567)                                                                                             | `SYNONYMOUS_STOP`                      | Variant causes stop codon to be mutated into another stop codon. <br>e.g.: taA/taG, \*/\*                                                                           | `LOW`      |
-| [transcript_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001576)                                                                                                | `TRANSCRIPT`                           | The variant hits a transcript.                                                                                                                                      | `MODIFIER` |
+| [non_coding_transcript_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001576)                                                                                     | `TRANSCRIPT`                           | The variant hits a non-coding transcript.                                                                                                                           | `MODIFIER` |
 | [feature_ablation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001879)                                                                                                  | `TRANSCRIPT_DELETED`                   | Deletion of a transcript.                                                                                                                                           | `HIGH`     |
 | [regulatory_region_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001566)                                                                                         | `REGULATION`                           | The variant hits a known regulatory feature (non-coding).                                                                                                           | `MODIFIER` |
 | [upstream_gene_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001631)                                                                                             | `UPSTREAM`                             | Upstream of a gene (default length: 5K bases)                                                                                                                       | `MODIFIER` |
@@ -329,8 +329,17 @@ Here is a list of effects and some brief explanations:
 | [5_prime_UTR_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001623)                                                                                               | `UTR_5_PRIME`                          | Variant hits 5'UTR region                                                                                                                                           | `MODIFIER` |
 | [5_prime_UTR_truncation](http://www.sequenceontology.org/browser/current_svn/term/SO:0002013) + [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572) | `UTR_5_DELETED`                        | The variant deletes an exon which is in the 5'UTR of the transcript                                                                                                 | `MODERATE` |
 | [sequence_feature](http://www.sequenceontology.org/browser/current_svn/term/SO:0002013) + [exon_loss_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001572)       | `NEXT_PROT`                            | A 'NextProt' based annotation. Details are provided in the 'feature type' sub-field (ANN), or in the effect details (EFF).                                          | `MODERATE` |
+| [duplication](http://www.sequenceontology.org/browser/current_svn/term/SO:1000035)                                                                                                       | `TRANSCRIPT_DUPLICATION`               | Duplication of a transcript.                                                                                                                                        | `MODERATE` |
+| [inversion](http://www.sequenceontology.org/browser/current_svn/term/SO:1000036)                                                                                                         | `GENE_INVERSION`                       | Inversion of a gene.                                                                                                                                                | `MODERATE` |
+| [inversion](http://www.sequenceontology.org/browser/current_svn/term/SO:1000036)                                                                                                         | `TRANSCRIPT_INVERSION`                 | Inversion of a transcript.                                                                                                                                          | `MODERATE` |
+| [start_retained_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0002019)                                                                                            | `FRAME_SHIFT_BEFORE_CDS_START`         | Frame shift variant before CDS start (no effect on protein).                                                                                                        | `MODIFIER` |
+| [stop_retained_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001567)                                                                                             | `FRAME_SHIFT_AFTER_CDS_END`            | Frame shift variant after CDS end (no effect on protein).                                                                                                           | `MODIFIER` |
+| [TF_binding_site_variant](http://www.sequenceontology.org/browser/current_svn/term/SO:0001782)                                                                                           | `MOTIF`                                | The variant hits a transcription factor binding site.                                                                                                                | `LOW`      |
+| [TFBS_ablation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001895)                                                                                                     | `MOTIF_DELETED`                        | The variant deletes a transcription factor binding site.                                                                                                             | `LOW`      |
+| [feature_fusion](http://www.sequenceontology.org/browser/current_svn/term/SO:0001882)                                                                                                    | `FEATURE_FUSION`                       | Fusion of features (e.g. two intergenic regions).                                                                                                                   | `LOW`      |
+| [feature_elongation](http://www.sequenceontology.org/browser/current_svn/term/SO:0001907)                                                                                                | `CHROMOSOME_ELONGATION`                | A sequence variant that causes the extension of a genomic feature.                                                                                                  | `MODIFIER` |
 
-### Details about Rare amino acid annotaitons
+### Details about Rare amino acid annotations
 
 These are amino acids that occurs very rarely in an organism. For instance, humans are supposed to use 20 amino acids, but
 there is also one rare AA. Selenocysteine, single letter code 'U', appears roughly 100 times in the whole genome.
@@ -346,7 +355,7 @@ be paid in these cases.
     When the variant hits a RARE_AMINO_ACID mark, it is likely that the 'old_AA/new_AA' field will be incorrect. This may happen because
     the amino acid is not predictable using a codon table.
 
-### Details about Protein interaction annotaitons
+### Details about Protein interaction annotations
 
 Protein interactions are calculated from [PDB](http://www.rcsb.org/) or [AlphaFold](https://alphafold.ebi.ac.uk/download). There are two main types of interactions:
 
@@ -375,13 +384,13 @@ SnpEff reports putative variant impact in order to make it easier quickly to cat
 
 ### Functional class
 
-When a variant is a single nucleotide (SNV) in a protein coding transcript, SnpEff will inferr the "Functional class".
+When a variant is a single nucleotide (SNV) in a protein coding transcript, SnpEff will infer the "Functional class".
 
 Functional class can be, which is inferred as:
 
 | Functional Class | Meaning                                              |
 |------------------|------------------------------------------------------|
-| `SILENT`           | The condon remains the same after the variant change |
+| `SILENT`           | The codon remains the same after the variant change  |
 | `MISSENSE`         | The codon changes after the variant change           |
 | `NONSENSE`         | The codon changed into a STOP codon                  |
 
@@ -395,7 +404,7 @@ Some details on how these variants work, can be found in [these slides](../adds/
 !!! info
     Starting from version 4.0, this option is activated by default.
 
-Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.
+Analyze if a set of effects can create a "Loss Of Function" and "Nonsense mediated decay" effects.
 
 Needless to say, this is a prediction based on analysis of groups of "putative effects". Proper wet-lab validation is required to infer "real" LOF.
 
@@ -422,7 +431,7 @@ Other parameters used for LOF/NMD calculations:
 
 Usage example:
 ```
-# Note: Form version 4.0 onwards, the '-lof' command line option is not required
+# Note: From version 4.0 onwards, the '-lof' command line option is not required
 java -Xmx8g -jar snpEff.jar -v \
     -lof \
     GRCh37.75 \
@@ -461,12 +470,12 @@ The meaning of the LOF tag is:
 
 ### Errors and Warnings
 
-As mentioned int the previous section, the last sub-field in EFF field shows errors or warnings (if any).
+As mentioned in the previous section, the last sub-field in EFF field shows errors or warnings (if any).
 Here is a description of the errors and warnings:
 
 | Error                           | Meaning and possible solutions                                                                                                           |
 |---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `ERROR_CHROMOSOME_NOT_FOUND`    | Chromosome does not exits in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this [FAQ](faq.md#error-chromosome-not-found) for more details.                  |
+| `ERROR_CHROMOSOME_NOT_FOUND`    | Chromosome does not exist in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this [FAQ](faq.md#error-chromosome-not-found) for more details.                  |
 | `ERROR_OUT_OF_CHROMOSOME_RANGE` | This means that the position is higher than chromosome's length. Probably an indicator that your data is not from this reference genome. |
 | `ERROR_OUT_OF_EXON`             | Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database                                    |
 | `ERROR_MISSING_CDS_SEQUENCE`    | Transcript has no CDS info. Indicates a problem (or even a bug?) in the database                                                         |
@@ -478,13 +487,12 @@ Here is a description of the errors and warnings:
 | `WARNING_TRANSCRIPT_INCOMPLETE`           | A protein coding transcript whose length is non-multiple of 3. This means that information is missing for one or more amino acids.<br> This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL). Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                                                                                                  |
 | `WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS` | A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the genomic information may have an error in this transcript. <br> This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL). Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                      |
 | `WARNING_TRANSCRIPT_NO_START_CODON`       | A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL). <br> Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.                                                                                                                                                                                                                                 |
+| `WARNING_TRANSCRIPT_NO_STOP_CODON`        | A protein coding transcript does not have a proper STOP codon. This usually indicates an error in the reference genome or database, but could also be due to a misconfigured codon table.                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 
 | Info | Meaning |
 |------|---------|
-| `INFO_REALIGN_3_PRIME`                    | Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.                                                                         |
-| `INFO_COMPOUND_ANNOTATION`                | This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).                                                                                    |
-| `INFO_NON_REFERENCE_ANNOTATION`           | An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).                                                                                            
+| `INFO_REALIGN_3_PRIME`                    | Variant has been realigned to the most 3-prime position within the transcript. This is usually done to comply with HGVS specification to always report the most 3-prime annotation.                                                                            |
 
 ### BED files
 

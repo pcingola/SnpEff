@@ -1,17 +1,18 @@
 # Troubleshooting
 
-Some common problems
+Some common problems and how to solve them. See also the [FAQ](faq.md) for a comprehensive list of errors and warnings.
 
 ### Chromosome not found
 
 !!! warning
     This is by far the most common problem.
-    It means that the input VCF file has chromosome names that do not match SnpEff's database and don't match reference genome either, since SnpEff's database are created using
+    It means that the input VCF file has chromosome names that do not match SnpEff's database and don't match the reference genome either, since SnpEff's databases are created using
     reference genome chromosome names.
 
-The solution is simple: fix your VCF file to use standard chromosome names.
-You can see which chromosome names are used by SnpEff simply by using the `-v` (verbose) command line option.
-This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names \[sizes\]"):
+SnpEff automatically normalizes chromosome names by stripping common prefixes such as `chr`, `chromo`, and `chromosome` (with separators `:`, `_`, `-`). For example, `chr1` and `1` will match automatically. The `ERROR_CHROMOSOME_NOT_FOUND` error only occurs when normalization still fails to find a match, which usually means a completely different naming convention or the wrong reference genome.
+
+If you get this error, the solution is to fix your VCF file to use chromosome names consistent with the database. You can see which chromosome names are used by SnpEff by using the `-v` (verbose) command line option. This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names \[sizes\]"):
+
 ```
 $ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
@@ -43,14 +44,12 @@ $ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.
 ### Apparent inconsistencies when using UCSC genome browser
 
 !!! warning
-    Usage of hg19 genome is deprecated and discouraged, you should use GRChXX.YY instead (e.g. the latest version at the time of writing is GRCh37.70)
+    ENSEMBL versioned databases (e.g. `GRCh37.75`) are preferred over UCSC ones (e.g. `hg19`) because ENSEMBL uses clear sub-versioning, which is important for reproducibility.
 
 Reference sequence and annotations are made for an organism version and sub-version.
-For examples human genome, version 37, sub-version 70 would be called (GRCh37.70).
+For example, human genome version 37, sub-version 75 would be called `GRCh37.75`.
 
-UCSC doesn't specify sub-version.
-They just say hg19.
-This annoying sub-version problem appeared often and, having reproducibility of results in mind, I dropped UCSC annotations in favor of ENSEMBL ones (they have clear versioning).
+UCSC doesn't specify sub-version. They just say `hg19`. This sub-version problem makes it harder to reproduce results, which is why ENSEMBL annotations with clear versioning are preferred. For the human genome GRCh37, the available ENSEMBL databases include `GRCh37.75` and `GRCh37.87`.
 
 ###  SnpEff reporting an effect that doesn't match ENSEMBL's web page
 
@@ -67,11 +66,11 @@ For example, this transcript ENST00000487462 changed from protein_coding in GRCh
 1       processed_transcript    exon    1653905 1654270 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "2"; gene_name "CDK11A"; gene_biotype "protein_coding"; transcript_name "CDK11A-013";
 ```
 
-This means that you'll get different results for this transcript using sub-version 63 or 64. I assume that latest versions are improved, so I always encourage to upgrade.
+This means that you'll get different results for this transcript using sub-version 63 or 64. Latest versions are generally improved, so always try to use the latest available database.
 
-Sometimes it might even be the case that latest released database and the one shown on the web interface may be out of sync.
+Sometimes it might even be the case that the latest released database and the one shown on the web interface may be out of sync.
 
-### SnpEff reports a SYNONYMOUS and a NON_SYNONYMOUS effect on the same gene
+### SnpEff reports a synonymous and a missense effect on the same gene
 
 This is not a bug.
 It is not uncommon for a gene to have more than one transcript (e.g. in human most genes have multiple transcripts).
@@ -79,17 +78,12 @@ A variant (e.g. a SNP) might affect different transcripts in different ways, as 
 
 For instance:
 ```
-chr5 137622242 . C T . . EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Gaa/Aaa|E/K|CDC25C|protein_coding|CODING|ENST00000514017|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000323760|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000348983|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000356505|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000357274|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000415130|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000513970|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000514555|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000534892|exon_5_137622186_137622319)
+chr5	137622242	.	C	T	.	.	ANN=T|missense_variant|MODERATE|CDC25C|ENSG00000158402|transcript|ENST00000514017|protein_coding|5/14|c.163G>A|p.Glu55Lys|...,
+                                        T|synonymous_variant|LOW|CDC25C|ENSG00000158402|transcript|ENST00000323760|protein_coding|5/14|c.489G>A|p.Gln163Gln|...,
+                                        T|synonymous_variant|LOW|CDC25C|ENSG00000158402|transcript|ENST00000348983|protein_coding|5/14|c.489G>A|p.Gln163Gln|...,
+                                        T|synonymous_variant|LOW|CDC25C|ENSG00000158402|transcript|ENST00000356505|protein_coding|5/14|c.489G>A|p.Gln163Gln|...
 ```
-in this example (it was divided into multiple lines for legibility), the first transcript ENST0000051401 has a NON_SYNONYMOUS effect, but all other transcripts have a SYNONYMOUS effect.
+In this example (divided into multiple lines for legibility), the first transcript ENST00000514017 has a `missense_variant` effect, but the other transcripts have a `synonymous_variant` effect.
 
 ### Counting total number of effects of a given type
 
@@ -104,7 +98,7 @@ A proper way to count effects would be:
 cat output.ann.vcf \
 	| cut -f 8 \
 	| tr ";" "\n" \
-	| grep ^EFF= \
+	| grep ^ANN= \
 	| cut -f 2 -d = \
 	| tr "," "\n" \
 	| grep MODIFIER \
@@ -117,7 +111,15 @@ Command                 | Meaning
 ----------------------- | ----------
 `cut -f 8`              | Extract INFO fields
 `tr ";" "\n"`           | Expand each field into one line
-`grep ^EFF=`            | Only keep 'EFF' fields
-`cut -f 2 -d =`         | Keep only the effect data (drop the 'EFF=' part)
-`tr "," "\n"`           | Expand effects to multiple lines
+`grep ^ANN=`            | Only keep 'ANN' fields
+`cut -f 2 -d =`         | Keep only the annotation data (drop the 'ANN=' part)
+`tr "," "\n"`           | Expand annotations to multiple lines
 `grep MODIFIER | wc -l` | Count the ones you want (in this example 'MODIFIER')
+
+### OutOfMemory errors
+
+If you get a `java.lang.OutOfMemoryError` exception, you need to increase the memory available to the Java Virtual Machine using the `-Xmx` option. See the [Java memory options](running.md#java-memory-options) section for details. For human genomes, you typically need at least 8 GB: `-Xmx8g`.
+
+### Other common errors and warnings
+
+For a comprehensive list of all errors and warnings that SnpEff can produce (such as `WARNING_REF_DOES_NOT_MATCH_GENOME`, `ERROR_OUT_OF_CHROMOSOME_RANGE`, `WARNING_TRANSCRIPT_INCOMPLETE`, etc.), see the [Errors and Warnings section in the FAQ](faq.md#errors-and-warnings).

@@ -1,4 +1,4 @@
-# Commands &amp; command line options
+# Commands & command line options
 
 SnpEff has several 'commands' that can be used for different annotations.
 The default command is `'eff'` used to annotate variants.
@@ -75,7 +75,7 @@ Database options:
 	-spliceRegionIntronMin <int> : Set minimum number of bases for splice site region within intron. Default: 3 bases
 	-spliceRegionIntronMax <int> : Set maximum number of bases for splice site region within intron. Default: 8 bases
 	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
-	-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)
+	-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases). Default: 5000
 ```
 
 ## `ANN` command: Variant annotations
@@ -100,6 +100,7 @@ Options:
 	-o <format>                     : Output format [ vcf, gatk, bed, bedAnn ]. Default: VCF.
 	-s , -stats, -htmlStats         : Create HTML summary file. Default is 'snpEff_summary.html'
 	-noStats                        : Do not create stats (summary) file
+	-noChromoPlots                  : Do not create mutations-by-chromosome plots in the summary.
 
 Results filter options:
 	-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)
@@ -116,7 +117,7 @@ Annotations options:
 	-fastaProt <file>               : Create an output file containing the resulting protein sequences.
 	-fastaProtNoRef                 : Do not add reference sequences to the output (only valid when -fastaProt). Default: false
 	-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').
-	-geneId                         : Use gene ID instead of gene name (VCF output). Default: false
+	-geneId                         : Use gene ID instead of gene name (only affects legacy 'EFF' field). Default: false
 	-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: true
 	-hgvsOld                        : Use old HGVS notation. Default: false
 	-hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: false
@@ -248,7 +249,7 @@ Any other transcript will be ignored.
 java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 ```
 
-#### Finltering by transcript tags
+#### Filtering by transcript tags
 
 In some cases the genome files contain tags, for example, here are from GTF lines from ENSEMBL's GRCh38 (MANE release 1.0):
 
@@ -315,11 +316,11 @@ The command line option `-noStats` disables the statistics and may result in a s
 
 SnpEff uses [HGVS notation](http://www.hgvs.org/), which is somewhat popular amongst clinicians.
 
-You can switch to the old (deprecated) annotaions format, using the command line option `-classic`.
+You can switch to the old (deprecated) annotations format, using the command line option `-classic`.
 
 ### Compressed files
 
-SnpEff will automatically open gzip compresssed files, even if you don't specify the '.gz' extension.
+SnpEff will automatically open gzip compressed files, even if you don't specify the '.gz' extension.
 Example
 
 ```
@@ -329,7 +330,7 @@ cp examples/test.chr22.vcf my.vcf
 # Compress it
 gzip my.vcf 
 
-# Annotate the comressed file
+# Annotate the compressed file
 java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf.gz > my.ann.vcf
 ```
 
@@ -345,7 +346,7 @@ For example, you can easily stream files like this:
 # Using STDIN (pipe), implicit (no input file name)
 cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 > test.chr22.ann.vcf
 
-# Using STDIN (pipe), exlicit '-' input file name
+# Using STDIN (pipe), explicit '-' input file name
 cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 - > test.chr22.ann.vcf
 
 # Using explicit file name

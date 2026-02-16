@@ -13,11 +13,11 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 There are some command line options related to the statistics:
 
 - `-stats <file>`: You can change the default name and location of the HTML file. This also changes the name and location of the "genes" (TXT) file.
-- `-noStats`: Do not calculate statisticsm, or create stats (summary) files
+- `-noStats`: Do not calculate statistics, or create stats (summary) files
 - `-csvStats <file>`: Create the statistics file in CSV format with the specified name.
 
 !!! info
-    The "Genes statistics" file path is by default the directory where SnpEff is executed and called `snpEff_genes.txt`. If you change the summary file name / path by either using `-stats` or `csvStats` command line, the "Genes statistics" file path will be the same directory as the summary file and the file name is the same "base name" plus a `".genes.txt"`.
+    The "Genes statistics" file path is by default the directory where SnpEff is executed and called `snpEff_genes.txt`. If you change the summary file name / path by either using `-stats` (or `-htmlStats`) or `-csvStats` command line option, the "Genes statistics" file path will be the same directory as the summary file and the file name is the same "base name" plus a `".genes.txt"`.
 
 
 ## Summary report
@@ -58,11 +58,11 @@ The main summary table contains basic information about the SnpEff run and some 
 | Number of not variants              | Number of non-variants, e.g. if the `REF` and `ALT` fields are the same |
 | Number of variants processed        | Number of variants processed. This can be different than the number of variants due to filtering and non-variants entries. |
 | Number of known variants            | Variants that have a non-empty `ID` field. |
-| Number of multi-allelic VCF entries | Variants that have mode then two alleles. Most variants have only two alleles: `REF` and one `ALT`. Multi-allelic variants have multiple `ALT` entries. |
+| Number of multi-allelic VCF entries | Variants that have more than two alleles. Most variants have only two alleles: `REF` and one `ALT`. Multi-allelic variants have multiple `ALT` entries. |
 | Number of annotations               | Total number of variant annotations. Note that this is typically [higher than the number of variant](./faq.md#counting-variants-vs-annotations) |
 | Genome total length                 | Total genome length (in bases) |
-| Genome effective length             | Total length of the chromosomes (in bases). This only counts chromosomes that had varinats |
-| Variant rate                        | Number of variants per genomic length: `Number of variants` / `Genome effeective length`|
+| Genome effective length             | Total length of the chromosomes (in bases). This only counts chromosomes that had variants |
+| Variant rate                        | Number of variants per genomic length: `Number of variants` / `Genome effective length`|
 
 
 !!! warning
@@ -78,11 +78,11 @@ This table contains a list of the number of variants, grouped by variant type:
 | `MNP`      | MNP / MNV is a multiple nucleotide variant, e.g. 'AC -> GT' |
 | `INS`      | Insertion, e.g. 'A -> AT' |
 | `DEL`      | Deletion, e.g. 'AT -> A' |
-| `MIXED`    | A mixed vairant is a combination of SNP / MNP / INS / DEL, for example ' |
+| `MIXED`    | A mixed variant is a combination of SNP / MNP / INS / DEL, e.g. Reference = 'ATA', Sample = 'GTCAGT' |
 | `INV`      | An inversion of reference sequence |
 | `DUP`      | A duplication is a region of elevated copy number relative to the reference |
 | `BND`      | An arbitrary rearrangement |
-| `INTERVAL` | An interval marke, e.g. an interval from a BED file |
+| `INTERVAL` | An interval marker, e.g. an interval from a BED file |
 
 
 ### Histograms
@@ -93,13 +93,13 @@ E.g.: In the stats file, you can see coverage histogram plots like this one:
 
 ### Annotations & Region
 
-SnpEff annotates variants using ["functional annotaions"](./inputoutput.md#variant-annotaiton-details), e.g. `NON_SYNONYMOUS_CODING`, `STOP_GAINED`, etc..
+SnpEff annotates variants using ["functional annotations"](./inputoutput.md#variant-annotation-details), e.g. `missense_variant`, `stop_gained`, etc.
 These variants affect regions of the genome (e.g. `EXON`, `INTRON`).
-The two tables count how many effects for each type and for each region exists.
+The two tables count how many effects for each type and for each region exist.
 
-E.g.: In an `EXON` region, you can have all the following effect types: `NON_SYNONYMOUS_CODING`, `SYNONYMOUS_CODING`, `FRAME_SHIFT`, `STOP_GAINED`, etc.
+E.g.: In an `EXON` region, you can have all the following effect types: `missense_variant`, `synonymous_variant`, `frameshift_variant`, `stop_gained`, etc.
 
-The complicated part is that some annotaitons affect a region that has the same name (yes, I know, this is confusing).
+The complicated part is that some annotations affect a region that has the same name (yes, I know, this is confusing).
 
 E.g.: In a `UTR_5_PRIME` region you can have `UTR_5_PRIME` and `START_GAINED` effect type.
 
@@ -114,19 +114,23 @@ How exactly are effect *type* and effect *region* related? See the following tab
 
 Effect Type                                    | Region
 ---------------------------------------------- | ------
-`NONE`, `CHROMOSOME`, `CUSTOM`, `CDS`          | `NONE`
-`INTERGENIC`, `INTERGENIC_CONSERVED`           | `INTERGENIC`
+`NONE`, `CHROMOSOME`, `CHROMOSOME_LARGE_DELETION`, `CHROMOSOME_LARGE_DUPLICATION`, `CHROMOSOME_LARGE_INVERSION`, `CHROMOSOME_ELONGATION`, `CUSTOM`, `SEQUENCE` | `CHROMOSOME`
+`INTERGENIC`, `INTERGENIC_CONSERVED`, `FEATURE_FUSION` | `INTERGENIC`
 `UPSTREAM`                                     | `UPSTREAM`
 `UTR_5_PRIME`, `UTR_5_DELETED`, `START_GAINED` | `UTR_5_PRIME`
 `SPLICE_SITE_ACCEPTOR`                         | `SPLICE_SITE_ACCEPTOR`
 `SPLICE_SITE_DONOR`                            | `SPLICE_SITE_DONOR`
 `SPLICE_SITE_REGION`                           | `SPLICE_SITE_REGION`
-`INTRAGENIC`, `START_LOST`, `SYNONYMOUS_START`, `NON_SYNONYMOUS_START`, `GENE`, `TRANSCRIPT` | `EXON` or `NONE`
-`EXON`, `EXON_DELETED`, `NON_SYNONYMOUS_CODING`, `SYNONYMOUS_CODING`, `FRAME_SHIFT`, `CODON_CHANGE`, `CODON_INSERTION`, `CODON_CHANGE_PLUS_CODON_INSERTION`, `CODON_DELETION`, `CODON_CHANGE_PLUS_CODON_DELETION`, `STOP_GAINED`, `SYNONYMOUS_STOP`, ` STOP_LOST`, `RARE_AMINO_ACID` | `EXON`
+`SPLICE_SITE_BRANCH`, `SPLICE_SITE_BRANCH_U12` | `SPLICE_SITE_BRANCH`
+`GENE`, `GENE_DELETED`, `GENE_DUPLICATION`, `GENE_FUSION`, `GENE_FUSION_HALF`, `GENE_FUSION_REVERSE`, `GENE_INVERSION`, `GENE_REARRANGEMENT` | `GENE`
+`TRANSCRIPT`, `TRANSCRIPT_DELETED`, `TRANSCRIPT_DUPLICATION`, `TRANSCRIPT_INVERSION`, `INTRAGENIC`, `NEXT_PROT`, `CDS` | `TRANSCRIPT`
+`EXON`, `EXON_DELETED`, `EXON_DUPLICATION`, `EXON_INVERSION`, `NON_SYNONYMOUS_CODING`, `SYNONYMOUS_CODING`, `FRAME_SHIFT`, `FRAME_SHIFT_BEFORE_CDS_START`, `FRAME_SHIFT_AFTER_CDS_END`, `CODON_CHANGE`, `CODON_INSERTION`, `CODON_CHANGE_PLUS_CODON_INSERTION`, `CODON_DELETION`, `CODON_CHANGE_PLUS_CODON_DELETION`, `START_LOST`, `STOP_GAINED`, `SYNONYMOUS_STOP`, `NON_SYNONYMOUS_STOP`, `STOP_LOST`, `NON_SYNONYMOUS_START`, `SYNONYMOUS_START`, `RARE_AMINO_ACID`, `PROTEIN_PROTEIN_INTERACTION_LOCUS`, `PROTEIN_STRUCTURAL_INTERACTION_LOCUS` | `EXON`
 `INTRON`, `INTRON_CONSERVED`                   | `INTRON`
 `UTR_3_PRIME`, `UTR_3_DELETED`                 | `UTR_3_PRIME`
 `DOWNSTREAM`                                   | `DOWNSTREAM`
 `REGULATION`                                   | `REGULATION`
+`MOTIF`, `MOTIF_DELETED`                       | `MOTIF`
+`MICRO_RNA`                                    | `MICRO_RNA`
 
 ### Gene statistics
 

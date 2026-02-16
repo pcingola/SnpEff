@@ -12,9 +12,9 @@ SnpEff defines several messages in roughly 3 categories:
 
 The variant has been realigned to the most 3-prime position within the transcript.
 
-This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGSV requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGSV, sometimes a local realignment is required.
+This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGVS requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGVS, sometimes a local realignment is required.
 
-IMPORTANT: This message is just indicating that a realignment was performed, so ** when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation **
+IMPORTANT: This message is just indicating that a realignment was performed, so **when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation**
 
 **WARNING_SEQUENCE_NOT_AVAILABLE**
 
@@ -43,7 +43,7 @@ Multiple STOP codons found in a CDS.
 There should be only one STOP codon at the end of the transcript, but in this case, the transcript has multiple STOP codons, which is unlikely to be real.
 
 This usually indicates an error on the reference genome (or database).
-Could for, for example, indicating frame errors in the reference genome for one or more exons in this transcript.
+Could, for example, indicate frame errors in the reference genome for one or more exons in this transcript.
 
 **WARNING_TRANSCRIPT_NO_START_CODON**
 
@@ -59,9 +59,9 @@ This usually indicates an error on the reference genome (or database) but could 
 
 **ERROR_CHROMOSOME_NOT_FOUND**
 
-Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more several problems (different reference genome).
+Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more severe problem (different reference genome).
 
-See more details (here)[https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND]
+See more details [here](https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND)
 
 **ERROR_OUT_OF_CHROMOSOME_RANGE**
 
@@ -124,7 +124,7 @@ cat input.vcf | sed "s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/" > input_updated_chr.vcf
 
 
 
-## How to building an NCBI genome (GenBank file)
+## How to build an NCBI genome (GenBank file)
 
 When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.
 
@@ -188,13 +188,13 @@ $ cat z.vcf
 $ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa GRCh38.mane.1.2.ensembl z.vcf > z.ann.vcf
 ```
 
-The resulting fasta file `z.prot.fa` looks like this (lines edited for readibility):
+The resulting fasta file `z.prot.fa` looks like this (lines edited for readability):
 
-Notice the difference in the protemic sequeces ('VAF**A**WVS' -> 'VAF**T**WVS')
+Notice the difference in the protein sequences ('VAF**A**WVS' -> 'VAF**T**WVS')
 ```
 >ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, reference
 MAGL....VAFAWVS...
->ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant:q 17:39684602-39684602, ref:'C', alt:'T', HGVS.p: p.Ala143Thr
+>ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant: 17:39684602-39684602, ref:'C', alt:'T', HGVS.p: p.Ala143Thr
 MAGL....VAFTWVS...
 ```
 
@@ -273,7 +273,7 @@ If you scroll up in the config file, you'll see a comment like this:
 #---
 ```
 
-Here `ENSEMBL BFMPP` stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
+Here `ENSEMBL BFMPP` stands for Ensembl Bacteria, Fungi, Metazoa, Plants and Protists.
 So the comment is indicating that this is Ensembl's release 32.
 
 
@@ -304,7 +304,7 @@ So counting the number of non-comment lines in the VCF file will not give you th
 
 Also, a single variant can have more than one annotation, due to:
 
-- Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)
+- Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcripts per gene)
 - Multiple (overlapping) genes in the genomic location of the variant.
 - A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)
 
@@ -315,10 +315,10 @@ SnpEff does consider all these factors when counting the variants and annotation
 
 Sometimes either the `REF` or `ALT` fields have [IUPAC/IUB](https://en.wikipedia.org/wiki/Nucleic_acid_notation) bases.
 A common example is when you see an `N` character, which means that the base could be any of `{A, C, G, T}`.
-There are several IUPAC characters, please see details in [IUPAC degenarate base symbols table](https://en.wikipedia.org/wiki/Nucleic_acid_notation).
+There are several IUPAC characters, please see details in [IUPAC degenerate base symbols table](https://en.wikipedia.org/wiki/Nucleic_acid_notation).
 
 In case of having IUPAC symbols in either the `REF` and/or `ALT` fields, SnpEff will expand them into different variants.
-This means that entries with ambiguous symbols will be tranformed into all possible combinations of variants using the IUPAC notation.
+This means that entries with ambiguous symbols will be transformed into all possible combinations of variants using the IUPAC notation.
 
 !!! info
 	You can disable the 'IUPAC/IUB expand' behaviour by using the `-noexpandiub` command line option.
@@ -338,7 +338,7 @@ In this case the ambiguous variant `T -> N` will be expanded into three variants
 - `T -> G`
 
 !!! warning
-	If the number of degenerate symbols increases, the number of variants expanded will increase exponentiallly.
+	If the number of degenerate symbols increases, the number of variants expanded will increase exponentially.
 	Currently SnpEff will not expand more than `MAX_IUB_BASES=10` bases
 
 
@@ -378,8 +378,8 @@ There are several things you should do to optimize:
 
 ## How much memory should I use
 
-How much memory to use is very specifcic to your project / application, but here are some guidelines:
-- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
+How much memory to use is very specific to your project / application, but here are some guidelines:
+- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ...`)
 - Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
 - Very large 128GB: It is extremely uncommon for SnpEff to require over 128GB of RAM for annotating with SnpEff, but it might happen on very large projects.
 
@@ -393,7 +393,7 @@ When using RefSeq transcripts, for instance in the human genome versions `hg38` 
 
 From the original RefSeq data, you can see that there are actually four mappings of NM_001135865.1:
 ```
-# Note: Output edited for readbility
+# Note: Output edited for readability
 $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 
 751 NM_001135865.1  chr16   -   21834582    21857657    21834717    21857378    11  ...
@@ -405,8 +405,8 @@ $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 !!! warning
 	To make matters even worse, not only `NM_001135865.1` maps twice to regions in `chr16`, but also one is mapped in the forward strand and the other on the reverse strand (notice the `+` and `-` signs)
 
-How do you know which of the four `NM_001135865.1` version is SnpEff refering to?
-When there are multiple mappings for a transcipt SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.
+How do you know which of the four `NM_001135865.1` version is SnpEff referring to?
+When there are multiple mappings for a transcript SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.
 
 So the transcript IDs are named (notice that the first one is not changed):
 
@@ -458,4 +458,4 @@ ERROR: Protein check file './data/MY_GENOME/protein.fa' not found.
 ERROR: Database check failed.
 ```
 
-To disable these checks, you need to specify *BOTH* commmand line options `-noCheckCds -noCheckProtein`.
+To disable these checks, you need to specify *BOTH* command line options `-noCheckCds -noCheckProtein`.

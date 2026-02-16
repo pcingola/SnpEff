@@ -38,11 +38,11 @@ $ java -Xmx8g -jar snpEff.jar closest GRCh37.66 test.vcf
 ```
 
 For instance, in the third line (1:16097 T G), it added the tag `CLOSEST=150,exon_1_15796_15947,ENST00000423562,WASH7P`
-, which means that the variant is 150 bases away from exon "exon_1_15796_15947".
+ which means that the variant is 150 bases away from exon "exon_1_15796_15947".
 The exon belongs to transcript "ENST00000423562" of gene "WASH7P".
 
 !!! info
-    If multiple markers are available (at the same distance) the one belonging to the longest mRna transcript is shown.
+    If multiple markers are available (at the same distance) the one belonging to the longest mRNA transcript is shown.
 
 The input can also be a BED file, the output file has the same information as CLOSEST info field, added to the fourth column of the output BED file:
 ```
@@ -69,6 +69,13 @@ If you need to count how many reads (and bases) from a BAM file hit each genomic
 The command line is quite simple. E.g. in order to count how many reads (from N BAM files) hit regions of the human genome, you simply run:
 
     java -Xmx8g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam > countReads.txt
+
+```
+Options:
+    -n <name>    : Output file base name.
+    -p           : Calculate probability model (binomial).
+    -i <file>    : Add intervals from a BED file. Can be used multiple times.
+```
 
 The output is a TXT (tab-separated) file, that looks like this:
 ```
@@ -178,41 +185,18 @@ AP006561.1                                                  SARS coronavirus TWY
 
 This command downloads and installs a database.
 
+```
+Usage: snpEff download [options] {snpeff | genome_version}
+```
+
+You can use `snpEff download snpeff` to download/update SnpEff itself, or specify a genome version to download a pre-built database.
+
 !!! warning
     Note that the database must be configured in `snpEff.config` and available at the download site.
 
 Example: Download and install C.Elegans genome:
 ```
 $ java -jar snpEff.jar download -v WBcel215.69
-00:00:00.000	Downloading database for 'WBcel215.69'
-00:00:00.002	Connecting to http://downloads.sourceforge.net/project/snpeff/databases/v3_1/snpEff_v3_1_WBcel215.69.zip
-00:00:00.547	Copying file (type: application/zip, modified on: Sat Dec 01 20:59:55 EST 2012)
-00:00:00.547	Local file name: 'snpEff_v3_1_WBcel215.69.zip'
-00:00:01.949	Downloaded 1049506 bytes
-00:00:03.624	Downloaded 2135266 bytes
-00:00:05.067	Downloaded 3185026 bytes
-00:00:06.472	Downloaded 4234786 bytes
-00:00:07.877	Downloaded 5284546 bytes
-00:00:09.580	Downloaded 6374626 bytes
-00:00:11.005	Downloaded 7424386 bytes
-00:00:12.410	Downloaded 8474146 bytes
-00:00:13.815	Downloaded 9523906 bytes
-00:00:15.358	Downloaded 10604226 bytes
-00:00:16.761	Downloaded 11653666 bytes
-00:00:18.168	Downloaded 12703426 bytes
-00:00:19.573	Downloaded 13753186 bytes
-00:00:21.198	Downloaded 14837506 bytes
-00:00:22.624	Downloaded 15887266 bytes
-00:00:24.029	Downloaded 16937026 bytes
-00:00:25.434	Downloaded 17986786 bytes
-00:00:26.864	Downloaded 19036546 bytes
-00:00:28.269	Downloaded 20086306 bytes
-00:00:29.155	Donwload finished. Total 20748168 bytes.
-00:00:29.156	Local file name: '/home/pcingola//snpEff/data/WBcel215.69/snpEffectPredictor.bin'
-00:00:29.156	Extracting file 'data/WBcel215.69/snpEffectPredictor.bin' to '/home/pcingola//snpEff/data/WBcel215.69/snpEffectPredictor.bin'
-00:00:29.157	Creating local directory: '/home/pcingola/snpEff/data/WBcel215.69'
-00:00:29.424	Unzip: OK
-00:00:29.424	Done
 ```
 
 ### SnpEff dump
@@ -268,7 +252,7 @@ $ java -Xmx8g -jar snpEff.jar dump -v -txt GRCh37.70 > GRCh37.70.txt
 00:00:31.962	Building interval forest
 00:00:45.467	Done.
 ```
-In this case, the output file looks like a typical BED file (chr \t start \t end \t name):
+The output file is a tab-separated table with gene, transcript, and exon information:
 ```
 $ head GRCh37.70.txt
 chr start       end        strand  type         id                          geneName  geneId            numberOfTranscripts  canonicalTranscriptLength  transcriptId     cdsLength  numerOfExons  exonRank  exonSpliceType
@@ -293,9 +277,9 @@ start                     | Marker start (one-based coordinate)
 end                       | Marker end (one-based coordinate)
 strand                    | Strand (positive or negative)
 type                      | Type of marker (e.g. exon, transcript, etc.)
-id                        | ID. E.g. if it's a Gene, then it may be ENSEBML's gene ID
+id                        | ID. E.g. if it's a Gene, then it may be ENSEMBL's gene ID
 geneName                  | Gene name, if marker is within a gene (exon, transcript, UTR, etc.), empty otherwise (e.g. intergenic)
-geneId                    | Gene is, if marker is within a gene
+geneId                    | Gene ID, if marker is within a gene
 numberOfTranscripts       | Number of transcripts in the gene
 canonicalTranscriptLength | CDS length of canonical transcript
 transcriptId              | Transcript ID, if marker is within a transcript
@@ -481,137 +465,5 @@ The command generates an HTML report (by default `translocations_report.html`) c
 
 ### Scripts
 
-Several scripts are provided in the `scripts` directory.
-Here we briefly describe their functionality:
-
-#### sam2fastq.pl
-
-Convert a SAM input to a FASTQ output. Example:
-```
-samtools view test.bam | ./scripts/bam2fastq.pl | head -n 12
-@HWI-ST1220:76:D12CHACXX:7:2207:18986:95756
-CGACAATGCACGACAGAGGAAGCAGAACAGATATTTAGATTGCCTCTCATT
-+
-CCCFFFFFGHHHHIIJIJJIJIJJIJJIIIJIIHIJJJIJJIJJJJJJIJJ
-@HWI-ST1220:76:D12CHACXX:7:2206:4721:162268
-ATATTATAGGGAGAAATATGATCGCGTATGCGAGAGTAGTGCCAACATATT
-+
-@@@DDD>DAB;?DGGEGGBCD>BFGI?FCFFBFGG@<?B*?BFB9FGII@E
-@HWI-ST1220:76:D12CHACXX:7:1304:13069:17740
-ATAGGGAGAAATATGATCGCGTATGCGAGAGTAGTGCCAACATATTGTGCT
-+
-CCCFFFFFHHHHHJJJJJJJJGIJJJJJJAGBGGIIIJJJJJJJJJJJIJG
-```
-
-#### fasta2tab.pl
-
-Convert a fasta file to a two column tab-separated TXT file (name \t sequence)
-
-Example (output truncated for brevity):
-```
-$ zcat ce6.fa.gz | ./scripts/fasta2tab.pl
-chrI    gcctaagcctaagcctaagcctaagcctaagcctaagcctaagcct...
-chrV    GAATTcctaagcctaagcctaagcctaagcctaagcctaagcctaa...
-chrII   cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-chrM    CAGTAAATAGTTTAATAAAAATATAGCATTTGGGTTGCTAAGATAT...
-chrX    ctaagcctaagcctaagcctaagcctaagcctaagcctaagcctaa...
-chrIV   cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-chrIII  cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-```
-
-#### fastaSplit.pl
-
-Split a multiple sequence FASTA file to individual files.
-
-Example: Creates one file per chromosome:
-```
-$ zcat ce6.fa.gz | ./scripts/fastaSplit.pl
-Writing to chrI.fa
-Writing to chrV.fa
-Writing to chrII.fa
-Writing to chrM.fa
-Writing to chrX.fa
-Writing to chrIV.fa
-Writing to chrIII.fa
-```
-
-#### plotHistogram.pl
-
-Given a list of numbers (one per line), shows a histogram. Note: It requires R.
-
-Example: Extract the file sizes in a directory and show a histogram
-
-    $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/hist.pl
-
-Creates the following plot:
-![hist_example](../images/hist_example.png){: .smallerimg .center}
-
-#### plotMA.pl, plot.pl, plotQQ.pl, plotSmoothScatter.pl
-Similar to 'hist.pl', these perform plots based on input from STDIN.
-Note that in some cases, inputs are expected to be probabilities (qqplot.pl) or pairs of numbers (maPlot.pl).
-
-    $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/plot.pl
-
-Creates the following plot:
-![plot_example](../images/plot_example.png){: .smallerimg .center}
-
-#### queue.pl
-
-Process a list of statements in parallel according to the number of CPUs available in the local machine.
-
-####  splitChr.pl
-
-Splits a file by chromosome. Works on any tab separated file that the first column is CHR field (e.g. BED, VCF, etc.)
-
-Example:
-```
-$ cat large_test.vcf | ./scripts/splitChr.pl
-Input line 28. Creating file 'chr1.txt'
-Input line 13332. Creating file 'chr2.txt'
-Input line 22097. Creating file 'chr3.txt'
-Input line 29289. Creating file 'chr4.txt'
-Input line 34236. Creating file 'chr5.txt'
-Input line 39899. Creating file 'chr6.txt'
-Input line 47120. Creating file 'chr7.txt'
-Input line 53371. Creating file 'chr8.txt'
-Input line 57810. Creating file 'chr9.txt'
-Input line 63005. Creating file 'chr10.txt'
-Input line 68080. Creating file 'chr11.txt'
-Input line 76629. Creating file 'chr12.txt'
-Input line 83071. Creating file 'chr13.txt'
-Input line 85124. Creating file 'chr14.txt'
-Input line 89281. Creating file 'chr15.txt'
-Input line 93215. Creating file 'chr16.txt'
-Input line 99081. Creating file 'chr17.txt'
-Input line 106405. Creating file 'chr18.txt'
-Input line 108330. Creating file 'chr19.txt'
-Input line 118568. Creating file 'chr20.txt'
-Input line 121795. Creating file 'chr21.txt'
-Input line 123428. Creating file 'chr22.txt'
-Input line 126520. Creating file 'chrX.txt'
-Input line 129094. Creating file 'chrY.txt'
-Input line 129113. Creating file 'chrMT.txt'
-```
-
-#### uniqCount.pl
-
-Count number of unique lines. It's the same as doing `cat lines.tst | sort | uniq -c `, but much faster. Particularly useful for very large inputs.
-
-#### vcfEffOnePerLine.pl
-
-Splits EFF fields in a VCF file, creating multiple lines, each one with only one effect.
-
-Very useful for filtering with SnpSift.
-
-Example:
-
-```
-$ cat test.stop.vcf
-1	897062	.	C	T	100.0	PASS	AC=1;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|),UPSTREAM(MODIFIER||||576|PLEKHN1||CODING|NM_001160184|),UPSTREAM(MODIFIER||||611|PLEKHN1||CODING|NM_032129|),UPSTREAM(MODIFIER||||749|NOC2L||CODING|NM_015658|)
-
-$ cat test.stop.vcf | ./scripts/vcfEffOnePerLine.pl
-1	897062	.	C	T	100.0	PASS	AC=1;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
-1	897062	.	C	T	100.0	PASS	AC=1;EFF=UPSTREAM(MODIFIER||||576|PLEKHN1||CODING|NM_001160184|)
-1	897062	.	C	T	100.0	PASS	AC=1;EFF=UPSTREAM(MODIFIER||||611|PLEKHN1||CODING|NM_032129|)
-1	897062	.	C	T	100.0	PASS	AC=1;EFF=UPSTREAM(MODIFIER||||749|NOC2L||CODING|NM_015658|)
-```
+!!! warning
+    The Perl utility scripts previously distributed with SnpEff (sam2fastq.pl, fasta2tab.pl, fastaSplit.pl, vcfEffOnePerLine.pl, etc.) have been deprecated and are no longer included in the main `scripts/` directory.

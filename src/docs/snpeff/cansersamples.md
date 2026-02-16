@@ -2,7 +2,7 @@
 
 Here we describe details about annotating cancer samples.
 
-** Single multi-sample VCF vs. multiple VCF files. **
+**Single multi-sample VCF vs. multiple VCF files.**
 
 It is common practice, to have all samples in a single "multi-sample VCF file" (having two or more separate VCF files is highly discouraged).
 This is also the "gold standard" in cancer analysis standard, so all samples (both somatic and germline) should be in one VCF file.
@@ -16,6 +16,10 @@ Using the `-cancer` command line option, you can compare somatic vs germline sam
 So an example command line would be:
 
     $ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf
+
+!!! info
+    Cancer analysis only triggers for multiallelic variants (i.e. VCF entries with multiple ALT alleles) or "back to reference" mutations (where the somatic sample reverts to the reference allele).
+    Additionally, cancer comparisons are only computed when at least one standard annotation has a non-MODIFIER impact.
 
 ### Representing cancer data
 
@@ -33,9 +37,9 @@ This should be represented in a VCF file as:
     Some people tend to represent this by changing REF base 'A' using germline 'C'.
     This is a mistake, REF must always represent the reference genome, not one of your samples.
 
-Under normal conditions, SnpEff would provide the effects of changes "A -&gt; C" and "A -&gt; G".
-But in case of cancer samples, we are actually interested in the difference between somatic and germline, so we'd like to calculate the effect of a "C -&gt; G" mutation.
-Calculating this effect is not trivial, since we have to build a new "reference" by calculating the effect of the first mutation ("A -&gt; C") and then calculate the effect of the second one ("C -&gt; G") on our "new reference".
+Under normal conditions, SnpEff would provide the effects of changes "A -> C" and "A -> G".
+But in case of cancer samples, we are actually interested in the difference between somatic and germline, so we'd like to calculate the effect of a "C -> G" mutation.
+Calculating this effect is not trivial, since we have to build a new "reference" by calculating the effect of the first mutation ("A -> C") and then calculate the effect of the second one ("C -> G") on our "new reference".
 
 !!! info
     In order to activate cancer analysis, you must use `-cancer` command line option.
@@ -119,7 +123,7 @@ Example: when there are multiple ALTs (e.g. REF='A' ALT='C,G') and the genotype 
 
 * Allele = "C": it means is the effect related to the first ALT ('C')
 * Allele = "G" if it's the effect related to the second ALT ('G')
-* Allele = "G-C" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
+* Allele = "G-C" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -> G").
 It is important that you understand the meaning of the last one, because you'll use it often for your cancer analysis.
 
 Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)
@@ -139,15 +143,15 @@ What does it mean:
 1. In this case, we have two ALTs = 'C' and 'G'.
 2. Germline sample is heterozygous 'C/A' (GT = '1/0')
 3. Somatic tissue is heterozygous 'G/C' (GT = '2/1')
-4. Change A -&gt; C and A -&gt; G are always calculated by SnpEff (this is the "default mode").
+4. Change A -> C and A -> G are always calculated by SnpEff (this is the "default mode").
 
-    * A -&gt; C produces this effect:
+    * A -> C produces this effect:
 
             C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
 
          Note that the last field (genotype field) is 'C' indicating this is produced by the first ALT.
 
-    * A -&gt; G produces this effect:
+    * A -> G produces this effect:
 
             G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
 
@@ -156,18 +160,21 @@ What does it mean:
 5. Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic are heterozygous (GT are '1/0' and '2/1'), there are 4 possible comparisons to make:
     * G vs C : This is the Somatic vs Germline we are interested in. SnpEff reports this one
     * G vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
-    * C vs C : This is not a variant, since both og them ar '1'. SnpEff skips this one.
+    * C vs C : This is not a variant, since both of them are '1'. SnpEff skips this one.
     * C vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
 
     I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
-    So 'C -&gt; G' produces the following effect:
+    So 'C -> G' produces the following effect:
 
           G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
 
     !!! warning
         Notice the genotype field is "G-C" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the variant. So we compare 'G' (ALT) to 'C' (REF).
 
-#### Cancer annotations using 'EFF' field:
+#### Cancer annotations using 'EFF' field (deprecated):
+
+!!! warning
+    The `EFF` field is the legacy annotation format, used with the `-classic` command line option. The current standard format is `ANN`. The following section is kept for reference only.
 
 Interpretation of `EFF` field cancer sample relies on 'Genotype' sub-field.
 Just as a reminder, `EFF` field has the following format:
@@ -192,4 +199,4 @@ Example: when there are multiple ALTs (e.g. REF='A' ALT='C,G') and the genotype 
 
 * GenotypeNum = "1": it means is the effect related to the first ALT ('C')
 * GenotypeNum = "2" if it's the effect related to the second ALT ('G')
-* GenotypeNum = "2-1" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
+* GenotypeNum = "2-1" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -> G").
