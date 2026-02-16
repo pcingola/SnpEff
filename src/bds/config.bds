@@ -7,7 +7,9 @@
 string add_file(string file, string title) {
 	if( ! file.exists() )	error("File '$file' not found!")
 	println("Adding config '$title', file '$file'")
-	return "\n#---\n# $title \n#---\n" + file.read()
+	contents := file.read()
+	if( contents.trim().isEmpty() )	error("File '$file' is empty!")
+	return "\n#---\n# $title \n#---\n" + contents
 }
 
 # Build main configuration file (snpEff.config)

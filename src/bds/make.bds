@@ -47,8 +47,8 @@ cpus = 1
 
 # Versions
 help Ensembl
-ensemblBfmppRelease		:= 62			help Ensembl BFMPP release number
-ensemblRelease			:= 115			help Vertebrate release number
+ensemblBfmppRelease		:= 57			help Ensembl BFMPP release number
+ensemblRelease			:= 110			help Vertebrate release number
 
 help MANE 
 maneGenome				:= 'GRCh38'		help MANE genome
@@ -680,25 +680,26 @@ void zipDbs() {
 log("Building")
 
 if( args.isEmpty() )			build()										# No arguments? Build (create JAR files)
-if( createConfig )				buildConfig()								# Create config file
-if( createDocs )				buildDocs()									# Create documentation and web page
-if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
-if( dbTest )					buildDbTest()								# Build databases used in test cases
-if( distro )					makeDistro()								# Create distribution files
-if( distroCore )				zipCore()									# Create distribution files (core 'zip')
-if( download )					downloadAll()								# Perform downloads
-if( !downloadEnsembl.isEmpty() )	downloadEnsemblGenome(downloadEnsembl, downloadEnsemblSpecies)		# Download a specific ENSEMBL genome
-if( downloadMane )				downloadManeGenome()						# Download MANE genome
-if( !downloadNcbi.isEmpty() )	downloadNcbiGenome(downloadNcbi, ncbiId)	# Download NCBI genome
-if( !downloadUcsc.isEmpty() )	downloadUcscGenome(downloadUcsc)			# Download UCSC genome (either refseq or kg)
-if( !downloadSet.isEmpty() )	downloadOneSet(downloadSet)					# Download one set
-if( make )						build()										# Build (create JAR files)
-if( test )						runTests()									# Run test cases 
-if( uploadCore )				uploadCore2S3()								# Upload 'core' files
-if( uploadDbs )					uploadDbs2S3()								# Upload all database files in 'zip' dir
-if( uploadDbNsfp )				uploadDbNsfp2S3()							# Upload dbNsfp database files 
-if( uploadDev )					uploadDev2S3()								# Upload 'development' version
-if( !zipGenome.isEmpty() )		zipDbs(zipGenome)							# Zip only 'zipGenome' database
+else if( createConfig )				buildConfig()								# Create config file
+else if( createDocs )				buildDocs()									# Create documentation and web page
+else if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
+else if( dbTest )					buildDbTest()								# Build databases used in test cases
+else if( distro )					makeDistro()								# Create distribution files
+else if( distroCore )				zipCore()									# Create distribution files (core 'zip')
+else if( download )					downloadAll()								# Perform downloads
+else if( !downloadEnsembl.isEmpty() )	downloadEnsemblGenome(downloadEnsembl, downloadEnsemblSpecies)		# Download a specific ENSEMBL genome
+else if( downloadMane )				downloadManeGenome()						# Download MANE genome
+else if( !downloadNcbi.isEmpty() )	downloadNcbiGenome(downloadNcbi, ncbiId)	# Download NCBI genome
+else if( !downloadUcsc.isEmpty() )	downloadUcscGenome(downloadUcsc)			# Download UCSC genome (either refseq or kg)
+else if( !downloadSet.isEmpty() )	downloadOneSet(downloadSet)					# Download one set
+else if( make )						build()										# Build (create JAR files)
+else if( test )						runTests()									# Run test cases 
+else if( uploadCore )				uploadCore2S3()								# Upload 'core' files
+else if( uploadDbs )					uploadDbs2S3()								# Upload all database files in 'zip' dir
+else if( uploadDbNsfp )				uploadDbNsfp2S3()							# Upload dbNsfp database files 
+else if( uploadDev )					uploadDev2S3()								# Upload 'development' version
+else if( !zipGenome.isEmpty() )		zipDbs(zipGenome)							# Zip only 'zipGenome' database
+else error("Unknown option $args")
 
 wait
 log("Done")
