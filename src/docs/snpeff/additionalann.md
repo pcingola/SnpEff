@@ -113,7 +113,7 @@ A [data matrix](http://www.roadmapepigenomics.org/data) shows the experimental s
 
 Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
 They will be available later in the project.
-So, for the time being, data has to be downloaded an pre-processed.
+So, for the time being, data has to be downloaded and pre-processed.
 We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
 
 The latest Epigenome project processed information, can be found [here](https://snpeff-public.s3.amazonaws.com/databases/epigenome_latest.tgz/download).
@@ -146,7 +146,7 @@ NextProt provides only human data.
 
 Starting from SnpEff version 4.0, these annotations are automatically added if the database is available for the genome version you are using (in older SnpEff versions
 the `-nextprot` command line option was used).
-NextProt databases are available by for in some GRCh37 genomes (e.g. file `data/GRCh37.75/nextProt.bin`).
+NextProt databases are available for some GRCh37 genomes (e.g. file `data/GRCh37.75/nextProt.bin`).
 
 Annotations example:
 ```

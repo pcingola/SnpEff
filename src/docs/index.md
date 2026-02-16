@@ -37,7 +37,7 @@ Once you annotated your files using SnpEff, you can use SnpSift to help you filt
 
 ## Citing SnpEff & SnpSift
 
-If you are using SnpEff or SnpSift in an research or academic environment, please cite our [paper](adds/SnpEff_paper.pdf).
+If you are using SnpEff or SnpSift in a research or academic environment, please cite our [paper](adds/SnpEff_paper.pdf).
 
 ### Citing SnpEff
 

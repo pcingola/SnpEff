@@ -31,7 +31,7 @@ unzip snpEff_latest_core.zip
 **Notes:**
 
 * SnpEff & SnpSift annotation software used in this protocol are under very active development and some command line option may change in the future.
-* The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data_dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.
+* The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data.dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.
 
 Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.75) that will be used to annotate our data.
 ```
@@ -60,7 +60,7 @@ We now download and un-compress the example data used in this protocol, which, f
 cd ~/snpEff
 
 # Download sample data
-curl -v -L `https://datasetsnpeff-public.s3.amazonaws.com/dataset/protocols.zip?sv=2019-10-10&st=2020-09-01T00%3A00%3A00Z&se=2050-09-01T00%3A00%3A00Z&si=prod&sr=c&sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` > protocols.zip
+curl -v -L 'https://datasetsnpeff-public.s3.amazonaws.com/dataset/protocols.zip?sv=2019-10-10&st=2020-09-01T00%3A00%3A00Z&se=2050-09-01T00%3A00%3A00Z&si=prod&sr=c&sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D' > protocols.zip
 unzip protocols.zip
 ```
 
@@ -304,7 +304,7 @@ $ cat protocols/ex1.ann.cc.clinvar.filtered.vcf | ./scripts/vcfInfoOnePerLine.pl
                                                 dbSNPBuildID    132
 ```
 
-## Example 2: Software Integration (GATK &amp; Galaxy)
+## Example 2: Software Integration (GATK & Galaxy)
 
 Software Integration (Optional): Sequence analysis software is often run in high performance computers combining several programs into processing pipelines.
 Annotations and impact assessment software needs to provide integration points with other analysis steps of the pipeline.
@@ -532,11 +532,11 @@ Here is how to do it:
 Obviously you can perform the three previous commands, pipeling the out from one command to the next, thus avoiding the creation of intermediate files (for very large projects, this can be a significant amount of time).
 
 !!! info
-    In SnpEff &amp; SnpSift the STDIN is denoted by file name `"-"`
+    In SnpEff & SnpSift the STDIN is denoted by file name `"-"`
 
 So the previous commands would be:
 ```
-java -jar SnpSif.jar annotate -dbsnp file.vcf \
+java -jar SnpSift.jar annotate -dbsnp file.vcf \
     | java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 - \
     | java -jar SnpSift.jar filter "! exists ID" \
     > file.ann.not_in_dbSnp.vcf
@@ -598,7 +598,7 @@ $ java -Xmx1G -jar snpEff.jar build -gff3 sacCer
 ### Step 2: Create custom annotations file.
 
 We need a file that has our features of interest (in this case, the "ARS" features).
-Since those features ara available in the original GFF (saccharomyces_cerevisiae.gff) file, we can filter the file to create our "custom" annotations file.
+Since those features are available in the original GFF (saccharomyces_cerevisiae.gff) file, we can filter the file to create our "custom" annotations file.
 
 ```
 #---

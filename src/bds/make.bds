@@ -44,6 +44,7 @@ s3HttpUrl	:= "https://$s3Bucket\.s3.amazonaws.com"	help S3 HTTP URL
 
 # Process on one CPU
 cpus = 1
+cpusBuild := 4
 
 # Versions
 help Ensembl
@@ -148,10 +149,10 @@ bool addBuildDb(string genome) {
 	} else if( db <- geneFile ) {
 		log("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 
-		# Use 'storeSeqs' for human and mouse genome
-		opt := ( genome.startsWith('GRC') || genome.startsWith('hg') ? "-storeSeqs" : "" )
 
-		task $snpeffBuild $opt $genome 2>&1 | tee '$logfile'
+		task(cpus := cpusBuild) {
+			sys $snpeffBuild -storeSeqs $genome 2>&1 | tee '$logfile'
+		}
 	} else {
 		log("DONE :\t$genome\tgeneFile: $geneFile\tdb: $db")
 	}

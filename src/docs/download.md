@@ -1,4 +1,4 @@
-## Downloading SnpEff &amp; SnpSift
+## Downloading SnpEff & SnpSift
 
 SnpEff and SnpSift are bundled together.
 
@@ -44,9 +44,9 @@ The only configuration file is `snpEff.config`.
 Most configuration parameters, are explained in the comments in the same config file, so I won't repeat the explanation here :-)
 
 Usually you do NOT need to change the configuration.
-Some peoeple may need to change the location of the databases (`data.dir` parameter).
+Some people may need to change the location of the databases (`data.dir` parameter).
 By default, this parameter points to the `data` directory where you installed the tool (i.e. in unix systems, this is `./data`).
-If you want to change this, you can edit the `snpEff.config` file and change the `data_dir` entry:
+If you want to change this, you can edit the `snpEff.config` file and change the `data.dir` entry:
 ```
 #---
 # Databases are stored here
@@ -72,9 +72,7 @@ Databases can be downloaded in three different ways:
 * You can pre-install databases manually using the `SnpEff download` command (once SnpEff is installed).
       E.g. to download the human genome database:
 
-         java -jar snpEff.jar download GRCh38.76
-
-      Note: Current human genome version at the time of writing is GRCh38.76.
+         java -jar snpEff.jar download GRCh38.mane.1.0.ensembl
 
 ## Available databases
 There are over 20,000 databases available.
@@ -87,7 +85,7 @@ You can also see all available databases by running the following command (once 
 ## Source code
 
 ### Getting the source
-The source code is in GitHub (although we keep the binary distribution is at SourceForge).
+The source code is on GitHub.
 Here is the `git` command to check out the development version of the code:
 
 ```
@@ -100,8 +98,7 @@ git clone https://github.com/pcingola/SnpSift.git
 ###  Building from the source
 Most libraries should be install using Maven, so you just need to run `mvn` command.
 
-* Java (JDK)
-* ANT
+* Java (JDK 21+)
 * Maven
 
 Some libraries are not available through maven, so you have to install them into via Maven manually (these libraries are in `SnpEff/lib`)
@@ -148,7 +145,7 @@ ln -s $HOME/workspace/SnpEff/scripts_build
 Test cases require special "test cases databases and genome", you can find them here:
 
 ```
-# Install test databases in SnpEff's development directory (not the soruce code dir!)
+# Install test databases in SnpEff's development directory (not the source code dir!)
 cd $HOME/snpEff
 
 # Download databases and genome for test cases
@@ -157,10 +154,10 @@ wget https://snpeff-public.s3.amazonaws.com/databases/test_cases.tgz
 # Uncompress
 tar -xvzf test_cases.tgz
 
-# Go to Eclipse's workspace directory (where the source code is)
+# Go to the development workspace directory (where the source code is)
 cd $HOME/workspace/SnpEff
 
-# Create a link to the 'data' dir, so that we can run test cases within Eclipse
+# Create a link to the 'data' dir, so that we can run test cases from the source tree
 ln -s $HOME/snpEff/data
 
 # Add data dir to 'gitignore'

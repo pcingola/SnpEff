@@ -15,12 +15,12 @@ As seen in the previous [Building databases](#building-databases), there are thr
 3. **Step 3:** [Checking the database](#step-3-checking-the-database): SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
 
 In this section we'll go into the details of the GTF and GFF format requirements for **Step 2**.
-As a general rule, GTF format is preferred over GFF, so if your genome provides both GTF anf GFF, use GTF whenever possible.
+As a general rule, GTF format is preferred over GFF, so if your genome provides both GTF and GFF, use GTF whenever possible.
 
 ## GTF format example
 
 This is a snippet example from a GTF file that fulfills SnpEff's requirements. 
-The example (from ENSEMBL's human genome GTF file) shows the definition of one gene, one transcript and it's exons, as well as the trancript's start codon, stop codon, and UTR regions.
+The example (from ENSEMBL's human genome GTF file) shows the definition of one gene, one transcript and its exons, as well as the transcript's start codon, stop codon, and UTR regions.
 
 ```
 # Note that tabs have been replaced by spaces for readability
@@ -72,7 +72,7 @@ where:
 - `$SNPEFF_HOME` is the directory where SnpEff is installed (usually `$HOME/snpEff`)
 - `GENOME_NAME` is the genome name of the genome you are trying to build, which MUST match the name you added in the config file `snpEff.config`
 
-Note: The file name can be `genes.gff.gz` if it's compressed using `gzip`.
+Note: The file name can be `genes.gtf.gz` if it's compressed using `gzip`.
 
 ### GTF lines
 
@@ -153,7 +153,7 @@ Possible values are:
 - `0`: indicates that the feature begins with a whole codon at the 5' most base.
 - `1`: means that there is one extra base (the third base of a codon) before the first whole codon and 
 - `2`: means that there are two extra bases (the second and third bases of the codon) before the first codon
-- `.`: Missing value, SnpEff will inferr this value from the feature's coordinates
+- `.`: Missing value, SnpEff will infer this value from the feature's coordinates
 
 !!! info
     Sometimes this is called 'phase' instead of frame, to distinguish form the *"coding base modulo 3"* definition. 
@@ -170,7 +170,7 @@ ii) Other exons are corrected by changing the start (or end) coordinates. We dro
 
 ** Check zero frames:**
 If all frames are zero, there is a high chance that the frame values are incorrectly labeled as zero instead of "missing values" (i.e. '.').
-SnpEff will check if **all** frame values are zero. If there are more than `MIN_TOTAL_FRAME_COUNT` frmae values set (by default 10) and all of them are zero, it will show a warning.
+SnpEff will check if **all** frame values are zero. If there are more than `MIN_TOTAL_FRAME_COUNT` frame values set (by default 10) and all of them are zero, it will show a warning.
 
 ### GTF Attributes
 
@@ -226,7 +226,7 @@ The attribute name can be (not case sensitive, in search order):
 - `gene_id`
 - `id` (if feature type is `GENE`)
 
-`GeneId` value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make is unique.
+`GeneId` value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make it unique.
 
 ### GTF Attribute: TranscriptId
 
@@ -271,7 +271,7 @@ The attribute name can be (not case sensitive, in search order):
 - `gene_type`
 - `biotype`
 
-Attribute values are parsed the same maner as `BioType`.
+Attribute values are parsed the same manner as `BioType`.
 
 If `GeneBioType` is `protein_coding`, then the gene is assumed to be a protein coding (all transcripts within will be also considered protein coding).
 
@@ -285,7 +285,7 @@ The attribute name can be (not case sensitive, in search order):
 - `transcript_type`
 - `biotype`
 
-Attribute values are parsed the same maner as `BioType`.
+Attribute values are parsed the same manner as `BioType`.
 
 If `TranscriptBioType` is `protein_coding`, then the transcript is assumed to be a protein coding transcript.
 
@@ -315,7 +315,7 @@ where:
 
 Note: The file name can be `genes.gff.gz` if it's compressed using `gzip`. 
 
-### GTF lines and fields
+### GFF lines and fields
 
 GFF lines and fields are very similar to GTF ones.
 The main difference is that the attributes field is formatted as semi-colon separated `key=value` pairs (in GTF `key` and `value` are separated by a space instead of an `=` sign).
@@ -348,5 +348,5 @@ cttaaatgtatttccgacgaattcgaggcctgaaaagtgtgacgccattc
 ...
 ```
 
-This makes it easier to distribute the genome reference toghether with the genome annotations in one file.
+This makes it easier to distribute the genome reference together with the genome annotations in one file.
 
