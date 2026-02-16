@@ -6,7 +6,7 @@ Genomic variant annotations, and functional effect prediction toolbox.
 [SnpEff Documentation](snpeff/introduction.md){: .md-button .md-button--primary }
 [SnpSift Documentation](snpsift/introduction.md){: .md-button .md-button--primary }
 
-Latest version 5.4 (2025-11-25)
+Latest version 5.4b (2026-02-16)
 
 Now hosted on [**AWS Open Data**](https://aws.amazon.com/opendata/)
 
