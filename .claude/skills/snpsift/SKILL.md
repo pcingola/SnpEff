@@ -14,7 +14,13 @@ Full documentation: https://pcingola.github.io/SnpEff/
 
 Use the wrapper script at `.claude/skills/snpsift/snpsift.sh`. It handles JVM memory defaults and argument passthrough. The JAR file is expected at `$HOME/snpEff/SnpSift.jar`.
 
+**IMPORTANT: SnpSift output is typically very large (thousands to millions of lines). ALWAYS redirect output to a file. NEVER let output print to stdout, as it will fill the context window and make the conversation unusable.**
+
 ```bash
+# Correct: redirect to file
+.claude/skills/snpsift/snpsift.sh <command> [options] [arguments] > output.vcf 2> snpsift.log
+
+# WRONG: never do this
 .claude/skills/snpsift/snpsift.sh <command> [options] [arguments]
 ```
 

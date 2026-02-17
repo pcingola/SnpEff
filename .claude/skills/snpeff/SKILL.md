@@ -14,7 +14,13 @@ Full documentation: https://pcingola.github.io/SnpEff/
 
 Use the wrapper script at `.claude/skills/snpeff/snpeff.sh`. It handles JVM memory defaults and argument passthrough. The JAR file is expected at `$HOME/snpEff/snpEff.jar`.
 
+**IMPORTANT: SnpEff output is typically very large (thousands to millions of lines). ALWAYS redirect output to a file. NEVER let output print to stdout, as it will fill the context window and make the conversation unusable.**
+
 ```bash
+# Correct: redirect to file
+.claude/skills/snpeff/snpeff.sh <command> [options] [arguments] > output.vcf 2> snpeff.log
+
+# WRONG: never do this
 .claude/skills/snpeff/snpeff.sh <command> [options] [arguments]
 ```
 

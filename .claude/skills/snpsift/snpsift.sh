@@ -7,7 +7,7 @@ set -o pipefail
 jardir="$HOME/snpEff"
 
 java=java
-if [ -e "$JAVA_HOME/bin/java" ]; then
+if [ -n "${JAVA_HOME:-}" ] && [ -e "$JAVA_HOME/bin/java" ]; then
 	java="$JAVA_HOME/bin/java"
 fi
 
