@@ -13,115 +13,80 @@ Ideally there would be no difference between the variants from genotyping and se
 You can use `SnpSift concordance` to measure the differences between the two experiments.
 
 !!! warning
-    It is assumed that both VCF files are sorted by chromosome and position.
+    Both VCF files must be sorted by chromosome and position.
 
 !!! warning
     Sample names are defined in '#CHROM' line of the header section.
-    Concordance is calculated only if sample label matches in both files.
+    Concordance is calculated only if a sample label matches in both files.
 
-Example:
+!!! info
+    The first VCF file is indexed for fast seeking, so it should be the smaller of the two files for best performance.
+
+---
+
+## Command Options
+
+- `-s <file>` : Only use sample IDs listed in this file (one sample ID per line). Samples not in this file are ignored.
+- `-v` : Verbose mode. Shows progress and summary messages on STDERR.
+
+Usage:
 ```
-$ java -Xmx1g -jar SnpSift.jar concordance -v genotype.vcf sequencing.vcf > concordance.txt
-00:00:00.000	Indexing file 'genotype.vcf'
-        index:	MT	460030998
-        index:	1	19705
-                1 / 2	45170805 / 45174315
-                2 / 3	77052081 / 77055591
-                3 / 4	104065531 / 104069041
-                4 / 5	124098372 / 124101881
-                5 / 6	146535292 / 146538802
-                6 / 7	184793526 / 184797035
-                7 / 8	206156508 / 206160018
-                8 / 9	223072816 / 223076326
-                9 / 10	242315995 / 242319505
-                10 / 11	261053789 / 261057299
-                11 / 12	290190553 / 290194063
-                12 / 13	312869636 / 312873146
-                13 / 14	321966539 / 321970049
-                14 / 15	336131317 / 336134827
-                15 / 16	350871669 / 350875179
-                16 / 17	368900523 / 368904032
-                17 / 18	391305860 / 391309369
-                18 / 19	398932237 / 398935747
-                19 / 20	425219198 / 425222708
-                20 / 21	437022008 / 437025517
-                21 / 22	442563678 / 442567188
-                22 / X	451783418 / 451786927
-                X / Y	459553691 / 459557200
-                Y / MT	459588787 / 459592296
-00:00:01.137	Open VCF file 'genotype.vcf'
-00:00:01.141	Open VCF file 'sequencing.vcf'
-00:00:01.176	Chromosome: '1'
-00:00:02.127		1:1550992	1:1528859
-00:00:02.739		1:2426313	1:2389636
-...
-00:02:13.780		1:248487058	1:248471945
+java -jar SnpSift.jar concordance [options] reference.vcf sequencing.vcf
 ```
+
+---
 
 ### Output
 
 SnpSift's concordance output is written to STDOUT and two files.
-For instance the command `java -jar SnpSift.jar concordance -v genotype.vcf sequencing.vcf` will write:
+For instance the command `java -jar SnpSift.jar concordance genotype.vcf sequencing.vcf` will write:
 
 * Concordance by variant: Written to STDOUT
-* Concordance by sample: Written to `concordance_genotyping_sequencing.by_sample.txt`
-* Summary:  Written to `concordance_genotyping_sequencing.summary.txt`
+* Concordance by sample: Written to `concordance_genotype_sequencing.by_sample.txt`
+* Summary: Written to `concordance_genotype_sequencing.summary.txt`
+
+The output file names are derived from the base names of the input VCF files (without extension).
+
+---
 
 #### Concordance by variant
 
-This sections is a table showing concordance details for every entry (chr:position) that both files have in common.
-E.g.:
-```
-chr  pos     ref  alt  change_0_0  change_0_1  change_0_2  change_1_0  change_1_1  change_1_2  change_2_0  change_2_1  change_2_2  missing_genotype_genotype  missing_genotype_sequencing
-1    865584  G    A        508         0           0           0           2           0           0           0           0           0                                 5
-1    865625  G    A        512         0           0           0           1           0           0           0           0           0                                 1
-1    865628  G    A        511         0           0           0           2           0           0           0           0           0                                 1
-1    865665  G    A        495         0           0           0           4           0           0           0           0           0                                17
-1    865694  C    T        428         0           0           0          82           0           0           0           4           0                                 0
-```
-Each genotype is coded according to the number of ALT variants. i.e.:
+This is a table (written to STDOUT) showing concordance details for every entry (chr:position).
+Each row represents a variant position, with columns counting how many samples had each genotype combination between the two files.
 
-* '0/0' (homozygous reference) is coded as '0'
-* '0/1' or '1/0' (heterozygous ALT) coded as '1'
-* '1/1' (homozygous ALT) is coded as '1'
+Column names follow the pattern `<genotype_in_file1>/<genotype_in_file2>`, where genotype values are:
 
-So the column "change_X_Y" on the table shows how many genotypes coded 'X' in the first VCF, changed to 'Y' in the second VCF.
-For example, 'change_0_1' counts the number of "homozygous reference in genotype.vcf" that changed to "heterozygous ALT in sequencing.vcf".
-Or 'change_2_2' counts the number of "homozygous ALT" that did not change (in both files they are '2').
+* `REF` : Homozygous reference (0/0)
+* `ALT_1` : Heterozygous or homozygous for the first alternate allele (0/1, 1/0, or 1/1)
+* `ALT_2` : Genotype involving a second alternate allele (for multi-allelic sites)
+* `MISSING_GT_<filename>` : The sample has a missing genotype (./.) in that file
+* `MISSING_ENTRY_<filename>` : The variant position does not exist in that file
 
-A few rules apply:
+For example, the column `REF/ALT_1` counts samples that are homozygous reference in the first file but have the first ALT allele in the second file.
+The column `ALT_1/ALT_1` counts samples where both files agree on the first ALT allele.
 
-* If a VCF entry (chr:pos) is present in only one of the files, obviously we cannot calculate concordance, so it is ignored.
-* If a VCF entry (chr:pos) has more than one ALT it is ignored. This means that non-biallelic variants are ignored.
-* If, for the same chr:pos, REF field is different between the two files, then the entry is ignored.
-* If, for the same chr:pos, ALT field is different between the two files, then the entry is ignored.
+The diagonal columns (`REF/REF`, `ALT_1/ALT_1`, `ALT_2/ALT_2`) represent concordant genotypes.
+Off-diagonal columns represent discordant genotypes.
+
+An `ERROR` column counts samples where comparison was not possible (e.g., REF or ALT mismatch between files).
+
+**Matching rules:**
+
+* If a variant exists at a position in only one file, it is still tracked using the `MISSING_ENTRY` columns, so you can see how many samples had genotype calls for positions absent in the other file.
+* If both entries are bi-allelic and their ALT fields differ, the entry is counted as an error.
+* If REF fields differ between the two files, the entry is counted as an error.
+* Multi-allelic variants are processed normally (genotype codes `ALT_1`, `ALT_2` distinguish the alleles).
 
 #### Concordance by sample
 
-This section shows details in the same format as the previous section.
-Here, concordance metrics are shown aggregated for each sample.
-E.g.:
-```
-# Totals by sample
-sample  change_0_0  change_0_1  change_0_2  change_1_0  change_1_1  change_1_2  change_2_0  change_2_1  change_2_2  missing_genotype_genotype  missing_genotype_sequencing
-ID_003  79          0           0           1           8           0           0           0           2           1                          1
-ID_004  83          0           0           1           2           0           0           0           5           0                          1
-ID_005  80          0           0           0           7           0           0           0           4           1                          0
-ID_006  79          0           0           0           5           0           0           0           6           0                          2
-ID_008  81          0           0           0           4           0           0           0           4           0                          3
-ID_009  80          0           0           0           7           0           0           0           3           0                          2
-ID_012  74          0           0           0           10          0           0           0           1           0                          7
-ID_013  79          1           0           0           4           0           0           0           5           0                          3
-ID_018  84          0           0           0           5           0           0           0           3           0                          0
-...
-```
+This file has the same column format as the by-variant output, but counts are aggregated per sample (one row per sample, sorted alphabetically).
 
 #### Summary
 
 Summary file contains overall information and errors.
 Here is an example of a summary file:
 ```
-$ cat concordance_genotyping_sequencing.summary.txt
+$ cat concordance_genotype_sequencing.summary.txt
 Number of samples:
     929    File genotype.vcf
     583    File sequencing.vcf
@@ -131,9 +96,9 @@ Errors:
 ```
 The header indicates that one file ('genotype.vcf') has 929 samples, the other file has 583 and there are 514 matching sample IDs in both files.
 
-At the end of the file, a footer shows the total for each column followed by number of possible errors (or mismatches).
-In this case the were 19 ALT fields that did not match between 'genotype.vcf' and 'sequencing.vcf'.
+The errors section shows the count of each error type encountered.
+In this case there were 19 ALT fields that did not match between 'genotype.vcf' and 'sequencing.vcf'.
 This can happen, for instance, when there are INDELs, which cannot be detected by genotyping arrays.
 
 !!! info
-    Summary messages are shown to STDERR if you use verbose mode (command line option `-v`).
+    Summary messages are also shown to STDERR if you use verbose mode (command line option `-v`).

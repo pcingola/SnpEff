@@ -2,11 +2,17 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANT: Documentation Policy
+
+**DO NOT document program behavior, usage, features, or user-facing functionality in this file.**
+All user-facing documentation (how the program works, command-line options, file formats, examples, etc.) belongs EXCLUSIVELY in `src/docs/`, which is the source for the user's manual published at https://pcingola.github.io/SnpEff/.
+This file (CLAUDE.md) is ONLY for developer guidance: build instructions, code architecture, and development workflows. Never duplicate or paraphrase user-facing documentation here.
+
 ## Project Overview
 
 SnpEff is a variant annotation and effect prediction tool for genomic variants. It's a Java-based bioinformatics application that analyzes VCF files and predicts the functional effects of genetic variants.
 
-Documentation: https://pcingola.github.io/SnpEff/
+Documentation: https://pcingola.github.io/SnpEff/ (source files in `src/docs/`)
 
 ## Build System
 

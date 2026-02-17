@@ -1,6 +1,6 @@
 # SnpSift `annotateMem` Command Documentation
 
-The `annotateMem` command is a, high-performance tool for annotating VCF files using pre-built “databases” such as dbSnp, ClinVar, GnomAD, Cosmic, and more. It is optimized to handle large VCF files—annotating over 1 million VCF lines per minute in many cases. This is achieved by converting database VCF files into memory-optimized dataframes indexed by chromosome and variant type.
+The `annotateMem` command is a high-performance tool for annotating VCF files using pre-built “databases” such as dbSnp, ClinVar, GnomAD, Cosmic, and more. It is optimized to handle large VCF files—annotating over 1 million VCF lines per minute in many cases. This is achieved by converting database VCF files into memory-optimized dataframes indexed by chromosome and variant type.
 
 ---
 
@@ -46,6 +46,8 @@ java -Xmx16G -jar SnpSift.jar \
 ```
 
 
+**Note:** If the database directory already exists and is non-empty, the command will fail. You must remove the existing database directory before re-creating it.
+
 When a database is created, it is stored in a dedicated directory named after the original VCF file, with the suffix `.snpsift.vardb` appended. For example, if your input VCF file is named `clinvar.vcf`, the resulting database will be saved in a directory called `clinvar.vcf.snpsift.vardb`.
 
 Within this directory, the database is partitioned by chromosome. Each chromosome has its own file named following the pattern `{chromosomeName}.snpsift.df`. These files contain the serialized dataframes that store the selected INFO fields for that specific chromosome, enabling fast and efficient in-memory lookups during the annotation step.
@@ -86,9 +88,11 @@ java -Xmx16G -jar SnpSift.jar \
 
 During this annotation step, the required dataframes are loaded into memory on a per-chromosome basis, ensuring efficient processing.
 
-**Note:** If no `fields` parameter is used in the annotation command, all field in the database are used.
+**Note:** The input VCF file must be sorted by chromosome and position. The command will report an error if unsorted entries are detected.
 
-**Note:** If a variant from the input VCF file does not have an entry the database/s, then no INFO field is added.
+**Note:** If no `fields` parameter is used in the annotation command, all fields in the database are used.
+
+**Note:** If a variant from the input VCF file does not have an entry in the database/s, then no INFO field is added.
 
 **Note:** You can specify `-addAnnotated` to add the `ANNOTATED` flag to every VCF entry, so downstream processes know the VCF entry was annotated.
 

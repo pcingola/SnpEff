@@ -42,6 +42,31 @@ Thus the annotation is `Controls=2,2,6`
         #CHROM  POS    ID  REF  ALT  QUAL  FILTER  INFO                                                                                                         FORMAT  Sample_01  Sample_02  Sample_03  Sample_04  Sample_05  Sample_06  Sample_07  Sample_08  Sample_09  Sample_10
         1       69496  .   G    A    .     PASS    AF=0.01;Cases_MY_GROUP=1,2,4;Controls_MY_GROUP=2,2,6;Cases_ANOTHER_GROUP=1,3,5;Controls_ANOTHER_GROUP=2,1,5  GT      0/1        1/1        1/0        0/0        0/0        0/1        1/1        1/1        1/0        0/0
 
+---
+
+## Command Options
+
+- `<CaseControlString>` : A string of `{'+', '-', '0'}`, one character per sample, identifying two groups: case (`+`), control (`-`), neutral/ignored (`0`).
+- `-tfam file.tfam` : Load case/control assignments from a TFAM pedigree file instead of a command-line string. Phenotype column (6th) is coded as `{0, 1, 2}` meaning `{Missing, Control, Case}`.
+- `-name <nameStr>` : Append `<nameStr>` as a suffix to all output INFO field names (e.g., `Cases` becomes `Cases_MY_GROUP`). Useful for running multiple case/control analyses on the same dataset.
+- `-chi2` : Use Chi-Square approximation instead of Fisher exact test for the dominant, recessive, and allelic models.
+
+## Output INFO fields
+
+For each variant, the following INFO fields are added (with the optional `-name` suffix appended):
+
+- `Cases` : Variant counts in cases, formatted as `Hom,Het,Count` (homozygous ALT, heterozygous, total variant allele count).
+- `Controls` : Variant counts in controls, same format as `Cases`.
+- `CC_DOM` : p-value from the dominant model (Fisher exact test).
+- `CC_REC` : p-value from the recessive model (Fisher exact test).
+- `CC_ALL` : p-value from the allelic model (Fisher exact test).
+- `CC_GENO` : p-value from the genotypic/codominant model (Chi-Square test).
+- `CC_TREND` : p-value from the Cochran-Armitage trend test.
+
+**Note:** The code automatically detects when the REF allele is actually the minor allele and swaps the counts, so the tests always use the minor allele as reference. This prevents inflated p-values.
+
+---
+
 ### p-values
 SnpSift caseControl calculates the p-value using different models: dominant, recessive, allelic and co-dominant.
 
@@ -84,7 +109,7 @@ Models:
     For instance homozygous reference samples count as 0, heterozygous count as 1 and homozygous non-reference count as 2.
     Fisher exact test is used to calculate the p-value.
 
-* Genotipic / Codominant model (`CC_GENO`): A 2 by 3 contingency table is created:
+* Genotypic / Codominant model (`CC_GENO`): A 2 by 3 contingency table is created:
 
     --       | A/A | a/A | a/a
     -------- | --- | --- | ---
@@ -94,7 +119,7 @@ Models:
     This means that the first column are the number of homozygous reference genotypes. The second column is the number of heterozygous.
     And the third column is the number of homozygous non-reference.
 
-    **Chi-Square** distribution with two degrees of freedom is calculate the p-value.
+    **Chi-Square** distribution with two degrees of freedom is used to calculate the p-value.
 
 * Cochran-Armitage trend model (`CC_TREND`): A 2 by 3 contingency table is created:
 
