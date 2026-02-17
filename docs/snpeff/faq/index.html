@@ -695,8 +695,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-building-an-ncbi-genome-genbank-file" class="md-nav__link">
-    How to building an NCBI genome (GenBank file)
+  <a href="#how-to-build-an-ncbi-genome-genbank-file" class="md-nav__link">
+    How to build an NCBI genome (GenBank file)
   </a>
   
 </li>
@@ -1391,8 +1391,8 @@
 </ul>
 <p><strong>INFO_REALIGN_3_PRIME</strong></p>
 <p>The variant has been realigned to the most 3-prime position within the transcript.</p>
-<p>This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGSV requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGSV, sometimes a local realignment is required.</p>
-<p>IMPORTANT: This message is just indicating that a realignment was performed, so <strong> when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation </strong></p>
+<p>This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGVS requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGVS, sometimes a local realignment is required.</p>
+<p>IMPORTANT: This message is just indicating that a realignment was performed, so <strong>when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation</strong></p>
 <p><strong>WARNING_SEQUENCE_NOT_AVAILABLE</strong></p>
 <p>The exon does not have reference sequence information.
 The annotation may not be calculated (e.g. incomplete transcripts).</p>
@@ -1409,7 +1409,7 @@ This could happen in genomes that are not well understood.</p>
 <p>Multiple STOP codons found in a CDS.
 There should be only one STOP codon at the end of the transcript, but in this case, the transcript has multiple STOP codons, which is unlikely to be real.</p>
 <p>This usually indicates an error on the reference genome (or database).
-Could for, for example, indicating frame errors in the reference genome for one or more exons in this transcript.</p>
+Could, for example, indicate frame errors in the reference genome for one or more exons in this transcript.</p>
 <p><strong>WARNING_TRANSCRIPT_NO_START_CODON</strong></p>
 <p>Start codon does not match any 'start' codon in the CodonTable.</p>
 <p>This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in <code>snpEff.config</code></p>
@@ -1417,8 +1417,8 @@ Could for, for example, indicating frame errors in the reference genome for one 
 <p>Stop codon does not match any 'stop' codon in the CodonTable.</p>
 <p>This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in <code>snpEff.config</code></p>
 <p><strong>ERROR_CHROMOSOME_NOT_FOUND</strong></p>
-<p>Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more several problems (different reference genome).</p>
-<p>See more details (here)[https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND]</p>
+<p>Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more severe problem (different reference genome).</p>
+<p>See more details <a href="https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND">here</a></p>
 <p><strong>ERROR_OUT_OF_CHROMOSOME_RANGE</strong></p>
 <p>Variant's genomic position is outside chromosome's range.</p>
 <p>Simple, the variant coordinate is outside the reference genome chromosome's length.</p>
@@ -1458,7 +1458,7 @@ In this case, the full variant annotation cannot be calculated due to missing CD
 <p>Once you know the names of the input file and the name used by SnpEff's database, you can adjust the chromosome name using a simple sed command. For example, if you input file's chromosome name is <code>INPUT_CHR_NAME</code> and the name in SnpEff's database is <code>SNPEFF_CHR_NAME</code>, you could use the following command:</p>
 <div class="highlight"><pre><span></span><code>cat input.vcf | sed &quot;s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/&quot; &gt; input_updated_chr.vcf
 </code></pre></div>
-<h2 id="how-to-building-an-ncbi-genome-genbank-file">How to building an NCBI genome (GenBank file)</h2>
+<h2 id="how-to-build-an-ncbi-genome-genbank-file">How to build an NCBI genome (GenBank file)</h2>
 <p>When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.</p>
 <p>The script is <code>buildDbNcbi.sh</code> and is located in snpEff's scripts directory.
 It takes only one argument, which is the NCBI's ID.</p>
@@ -1509,11 +1509,11 @@ Chromosome: &#39;CP003278&#39;  length: 4768352
 
 $ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa GRCh38.mane.1.2.ensembl z.vcf &gt; z.ann.vcf
 </code></pre></div></p>
-<p>The resulting fasta file <code>z.prot.fa</code> looks like this (lines edited for readibility):</p>
-<p>Notice the difference in the protemic sequeces ('VAF<strong>A</strong>WVS' -&gt; 'VAF<strong>T</strong>WVS')
+<p>The resulting fasta file <code>z.prot.fa</code> looks like this (lines edited for readability):</p>
+<p>Notice the difference in the protein sequences ('VAF<strong>A</strong>WVS' -&gt; 'VAF<strong>T</strong>WVS')
 <div class="highlight"><pre><span></span><code>&gt;ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, reference
 MAGL....VAFAWVS...
-&gt;ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant:q 17:39684602-39684602, ref:&#39;C&#39;, alt:&#39;T&#39;, HGVS.p: p.Ala143Thr
+&gt;ENST00000300658.9, gene: PGAP3, protein_id: ENSP00000300658.4, variant: 17:39684602-39684602, ref:&#39;C&#39;, alt:&#39;T&#39;, HGVS.p: p.Ala143Thr
 MAGL....VAFTWVS...
 </code></pre></div></p>
 <p>When given the command line option <code>-fastaProtNoRef</code>, no reference sequence is written to the output FASTA protein sequences file.</p>
@@ -1562,7 +1562,7 @@ If you scroll up in the config file, you'll see a comment like this:</p>
 # ENSEMBL BFMPP release 32
 #---
 </code></pre></div>
-<p>Here <code>ENSEMBL BFMPP</code> stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
+<p>Here <code>ENSEMBL BFMPP</code> stands for Ensembl Bacteria, Fungi, Metazoa, Plants and Protists.
 So the comment is indicating that this is Ensembl's release 32.</p>
 <h2 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h2>
 <p>First of all, SnpEff is probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
@@ -1582,7 +1582,7 @@ This means that the line contains two variants: </p>
 <h3 id="counting-variants-vs-annotations">Counting variants vs annotations</h3>
 <p>Also, a single variant can have more than one annotation, due to:</p>
 <ul>
-<li>Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcrips per gene)</li>
+<li>Multiple transcripts (isoforms) of a gene (e.g. the human genome has on average 8.8 transcripts per gene)</li>
 <li>Multiple (overlapping) genes in the genomic location of the variant.</li>
 <li>A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</li>
 </ul>
@@ -1591,9 +1591,9 @@ SnpEff does consider all these factors when counting the variants and annotation
 <h3 id="iupac-expansion">IUPAC expansion</h3>
 <p>Sometimes either the <code>REF</code> or <code>ALT</code> fields have <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC/IUB</a> bases.
 A common example is when you see an <code>N</code> character, which means that the base could be any of <code>{A, C, G, T}</code>.
-There are several IUPAC characters, please see details in <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC degenarate base symbols table</a>.</p>
+There are several IUPAC characters, please see details in <a href="https://en.wikipedia.org/wiki/Nucleic_acid_notation">IUPAC degenerate base symbols table</a>.</p>
 <p>In case of having IUPAC symbols in either the <code>REF</code> and/or <code>ALT</code> fields, SnpEff will expand them into different variants.
-This means that entries with ambiguous symbols will be tranformed into all possible combinations of variants using the IUPAC notation.</p>
+This means that entries with ambiguous symbols will be transformed into all possible combinations of variants using the IUPAC notation.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>You can disable the 'IUPAC/IUB expand' behaviour by using the <code>-noexpandiub</code> command line option.</p>
@@ -1610,7 +1610,7 @@ chr1    102947631   .   T    N    30    PASS    ...
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If the number of degenerate symbols increases, the number of variants expanded will increase exponentiallly.
+<p>If the number of degenerate symbols increases, the number of variants expanded will increase exponentially.
 Currently SnpEff will not expand more than <code>MAX_IUB_BASES=10</code> bases</p>
 </div>
 <h3 id="typical-counting-mistakes">Typical counting mistakes</h3>
@@ -1634,15 +1634,15 @@ But even in those cases SnpEff is efficient and it doesn't take too long.</p>
 <li>You can disable the HTML report (command line option <code>-noStats</code>). The report is usually quite time consuming, particularly if the number of samples in the VCF is large</li>
 </ol>
 <h2 id="how-much-memory-should-i-use">How much memory should I use</h2>
-<p>How much memory to use is very specifcic to your project / application, but here are some guidelines:
-- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
+<p>How much memory to use is very specific to your project / application, but here are some guidelines:
+- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. <code>java -Xmx8G -jar snpEff.jar ...</code>)
 - Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
 - Very large 128GB: It is extremely uncommon for SnpEff to require over 128GB of RAM for annotating with SnpEff, but it might happen on very large projects.</p>
 <h2 id="multiple-version-of-refseq-transcripts">Multiple version of RefSeq transcripts</h2>
 <p>When using RefSeq transcripts, for instance in the human genome versions <code>hg38</code> or <code>hg19</code>, can lead to some confusion due to multiply mapped transcripts.</p>
 <p><strong>Example: <code>NM_001135865.1</code> from hg38</strong></p>
 <p>From the original RefSeq data, you can see that there are actually four mappings of NM_001135865.1:
-<div class="highlight"><pre><span></span><code># Note: Output edited for readbility
+<div class="highlight"><pre><span></span><code># Note: Output edited for readability
 $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 
 751 NM_001135865.1  chr16   -   21834582    21857657    21834717    21857378    11  ...
@@ -1654,8 +1654,8 @@ $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 <p class="admonition-title">Warning</p>
 <p>To make matters even worse, not only <code>NM_001135865.1</code> maps twice to regions in <code>chr16</code>, but also one is mapped in the forward strand and the other on the reverse strand (notice the <code>+</code> and <code>-</code> signs)</p>
 </div>
-<p>How do you know which of the four <code>NM_001135865.1</code> version is SnpEff refering to?
-When there are multiple mappings for a transcipt SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.</p>
+<p>How do you know which of the four <code>NM_001135865.1</code> version is SnpEff referring to?
+When there are multiple mappings for a transcript SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.</p>
 <p>So the transcript IDs are named (notice that the first one is not changed):</p>
 <ul>
 <li><code>NM_001135865.1</code></li>
@@ -1695,7 +1695,7 @@ Please see details in <a href="../build_db/#step-3-checking-the-database">'Build
 ERROR: Protein check file &#39;./data/MY_GENOME/protein.fa&#39; not found.
 ERROR: Database check failed.
 </code></pre></div>
-<p>To disable these checks, you need to specify <em>BOTH</em> commmand line options <code>-noCheckCds -noCheckProtein</code>.</p>
+<p>To disable these checks, you need to specify <em>BOTH</em> command line options <code>-noCheckCds -noCheckProtein</code>.</p>
 
 
 

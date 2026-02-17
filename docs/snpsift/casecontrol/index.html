@@ -793,9 +793,29 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#command-options" class="md-nav__link">
+    Command Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-info-fields" class="md-nav__link">
+    Output INFO fields
+  </a>
+  
+    <nav class="md-nav" aria-label="Output INFO fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#p-values" class="md-nav__link">
     p-values
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1321,6 +1341,27 @@ See <a href="http://zzz.bwh.harvard.edu/plink/data.shtml#tr">PLINK's reference</
 </code></pre></div>
 
 </div>
+<hr />
+<h2 id="command-options">Command Options</h2>
+<ul>
+<li><code>&lt;CaseControlString&gt;</code> : A string of <code>{'+', '-', '0'}</code>, one character per sample, identifying two groups: case (<code>+</code>), control (<code>-</code>), neutral/ignored (<code>0</code>).</li>
+<li><code>-tfam file.tfam</code> : Load case/control assignments from a TFAM pedigree file instead of a command-line string. Phenotype column (6th) is coded as <code>{0, 1, 2}</code> meaning <code>{Missing, Control, Case}</code>.</li>
+<li><code>-name &lt;nameStr&gt;</code> : Append <code>&lt;nameStr&gt;</code> as a suffix to all output INFO field names (e.g., <code>Cases</code> becomes <code>Cases_MY_GROUP</code>). Useful for running multiple case/control analyses on the same dataset.</li>
+<li><code>-chi2</code> : Use Chi-Square approximation instead of Fisher exact test for the dominant, recessive, and allelic models.</li>
+</ul>
+<h2 id="output-info-fields">Output INFO fields</h2>
+<p>For each variant, the following INFO fields are added (with the optional <code>-name</code> suffix appended):</p>
+<ul>
+<li><code>Cases</code> : Variant counts in cases, formatted as <code>Hom,Het,Count</code> (homozygous ALT, heterozygous, total variant allele count).</li>
+<li><code>Controls</code> : Variant counts in controls, same format as <code>Cases</code>.</li>
+<li><code>CC_DOM</code> : p-value from the dominant model (Fisher exact test).</li>
+<li><code>CC_REC</code> : p-value from the recessive model (Fisher exact test).</li>
+<li><code>CC_ALL</code> : p-value from the allelic model (Fisher exact test).</li>
+<li><code>CC_GENO</code> : p-value from the genotypic/codominant model (Chi-Square test).</li>
+<li><code>CC_TREND</code> : p-value from the Cochran-Armitage trend test.</li>
+</ul>
+<p><strong>Note:</strong> The code automatically detects when the REF allele is actually the minor allele and swaps the counts, so the tests always use the minor allele as reference. This prevents inflated p-values.</p>
+<hr />
 <h3 id="p-values">p-values</h3>
 <p>SnpSift caseControl calculates the p-value using different models: dominant, recessive, allelic and co-dominant.</p>
 <div class="admonition info">
@@ -1412,7 +1453,7 @@ For instance homozygous reference samples count as 0, heterozygous count as 1 an
 Fisher exact test is used to calculate the p-value.</p>
 </li>
 <li>
-<p>Genotipic / Codominant model (<code>CC_GENO</code>): A 2 by 3 contingency table is created:</p>
+<p>Genotypic / Codominant model (<code>CC_GENO</code>): A 2 by 3 contingency table is created:</p>
 <table>
 <thead>
 <tr>
@@ -1439,7 +1480,7 @@ Fisher exact test is used to calculate the p-value.</p>
 </table>
 <p>This means that the first column are the number of homozygous reference genotypes. The second column is the number of heterozygous.
 And the third column is the number of homozygous non-reference.</p>
-<p><strong>Chi-Square</strong> distribution with two degrees of freedom is calculate the p-value.</p>
+<p><strong>Chi-Square</strong> distribution with two degrees of freedom is used to calculate the p-value.</p>
 </li>
 <li>
 <p>Cochran-Armitage trend model (<code>CC_TREND</code>): A 2 by 3 contingency table is created:</p>

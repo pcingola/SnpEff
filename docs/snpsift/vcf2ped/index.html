@@ -957,9 +957,47 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Vcf2Tped
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Vcf2Tped
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1248,34 +1286,86 @@
 
 <h1 id="snpsift-vcf2tped">SnpSift Vcf2Tped</h1>
 <p>Convert from VCF to PLINK's TPED file format.</p>
-<p>The <code>vcf2tped</code> command uses a VCF and a TFAP file as input, creating a TPED and a consolidated TFAM as outputs.</p>
-<p>Command line options are:
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar vcf2tped
-SnpSift version 1.9d (build 2013-04-26), by Pablo Cingolani
-Usage: java -jar SnpSift.jar vcf2tped [options] file.tfam file.vcf outputName
-Options:
-        -f             : Force. Overwrite new files if they exist. Default: false
-        -onlySnp       : Use only SNPs when converting VCF to TPED. Default: false
-        -onlyBiAllelic : Use only bi-allelic variants. Default: false
-        -useMissing    : Use entries with missing genotypes (otherwise they are filtered out). Default: false
-        -useMissingRef : Use entries with missing genotypes marking them as &#39;reference&#39; instead of &#39;missing&#39;. Default: false
-Parameters:
-        file.tfam      : File with genotypes and groups information (in PLINK&#39;s TFAM format)
-        file.vcf       : A VCF file (variants and genotype data)
-        outputName     : Base name for the new TPED and TFAM files.
-</code></pre></div></p>
+<p>The <code>vcf2tped</code> command uses a VCF and a TFAM file as input, creating a TPED and a consolidated TFAM as outputs.</p>
+<h2 id="usage">Usage</h2>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar vcf2tped [options] file.tfam file.vcf outputName
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-f</code></td>
+<td>Force. Overwrite new files if they exist</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>-num</code></td>
+<td A_="A," C_="C," G_="G," T="T">Use only numbers {1, 2, 3, 4} instead of bases</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>-onlySnp</code></td>
+<td>Use only SNPs when converting VCF to TPED</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>-onlyBiAllelic</code></td>
+<td>Use only bi-allelic variants</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>-useMissing</code></td>
+<td>Use entries with missing genotypes (otherwise they are filtered out)</td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>-useMissingRef</code></td>
+<td>Use entries with missing genotypes marking them as 'reference' instead of 'missing'</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file.tfam</code></td>
+<td>File with genotypes and groups information (in PLINK's TFAM format)</td>
+</tr>
+<tr>
+<td><code>file.vcf</code></td>
+<td>A VCF file (variants and genotype data)</td>
+</tr>
+<tr>
+<td><code>outputName</code></td>
+<td>Base name for the new TPED and TFAM files</td>
+</tr>
+</tbody>
+</table>
+<h2 id="features">Features</h2>
 <p><code>vcf2tped</code> command supports the following features:</p>
 <ul>
 <li>Output a TPED file:<ul>
 <li>Only samples present in both the input TFAM and the input VCF files are in the output TPED.</li>
 <li>Bi-allelic filter: <code>-onlyBiAllelic</code> option filters out non bi-allelic variants.</li>
 <li>Non SNP variants (InDels, MNPs, etc):<ul>
-<li>InDels and other non-SNP variants are converted for "fake" SNPs (some programs have problems handling non-SNP variants).</li>
+<li>InDels and other non-SNP variants are converted to "fake" SNPs (some programs have problems handling non-SNP variants).</li>
 <li><code>-onlySnp</code> option filters out non SNP variants.</li>
 </ul>
 </li>
 <li>Missing variants:<ul>
-<li>Variants having missing data are filtered out by default.</li>
+<li>By default, entries with missing genotypes are included and marked as missing in the TPED file.</li>
 <li><code>-useMissing</code> uses missing variants in TPED file.</li>
 <li><code>-useMissingRef</code> Converts missing variants to reference genotype.</li>
 </ul>

@@ -653,6 +653,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#snpeff-buildnextprot" class="md-nav__link">
+    SnpEff buildNextProt
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#snpeff-closest" class="md-nav__link">
     SnpEff closest
   </a>
@@ -695,8 +702,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#snpeff-cds-snpeff-protein" class="md-nav__link">
-    SnpEff cds &amp; SnpEff protein
+  <a href="#snpeff-cds" class="md-nav__link">
+    SnpEff cds
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-protein" class="md-nav__link">
+    SnpEff protein
   </a>
   
 </li>
@@ -709,78 +723,37 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#snpeff-pdb" class="md-nav__link">
+    SnpEff pdb
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-seq" class="md-nav__link">
+    SnpEff seq
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-show" class="md-nav__link">
+    SnpEff show
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-translocreport" class="md-nav__link">
+    SnpEff translocReport
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#scripts" class="md-nav__link">
     Scripts
   </a>
-  
-    <nav class="md-nav" aria-label="Scripts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#sam2fastqpl" class="md-nav__link">
-    sam2fastq.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fasta2tabpl" class="md-nav__link">
-    fasta2tab.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fastasplitpl" class="md-nav__link">
-    fastaSplit.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#plothistogrampl" class="md-nav__link">
-    plotHistogram.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#plotmapl-plotpl-plotqqpl-plotsmoothscatterpl" class="md-nav__link">
-    plotMA.pl, plot.pl, plotQQ.pl, plotSmoothScatter.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#queuepl" class="md-nav__link">
-    queue.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#splitchrpl" class="md-nav__link">
-    splitChr.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#uniqcountpl" class="md-nav__link">
-    uniqCount.pl
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vcfeffoneperlinepl" class="md-nav__link">
-    vcfEffOnePerLine.pl
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1403,11 +1376,22 @@
 
 
 <h1 id="commands-and-utilities">Commands and utilities</h1>
-<p>SnpEff provides several other commands and utilities that can be useful for genomic data analysis.</p>
-<p>Most of this manual was dedicated the <code>SnpEff eff</code> and <code>SnpEff build</code> commands, which annotate effects and build databases respectively.
+<p>SnpEff provides several commands and utilities for genomic data analysis.</p>
+<p>The main commands <code>ann/eff</code> (variant annotation) and <code>build</code> (database building) are described in the <a href="../commandline/">Commands &amp; command line options</a> and <a href="../build_db/">Building databases</a> pages respectively.
 Here we describe all the other commands and some scripts provided, that are useful for genomic data analysis.</p>
+<h3 id="snpeff-buildnextprot">SnpEff buildNextProt</h3>
+<p>Build a NextProt database from NextProt XML files. NextProt provides proteomic annotations for human proteins that can be used to annotate variants with functional information (e.g. active sites, binding sites, post-translational modifications).</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff buildNextProt genome_version nextProt_XML_dir
+</code></pre></div>
+<p>The <code>nextProt_XML_dir</code> argument should point to a directory containing NextProt XML files. The resulting database is stored as <code>nextProt.bin</code> in the genome's data directory and is automatically loaded when annotating variants with the <code>-nextProt</code> flag.</p>
 <h3 id="snpeff-closest">SnpEff closest</h3>
 <p>Annotates using the closest genomic region (e.g. exon, transcript ID, gene name) and distance in bases.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff closest [options] genome_version file.vcf
+
+Options:
+    -bed     : Input format is BED. Default: VCF
+    -tss     : Measure distance from TSS (transcription start site)
+</code></pre></div>
 <p>Example:
 <div class="highlight"><pre><span></span><code>$ java -Xmx8g -jar snpEff.jar closest GRCh37.66 test.vcf
 ##INFO=&lt;ID=CLOSEST,Number=4,Type=String,Description=&quot;Closest exon: Distance (bases), exons Id, transcript Id, gene name&quot;&gt;
@@ -1417,11 +1401,11 @@ Here we describe all the other commands and some scripts provided, that are usef
 1       63880   .       C       T       82.13   PASS    AC=10;AF=0.0400;CLOSEST=0,exon_1_62948_63887,ENST00000492842,OR4G11P
 </code></pre></div></p>
 <p>For instance, in the third line (1:16097 T G), it added the tag <code>CLOSEST=150,exon_1_15796_15947,ENST00000423562,WASH7P</code>
-, which means that the variant is 150 bases away from exon "exon_1_15796_15947".
+ which means that the variant is 150 bases away from exon "exon_1_15796_15947".
 The exon belongs to transcript "ENST00000423562" of gene "WASH7P".</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>If multiple markers are available (at the same distance) the one belonging to the longest mRna transcript is shown.</p>
+<p>If multiple markers are available (at the same distance) the one belonging to the longest mRNA transcript is shown.</p>
 </div>
 <p>The input can also be a BED file, the output file has the same information as CLOSEST info field, added to the fourth column of the output BED file:
 <div class="highlight"><pre><span></span><code>$ snpeff closest -bed GRCh37.66 test.bed
@@ -1441,6 +1425,11 @@ Input files can be in BAM, SAM, VCF, BED or BigBed formats.</p>
 <div class="codehilite"><pre><span></span><code>java -Xmx8g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam &gt; countReads.txt
 </code></pre></div>
 
+<div class="highlight"><pre><span></span><code>Options:
+    -n &lt;name&gt;    : Output file base name.
+    -p           : Calculate probability model (binomial).
+    -i &lt;file&gt;    : Add intervals from a BED file. Can be used multiple times.
+</code></pre></div>
 <p>The output is a TXT (tab-separated) file, that looks like this:
 <div class="highlight"><pre><span></span><code>chr  start  end       type                IDs                         Reads:readsFile_1.bam  Bases:readsFile_1.bam  Reads:readsFile_2.bam  Bases:readsFile_2.bam ...
 1    1      11873     Intergenic          DDX11L1                     130                    6631                   50                     2544
@@ -1515,6 +1504,9 @@ The option can be used multiple times, thus allowing multiple BED files to be ad
 
 <h3 id="snpeff-databases">SnpEff databases</h3>
 <p>This command provides a list of configured databases, i.e. available in <code>snpEff.config</code> file.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff databases [galaxy|html]
+</code></pre></div>
+<p>The output format can be selected: plain text (default), <code>galaxy</code> (Galaxy menu format), or <code>html</code> (HTML table format).</p>
 <p>Example:
 <div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar databases
 Genome                                                      Organism                                                    Status    Bundle                        Database download link
@@ -1531,44 +1523,27 @@ AP006561.1                                                  SARS coronavirus TWY
 </code></pre></div></p>
 <h3 id="snpeff-download">SnpEff download</h3>
 <p>This command downloads and installs a database.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff download [options] {snpeff | genome_version}
+</code></pre></div>
+<p>You can use <code>snpEff download snpeff</code> to download/update SnpEff itself, or specify a genome version to download a pre-built database.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Note that the database must be configured in <code>snpEff.config</code> and available at the download site.</p>
 </div>
 <p>Example: Download and install C.Elegans genome:
 <div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar download -v WBcel215.69
-00:00:00.000    Downloading database for &#39;WBcel215.69&#39;
-00:00:00.002    Connecting to http://downloads.sourceforge.net/project/snpeff/databases/v3_1/snpEff_v3_1_WBcel215.69.zip
-00:00:00.547    Copying file (type: application/zip, modified on: Sat Dec 01 20:59:55 EST 2012)
-00:00:00.547    Local file name: &#39;snpEff_v3_1_WBcel215.69.zip&#39;
-00:00:01.949    Downloaded 1049506 bytes
-00:00:03.624    Downloaded 2135266 bytes
-00:00:05.067    Downloaded 3185026 bytes
-00:00:06.472    Downloaded 4234786 bytes
-00:00:07.877    Downloaded 5284546 bytes
-00:00:09.580    Downloaded 6374626 bytes
-00:00:11.005    Downloaded 7424386 bytes
-00:00:12.410    Downloaded 8474146 bytes
-00:00:13.815    Downloaded 9523906 bytes
-00:00:15.358    Downloaded 10604226 bytes
-00:00:16.761    Downloaded 11653666 bytes
-00:00:18.168    Downloaded 12703426 bytes
-00:00:19.573    Downloaded 13753186 bytes
-00:00:21.198    Downloaded 14837506 bytes
-00:00:22.624    Downloaded 15887266 bytes
-00:00:24.029    Downloaded 16937026 bytes
-00:00:25.434    Downloaded 17986786 bytes
-00:00:26.864    Downloaded 19036546 bytes
-00:00:28.269    Downloaded 20086306 bytes
-00:00:29.155    Donwload finished. Total 20748168 bytes.
-00:00:29.156    Local file name: &#39;/home/pcingola//snpEff/data/WBcel215.69/snpEffectPredictor.bin&#39;
-00:00:29.156    Extracting file &#39;data/WBcel215.69/snpEffectPredictor.bin&#39; to &#39;/home/pcingola//snpEff/data/WBcel215.69/snpEffectPredictor.bin&#39;
-00:00:29.157    Creating local directory: &#39;/home/pcingola/snpEff/data/WBcel215.69&#39;
-00:00:29.424    Unzip: OK
-00:00:29.424    Done
 </code></pre></div></p>
 <h3 id="snpeff-dump">SnpEff dump</h3>
 <p>Dump the contents of a database to a text file, a BED file or a tab separated TXT file (that can be loaded into R).</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff dump [options] genome_version
+
+Options:
+    -bed             : Dump in BED format
+    -chr &lt;string&gt;    : Prepend &#39;string&#39; to chromosome name
+    -txt             : Dump as a TXT table
+    -0               : Output zero-based coordinates
+    -1               : Output one-based coordinates
+</code></pre></div>
 <p><strong>BED file example</strong>:
 <div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar download -v GRCh37.70
 $ java -Xmx8g -jar snpEff.jar dump -v -bed GRCh37.70 &gt; GRCh37.70.bed
@@ -1602,7 +1577,7 @@ So a 2 base interval at (one-based) positions 100 and 101 is expressed as a BED 
 00:00:31.962    Building interval forest
 00:00:45.467    Done.
 </code></pre></div>
-In this case, the output file looks like a typical BED file (chr \t start \t end \t name):
+The output file is a tab-separated table with gene, transcript, and exon information:
 <div class="highlight"><pre><span></span><code>$ head GRCh37.70.txt
 chr start       end        strand  type         id                          geneName  geneId            numberOfTranscripts  canonicalTranscriptLength  transcriptId     cdsLength  numerOfExons  exonRank  exonSpliceType
 1   1           249250622  +1      Chromosome   1                                                                                                       
@@ -1647,7 +1622,7 @@ chr start       end        strand  type         id                          gene
 </tr>
 <tr>
 <td>id</td>
-<td>ID. E.g. if it's a Gene, then it may be ENSEBML's gene ID</td>
+<td>ID. E.g. if it's a Gene, then it may be ENSEMBL's gene ID</td>
 </tr>
 <tr>
 <td>geneName</td>
@@ -1655,7 +1630,7 @@ chr start       end        strand  type         id                          gene
 </tr>
 <tr>
 <td>geneId</td>
-<td>Gene is, if marker is within a gene</td>
+<td>Gene ID, if marker is within a gene</td>
 </tr>
 <tr>
 <td>numberOfTranscripts</td>
@@ -1688,28 +1663,61 @@ chr start       end        strand  type         id                          gene
 </tbody>
 </table>
 <h3 id="snpeff-genes2bed">SnpEff genes2bed</h3>
-<p>Dumps a selected set of genes as BED intervals.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The functionality of this command is a subset of <code>SnpEff dump</code>, so it is likely to be deprecated in the future.</p>
+<p>Dumps a selected set of genes (or all genes) as BED intervals. By default it outputs gene-level coordinates, but can also output exons, CDS regions, introns, or transcripts.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff genes2bed genomeVer [-f genes.txt | geneList]
+
+Options:
+    -cds           : Show coding exons (no UTRs).
+    -e             : Show exons for every transcript.
+    -f &lt;file.txt&gt;  : A TXT file having one gene ID (or name) per line.
+    -i             : Show introns for every transcript.
+    -pc            : Use only protein coding genes.
+    -tr            : Show transcript coordinates.
+    -ud &lt;num&gt;      : Expand gene interval upstream and downstream by &#39;num&#39; bases.
+    geneList       : A list of gene IDs or names as command line arguments.
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Options <code>-cds</code>, <code>-e</code>, and <code>-tr</code> are mutually exclusive. If no gene list is provided (neither via <code>-f</code> nor as arguments), all genes in the genome are used.</p>
 </div>
 <p>Example:
 <div class="highlight"><pre><span></span><code>$ java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
-#chr    start   end geneName;geneId
-1   11868   14411   DDX11L1;ENSG00000223972
-1   14362   29805   WASH7P;ENSG00000227232
+#chr    start   end geneName;geneId;strand
+1   11868   14411   DDX11L1;ENSG00000223972;+
+1   14362   29805   WASH7P;ENSG00000227232;-
 </code></pre></div></p>
-<h3 id="snpeff-cds-snpeff-protein">SnpEff cds &amp; SnpEff protein</h3>
-<p>These commands perform SnpEff database sanity checks.
-They calculate CDS and protein sequences from a SnpEff database and then compare the results to a FASTA file (having the "correct" sequences).</p>
-<p>The commands are invoked automatically when building databases, so there is no need for the user to invoke them manually.</p>
+<p>Example showing exons:
+<div class="highlight"><pre><span></span><code>$ java -Xmx8g -jar snpEff.jar genes2bed -e GRCh37.66 DDX11L1
+#chr    start   end geneName;geneId;transcriptId;exonRank;strand
+</code></pre></div></p>
+<h3 id="snpeff-cds">SnpEff cds</h3>
+<p>Performs a database sanity check by calculating CDS sequences from a SnpEff database and comparing them to a FASTA file containing the "correct" sequences.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff cds [options] genome_version cds_file
+</code></pre></div>
+<p>This command is invoked automatically when building databases (<code>snpEff build</code>), so there is usually no need to invoke it manually.</p>
+<h3 id="snpeff-protein">SnpEff protein</h3>
+<p>Performs a database sanity check by calculating protein sequences from a SnpEff database and comparing them to a FASTA file containing the "correct" sequences.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff protein [options] genome_version protein_file
+
+Options:
+    -codonTables   : Try all codon tables on each chromosome and calculate error rates.
+</code></pre></div>
+<p>This command is invoked automatically when building databases (<code>snpEff build</code>), so there is usually no need to invoke it manually.
+The <code>-codonTables</code> option is useful for debugging genomes that may use non-standard codon tables.</p>
 <h3 id="snpeff-len">SnpEff len</h3>
 <p>Calculates the genomic length of every type of marker (Gene, Exon, Utr, etc.).
 Length is calculated by overlapping all markers and counting the number of bases (e.g. a base is counted as 'Exon' if any exon falls onto that base).
 This command also reports the probability of a Binomial model.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff len [options] genome_version
+
+Options:
+    -r &lt;num&gt;       : Assume a read size of &#39;num&#39; bases.
+    -iter &lt;num&gt;    : Perform &#39;num&#39; iterations of random sampling.
+    -reads &lt;num&gt;   : Each random sampling iteration has &#39;num&#39; reads.
+</code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Parameter <code>-r num</code> adjusts the model for a read length of 'num' bases. That is, if two markers of the same type are closer than 'num' bases, it joins them by inclining the bases separating them.</p>
+<p>Parameter <code>-r num</code> adjusts the model for a read length of 'num' bases. That is, if two markers of the same type are closer than 'num' bases, it joins them by including the bases separating them.</p>
 </div>
 <p>E.g.:
 <div class="highlight"><pre><span></span><code>$ java -Xmx1g -jar snpEff.jar len -r 100 BDGP5.69
@@ -1736,112 +1744,60 @@ Column meaning:</p>
 <li>raw_size : Size of all intervals in the genome. Note that this could be larger than the genome.</li>
 <li>raw_count : Number of intervals in the genome.</li>
 </ul>
-<h3 id="scripts">Scripts</h3>
-<p>Several scripts are provided in the <code>scripts</code> directory.
-Here we briefly describe their functionality:</p>
-<h4 id="sam2fastqpl">sam2fastq.pl</h4>
-<p>Convert a SAM input to a FASTQ output. Example:
-<div class="highlight"><pre><span></span><code>samtools view test.bam | ./scripts/bam2fastq.pl | head -n 12
-@HWI-ST1220:76:D12CHACXX:7:2207:18986:95756
-CGACAATGCACGACAGAGGAAGCAGAACAGATATTTAGATTGCCTCTCATT
-+
-CCCFFFFFGHHHHIIJIJJIJIJJIJJIIIJIIHIJJJIJJIJJJJJJIJJ
-@HWI-ST1220:76:D12CHACXX:7:2206:4721:162268
-ATATTATAGGGAGAAATATGATCGCGTATGCGAGAGTAGTGCCAACATATT
-+
-@@@DDD&gt;DAB;?DGGEGGBCD&gt;BFGI?FCFFBFGG@&lt;?B*?BFB9FGII@E
-@HWI-ST1220:76:D12CHACXX:7:1304:13069:17740
-ATAGGGAGAAATATGATCGCGTATGCGAGAGTAGTGCCAACATATTGTGCT
-+
-CCCFFFFFHHHHHJJJJJJJJGIJJJJJJAGBGGIIIJJJJJJJJJJJIJG
-</code></pre></div></p>
-<h4 id="fasta2tabpl">fasta2tab.pl</h4>
-<p>Convert a fasta file to a two column tab-separated TXT file (name \t sequence)</p>
-<p>Example (output truncated for brevity):
-<div class="highlight"><pre><span></span><code>$ zcat ce6.fa.gz | ./scripts/fasta2tab.pl
-chrI    gcctaagcctaagcctaagcctaagcctaagcctaagcctaagcct...
-chrV    GAATTcctaagcctaagcctaagcctaagcctaagcctaagcctaa...
-chrII   cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-chrM    CAGTAAATAGTTTAATAAAAATATAGCATTTGGGTTGCTAAGATAT...
-chrX    ctaagcctaagcctaagcctaagcctaagcctaagcctaagcctaa...
-chrIV   cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-chrIII  cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
-</code></pre></div></p>
-<h4 id="fastasplitpl">fastaSplit.pl</h4>
-<p>Split a multiple sequence FASTA file to individual files.</p>
-<p>Example: Creates one file per chromosome:
-<div class="highlight"><pre><span></span><code>$ zcat ce6.fa.gz | ./scripts/fastaSplit.pl
-Writing to chrI.fa
-Writing to chrV.fa
-Writing to chrII.fa
-Writing to chrM.fa
-Writing to chrX.fa
-Writing to chrIV.fa
-Writing to chrIII.fa
-</code></pre></div></p>
-<h4 id="plothistogrampl">plotHistogram.pl</h4>
-<p>Given a list of numbers (one per line), shows a histogram. Note: It requires R.</p>
-<p>Example: Extract the file sizes in a directory and show a histogram</p>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>ls<span class="w"> </span>-al<span class="w"> </span>scripts/<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">5</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./scripts/hist.pl
-</code></pre></div>
+<h3 id="snpeff-pdb">SnpEff pdb</h3>
+<p>Build interaction database based on PDB (Protein Data Bank) or AlphaFold structure data.
+This command analyzes protein structures to identify amino acid pairs that are in close physical proximity and adds this interaction information to the SnpEff database for variant annotation.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff pdb [options] genome_version
 
-<p>Creates the following plot:
-<img alt="hist_example" class="smallerimg center" src="../../images/hist_example.png" /></p>
-<h4 id="plotmapl-plotpl-plotqqpl-plotsmoothscatterpl">plotMA.pl, plot.pl, plotQQ.pl, plotSmoothScatter.pl</h4>
-<p>Similar to 'hist.pl', these perform plots based on input from STDIN.
-Note that in some cases, inputs are expected to be probabilities (qqplot.pl) or pairs of numbers (maPlot.pl).</p>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>ls<span class="w"> </span>-al<span class="w"> </span>scripts/<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">5</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./scripts/plot.pl
+Options:
+    -aaSep &lt;number&gt;          : Minimum number of AA separation within sequence.
+    -idMap &lt;file&gt;            : ID map file (PDB ID to transcript ID mapping).
+    -maxDist &lt;number&gt;        : Maximum distance in Angstrom for atom pairs.
+    -maxErr &lt;number&gt;         : Maximum AA sequence difference between PDB and genome.
+    -org &lt;name&gt;              : Organism common name.
+    -orgScientific &lt;name&gt;    : Organism scientific name.
+    -pdbDir &lt;path&gt;           : Path to PDB files.
+    -res &lt;number&gt;            : Maximum PDB file resolution.
 </code></pre></div>
+<p>For detailed instructions on obtaining PDB/AlphaFold data and building interaction databases, see <a href="../build_pdb/">Building databases: PDB and AlphaFold</a>.</p>
+<h3 id="snpeff-seq">SnpEff seq</h3>
+<p>Translates DNA sequences to protein using the genome's codon table.
+This is a simple utility for quick sequence translations from the command line.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff seq [-r] genome seq_1 seq_2 ... seq_N
 
-<p>Creates the following plot:
-<img alt="plot_example" class="smallerimg center" src="../../images/plot_example.png" /></p>
-<h4 id="queuepl">queue.pl</h4>
-<p>Process a list of statements in parallel according to the number of CPUs available in the local machine.</p>
-<h4 id="splitchrpl">splitChr.pl</h4>
-<p>Splits a file by chromosome. Works on any tab separated file that the first column is CHR field (e.g. BED, VCF, etc.)</p>
+Options:
+    -r    : Reverse Watson-Crick complement before translating.
+</code></pre></div>
+<p>The command shows the protein translation in three formats: 3-letter amino acid code, 1-letter code with spacing, and 1-letter code.</p>
 <p>Example:
-<div class="highlight"><pre><span></span><code>$ cat large_test.vcf | ./scripts/splitChr.pl
-Input line 28. Creating file &#39;chr1.txt&#39;
-Input line 13332. Creating file &#39;chr2.txt&#39;
-Input line 22097. Creating file &#39;chr3.txt&#39;
-Input line 29289. Creating file &#39;chr4.txt&#39;
-Input line 34236. Creating file &#39;chr5.txt&#39;
-Input line 39899. Creating file &#39;chr6.txt&#39;
-Input line 47120. Creating file &#39;chr7.txt&#39;
-Input line 53371. Creating file &#39;chr8.txt&#39;
-Input line 57810. Creating file &#39;chr9.txt&#39;
-Input line 63005. Creating file &#39;chr10.txt&#39;
-Input line 68080. Creating file &#39;chr11.txt&#39;
-Input line 76629. Creating file &#39;chr12.txt&#39;
-Input line 83071. Creating file &#39;chr13.txt&#39;
-Input line 85124. Creating file &#39;chr14.txt&#39;
-Input line 89281. Creating file &#39;chr15.txt&#39;
-Input line 93215. Creating file &#39;chr16.txt&#39;
-Input line 99081. Creating file &#39;chr17.txt&#39;
-Input line 106405. Creating file &#39;chr18.txt&#39;
-Input line 108330. Creating file &#39;chr19.txt&#39;
-Input line 118568. Creating file &#39;chr20.txt&#39;
-Input line 121795. Creating file &#39;chr21.txt&#39;
-Input line 123428. Creating file &#39;chr22.txt&#39;
-Input line 126520. Creating file &#39;chrX.txt&#39;
-Input line 129094. Creating file &#39;chrY.txt&#39;
-Input line 129113. Creating file &#39;chrMT.txt&#39;
+<div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar seq GRCh38.105 ATGCGAGCT
+Sequence                   : ATGCGAGCT
+Protein (3-Letter)         : Met-Arg-Ala
+Protein (1-Letter-space)   :  M  R  A
+Protein (1-Letter)         : MRA
 </code></pre></div></p>
-<h4 id="uniqcountpl">uniqCount.pl</h4>
-<p>Count number of unique lines. It's the same as doing <code>cat lines.tst | sort | uniq -c</code>, but much faster. Particularly useful for very large inputs.</p>
-<h4 id="vcfeffoneperlinepl">vcfEffOnePerLine.pl</h4>
-<p>Splits EFF fields in a VCF file, creating multiple lines, each one with only one effect.</p>
-<p>Very useful for filtering with SnpSift.</p>
-<p>Example:</p>
-<div class="highlight"><pre><span></span><code>$ cat test.stop.vcf
-1   897062  .   C   T   100.0   PASS    AC=1;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|),UPSTREAM(MODIFIER||||576|PLEKHN1||CODING|NM_001160184|),UPSTREAM(MODIFIER||||611|PLEKHN1||CODING|NM_032129|),UPSTREAM(MODIFIER||||749|NOC2L||CODING|NM_015658|)
-
-$ cat test.stop.vcf | ./scripts/vcfEffOnePerLine.pl
-1   897062  .   C   T   100.0   PASS    AC=1;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
-1   897062  .   C   T   100.0   PASS    AC=1;EFF=UPSTREAM(MODIFIER||||576|PLEKHN1||CODING|NM_001160184|)
-1   897062  .   C   T   100.0   PASS    AC=1;EFF=UPSTREAM(MODIFIER||||611|PLEKHN1||CODING|NM_032129|)
-1   897062  .   C   T   100.0   PASS    AC=1;EFF=UPSTREAM(MODIFIER||||749|NOC2L||CODING|NM_015658|)
+<h3 id="snpeff-show">SnpEff show</h3>
+<p>Show a text representation of genes or transcripts including coordinates, DNA sequence and protein sequence.
+Useful for visual inspection and debugging of gene annotations.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff show genome_version gene_1 ... gene_N ... trId_1 ... trId_N
 </code></pre></div>
+<p>The command accepts both gene IDs and transcript IDs. It displays an ASCII-art representation of the transcript structure including exons, introns, coding regions, UTRs, and the corresponding DNA and protein sequences. Coordinates are zero-based.</p>
+<h3 id="snpeff-translocreport">SnpEff translocReport</h3>
+<p>Create a translocation report with SVG visualizations from a VCF file containing structural variants (BND, DUP, DEL).
+The report shows gene fusions and translocations with transcript-level detail.</p>
+<div class="highlight"><pre><span></span><code>Usage: snpEff translocReport [options] genome_version input.vcf
+
+Options:
+    -onlyOneTr         : Report only one transcript pair per translocation (used for debugging).
+    -outPath &lt;dir&gt;     : Create individual output SVG files for each translocation in &#39;dir&#39;.
+    -report &lt;file&gt;     : Output report file name. Default: translocations_report.html
+</code></pre></div>
+<p>The command generates an HTML report (by default <code>translocations_report.html</code>) containing SVG visualizations of each translocation. If <code>-outPath</code> is specified, individual SVG files are also saved to that directory.</p>
+<h3 id="scripts">Scripts</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The Perl utility scripts previously distributed with SnpEff (sam2fastq.pl, fasta2tab.pl, fastaSplit.pl, vcfEffOnePerLine.pl, etc.) have been deprecated and are no longer included in the main <code>scripts/</code> directory.</p>
+</div>
 
 
 

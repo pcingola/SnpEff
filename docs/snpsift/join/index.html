@@ -803,9 +803,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Join
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Join
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-format" class="md-nav__link">
+    Output format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,32 +1299,45 @@
 
 
 <h1 id="snpsift-join">SnpSift Join</h1>
-<p>Join files by genomic regions (i.e. chr:start-end).</p>
-<p>Files can be generic TXT (tab separated), VCF or BED.</p>
-<p>Usage example:
-<div class="highlight"><pre><span></span><code>Usage: java -jar SnpSift.jar join [options] file1 file2
-Note: It is assumed that both files fit in memory.
+<p>Join two files by genomic regions (i.e. chr:start-end).</p>
+<p>For each interval in file1, the command finds intersecting intervals in file2. Both files are loaded entirely into memory.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar join [options] file1 file2
 Options:
-    -if1 &lt;num&gt;       : Offset for file1 (e.g. 1 if coordinates are one-based. Default: 1
-    -if2 &lt;num&gt;       : Offset for file2 (e.g. 2 if coordinates are one-based. Default: 1
-    -cols1 &lt;colDef&gt;  : Column definition for file 1. Format: chrCol,startCol,endCol (e.g. &#39;1,2,3&#39;).
-                       Shortcuts &#39;bed&#39; or &#39;vcf&#39; are allowed. Default: &#39;vcf
-    -cols2 &lt;colDef&gt;  : Column definition for file 2. Format: chrCol,startCol,endCol (e.g. &#39;1,2,3&#39;).
-                       Shortcuts &#39;bed&#39; or &#39;vcf&#39; are allowed. Default: &#39;vcf
-    -all             : For each interval, show all intersecting.
-                       Default: show only one (the largest intersection)
-    -closest         : Show closest intervals in file2 if none intersect.
-                       Default: off
-    -empty           : Show intervals in file1 even if they do not intersect with any other interval.
-                       Default: off
+    -cols1 &lt;colDef&gt;  : Column definition for file1. Format: chrCol,startCol,endCol (1-based column numbers).
+                       Shortcuts &#39;bed&#39; or &#39;vcf&#39; are allowed.
+    -cols2 &lt;colDef&gt;  : Column definition for file2. Same format as -cols1.
+    -if1 &lt;num&gt;       : Coordinate offset for file1 (0 for zero-based, 1 for one-based). Default: 0
+    -if2 &lt;num&gt;       : Coordinate offset for file2. Default: 0
+    -all             : Show all intersecting intervals from file2.
+                       Default: show only the one with the largest overlap.
+    -closest         : If no intersection found, show the closest interval from file2.
+    -empty           : Show intervals from file1 even if no match is found.
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should always specify <code>-cols1</code> and <code>-cols2</code> explicitly. The <code>bed</code> shortcut sets columns to 1,2,3 with 0-based coordinates. The <code>vcf</code> shortcut sets columns to 1,2,2 with 1-based coordinates (treating each entry as a single-position interval).</p>
+</div>
+<h3 id="how-it-works">How it works</h3>
+<p>File2 is loaded into an interval forest. For each interval in file1, the command queries this forest for overlapping intervals.</p>
+<p>By default, only the single best match (largest overlap) from file2 is reported for each interval in file1. With <code>-all</code>, all intersecting intervals are reported.</p>
+<p>When <code>-closest</code> is used and no intersection is found, the command searches for the nearest interval in file2 by progressively expanding the search window. If both <code>-closest</code> and <code>-empty</code> are used, intervals with no intersection show the closest match if one is found, or are output with a "NONE" label. Without <code>-empty</code>, intervals with no match at all are silently dropped.</p>
+<p>When <code>-empty</code> is used without <code>-closest</code>, all non-intersecting intervals from file1 are output with a "NONE" label.</p>
+<p>Input files are parsed as whitespace-separated (tabs or spaces). Lines starting with <code>#</code> are treated as comments and skipped.</p>
+<h3 id="output-format">Output format</h3>
+<p>Tab-separated lines with a label prefix indicating the match type:</p>
+<div class="highlight"><pre><span></span><code>INTERSECT    &lt;line_from_file1&gt;    &lt;line_from_file2&gt;
+CLOSEST      &lt;line_from_file1&gt;    &lt;line_from_file2&gt;
+NONE         &lt;line_from_file1&gt;
+</code></pre></div>
+<p><code>INTERSECT</code> lines appear for intervals with overlapping matches. <code>CLOSEST</code> lines appear when <code>-closest</code> is used and no overlap was found but a nearby interval exists. <code>NONE</code> lines appear when <code>-empty</code> is used and no match was found.</p>
+<h3 id="examples">Examples</h3>
+<p>Join two BED files, showing intersecting or closest intervals:
+<div class="highlight"><pre><span></span><code>java -Xmx2G -jar SnpSift.jar join -cols1 bed -cols2 bed -closest file1.bed file2.bed
 </code></pre></div></p>
-<p>Example: Join two bed files, showing intersecting or closest intervals</p>
-<div class="codehilite"><pre><span></span><code>java -Xmx2G -jar SnpSift.jar join -v -cols1 bed -cols2 bed -closest file1.bed file2.bed
-</code></pre></div>
-
-<p>Example: Join one bed file and another file having chr:start-end in columns 7,8 and 9 respectively. Showing intervals form file1 that do not intersect any interval from file2</p>
-<div class="codehilite"><pre><span></span><code>java -Xmx2G -jar SnpSift.jar join -v -cols1 bed -cols2 7,8,9 -empty file.bed my_weird_file.txt
-</code></pre></div>
+<p>Join a BED file with a custom file having chr:start:end in columns 7, 8, and 9, showing non-intersecting intervals:
+<div class="highlight"><pre><span></span><code>java -Xmx2G -jar SnpSift.jar join -cols1 bed -cols2 7,8,9 -empty file.bed my_file.txt
+</code></pre></div></p>
 
 
 

@@ -583,8 +583,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#finltering-by-transcript-tags" class="md-nav__link">
-    Finltering by transcript tags
+  <a href="#filtering-by-transcript-tags" class="md-nav__link">
+    Filtering by transcript tags
   </a>
   
 </li>
@@ -1452,7 +1452,7 @@ java -jar snpEff.jar
 <tbody>
 <tr>
 <td><code>eff | ann</code></td>
-<td>This is the default command. It is used for annotating variant filed (e.g. VCF files).</td>
+<td>This is the default command. It is used for annotating variant files (e.g. VCF files).</td>
 </tr>
 <tr>
 <td><code>build</code></td>
@@ -1460,7 +1460,7 @@ java -jar snpEff.jar
 </tr>
 <tr>
 <td><code>buildNextProt</code></td>
-<td>Build NextProt database using XML files</td>
+<td>Build NextProt database using XML files.</td>
 </tr>
 <tr>
 <td><code>cds</code></td>
@@ -1495,57 +1495,55 @@ java -jar snpEff.jar
 <td>Calculate total genomic length for each marker type.</td>
 </tr>
 <tr>
-<td><code>protein</code></td>
-<td>Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness. (invoked automatically when building a database).</td>
+<td><code>pdb</code></td>
+<td>Build interaction database (based on PDB data).</td>
 </tr>
 <tr>
-<td>spliceAnalysis``</td>
-<td>Perform an analysis of splice sites. Experimental feature.</td>
+<td><code>protein</code></td>
+<td>Compare protein sequences calculated from a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database).</td>
+</tr>
+<tr>
+<td><code>seq</code></td>
+<td>Show sequence (from command line) translation.</td>
+</tr>
+<tr>
+<td><code>show</code></td>
+<td>Show a text representation of genes or transcripts coordinates, DNA sequence and protein sequence.</td>
+</tr>
+<tr>
+<td><code>translocReport</code></td>
+<td>Create a translocations report (from VCF file).</td>
 </tr>
 </tbody>
 </table>
 <h3 id="common-options-all-commands">Common options: All commands</h3>
-<p>The general help shows some options that are available to all commands. For instance, at the time of writing, the common options are under "Generic options" and "Database options" are these:
-<div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar
-SnpEff version SnpEff 4.1 (build 2015-01-07), by Pablo Cingolani
-Usage: snpEff [command] [options] [files]
-
-Run &#39;java -jar snpEff.jar command&#39; for help on each specific command
-
-Available commands: 
-    [eff|ann]                    : Annotate variants / calculate effects (you can use either &#39;ann&#39; or &#39;eff&#39;, they mean the same). Default: ann (no command or &#39;ann&#39;).
-    build                        : Build a SnpEff database.
-    buildNextProt                : Build a SnpEff for NextProt (using NextProt&#39;s XML files).
-    cds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.
-    closest                      : Annotate the closest genomic region.
-    count                        : Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.
-    databases                    : Show currently available databases (from local config file).
-    download                     : Download a SnpEff database.
-    dump                         : Dump to STDOUT a SnpEff database (mostly used for debugging).
-    genes2bed                    : Create a bed file from a genes list.
-    len                          : Calculate total genomic length for each marker type.
-    protein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.
-    spliceAnalysis               : Perform an analysis of splice sites. Experimental feature.
-
-Generic options:
+<p>The general help shows some options that are available to all commands. The common options are under "Generic options" and "Database options":</p>
+<div class="highlight"><pre><span></span><code>Generic options:
     -c , -config                 : Specify config file
+    -configOption name=value     : Override a config file option
     -d , -debug                  : Debug mode (very verbose).
     -dataDir &lt;path&gt;              : Override data_dir parameter from config file.
     -download                    : Download a SnpEff database, if not available locally. Default: true
     -nodownload                  : Do not download a SnpEff database, if not available locally.
-    -noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).
     -h , -help                   : Show this help and exit
     -noLog                       : Do not report usage statistics to server
-    -t                           : Use multiple threads (implies &#39;-noStats&#39;). Default &#39;off&#39;
-    -q ,  -quiet                 : Quiet mode (do not show any messages or errors)
+    -q , -quiet                  : Quiet mode (do not show any messages or errors)
     -v , -verbose                : Verbose mode
+    -version                     : Show version number and exit
 
 Database options:
     -canon                       : Only use canonical transcripts.
-    -interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
+    -canonList &lt;file&gt;            : Only use canonical transcripts, replace some transcripts using the &#39;gene_id \t transcript_id&#39; entries in &lt;file&gt;.
+    -tag &lt;tagName&gt;               : Only use transcript having a tag &#39;tagName&#39;. This option can be used multiple times.
+    -notag &lt;tagName&gt;             : Filter out transcript having a tag &#39;tagName&#39;. This option can be used multiple times.
+    -interaction                 : Annotate using interactions (requires interaction database).
+    -interval &lt;file&gt;             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
+    -maxTSL &lt;TSL_number&gt;         : Only use transcripts having Transcript Support Level lower than &lt;TSL_number&gt;.
     -motif                       : Annotate using motifs (requires Motif database).
     -nextProt                    : Annotate using NextProt (requires NextProt database).
     -noGenome                    : Do not load any genomic database (e.g. annotate using custom files).
+    -noExpandIUB                 : Disable IUB code expansion in input variants.
+    -noInteraction               : Disable interaction annotations.
     -noMotif                     : Disable motif annotations.
     -noNextProt                  : Disable NextProt annotations.
     -onlyReg                     : Only use regulation tracks.
@@ -1553,30 +1551,32 @@ Database options:
     -onlyTr &lt;file.txt&gt;           : Only use the transcripts in this file. Format: One transcript ID per line.
     -reg &lt;name&gt;                  : Regulation track to use (this option can be used add several times).
     -ss , -spliceSiteSize &lt;int&gt;  : Set size for splice sites (donor and acceptor) in bases. Default: 2
+    -spliceRegionExonSize &lt;int&gt;  : Set size for splice site region within exons. Default: 3 bases
+    -spliceRegionIntronMin &lt;int&gt; : Set minimum number of bases for splice site region within intron. Default: 3 bases
+    -spliceRegionIntronMax &lt;int&gt; : Set maximum number of bases for splice site region within intron. Default: 8 bases
     -strict                      : Only use &#39;validated&#39; transcripts (i.e. sequence has been checked). Default: false
-</code></pre></div></p>
+    -ud , -upDownStreamLen &lt;int&gt; : Set upstream downstream interval length (in bases). Default: 5000
+</code></pre></div>
 <h2 id="ann-command-variant-annotations"><code>ANN</code> command: Variant annotations</h2>
 <p>In order to see a help message for a particular command, you can run the command without any arguments or use <code>-help</code> command line option:</p>
 <div class="highlight"><pre><span></span><code># This will show a &#39;help&#39; message for the &#39;ann&#39; (aka &#39;eff&#39;) command
 $ java -jar snpEff.jar ann
 
-snpEff version SnpEff 4.1 (build 2015-01-07), by Pablo Cingolani
-Usage: snpEff [eff] [options] genome_version [input_file]
-
+Usage: snpEff [ann] [options] genome_version [input_file]
 
     variants_file                   : Default is STDIN
-
 
 Options:
     -chr &lt;string&gt;                   : Prepend &#39;string&#39; to chromosome name (e.g. &#39;chr1&#39; instead of &#39;1&#39;). Only on TXT output.
     -classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.
+    -csvStats &lt;file&gt;                : Create CSV summary file.
     -download                       : Download reference genome if not available. Default: true
     -i &lt;format&gt;                     : Input format [ vcf, bed ]. Default: VCF.
     -fileList                       : Input actually contains a list of files to process.
     -o &lt;format&gt;                     : Output format [ vcf, gatk, bed, bedAnn ]. Default: VCF.
-    -s , -stats                     : Name of stats file (summary). Default is &#39;snpEff_summary.html&#39;
+    -s , -stats, -htmlStats         : Create HTML summary file. Default is &#39;snpEff_summary.html&#39;
     -noStats                        : Do not create stats (summary) file
-    -csvStats                       : Create CSV summary file instead of HTML
+    -noChromoPlots                  : Do not create mutations-by-chromosome plots in the summary.
 
 Results filter options:
     -fi , -filterInterval  &lt;file&gt;   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)
@@ -1585,50 +1585,28 @@ Results filter options:
     -no-intron                      : Do not show INTRON changes
     -no-upstream                    : Do not show UPSTREAM changes
     -no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes
-    -no EffectType                  : Do not show &#39;EffectType&#39;. This option can be used several times.
+    -no &lt;effectType&gt;                : Do not show &#39;EffectType&#39;. This option can be used several times.
 
 Annotations options:
     -cancer                         : Perform &#39;cancer&#39; comparisons (Somatic vs Germline). Default: false
     -cancerSamples &lt;file&gt;           : Two column TXT file defining &#39;original \t derived&#39; samples.
+    -fastaProt &lt;file&gt;               : Create an output file containing the resulting protein sequences.
+    -fastaProtNoRef                 : Do not add reference sequences to the output (only valid when -fastaProt). Default: false
     -formatEff                      : Use &#39;EFF&#39; field compatible with older versions (instead of &#39;ANN&#39;).
-    -geneId                         : Use gene ID instead of gene name (VCF output). Default: false
+    -geneId                         : Use gene ID instead of gene name (only affects legacy &#39;EFF&#39; field). Default: false
     -hgvs                           : Use HGVS annotations for amino acid sub-field. Default: true
+    -hgvsOld                        : Use old HGVS notation. Default: false
+    -hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: false
+    -hgvsTrId                       : Use transcript ID in HGVS notation. Default: false
     -lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.
     -noHgvs                         : Do not add HGVS annotations.
     -noLof                          : Do not add LOF and NMD annotations.
+    -noOut                          : Do not write the output results to STDOUT (may be used for debugging).
     -noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).
     -oicr                           : Add OICR tag in VCF file. Default: false
     -sequenceOntology               : Use Sequence Ontology terms. Default: true
-
-Generic options:
-    -c , -config                 : Specify config file
-    -d , -debug                  : Debug mode (very verbose).
-    -dataDir &lt;path&gt;              : Override data_dir parameter from config file.
-    -download                    : Download a SnpEff database, if not available locally. Default: true
-    -nodownload                  : Do not download a SnpEff database, if not available locally.
-    -noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).
-    -h , -help                   : Show this help and exit
-    -noLog                       : Do not report usage statistics to server
-    -t                           : Use multiple threads (implies &#39;-noStats&#39;). Default &#39;off&#39;
-    -q ,  -quiet                 : Quiet mode (do not show any messages or errors)
-    -v , -verbose                : Verbose mode
-
-Database options:
-    -canon                       : Only use canonical transcripts.
-    -interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
-    -motif                       : Annotate using motifs (requires Motif database).
-    -nextProt                    : Annotate using NextProt (requires NextProt database).
-    -noGenome                    : Do not load any genomic database (e.g. annotate using custom files).
-    -noMotif                     : Disable motif annotations.
-    -noNextProt                  : Disable NextProt annotations.
-    -onlyReg                     : Only use regulation tracks.
-    -onlyProtein                 : Only use protein coding transcripts. Default: false
-    -onlyTr &lt;file.txt&gt;           : Only use the transcripts in this file. Format: One transcript ID per line.
-    -reg &lt;name&gt;                  : Regulation track to use (this option can be used add several times).
-    -ss , -spliceSiteSize &lt;int&gt;  : Set size for splice sites (donor and acceptor) in bases. Default: 2
-    -strict                      : Only use &#39;validated&#39; transcripts (i.e. sequence has been checked). Default: false
-    -ud , -upDownStreamLen &lt;int&gt; : Set upstream downstream interval length (in bases)
 </code></pre></div>
+<p>The <code>ann</code> command also accepts all the <a href="#common-options-all-commands">common Generic and Database options</a> listed above.</p>
 <h3 id="annotation-filters">Annotation Filters</h3>
 <p>SnpEff supports filter of output results by using combinations of the following command line options:</p>
 <div class="admonition warning">
@@ -1743,7 +1721,7 @@ will match exactly what UCSC or ENSEMBL consider a canonical transcript.</p>
 Any other transcript will be ignored.</p>
 <div class="highlight"><pre><span></span><code>java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf &gt; test.chr22.ann.vcf
 </code></pre></div>
-<h4 id="finltering-by-transcript-tags">Finltering by transcript tags</h4>
+<h4 id="filtering-by-transcript-tags">Filtering by transcript tags</h4>
 <p>In some cases the genome files contain tags, for example, here are from GTF lines from ENSEMBL's GRCh38 (MANE release 1.0):</p>
 <p>Note, GTF lines edited for readability:
 <div class="highlight"><pre><span></span><code>chr1  .  transcript  1471765  1497848  .  +  .  transcript_id &quot;ENST00000673477.1&quot;;  gene_name &quot;ATAD3B&quot;; tag &quot;MANE_Select&quot;;
@@ -1756,11 +1734,11 @@ chr1  .  transcript  8861000  8878686  .  -  .  transcript_id &quot;ENST00000234
 <p>Command line arguments for tag selection:</p>
 <ul>
 <li><code>-tag &lt;tag_name&gt;</code>: Only use transcripts that match <code>&lt;tag_name&gt;</code></li>
-<li><code>-tagNo &lt;tag_name&gt;</code>: Filter out transcripts that match <code>&lt;tag_name&gt;</code></li>
+<li><code>-notag &lt;tag_name&gt;</code>: Filter out transcripts that match <code>&lt;tag_name&gt;</code></li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Both <code>-tag</code> and <code>-tagNo</code> options can be specified multiple times</p>
+<p>Both <code>-tag</code> and <code>-notag</code> options can be specified multiple times</p>
 </div>
 <h3 id="other-options">Other options</h3>
 <h4 id="logging">Logging</h4>
@@ -1794,9 +1772,9 @@ Calculating statistics can take a significant amount of time, particularly if th
 The command line option <code>-noStats</code> disables the statistics and may result in a significant speedup.</p>
 <h4 id="hgvs-classic-notation">HGVS / Classic notation</h4>
 <p>SnpEff uses <a href="http://www.hgvs.org/">HGVS notation</a>, which is somewhat popular amongst clinicians.</p>
-<p>You can switch to the old (deprecated) annotaions format, using the command line option <code>-classic</code>.</p>
+<p>You can switch to the old (deprecated) annotations format, using the command line option <code>-classic</code>.</p>
 <h3 id="compressed-files">Compressed files</h3>
-<p>SnpEff will automatically open gzip compresssed files, even if you don't specify the '.gz' extension.
+<p>SnpEff will automatically open gzip compressed files, even if you don't specify the '.gz' extension.
 Example</p>
 <div class="highlight"><pre><span></span><code># Create compressed version of the examples files
 cp examples/test.chr22.vcf my.vcf
@@ -1804,7 +1782,7 @@ cp examples/test.chr22.vcf my.vcf
 # Compress it
 gzip my.vcf 
 
-# Annotate the comressed file
+# Annotate the compressed file
 java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf.gz &gt; my.ann.vcf
 </code></pre></div>
 <h3 id="streaming-files">Streaming files</h3>
@@ -1818,7 +1796,7 @@ java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf.gz &gt; my.ann.vcf
 # Using STDIN (pipe), implicit (no input file name)
 cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 &gt; test.chr22.ann.vcf
 
-# Using STDIN (pipe), exlicit &#39;-&#39; input file name
+# Using STDIN (pipe), explicit &#39;-&#39; input file name
 cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 - &gt; test.chr22.ann.vcf
 
 # Using explicit file name

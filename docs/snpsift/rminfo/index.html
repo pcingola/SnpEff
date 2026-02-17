@@ -985,9 +985,47 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift RmInfo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift RmInfo
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,21 +1285,25 @@
 
 
 <h1 id="snpsift-rminfo">SnpSift RmInfo</h1>
-<p>This command removes INFO fields from a VCF file (i.e. removes annotations)</p>
-<p>Removing INFO fields is usually done because you want to re-annotate the VCF file, thus removing old INFO fields in order to add new ones later.</p>
-<p>SnpEff SnpSift only add annotations and do not change current ones.
-So, in order to re-annotate a file, you should first remove the old annotations and then re-annotate.</p>
-<p>The reason for this behavior is simply because replacing annotation values is considered a bad practice.
-Imagine that you have a VCF entry  in your re-annotated file having the value "AA=1": How do you know if this is from the old annotations or from the new ones?
-This confusion often leads to problems in downstream steps of your pipelines, so it's better to avoid the problem by first removing all the previous annotations and then adding the new ones.</p>
-<p>Usage example:
-<div class="highlight"><pre><span></span><code>$ cat test.snpeff.vcf
-#CHROM  POS     ID      REF ALT QUAL    FILTER  INFO
-1       734462  1032    G   A   .       s50     AC=348;EFF=DOWNSTREAM(MODIFIER|||||RP11-206L10.8|processed_transcript|NON_CODING|ENST00000447500||1),INTRON(MODIFIER|||||RP11-206L10.6|processed_transcript|NON_CODING|ENST00000429505|1|1)
+<p>Remove INFO fields from a VCF file.</p>
+<p>This is typically used before re-annotating a VCF file: since SnpEff and SnpSift add annotations without replacing existing ones, you should first remove old annotations and then re-annotate. This avoids ambiguity about whether a value comes from old or new annotations.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar rmInfo [options] file.vcf infoField_1 [infoField_2 ... infoField_N] &gt; output.vcf
+Options:
+    -id : Also remove the ID column (set to empty).
+</code></pre></div>
+<p>The first positional argument is the VCF file. All subsequent positional arguments are names of INFO fields to remove. Multiple fields can be removed in a single pass.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The <code>##INFO</code> header definitions for removed fields are NOT removed from the header. Only the actual values in data lines are stripped.</p>
+</div>
+<h3 id="example">Example</h3>
+<p>Remove the <code>EFF</code> and <code>ANN</code> fields before re-annotating:
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar rmInfo input.vcf EFF ANN &gt; input.clean.vcf
 
-$ java -jar SnpSift.jar rmInfo test.snpeff.vcf EFF
-#CHROM  POS     ID      REF ALT QUAL    FILTER  INFO
-1       734462  1032    G   A   .       s50     AC=348
+$ java -jar SnpSift.jar rmInfo input.vcf EFF
+#CHROM  POS     ID      REF  ALT  QUAL  FILTER  INFO
+1       734462  1032    G    A    .     s50     AC=348
 </code></pre></div></p>
 
 

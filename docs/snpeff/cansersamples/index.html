@@ -556,8 +556,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cancer-annotations-using-eff-field" class="md-nav__link">
-    Cancer annotations using 'EFF' field:
+  <a href="#cancer-annotations-using-eff-field-deprecated" class="md-nav__link">
+    Cancer annotations using 'EFF' field (deprecated):
   </a>
   
 </li>
@@ -1313,7 +1313,7 @@
 
 <h1 id="cancer-samples">Cancer samples</h1>
 <p>Here we describe details about annotating cancer samples.</p>
-<p><strong> Single multi-sample VCF vs. multiple VCF files. </strong></p>
+<p><strong>Single multi-sample VCF vs. multiple VCF files.</strong></p>
 <p>It is common practice, to have all samples in a single "multi-sample VCF file" (having two or more separate VCF files is highly discouraged).
 This is also the "gold standard" in cancer analysis standard, so all samples (both somatic and germline) should be in one VCF file.</p>
 <p>SnpEff requires that you follow gold standard practices, thus requires a single multi-sample VCF (it is not possible to run cancer analysis using multiple VCF files).</p>
@@ -1323,6 +1323,11 @@ This is also the "gold standard" in cancer analysis standard, so all samples (bo
 <div class="codehilite"><pre><span></span><code>$<span class="w"> </span>java<span class="w"> </span>-Xmx8g<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>-v<span class="w"> </span>-cancer<span class="w"> </span>GRCh37.75<span class="w"> </span>cancer.vcf<span class="w"> </span>&gt;<span class="w"> </span>cancer.ann.vcf
 </code></pre></div>
 
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Cancer analysis only triggers for multiallelic variants (i.e. VCF entries with multiple ALT alleles) or "back to reference" mutations (where the somatic sample reverts to the reference allele).
+Additionally, cancer comparisons are only computed when at least one standard annotation has a non-MODIFIER impact.</p>
+</div>
 <h3 id="representing-cancer-data">Representing cancer data</h3>
 <p>In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
 The complication is that germline is not always the same as the reference genome, so a typical annotation does not work.</p>
@@ -1451,7 +1456,7 @@ What does it mean:</p>
 <ul>
 <li>G vs C : This is the Somatic vs Germline we are interested in. SnpEff reports this one</li>
 <li>G vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.</li>
-<li>C vs C : This is not a variant, since both og them ar '1'. SnpEff skips this one.</li>
+<li>C vs C : This is not a variant, since both of them are '1'. SnpEff skips this one.</li>
 <li>C vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.</li>
 </ul>
 <p>I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
@@ -1465,7 +1470,11 @@ So 'C -&gt; G' produces the following effect:</p>
 </div>
 </li>
 </ol>
-<h4 id="cancer-annotations-using-eff-field">Cancer annotations using 'EFF' field:</h4>
+<h4 id="cancer-annotations-using-eff-field-deprecated">Cancer annotations using 'EFF' field (deprecated):</h4>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code>EFF</code> field is the legacy annotation format, used with the <code>-classic</code> command line option. The current standard format is <code>ANN</code>. The following section is kept for reference only.</p>
+</div>
 <p>Interpretation of <code>EFF</code> field cancer sample relies on 'Genotype' sub-field.
 Just as a reminder, <code>EFF</code> field has the following format:
 <div class="highlight"><pre><span></span><code>EFF = Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )

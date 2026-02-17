@@ -859,9 +859,54 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Variant Type
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Variant Type
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotations-added" class="md-nav__link">
+    Annotations added
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,16 +1292,26 @@
 
 
 <h1 id="snpsift-variant-type">SnpSift Variant type</h1>
-<p>Adds an INFO field denoting variant type.</p>
-<p>It adds "SNP/MNP/INS/DEL/MIXED" in the INFO field.
-It also adds "HOM/HET", but this last one works if there is only one sample (otherwise it doesn't make any sense).
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar varType  test.vcf | grep -v &quot;^#&quot; | head
+<p>Adds variant type annotations to the INFO field of a VCF file.</p>
+<h2 id="usage">Usage</h2>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar varType file.vcf &gt; annotated.vcf
+</code></pre></div>
+<p>Output is written to STDOUT.</p>
+<h2 id="annotations-added">Annotations added</h2>
+<p>The command adds the following INFO fields:</p>
+<ul>
+<li>Variant type flag: <code>SNP</code>, <code>MNP</code>, <code>INS</code>, <code>DEL</code>, or <code>MIXED</code></li>
+<li>Zygosity flag: <code>HOM</code> or <code>HET</code> (only meaningful for single-sample VCF files)</li>
+<li><code>VARTYPE</code>: Comma-separated list of variant types, one per allele</li>
+</ul>
+<h2 id="example">Example</h2>
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar varType test.vcf | grep -v &quot;^#&quot; | head
 20  10469   .   C   G   100.0   PASS    SNP;HOM GT:AP   0|0:0.075,0.060
 20  10492   .   C   T   100.0   PASS    SNP;HET GT:AP   0|1:0.180,0.345
-20  10575   .   C   CG  100.0   PASS    DEL;HET GT:AP   0|1:0.000,0.000
-20  10611   .   CG  C   100.0   PASS    INS;HET GT:AP   0|1:0.000,0.010
+20  10575   .   C   CG  100.0   PASS    INS;HET GT:AP   0|1:0.000,0.000
+20  10611   .   CG  C   100.0   PASS    DEL;HET GT:AP   0|1:0.000,0.010
 20  10618   .   GT  TA  100.0   PASS    MNP;HET GT:AP   0|1:0.020,0.030
-</code></pre></div></p>
+</code></pre></div>
 
 
 

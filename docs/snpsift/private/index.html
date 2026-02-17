@@ -943,9 +943,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Private
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Private
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tfam-file-format" class="md-nav__link">
+    TFAM file format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,18 +1299,25 @@
 
 
 <h1 id="snpsift-private">SnpSift Private</h1>
-<p>Annotate if a variant is private to a family.</p>
-<p>A <code>Private=Family_ID</code> is added to a variant's INFO field, if the variant is only found in one family.
-A TFAM file (see PLINK's documentation) specifies a mapping from sample IDs to family IDs.</p>
-<p>E.g.:</p>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>java<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span>private<span class="w"> </span>pheotypes.tfam<span class="w"> </span>imp.ann.vcf<span class="w"> </span>&gt;<span class="w"> </span>imp.ann.private.vcf
+<p>Annotate whether a variant is private to a single family or group.</p>
+<p>A variant is "private" if all samples carrying the variant (i.e. having a non-reference genotype) belong to the same family. When this is the case, a <code>Private=&lt;familyId&gt;</code> INFO field is added to the VCF entry.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar private file.tfam [file.vcf] &gt; output.vcf
 </code></pre></div>
-
-<p>An annotated variant may look like this:</p>
-<div class="codehilite"><pre><span></span><code><span class="mf">1</span><span class="w">   </span><span class="mf">1005806</span><span class="w"> </span><span class="n">rs3934834</span><span class="w">   </span><span class="n">C</span><span class="w">   </span><span class="n">T</span><span class="w">   </span><span class="mf">.</span><span class="w">   </span><span class="n">PASS</span><span class="w">    </span><span class="n">AF</span><span class="o">=</span><span class="mf">0.091</span><span class="p">;</span><span class="mf">..</span><span class="p">;</span><span class="n">Private</span><span class="o">=</span><span class="n">Family_47</span>
+<p>The first argument is a TFAM file defining the sample-to-family mapping. The second is the VCF file (default: STDIN).</p>
+<p>All VCF entries are output, both annotated and non-annotated.</p>
+<h3 id="tfam-file-format">TFAM file format</h3>
+<p>The TFAM file is PLINK's family information format: whitespace-separated with 6 columns per line (familyId, sampleId, fatherId, motherId, sex, phenotype). Only the first two columns are used by this command: <code>familyId</code> groups samples into families, and <code>sampleId</code> must exactly match the sample names in the VCF header. Lines starting with <code>#</code> are skipped.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>For each VCF entry, the command examines all sample genotypes. If every sample that carries a variant allele (non-reference genotype) belongs to the same family, the variant is annotated as <code>Private=&lt;familyId&gt;</code>. If variant carriers span two or more families, no annotation is added.</p>
+<p>Samples present in the VCF but not found in the TFAM file produce a warning on STDERR and are ignored (their genotypes do not count toward or against the private determination). If all VCF samples are missing from the TFAM file, the command exits with an error.</p>
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar private phenotypes.tfam variants.vcf &gt; variants.private.vcf
 </code></pre></div>
-
-<p>This indicates that the variant is only found in members of <code>Family_47</code>, according to the definitions in <code>pheotypes.tfam</code>.</p>
+<p>An annotated variant may look like:
+<div class="highlight"><pre><span></span><code>1   1005806 rs3934834   C   T   .   PASS    AF=0.091;Private=Family_47
+</code></pre></div></p>
+<p>This indicates that the variant is only found in members of <code>Family_47</code>, according to the definitions in the TFAM file.</p>
 
 
 

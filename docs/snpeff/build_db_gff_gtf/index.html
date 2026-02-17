@@ -744,8 +744,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#gtf-lines-and-fields" class="md-nav__link">
-    GTF lines and fields
+  <a href="#gff-lines-and-fields" class="md-nav__link">
+    GFF lines and fields
   </a>
   
 </li>
@@ -1451,10 +1451,10 @@ So unless you are working with a rare, custom, or new genomes you most likely do
 <li><strong>Step 3:</strong> <a href="#step-3-checking-the-database">Checking the database</a>: SnpEff will check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.</li>
 </ol>
 <p>In this section we'll go into the details of the GTF and GFF format requirements for <strong>Step 2</strong>.
-As a general rule, GTF format is preferred over GFF, so if your genome provides both GTF anf GFF, use GTF whenever possible.</p>
+As a general rule, GTF format is preferred over GFF, so if your genome provides both GTF and GFF, use GTF whenever possible.</p>
 <h2 id="gtf-format-example">GTF format example</h2>
 <p>This is a snippet example from a GTF file that fulfills SnpEff's requirements. 
-The example (from ENSEMBL's human genome GTF file) shows the definition of one gene, one transcript and it's exons, as well as the trancript's start codon, stop codon, and UTR regions.</p>
+The example (from ENSEMBL's human genome GTF file) shows the definition of one gene, one transcript and its exons, as well as the transcript's start codon, stop codon, and UTR regions.</p>
 <div class="highlight"><pre><span></span><code># Note that tabs have been replaced by spaces for readability
 chr1    ensembl  gene          10472288        10630758        .       +       .       gene_id &quot;ENSG00000142655.13&quot;; gene_type &quot;protein_coding&quot;; gene_name &quot;PEX14&quot;;
 chr1    ensembl  transcript    10474950        10630758        .       +       .       gene_id &quot;ENSG00000142655.13&quot;; transcript_id &quot;ENST00000356607.9&quot;; transcript_type &quot;protein_coding&quot;;
@@ -1498,7 +1498,7 @@ It's probably a good idea to take a look at the format specification before read
 <li><code>$SNPEFF_HOME</code> is the directory where SnpEff is installed (usually <code>$HOME/snpEff</code>)</li>
 <li><code>GENOME_NAME</code> is the genome name of the genome you are trying to build, which MUST match the name you added in the config file <code>snpEff.config</code></li>
 </ul>
-<p>Note: The file name can be <code>genes.gff.gz</code> if it's compressed using <code>gzip</code>.</p>
+<p>Note: The file name can be <code>genes.gtf.gz</code> if it's compressed using <code>gzip</code>.</p>
 <h3 id="gtf-lines">GTF lines</h3>
 <p>In a nutshell, GTF files are text files and each line is parsed separately.</p>
 <p>Lines that start with <code>#</code> are treated as comments (i.e. ignored).</p>
@@ -1603,7 +1603,7 @@ This is typically used in <code>EXON</code> or <code>CDS</code> features within 
 <li><code>0</code>: indicates that the feature begins with a whole codon at the 5' most base.</li>
 <li><code>1</code>: means that there is one extra base (the third base of a codon) before the first whole codon and </li>
 <li><code>2</code>: means that there are two extra bases (the second and third bases of the codon) before the first codon</li>
-<li><code>.</code>: Missing value, SnpEff will inferr this value from the feature's coordinates</li>
+<li><code>.</code>: Missing value, SnpEff will infer this value from the feature's coordinates</li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -1617,7 +1617,7 @@ If the frame value calculated using the feature (exon) coordinates differs from 
 ii) Other exons are corrected by changing the start (or end) coordinates. We drop bases from either the <code>start</code> coordinate (if the exon is on the positive strand) or <code>end</code> coordinate (if the exon is on the negative strand) until the frame matches the one from the GTF.</p>
 <p><strong> Check zero frames:</strong>
 If all frames are zero, there is a high chance that the frame values are incorrectly labeled as zero instead of "missing values" (i.e. '.').
-SnpEff will check if <strong>all</strong> frame values are zero. If there are more than <code>MIN_TOTAL_FRAME_COUNT</code> frmae values set (by default 10) and all of them are zero, it will show a warning.</p>
+SnpEff will check if <strong>all</strong> frame values are zero. If there are more than <code>MIN_TOTAL_FRAME_COUNT</code> frame values set (by default 10) and all of them are zero, it will show a warning.</p>
 <h3 id="gtf-attributes">GTF Attributes</h3>
 <p>The "attributes" field is parsed as a semicolon-separated list of key-value pairs, providing additional information about each feature.</p>
 <p>Required attributes are:</p>
@@ -1695,7 +1695,7 @@ If the IDs don't match, the GTF/GFF file is invalid for SnpEff.</p>
 <li><code>gene_id</code></li>
 <li><code>id</code> (if feature type is <code>GENE</code>)</li>
 </ul>
-<p><code>GeneId</code> value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make is unique.</p>
+<p><code>GeneId</code> value must be a unique ID for each gene in the genome. If the value is repeated, SnpEff will add a dot ('.') followed by an integer number to make it unique.</p>
 <h3 id="gtf-attribute-transcriptid">GTF Attribute: TranscriptId</h3>
 <p>The attribute name can be (not case sensitive, in search order):</p>
 <ul>
@@ -1763,7 +1763,7 @@ The attribute name can be (not case sensitive, in search order):</p>
 <li><code>gene_type</code></li>
 <li><code>biotype</code></li>
 </ul>
-<p>Attribute values are parsed the same maner as <code>BioType</code>.</p>
+<p>Attribute values are parsed the same manner as <code>BioType</code>.</p>
 <p>If <code>GeneBioType</code> is <code>protein_coding</code>, then the gene is assumed to be a protein coding (all transcripts within will be also considered protein coding).</p>
 <h3 id="gtf-attribute-transcriptbiotype">GTF Attribute: TranscriptBioType</h3>
 <p>This is similar to BioType, used specifically for feature type <code>TRANSCRIPT</code></p>
@@ -1773,7 +1773,7 @@ The attribute name can be (not case sensitive, in search order):</p>
 <li><code>transcript_type</code></li>
 <li><code>biotype</code></li>
 </ul>
-<p>Attribute values are parsed the same maner as <code>BioType</code>.</p>
+<p>Attribute values are parsed the same manner as <code>BioType</code>.</p>
 <p>If <code>TranscriptBioType</code> is <code>protein_coding</code>, then the transcript is assumed to be a protein coding transcript.</p>
 <h2 id="gff">GFF</h2>
 <p>SnpEff treats GFF files the same way as GTF files.</p>
@@ -1794,7 +1794,7 @@ where:</p>
 <li><code>GENOME_NAME</code> is the genome name of the genome you are trying to build, which MUST match the name you added in the config file <code>snpEff.config</code></li>
 </ul>
 <p>Note: The file name can be <code>genes.gff.gz</code> if it's compressed using <code>gzip</code>. </p>
-<h3 id="gtf-lines-and-fields">GTF lines and fields</h3>
+<h3 id="gff-lines-and-fields">GFF lines and fields</h3>
 <p>GFF lines and fields are very similar to GTF ones.
 The main difference is that the attributes field is formatted as semi-colon separated <code>key=value</code> pairs (in GTF <code>key</code> and <code>value</code> are separated by a space instead of an <code>=</code> sign).</p>
 <div class="admonition info">
@@ -1821,7 +1821,7 @@ aatgatttttgatgtgaccaattgtacttttcctttaaatgaaatgtaat
 cttaaatgtatttccgacgaattcgaggcctgaaaagtgtgacgccattc
 ...
 </code></pre></div>
-<p>This makes it easier to distribute the genome reference toghether with the genome annotations in one file.</p>
+<p>This makes it easier to distribute the genome reference together with the genome annotations in one file.</p>
 
 
 

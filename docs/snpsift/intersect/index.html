@@ -971,9 +971,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Intersect
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Intersect
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#supported-file-formats" class="md-nav__link">
+    Supported file formats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
+    Algorithm
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-format" class="md-nav__link">
+    Output format
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,22 +1299,32 @@
 
 
 <h1 id="snpsift-intersect">SnpSift Intersect</h1>
-<p>This command intersects several intervals files (e.g. BED, BigBed, TXT) and produces a result of all intersections.</p>
-<p>A typical usage example is to create a consensus of peaks from several Chip-Seq experiments.</p>
-<p>Algorithm: This command creates one interval forest for each input file.
-For every interval in all input files, finds all intervals that intersect at least <code>minOverlap</code> bases (default 1 base).
-If there are at least <code>cluster</code> number of intersecting intervals it creates a consensus interval from the intersections (or <code>union</code>) of all intervals found.
-The consensus interval, if any, is shown as result.</p>
-<p>Command line options:
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar intersect
-SnpSift version 1.9d (build 2013-04-26), by Pablo Cingolani
-Usage: java -jar SnpSift.jar [options] file_1.bed file_2.bed ... file_N.bed
+<p>This command intersects several interval files and produces a result of all intersections.</p>
+<p>A typical usage example is to create a consensus of peaks from several ChIP-Seq experiments.</p>
+<h3 id="supported-file-formats">Supported file formats</h3>
+<p>Input files can be: BED, VCF, GFF, or TXT (assumed to be <code>chr \t start \t end</code>).
+Gzipped files (<code>.gz</code>) are also supported.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intersect [options] file_1.bed file_2.bed ... file_N.bed
 Options:
-        -minOverlap &lt;num&gt; : Minimum number of bases that two intervals have to overlap. Default : 0
-        -cluster &lt;num&gt;    : An interval has to intersect at least &#39;num&#39; intervals (from other files) to be considered. Default: 0
-        -intersect        : Report the intersection of all intervals. Default: false
-        -union            : Report the union of all intervals. Default: true
-</code></pre></div></p>
+    -minOverlap &lt;num&gt; : Minimum number of bases that two intervals have to overlap. Default: 1
+    -cluster &lt;num&gt;    : Total number of intersecting intervals required (including the query interval itself). Default: 2
+    -intersect        : Report the intersection (narrowest overlap) of all intervals. Default: true
+    -union            : Report the union (widest span) of all intervals. Default: false
+    -not &lt;file&gt;       : Filter out results that intersect with any interval in this file. Can be used multiple times.
+</code></pre></div>
+<p>The command requires at least two input files to produce meaningful results (with a single file, all intervals pass through unchanged).</p>
+<h3 id="algorithm">Algorithm</h3>
+<p>For every interval in all input files, the command queries all other interval forests for overlapping intervals.
+Two intervals must share at least <code>minOverlap</code> bases to be considered overlapping.
+If the total number of overlapping intervals (including the query interval itself) is at least <code>cluster</code>, a consensus interval is produced.</p>
+<p>With <code>-intersect</code> (the default), the consensus is the <strong>narrowest</strong> region shared by all overlapping intervals.
+With <code>-union</code>, the consensus is the <strong>widest</strong> span covering all overlapping intervals.</p>
+<p>Duplicate consensus intervals (same chromosome, start, and end) are deduplicated in the output.</p>
+<h3 id="output-format">Output format</h3>
+<p>Tab-separated BED-like format: <code>chr \t start \t end \t id</code></p>
+<p>Coordinates are 0-based with exclusive end (BED convention). The <code>id</code> field is the concatenation of all contributing interval IDs joined by <code>+</code>.</p>
+<p>Results that overlap with intervals from a <code>-not</code> file are filtered out.</p>
 
 
 

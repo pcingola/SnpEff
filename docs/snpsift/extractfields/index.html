@@ -870,51 +870,119 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#typical-usage" class="md-nav__link">
-    Typical usage
+  <a href="#command-options" class="md-nav__link">
+    Command Options
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#field-expressions" class="md-nav__link">
+    Field expressions
+  </a>
+  
+    <nav class="md-nav" aria-label="Field expressions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-vcf-fields" class="md-nav__link">
+    Standard VCF fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info-fields" class="md-nav__link">
+    INFO fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genotype-fields" class="md-nav__link">
+    Genotype fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snpeff-ann-fields" class="md-nav__link">
+    SnpEff 'ANN' fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snpeff-eff-fields-older-format-new-versions-use-ann" class="md-nav__link">
+    SnpEff 'EFF' fields (older format, new versions use 'ANN')
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snpeff-lof-and-nmd-fields" class="md-nav__link">
+    SnpEff 'LOF' and 'NMD' fields
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wildcard-indexing" class="md-nav__link">
+    Wildcard indexing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#example-1-extracting-chromosome-position-id-and-allele-frequency" class="md-nav__link">
     Example 1: Extracting chromosome, position, ID and allele frequency
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#example-2-extracting-genotype-fields" class="md-nav__link">
     Example 2: Extracting genotype fields
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#example-3-extracting-fields-with-multiple-values-in-a-friendlier-format" class="md-nav__link">
-    Example 3: Extracting fields with multiple values in a friendlier format
+        
+          <li class="md-nav__item">
+  <a href="#example-3-using-a-custom-separator-for-multi-valued-fields" class="md-nav__link">
+    Example 3: Using a custom separator for multi-valued fields
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#example-4-extracting-effects-one-per-line" class="md-nav__link">
-    Example 4: Extracting effects, one per line
+        
+          <li class="md-nav__item">
+  <a href="#example-4-extracting-effects-with-default-separator-vs-one-per-line" class="md-nav__link">
+    Example 4: Extracting effects with default separator vs one-per-line
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#example-5-extracting-genotype-using-genotype-name-instead-of-genotype-number" class="md-nav__link">
-    Example 5: Extracting genotype using genotype name instead of genotype number
+        
+          <li class="md-nav__item">
+  <a href="#example-5-extracting-genotype-using-sample-name-instead-of-index" class="md-nav__link">
+    Example 5: Extracting genotype using sample name instead of index
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#example-6-extracting-non-alphanumeric-field-names" class="md-nav__link">
-    Example 6: Extracting non alphanumeric field names
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1321,27 +1389,50 @@
 
 <h1 id="snpsift-extract-fields">SnpSift Extract Fields</h1>
 <p>Extract fields from a VCF file to a TXT, tab separated format, that you can easily load in R, XLS, etc.</p>
-<h3 id="typical-usage">Typical usage</h3>
-<p>You can also use sub-fields and genotype fields / sub-fields such as:</p>
+<hr />
+<h2 id="command-options">Command Options</h2>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN &gt; tabFile.txt
+</code></pre></div>
 <ul>
-<li>Standard VCF fields:<ul>
+<li><code>-s &lt;separator&gt;</code> : Separator for multiple values within the same field when using <code>[*]</code> wildcards. Default: <code>\t</code> (tab).</li>
+<li><code>-e &lt;string&gt;</code> : String to output for empty/missing fields. Default: <code>''</code> (empty string).</li>
+</ul>
+<p>Use <code>-</code> as the file name to read from STDIN.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The default <code>-s</code> separator is tab, which is also the column separator. This means that when using <code>[*]</code> wildcards, multiple values appear as extra columns in the output, making it hard to parse programmatically. Use <code>-s ","</code> to get comma-separated values within each column instead.</p>
+</div>
+<hr />
+<h2 id="field-expressions">Field expressions</h2>
+<h3 id="standard-vcf-fields">Standard VCF fields</h3>
+<ul>
 <li><code>CHROM</code></li>
 <li><code>POS</code></li>
 <li><code>ID</code></li>
 <li><code>REF</code></li>
 <li><code>ALT</code></li>
+<li><code>QUAL</code></li>
 <li><code>FILTER</code></li>
 </ul>
-</li>
-<li>INFO fields:<ul>
-<li><code>AF</code></li>
-<li><code>AC</code></li>
-<li><code>DP</code></li>
-<li><code>MQ</code></li>
-<li>etc. (any info field available)</li>
+<h3 id="info-fields">INFO fields</h3>
+<p>Any INFO field available in the VCF header can be extracted by name (e.g., <code>AF</code>, <code>AC</code>, <code>DP</code>, <code>MQ</code>).</p>
+<p>For comma-separated INFO values (e.g., per-allele fields), you can use indexing:</p>
+<ul>
+<li><code>AF</code> : Returns the raw comma-separated string (e.g., <code>0.1,0.2</code>)</li>
+<li><code>AF[0]</code> : Returns only the first value (e.g., <code>0.1</code>)</li>
+<li><code>AF[*]</code> : Iterates over all values, separating them with the <code>-s</code> separator</li>
 </ul>
-</li>
-<li>SnpEff 'ANN' fields:<ul>
+<h3 id="genotype-fields">Genotype fields</h3>
+<ul>
+<li><code>GEN[0].GT</code> : GT sub-field of the first sample (0-based index)</li>
+<li><code>GEN[0].AD[0]</code> : First value of the AD sub-field of the first sample (ref allele depth)</li>
+<li><code>GEN[0].AD[1]</code> : Second value of the AD sub-field (alt allele depth)</li>
+<li><code>GEN[0].AD</code> : The full AD field as a raw comma-separated string</li>
+<li><code>GEN[HG00096].DS</code> : Genotype sub-field by sample name (instead of numeric index)</li>
+<li><code>GEN[*].GT</code> : GT from ALL samples (iterated with the <code>-s</code> separator)</li>
+</ul>
+<h3 id="snpeff-ann-fields">SnpEff 'ANN' fields</h3>
+<ul>
 <li><code>ANN[*].ALLELE</code> (alias GENOTYPE)</li>
 <li><code>ANN[*].EFFECT</code> (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)</li>
 <li><code>ANN[*].IMPACT:</code> { HIGH, MODERATE, LOW, MODIFIER }</li>
@@ -1362,9 +1453,7 @@
 <li><code>ANN[*].DISTANCE</code></li>
 <li><code>ANN[*].ERRORS</code> (alias WARNING, INFOS)</li>
 </ul>
-</li>
-<li>
-<p>SnpEff 'EFF' fields (this is for older SnpEff/SnpSift versions, new version use 'ANN' field):</p>
+<h3 id="snpeff-eff-fields-older-format-new-versions-use-ann">SnpEff 'EFF' fields (older format, new versions use 'ANN')</h3>
 <ul>
 <li><code>EFF[*].EFFECT</code></li>
 <li><code>EFF[*].IMPACT</code></li>
@@ -1378,37 +1467,26 @@
 <li><code>EFF[*].TRID</code></li>
 <li><code>EFF[*].RANK</code></li>
 </ul>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can combine <code>vcfEffOnePerLine.pl</code> script with <code>SnpSift extractFields</code> if you want to have each effect in a separate line.</p>
-</div>
-</li>
-<li>
-<p>SnpEff 'LOF' fields:</p>
+<h3 id="snpeff-lof-and-nmd-fields">SnpEff 'LOF' and 'NMD' fields</h3>
 <ul>
-<li><code>LOF[*].GENE</code></li>
-<li><code>LOF[*].GENEID</code></li>
-<li><code>LOF[*].NUMTR</code></li>
-<li><code>LOF[*].PERC</code></li>
+<li><code>LOF[*].GENE</code>, <code>LOF[*].GENEID</code>, <code>LOF[*].NUMTR</code>, <code>LOF[*].PERC</code></li>
+<li><code>NMD[*].GENE</code>, <code>NMD[*].GENEID</code>, <code>NMD[*].NUMTR</code>, <code>NMD[*].PERC</code></li>
 </ul>
-</li>
-<li>SnpEff' NMD' fields:<ul>
-<li><code>NMD[*].GENE</code></li>
-<li><code>NMD[*].GENEID</code></li>
-<li><code>NMD[*].NUMTR</code></li>
-<li><code>NMD[*].PERC</code></li>
-</ul>
-</li>
-</ul>
+<hr />
+<h2 id="wildcard-indexing">Wildcard indexing</h2>
+<p><code>[*]</code> (or <code>[ANY]</code>) iterates over all values of a multi-valued field. When multiple <code>[*]</code> wildcards appear in different fields, the iteration produces a cartesian product: for each value of the outer iterator, all values of the inner iterator are enumerated.</p>
+<p>The iteration priority order (inner to outer) is: genotype sub-values &gt; genotypes &gt; NMD &gt; LOF &gt; effects &gt; variants.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>When using multiple indexes you must remember to use quotes and escape the character in the command line (e.g. <code>"ANN[*].EFFECT"</code>).
-Otherwise, the shell would parse the asterisk changing the expression and producing unexpected results.</p>
+<p>When using wildcards, remember to quote the expression on the command line (e.g. <code>"ANN[*].EFFECT"</code>) to prevent shell glob expansion.</p>
 </div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can use command line option <code>-s</code> to specify multiple field separator and <code>-e</code> to specify how to represent empty fields.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Field names containing non-alphanumeric characters (like <code>+</code> in <code>dbNSFP_GERP++_RS</code>) cannot be used directly because the expression parser interprets them as operators.
+As a workaround, rename the fields in the VCF file first (e.g., using <code>sed</code>).</p>
 </div>
+<hr />
+<h2 id="examples">Examples</h2>
 <h3 id="example-1-extracting-chromosome-position-id-and-allele-frequency">Example 1: Extracting chromosome, position, ID and allele frequency</h3>
 <div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar extractFields s.vcf CHROM POS ID AF | head
 #CHROM        POS        ID            AF
@@ -1431,29 +1509,19 @@ Otherwise, the shell would parse the asterisk changing the expression and produc
 <li><code>CHROM</code> <code>POS</code> <code>ID</code>: regular fields (as in the previous example)</li>
 <li><code>THETA</code> : This one is from INFO</li>
 <li><code>GEN[0].GL[1]</code> : Second likelihood from first genotype</li>
-<li><code>GEN[1].GL</code> : The whole GL fields (all entries without separating them)</li>
-<li><code>GEN[3].GL[*]</code> : All likelihoods form genotype 3 (this time they will be tab separated, as opposed to the previous one).</li>
-<li><code>GEN[*].GT</code> : Genotype subfields (GT) from ALL samples (tab separated).</li>
+<li><code>GEN[1].GL</code> : The whole GL field as a raw comma-separated string (not split)</li>
+<li><code>GEN[3].GL[*]</code> : All likelihoods from genotype 3, separated by the <code>-s</code> separator (default: tab)</li>
+<li><code>GEN[*].GT</code> : Genotype subfields (GT) from ALL samples, separated by the <code>-s</code> separator</li>
 </ul>
 <p>The result will look something like:
 <div class="highlight"><pre><span></span><code>#CHROM  POS     ID              THETA   GEN[0].GL[1]    GEN[1].GL               GEN[3].GL[*]            GEN[*].GT
 1       10583   rs58108140      0.0046  -0.47           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|1     0|0     0|1     0|0     0|0     0|1
 1       10611   rs189107123     0.0077  -0.48           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0
 1       13302   rs180734498     0.0048  -0.58           -2.45,-0.00,-5.00       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|1     0|0
-1       13327   rs144762171     0.0204  -1.11           -1.97,-0.01,-2.51       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|0     0|0
-1       13957   rs201747181     0.0100  0               0,0,0                   0       0       0       0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0
-1       13980   rs151276478     0.0139  -0.48           -0.48,-0.48,-0.48       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
-1       30923   rs140337953     0.0162  -0.61           -0.10,-0.69,-2.81       -0.48   -0.48   -0.48   1|1     0|0     0|0     1|1     1|0     0|0     1|1     1|0     1|1
-1       46402   rs199681827     0.0121  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
-1       47190   rs200430748     0.0153  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
 </code></pre></div></p>
-<h3 id="example-3-extracting-fields-with-multiple-values-in-a-friendlier-format">Example 3: Extracting fields with multiple values in a friendlier format</h3>
-<p>You can use command line option <code>-s</code> to specify multiple field separator and <code>-e</code> to specify how to represent empty fields.</p>
-<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>java<span class="w"> </span>-jar<span class="w"> </span>SnpSift.jar<span class="w"> </span>extractFields<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;,&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.&quot;</span><span class="w"> </span>test.chr22.ann.vcf<span class="w"> </span>CHROM<span class="w"> </span>POS<span class="w"> </span>REF<span class="w"> </span>ALT<span class="w"> </span><span class="s2">&quot;EFF[*].EFFECT&quot;</span><span class="w"> </span><span class="s2">&quot;EFF[*].AA&quot;</span>
-</code></pre></div>
-
-<p>Notice how we separate same fields using "," instead of the default tab using the option <code>-s ","</code>, and we use "." for empty fields (option <code>-e "."</code>).</p>
-<p>The results is:
+<p>Note that <code>GEN[1].GL</code> returns the raw comma-separated string <code>-0.24,-0.44,-1.16</code>, while <code>GEN[3].GL[*]</code> splits the values and separates them with tabs.</p>
+<h3 id="example-3-using-a-custom-separator-for-multi-valued-fields">Example 3: Using a custom separator for multi-valued fields</h3>
+<p>Using <code>-s ","</code> to get comma-separated values within each column, and <code>-e "."</code> for empty fields:</p>
 <div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar extractFields -s &quot;,&quot; -e &quot;.&quot; examples/test.chr22.ann.vcf CHROM POS REF ALT &quot;ANN[*].EFFECT&quot; &quot;ANN[*].HGVS_P&quot;
 #CHROM  POS REF ALT ANN[*].EFFECT   ANN[*].HGVS_P
 22  17071756    T   C   3_prime_UTR_variant,downstream_gene_variant .,.
@@ -1465,45 +1533,34 @@ Otherwise, the shell would parse the asterisk changing the expression and produc
 22  17073043    C   T   missense_variant,downstream_gene_variant    p.Arg133Gln,.
 22  17073066    A   G   synonymous_variant,downstream_gene_variant  p.Ala125Ala,.
 22  17073119    C   T   missense_variant,downstream_gene_variant    p.Val108Met,.
-</code></pre></div></p>
-<h3 id="example-4-extracting-effects-one-per-line">Example 4: Extracting effects, one per line</h3>
-<p>In order to extract effects, you can simply do something like this (notice that there are multiple columns per line because there are multiple effects per variant):
+</code></pre></div>
+<p>Notice how the effects are comma-separated within one column, making the output easy to parse.</p>
+<h3 id="example-4-extracting-effects-with-default-separator-vs-one-per-line">Example 4: Extracting effects with default separator vs one-per-line</h3>
+<p>Without <code>-s</code>, each effect value becomes a separate tab-separated column (since the default separator is tab):
 <div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar extractFields examples/test.chr22.ann.vcf CHROM POS REF ALT &quot;ANN[*].EFFECT&quot;
 #CHROM  POS REF ALT ANN[*].EFFECT
 22  17071756    T   C   3_prime_UTR_variant downstream_gene_variant
 22  17072035    C   T   missense_variant    downstream_gene_variant
-22  17072258    C   A   missense_variant    downstream_gene_variant
-22  17072674    G   A   missense_variant    downstream_gene_variant
-22  17072747    T   C   missense_variant    downstream_gene_variant
-22  17072781    C   T   synonymous_variant  downstream_gene_variant
-22  17073043    C   T   missense_variant    downstream_gene_variant
-22  17073066    A   G   synonymous_variant  downstream_gene_variant
-22  17073119    C   T   missense_variant    downstream_gene_variant
 </code></pre></div>
-Note that since some variant have more than one effect, there can be more than one "EFFECT" column.</p>
-<p>If we prefer to have one effect per line, then we can use the <code>vcfEffOnePerLine.pl</code> provided with SnpEff distribution
+Note that since some variants have more than one effect, there can be more than one "EFFECT" column. This makes the output harder to parse programmatically since the number of columns varies per row.</p>
+<p>If you prefer one effect per line, use the <code>vcfEffOnePerLine.pl</code> script provided with SnpEff:
 <div class="highlight"><pre><span></span><code>$ cat examples/test.chr22.ann.vcf \
     | ./scripts/vcfEffOnePerLine.pl \
-    | java -jar SnpSift.jar extractFields - CHROM POS REF ALT &quot;ANN[*].EFFECT&quot; \
+    | java -jar SnpSift.jar extractFields - CHROM POS REF ALT &quot;ANN[*].EFFECT&quot;
 
 #CHROM  POS REF ALT ANN[*].EFFECT
 22  17071756    T   C   3_prime_UTR_variant
 22  17071756    T   C   downstream_gene_variant
 22  17072035    C   T   missense_variant
 22  17072035    C   T   downstream_gene_variant
-22  17072258    C   A   missense_variant
-22  17072258    C   A   downstream_gene_variant
-22  17072674    G   A   missense_variant
-22  17072674    G   A   downstream_gene_variant
-22  17072747    T   C   missense_variant
 </code></pre></div>
-Now we obtain one effect per line, while all other parameters in the line are repeated across mutiple lines (e.g. there are two chr22:17071756 lines, one for each variant annotation).</p>
+Now each effect is on its own line, with variant fields repeated.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Note that in SnpSift, we used <code>-</code> as input file name, which denotes STDIN.</p>
+<p><code>-</code> as input file name denotes STDIN, enabling piping.</p>
 </div>
-<h3 id="example-5-extracting-genotype-using-genotype-name-instead-of-genotype-number">Example 5: Extracting genotype using genotype name instead of genotype number</h3>
-<p>As of SnpSift version 4.1A, you can use the genotype name in expressions:</p>
+<h3 id="example-5-extracting-genotype-using-sample-name-instead-of-index">Example 5: Extracting genotype using sample name instead of index</h3>
+<p>You can use sample names (from the VCF header) instead of numeric indices:</p>
 <div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar extractFields examples/1kg.head_chr1.vcf.gz CHROM POS REF ALT &quot;GEN[HG00096].DS&quot; &quot;GEN[HG00097].DS&quot;
 #CHROM    POS      REF  ALT    GEN[HG00096].DS    GEN[HG00097].DS
 1         10583    G    A      0.2                 0.15
@@ -1516,34 +1573,6 @@ Now we obtain one effect per line, while all other parameters in the line are re
 1         46402    C    CTGT   0.05                0.15
 1         47190    G    GA     0.15                0.0
 </code></pre></div>
-<h3 id="example-6-extracting-non-alphanumeric-field-names">Example 6: Extracting non alphanumeric field names</h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><code>SnpSift extractFields</code> can get confused if the VCF field has non-alphanumeric charaters in the name (e.g. <code>dbNSFP_GERP++_RS</code> has two "+" signs).
-A quick fix, it so is to change the field names in the VCF file.</p>
-</div>
-<p>Here is an example:
-<div class="highlight"><pre><span></span><code># Change field names in VCF
-$ cat kath.vcf | sed &quot;s/dbNSFP_GERP++/dbNSFP_GERP/g&quot; &gt; kath.gerp.vcf
-
-# Use new names to extract fields
-$ java -jar SnpSift.jar  extractFields kath.gerp.vcf CHROM POS REF ALT dbNSFP_GERP_RS dbNSFP_GERP_NS
-#CHROM  POS REF ALT dbNSFP_GERP_RS
-1   142827044   G   A       
-2   132914561   G   A       
-7   151933217   C   A       
-7   151933251   T   C       
-7   151933302   T   C       
-7   151945101   G   C   -0.892
-7   151945167   G   T       
-7   151962176   T   A       
-7   151970672   A   T       
-7   151970856   T   A   3.71
-18  14183638    G   C       
-18  14183710    A   G       
-18  14542909    G   A       
-18  14543039    T   C   -0.942
-</code></pre></div></p>
 
 
 

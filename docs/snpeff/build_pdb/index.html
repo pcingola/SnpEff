@@ -632,6 +632,27 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#command-line-reference" class="md-nav__link">
+    Command line reference
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    Usage example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#protein-structure-data" class="md-nav__link">
     Protein structure data
   </a>
@@ -1293,20 +1314,44 @@
 
 <h1 id="building-databases-pdb-and-alphafold">Building databases: PDB and AlphaFold</h1>
 <p>SnpEff supports Protein interactions calculated from <a href="http://www.rcsb.org/">PDB</a> or <a href="https://alphafold.ebi.ac.uk/download">AlphaFold</a>.
-Adding protein interaction to existing SnpEff databases is rather involved, so it's recommended you use a pre-build database if available (e.g. human).</p>
+Adding protein interaction to existing SnpEff databases is rather involved, so it's recommended you use a pre-built database if available (e.g. human).</p>
 <h2 id="requirements">Requirements</h2>
 <p>In order to add protein data to a database, you need:</p>
 <ul>
 <li>A SnpEff database for the organism. The database should have been built or downloaded prior to start adding the protein data</li>
-<li>Protein data: One <code>*.pdb.gz</code> file for each protein. This can be downloaded from PDB (real data from cristalized proteins) or AlphaFold (predicted protein structures).</li>
-<li>A "mapping file" that maps transcript IDs to protein IDs</li>
+<li>Protein data: One <code>*.pdb.gz</code> file for each protein. This can be downloaded from PDB (real data from crystallized proteins) or AlphaFold (predicted protein structures).</li>
+<li>A "mapping file" that maps protein IDs to transcript IDs</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 </div>
 <p>Adding protein data to a SnpEff database, requires a database to be already built / downloaded</p>
+<h2 id="command-line-reference">Command line reference</h2>
+<div class="highlight"><pre><span></span><code>Usage: snpEff pdb [options] genome_version
+
+Options:
+    -aaSep &lt;num&gt;              : Minimum amino acid separation within the sequence. Default: 20
+    -idMap &lt;file&gt;             : File mapping protein IDs to transcript IDs (tab-separated).
+    -maxDist &lt;num&gt;            : Maximum distance in Angstrom for amino acids to be considered &#39;in contact&#39;. Default: 3.0
+    -maxErr &lt;num&gt;             : Maximum amino acid sequence mismatch rate (0.0 to 1.0). Default: 0.05
+    -org &lt;name&gt;               : Organism common name (case-insensitive). Default: HUMAN
+    -orgScientific &lt;name&gt;     : Organism scientific name (case-insensitive). Default: HOMO SAPIENS
+    -pdbDir &lt;path&gt;            : Path to directory containing PDB files (searched recursively).
+    -res &lt;num&gt;                : Maximum PDB file resolution in Angstrom. Default: 3.0
+</code></pre></div>
+<h2 id="usage-example">Usage example</h2>
+<div class="highlight"><pre><span></span><code>java -jar snpEff.jar pdb \
+    -v \
+    -pdbDir /path/to/pdb_files/ \
+    -idMap /path/to/id_mapping.txt \
+    GRCh38.mane.1.0.ensembl
+</code></pre></div>
+<h2 id="output">Output</h2>
+<p>The command produces an <code>interactions.bin</code> file in the genome's data directory (e.g. <code>data/GRCh38.mane.1.0.ensembl/interactions.bin</code>).
+This file contains tab-separated records of amino acid pairs that are in close proximity within protein structures, along with their genomic coordinates.
+Once created, SnpEff will automatically use this file when annotating variants.</p>
 <h2 id="protein-structure-data">Protein structure data</h2>
-<p>You can download protein structure data from PDB by performing executing something like:
+<p>You can download protein structure data from PDB by executing something like:
 <div class="highlight"><pre><span></span><code>rsync -rlpt -v -z --delete --port=33444 rsync.wwpdb.org::ftp_data/structures/divided/pdb/
 </code></pre></div>
 See <a href="https://www.wwpdb.org/ftp/pdb-ftp-sites">PDB's documentation</a>.</p>
@@ -1322,13 +1367,13 @@ Please check the documentation on how to <a href="https://alphafold.ebi.ac.uk/">
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>If the PDB file has a missing resolution value, or the resolution is over <code>99.0</code>, then it is assumed to be 'missing value' and not filtered.
-for instance, AlphaFold PDB files usually don't have resolution values since they are predictions, not measurements.</p>
+For instance, AlphaFold PDB files usually don't have resolution values since they are predictions, not measurements.</p>
 </div>
 <h2 id="mapping-file">Mapping file</h2>
-<p>Since SnpEff uses trasncript ID information, whereas proteins use PDB IDs (or Uniprot IDs in case of AlphaFold), we need a file to map across these different IDs.
-You should provide a mapping file that maps <code>transcriptId</code> to <code>proteinId</code>:</p>
+<p>Since SnpEff uses transcript ID information, whereas proteins use PDB IDs (or Uniprot IDs in case of AlphaFold), we need a file to map across these different IDs.
+You should provide a mapping file that maps <code>proteinId</code> to <code>transcriptId</code>:</p>
 <p>The format is: tab-separated, one line per entry:
-<div class="highlight"><pre><span></span><code>transcriptID \t proteinID
+<div class="highlight"><pre><span></span><code>proteinID   transcriptID
 </code></pre></div></p>
 
 

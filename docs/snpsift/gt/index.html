@@ -1013,9 +1013,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift GT
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift GT
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    Limitations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1253,20 +1305,37 @@
 <p class="admonition-title">Info</p>
 <p>For instance, we've reduced 1Tb (1,000 Gb) VCF file to roughly 1Gb in a project that has over 10,000 samples.</p>
 </div>
-<p>The underlying idea is quite simple.
-In large re-sequencing projects most of the variants are singletons.
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar gt [options] [file.vcf] &gt; file.gt.vcf
+Options:
+    -u   : Uncompress (restore genotype fields).
+Default input is STDIN.
+</code></pre></div>
+<h3 id="how-it-works">How it works</h3>
+<p>In large re-sequencing projects most of the variants are singletons.
 This means that most variants are present in only one of the samples.
 For those variants, you have thousands of samples that are homozygous reference (i.e. genotype entry is "0/0") and one that is a variant (e.g. '0/1' or '1/1').</p>
 <p>A trivial way to compress these VCF entries is just to state which sample has non-reference information.
 Intuitively, this is similar to the way used to represent sparse matrices (only store non-zero elements).</p>
-<p><code>SnpSift gt</code> creates three INFO fields. These three files are composed of comma separated indexes of samples having:</p>
+<p><code>SnpSift gt</code> creates three INFO fields. These three fields are composed of comma-separated 0-based sample indexes having:</p>
 <ul>
-<li>HE: Indicated heterozygous variants (i.e. '0/1').</li>
-<li>HO: Indicated homozygous variants (i.e. '1/1').</li>
-<li>NA: Indicated missing genotype data (i.e. './.').</li>
+<li>HO: Indicates homozygous variant samples (i.e. '1/1').</li>
+<li>HE: Indicates heterozygous variant samples (i.e. '0/1').</li>
+<li>NA: Indicates samples with missing genotype data (i.e. './.').</li>
 </ul>
-<p>You can use <code>-u</code> command line option to uncompress.</p>
-<p>E.g.:
+<p>All genotype columns are removed from compressed entries. You can use <code>-u</code> command line option to uncompress.</p>
+<h3 id="limitations">Limitations</h3>
+<p>Multi-allelic variants (entries with more than one ALT allele) are not compressed. They are output as-is with their full genotype fields. This means the output can contain a mix of compressed and uncompressed entries.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is lossy compression:</p>
+<ul>
+<li>Only the GT sub-field is preserved. All other genotype sub-fields (DP, GQ, PL, AD, etc.) are permanently lost.</li>
+<li>Phasing information is lost: phased genotypes (e.g. <code>0|1</code>, <code>1|0</code>) are restored as unphased (<code>0/1</code>) on decompression.</li>
+<li>After a compress/decompress round-trip, the FORMAT field is reduced to just <code>GT</code>.</li>
+</ul>
+</div>
+<h3 id="example">Example</h3>
 <div class="highlight"><pre><span></span><code>$ cat test.vcf
 #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  Sample_1  Sample_2  Sample_3  Sample_4  Sample_5  Sample_6  Sample_7  Sample_8  Sample_9  Sample_10  Sample_11  Sample_12  Sample_13  Sample_14  Sample_15
 1       861276  .   A    G    .     PASS    AC=1  GT      0/0       1/1       0/0       0/0       0/0       0/0       0/0       0/0       0/0       0/0        0/0        0/0        0/0        0/0        0/0
@@ -1287,11 +1356,8 @@ $ java -jar SnpSift.jar gt test.vcf | tee test.gt.vcf
 $ java -jar SnpSift.jar gt -u test.gt.vcf
 #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  Sample_1  Sample_2  Sample_3  Sample_4  Sample_5  Sample_6  Sample_7  Sample_8  Sample_9  Sample_10  Sample_11  Sample_12  Sample_13  Sample_14  Sample_15
 1       861276  .   A    G    .     PASS    AC=1  GT      0/0       1/1       0/0       0/0       0/0       0/0       0/0       0/0       0/0       0/0        0/0        0/0        0/0        0/0        0/0
-</code></pre></div></p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This is lossy compression. Note that only GT informations is compressed, all other information in genotype field is lost.</p>
-</div>
+</code></pre></div>
+<p>Note that Sample_2 is the second sample (0-based index 1), so it appears as <code>HO=1</code> in the compressed output.</p>
 
 
 

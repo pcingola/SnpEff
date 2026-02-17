@@ -789,9 +789,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Intervals Index
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Intervals Index
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bed-file-format" class="md-nav__link">
+    BED file format
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,32 +1299,48 @@
 
 
 <h1 id="snpsift-intervals-index">SnpSift Intervals Index</h1>
-<p>This is used to extract variants that intersect any interval.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This is similar to "SnpSift intervals", but intended for huge VCF files, and relatively small number of intervals.</p>
+<p>Extract variants that intersect genomic intervals, optimized for very large VCF files with a relatively small number of query intervals.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This is similar to <a href="../intervals/">SnpSift Intervals</a>, but uses a file-indexing approach instead of loading the entire VCF into memory. Use this when your VCF file is too large to process with <code>SnpSift intervals</code>.</p>
 </div>
-<p>This command indexes the VCF file, thus is optimized for huge VCF files.
-You must provide intervals as BED files.
-BED format is tab separated zero-based coordinates "chr \t start \t end " (for this application, all other fields in the BED file are ignored).
-You can use command line option '-if 1' if you want one-based coordinates.</p>
-<p>E.g.:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">intidx</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="n">my_intervals</span><span class="o">.</span><span class="n">bed</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">variants_intersecting_intervals</span><span class="o">.</span><span class="n">vcf</span>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intidx [options] file.vcf file.bed &gt; output.vcf
+java -jar SnpSift.jar intidx [options] -i file.vcf chr:start-end [chr:start-end ...] &gt; output.vcf
+Options:
+    -i        : Provide genomic intervals on the command line instead of a BED file.
+                Coordinates are assumed to be 1-based.
+    -if &lt;N&gt;   : Input coordinate offset for command-line intervals. Default: 0 (zero-based).
+                When -i is used, this is automatically set to 1 (one-based).
+                Has no effect on BED file parsing (BED is always 0-based).
 </code></pre></div>
-
-<p>You can also have genomic coordinate in the command line.
-Note that in this case, coordinates are assumed to be one-based (instead of zero-based, like in BED files):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">intidx</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="n">chr1</span><span class="p">:</span><span class="mi">12345</span><span class="o">-</span><span class="mi">23456</span><span class="w"> </span><span class="n">chr2</span><span class="p">:</span><span class="mi">3456789</span><span class="o">-</span><span class="mi">4567890</span><span class="w">  </span><span class="o">&gt;</span><span class="w"> </span><span class="n">variants_intersecting_intervals</span><span class="o">.</span><span class="n">vcf</span>
-</code></pre></div>
-
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>BED file format is tab separated zero-based coordinates "chr \t start \t end " (for this application, all other fields in the BED file are ignored).</p>
+<p>The VCF file must be:</p>
+<ul>
+<li>An <strong>uncompressed file on disk</strong> (not STDIN, not gzipped). The command uses random file access for binary search, which requires a seekable uncompressed file.</li>
+<li><strong>Sorted by position</strong> within each chromosome. The binary search algorithm assumes monotonically increasing positions. Unsorted files produce silently wrong results.</li>
+</ul>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If BED file has header lines, they must start with a '#'</p>
-</div>
+<h3 id="how-it-works">How it works</h3>
+<p>Instead of reading every line of the VCF, the command builds a byte-offset index of the file by chromosome using binary search on the raw file bytes. For each query interval, it seeks directly to the matching file region and dumps the overlapping VCF lines.</p>
+<p>This makes it very fast for extracting a small number of intervals from huge VCF files, since most of the file is never read.</p>
+<p>Only one BED file is accepted. If you need to combine multiple BED files, concatenate them beforehand.</p>
+<p>Output is VCF format (with header) written to STDOUT.
+If two query intervals overlap, the same VCF lines may appear multiple times in the output (no deduplication).
+If an interval references a chromosome not present in the VCF, an error is printed to STDERR and the command continues with remaining intervals.</p>
+<h3 id="examples">Examples</h3>
+<p>Extract variants in target regions:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intidx variants.vcf target_regions.bed &gt; variants_on_target.vcf
+</code></pre></div></p>
+<p>Extract variants at specific genomic positions (1-based coordinates):
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intidx -i variants.vcf chr1:12345-23456 chr2:3456789-4567890 &gt; selected_variants.vcf
+</code></pre></div></p>
+<h3 id="bed-file-format">BED file format</h3>
+<p>BED files are tab-separated with 0-based coordinates (end position is exclusive).
+Only the first three columns are used (<code>chr</code>, <code>start</code>, <code>end</code>); additional columns are ignored.
+A minimum of two columns (<code>chr</code>, <code>start</code>) is required; if <code>end</code> is missing, it defaults to <code>start</code>.
+Header lines must start with <code>#</code>.</p>
 
 
 

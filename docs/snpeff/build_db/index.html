@@ -597,6 +597,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#build-command-reference" class="md-nav__link">
+    Build command reference
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#building-a-database" class="md-nav__link">
     Building a database
   </a>
@@ -1403,7 +1410,7 @@
 <h1 id="building-databases">Building databases</h1>
 <p>SnpEff needs a database to perform genomic annotations.
 There are pre-built databases for thousands of genomes, so chances are that your organism of choice already has a SnpEff database available.
-In the (unlikely?) event that you need to build one yourself, here we describe how to it.</p>
+In the (unlikely?) event that you need to build one yourself, here we describe how to do it.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>You can know which genomes are supported by running the following command:</p>
@@ -1455,7 +1462,7 @@ If you take a look a SnpEff's download output using the <code>-v</code> command,
 ......
 </code></pre></div>
 <p>So, it starts searching at <code>https://snpeff-public.s3.amazonaws.com/databases/v5_1/snpEff_v5_1_GRCm38.99.zip</code>
-bu<code>t it doesn't find it there, so it proceeds with the databse</code>5.0<code>path</code>https://snpeff-public.s3.amazonaws.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip`, where the blob is found, thus proceeds to download and install it from there.</p>
+but it doesn't find it there, so it proceeds with the database <code>5.0</code> path <code>https://snpeff-public.s3.amazonaws.com/databases/v5_0/snpEff_v5_0_GRCm38.99.zip</code>, where the blob is found, thus proceeds to download and install it from there.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
@@ -1464,6 +1471,31 @@ This is done using the <code>-c</code> command line option:</p>
 </code></pre></div>
 
 </div>
+<h3 id="build-command-reference">Build command reference</h3>
+<div class="highlight"><pre><span></span><code>Usage: snpEff build [options] genome_version
+
+Database format option (default: Auto detect):
+    -embl                        : Use Embl format.
+    -genbank                     : Use GenBank format.
+    -gff2                        : Use GFF2 format (obsolete).
+    -gff3                        : Use GFF3 format.
+    -gtf22                       : Use GTF 2.2 format.
+    -knowngenes                  : Use KnownGenes table from UCSC.
+    -refseq                      : Use RefSeq table from UCSC.
+    -txt                         : Use BioMart format.
+
+Database build options:
+    -cellType &lt;type&gt;             : Only build regulation tracks for cellType &lt;type&gt;.
+    -maxErrorRate &lt;num&gt;          : Maximum allowed error rate (number between 0.0 and 1.0). Default: 0.05
+    -noCheckCds                  : Skip CDS sequences check.
+    -noCheckProtein              : Skip Protein sequences check.
+    -noStoreSeqs                 : Do not store sequence in binary files.
+    -onlyReg                     : Only build regulation tracks.
+    -regSortedByType             : The &#39;regulation.gff&#39; file is sorted by &#39;regulation type&#39; instead of sorted by chromosome:pos.
+    -storeSeqs                   : Store sequence in binary files. Default: true
+    -treatAllAsProteinCoding &lt;v&gt; : Treat all transcripts as protein coding. Values: &#39;true&#39;, &#39;false&#39;, or &#39;auto&#39;. Default: auto
+</code></pre></div>
+<p>If no format flag is specified, SnpEff auto-detects the format by checking which gene annotation file exists in the data directory. It checks in this order: <code>genes.gtf</code>, <code>genes.gff</code>, <code>genes.gff2</code>, <code>genes.gbk</code>, <code>genes.embl</code>, <code>genes.refseq</code>, <code>genes.kg</code>, <code>genes.biomart</code>. All gene annotation files can be gzip-compressed (e.g. <code>genes.gtf.gz</code>).</p>
 <h3 id="building-a-database">Building a database</h3>
 <p>In order to build a database for a new genome, you need to:</p>
 <div class="admonition warning">
@@ -1531,21 +1563,6 @@ mm37.61.genome : Mouse
 See next section for details.</p>
 </div>
 </li>
-<li>
-<p>Optional: Add genome to Galaxy's menu:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">galaxy</span>
-<span class="n">cd</span><span class="w"> </span><span class="n">tools</span><span class="o">/</span><span class="n">snpEffect</span><span class="o">/</span>
-<span class="n">vi</span><span class="w"> </span><span class="n">snpEffect</span><span class="o">.</span><span class="n">xml</span>
-</code></pre></div>
-
-<p>Add the following lines to the file:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="nx">param</span><span class="w"> </span><span class="nx">name</span><span class="p">=</span><span class="s">&quot;genomeVersion&quot;</span><span class="w"> </span><span class="k">type</span><span class="p">=</span><span class="s">&quot;select&quot;</span><span class="w"> </span><span class="nx">label</span><span class="p">=</span><span class="s">&quot;Genome&quot;</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nx">option</span><span class="w"> </span><span class="nx">value</span><span class="p">=</span><span class="s">&quot;hg37&quot;</span><span class="p">&gt;</span><span class="nx">Human</span><span class="w"> </span><span class="p">(</span><span class="nx">hg37</span><span class="p">)&lt;</span><span class="nx">option</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nx">option</span><span class="w"> </span><span class="nx">value</span><span class="p">=</span><span class="s">&quot;mm37.61&quot;</span><span class="p">&gt;</span><span class="nx">Mouse</span><span class="w"> </span><span class="p">(</span><span class="nx">mm37</span><span class="m m-Double">.6</span><span class="mi">1</span><span class="p">)&lt;</span><span class="nx">option</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nx">param</span><span class="p">&gt;</span>
-</code></pre></div>
-
-</li>
 </ol>
 <h4 id="configuring-codon-tables-not-always-required">Configuring codon tables (not always required)</h4>
 <p>Codon tables are provided in the <code>snpEff.config</code> configuration file under the section <code>codon.Name_of_your_codon_table</code>.
@@ -1591,7 +1608,7 @@ The format is a comma separated list of <code>CODON/AMINO_ACID</code>.</p>
 
 </li>
 <li>
-<p><strong>Note:</strong> The FASTA file can be either in <br> <code>/path/to/snpEff/data/genomes/mm37.61.fa</code> <br>or in <br> <code>/path/to/snpEff/data/mm37.61/sequences.fa</code></p>
+<p><strong>Note:</strong> The FASTA file can be either in <code>/path/to/snpEff/data/genomes/mm37.61.fa</code> or in <code>/path/to/snpEff/data/mm37.61/sequences.fa</code>. Both locations also accept gzip-compressed files (e.g. <code>mm37.61.fa.gz</code>).</p>
 </li>
 <li>Add the new genome to the config file (see <a href="#add-a-genome-to-the-configuration-file">Add a new genome to the configuration file</a> for details)</li>
 <li>Create database:<div class="codehilite"><pre><span></span><code>cd /path/to/snpEff
@@ -1614,8 +1631,9 @@ See details in <a href="../faq/#how-to-building-an-ncbi-genome-genbank-file">thi
 <p><strong>Example:</strong> This example shows how to create a database for a new genome.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>GenBank files usually include genome sequence as well as CDS sequences.
-If these sequences are NOT in the GeneBank file, you should provide separate FASTA files for genome reference and CDS (or Protein) sequences.</p>
+<p>GenBank files usually include genome sequence as well as CDS and protein sequences.
+When building from GenBank, SnpEff uses the embedded CDS/protein sequences for the database integrity check, so you typically do not need to provide separate <code>cds.fa</code> or <code>protein.fa</code> files.
+If these sequences are NOT in the GenBank file, you should provide separate FASTA files for genome reference and CDS (or Protein) sequences.</p>
 </div>
 <p>For this example we'll use "Staphylococcus aureus":</p>
 <ol>
@@ -1751,13 +1769,13 @@ By default, SnpEff will refuse to save any unchecked database.</p>
 <h4 id="checking-cds-sequences">Checking CDS sequences</h4>
 <p>When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when</p>
 <ul>
-<li>building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.</li>
+<li>building via GTF/GFF/RefSeq: A CDS sequences FASTA file is available.</li>
 <li>building via GenBank file: CDS sequences are available within the GenBank file</li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
+<p>You can disable this check using command line option <code>-noCheckCds</code></p>
 </div>
-<p>You can disable this check unsing command line option <code>-noCheckCds</code></p>
 <p>FASTA cds file format:</p>
 <ul>
 <li>The file name should be <code>cds.fa</code> (or <code>cds.fa.gz</code> if compressed)</li>
@@ -1775,7 +1793,7 @@ ACTGGGGGATACG
 </ul>
 </li>
 </ul>
-<p>CSD checking output.
+<p>CDS checking output.
 When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character</p>
 <ul>
 <li><code>+</code>: OK, the CDS sequence matches the one predicted by SnpEff</li>
@@ -1787,24 +1805,24 @@ When run using the <code>-v</code> (verbose) command line option, for each trans
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-</div>
 <p>As a "rule of the thumb", you should not get more than 2% or 3% of errors.</p>
+</div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-</div>
 <p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each CDS sequence comparison.
 The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.</p>
+</div>
 <h4 id="checking-protein-sequences">Checking Protein sequences</h4>
 <p>This is very similar to the CDS checking in the previous sub-section.
 When building a database, SnpEff will also try to check Protein sequences for all transcripts when</p>
 <ul>
-<li>building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.</li>
+<li>building via GTF/GFF/RefSeq: A protein sequences FASTA file is available.</li>
 <li>building via GenBank file: protein sequences are available within the GenBank file</li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
+<p>You can disable this check using command line option <code>-noCheckProtein</code></p>
 </div>
-<p>You can disable this check unsing command line option <code>-noCheckProtein</code></p>
 <p>FASTA protein file:</p>
 <ul>
 <li>The file name should be <code>protein.fa</code> (or <code>protein.fa.gz</code> if compressed)</li>
@@ -1840,8 +1858,8 @@ RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
 </code></pre></div></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-</div>
 <p>As a "rule of the thumb", the errors should be below 2% or 3%.</p>
+</div>
 <p><strong>How exactly protein sequences are compared</strong>
 The rules used for protein sequence comparison are:</p>
 <ul>
@@ -1853,18 +1871,18 @@ The rules used for protein sequence comparison are:</p>
 <p>If these comparisons fails, further attempts are made:</p>
 <ul>
 <li>Replace "unknown" codon characters: Codons using old <code>'X'</code> characters are replaced by newer <code>'?'</code> characters</li>
-<li>If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)</li>
-<li>Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace <code>'*'</code> by <code>'U'</code></li>
-<li>Try replacing unknown aminco acids (<code>'?'</code>) by the ones at the same position in the protein sequence from the FASTA file</li>
+<li>If any of the sequences only differ by the first codon, they are considered equal (the start codon is translated as 'Met' even when the codon code translates to another Amino acid)</li>
+<li>Replace rare amino acids, which often translate as stop codons in the middle of the sequence: E.g. replace <code>'*'</code> by <code>'U'</code></li>
+<li>Try replacing unknown amino acids (<code>'?'</code>) by the ones at the same position in the protein sequence from the FASTA file</li>
 </ul>
 <p>If after all these attempts the protein sequence still do not match, they are considered "not equal".</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-</div>
 <p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
 The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.</p>
+</div>
 <h3 id="example-building-the-human-genome-database">Example: Building the Human Genome database</h3>
-<p>This is a full example on how to build the human genome database (using GTF file from ENSEBML), it includes support for regulatory features, sanity check, rare amino acids, etc..
+<p>This is a full example on how to build the human genome database (using GTF file from ENSEMBL), it includes support for regulatory features, sanity check, rare amino acids, etc..
 <div class="highlight"><pre><span></span><code># Go to SnpEff&#39;s install dir
 cd ~/snpeff
 
@@ -1935,7 +1953,7 @@ cat sequence.fa  &gt;&gt; genes.gff
 <p>When building a database, snpEff tries to find which transcripts are protein coding. This is done using the 'bioType' information.</p>
 <p>The bioType information is not a standard GFF or GTF feature. So I follow ENSEMBL's convention of using the second column ('source') for bioType, as well as the gene_biotype attribute.</p>
 <p>If your file was not produced by ENSEMBL, it probably doesn't have this information. This means that snpEff doesn't know which genes are protein coding and which ones are not.</p>
-<p>Having no information, snpEff will treat all genes as protein coding (assuming you have <code>-treatAllAsProteinCoding Auto</code> option in the command line, which is the default).</p>
+<p>Having no information, snpEff will treat all genes as protein coding (the default value of <code>-treatAllAsProteinCoding</code> is <code>auto</code>, which applies this behavior when bioType information is missing).</p>
 <p>So you will get effects as if all genes were protein coding, then you can filter out the irrelevant genes. Unfortunately, this is the best I can do if there is no 'bioType' information</p>
 <p><strong>When building a database, I get too many warnings</strong></p>
 <p>There are plenty of GFF and GTF files that, unfortunately, do not follow the specification.

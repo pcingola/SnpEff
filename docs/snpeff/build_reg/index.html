@@ -611,6 +611,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#command-line-options-for-regulation-builds" class="md-nav__link">
+    Command line options for regulation builds
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#option-1-using-a-gff-file" class="md-nav__link">
     Option 1: Using a GFF file
   </a>
@@ -618,8 +625,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-2-using-an-bed-file" class="md-nav__link">
-    Option 2: Using an BED file
+  <a href="#option-2-using-a-bed-file" class="md-nav__link">
+    Option 2: Using a BED file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motif-files" class="md-nav__link">
+    Motif files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-regulation-tracks" class="md-nav__link">
+    Using regulation tracks
   </a>
   
 </li>
@@ -1299,15 +1320,21 @@ As in the previous section, most likely you will never have to do it yourself an
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>It is assumed the the genome is already installed, only regulatory tracks are added.</p>
+<p>It is assumed the genome is already installed, only regulatory tracks are added.</p>
 </div>
-<h3 id="option-1-using-a-gff-file">Option 1: Using a GFF file</h3>
+<h2 id="command-line-options-for-regulation-builds">Command line options for regulation builds</h2>
+<p>The following <code>build</code> options are relevant for regulation tracks:</p>
+<div class="highlight"><pre><span></span><code>    -onlyReg                     : Only build regulation tracks (skip gene annotation database).
+    -cellType &lt;type&gt;             : Only build regulation tracks for a specific cell type.
+    -regSortedByType             : The &#39;regulation.gff&#39; file is sorted by &#39;regulation type&#39; instead of sorted by chromosome:pos.
+</code></pre></div>
+<h2 id="option-1-using-a-gff-file">Option 1: Using a GFF file</h2>
 <p>This example shows how to create a regulation database for human (GRCh37.65):</p>
 <ol>
 <li>
 <p>Get the GFF regulatory annotations (into path/to/snpEff/data/GRCh37.65/regulation.gff):</p>
 <div class="codehilite"><pre><span></span><code><span class="n">cd</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">snpEff</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">GRCh37</span><span class="mf">.65</span>
-<span class="n">wget</span><span class="w"> </span><span class="nl">ftp:</span><span class="o">/</span><span class="n">ftp</span><span class="p">.</span><span class="n">ensembl</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="k">release</span><span class="o">-</span><span class="mh">65</span><span class="o">/</span><span class="n">regulation</span><span class="o">/</span><span class="n">homo_sapiens</span><span class="o">/</span><span class="n">AnnotatedFeatures</span><span class="p">.</span><span class="n">gff</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">wget</span><span class="w"> </span><span class="nl">ftp:</span><span class="c1">//ftp.ensembl.org/pub/release-65/regulation/homo_sapiens/AnnotatedFeatures.gff.gz</span>
 <span class="n">mv</span><span class="w"> </span><span class="n">AnnotatedFeatures</span><span class="p">.</span><span class="n">gff</span><span class="p">.</span><span class="n">gz</span><span class="w"> </span><span class="n">regulation</span><span class="p">.</span><span class="n">gff</span><span class="p">.</span><span class="n">gz</span>
 </code></pre></div>
 
@@ -1348,7 +1375,7 @@ java -Xmx20G -jar snpEff.jar build -v -onlyReg GRCh37.65
 <p>As you can see, annotations for each cell type are saved in different files. This makes it easier to load annotations only for the desired cell types when analyzing data.</p>
 </li>
 </ol>
-<h3 id="option-2-using-an-bed-file">Option 2: Using an BED file</h3>
+<h2 id="option-2-using-a-bed-file">Option 2: Using a BED file</h2>
 <p>This example shows how to create a regulation database for human (GRCh37.65).
 We assume we have a file called <code>my_regulation.bed</code> which has information for H3K9me3 in Pancreatic Islets (for instance, as a result of a Chip-Seq experiment and peak enrichment analysis).</p>
 <ol>
@@ -1399,6 +1426,16 @@ java -Xmx20G -jar snpEff.jar build -v -onlyReg GRCh37.65
 This makes it easier to load annotations only for the desired cell types when analyzing data.</p>
 </li>
 </ol>
+<h2 id="motif-files">Motif files</h2>
+<p>The regulation build also processes motif files if present in the genome's data directory:</p>
+<ul>
+<li><code>motif.gff</code>: Motif annotations in GFF format</li>
+<li><code>pwms.bin</code>: Position Weight Matrices in binary format</li>
+</ul>
+<p>These files are typically provided by ENSEMBL for human and mouse genomes. If present, they are automatically processed during the regulation build.</p>
+<h2 id="using-regulation-tracks">Using regulation tracks</h2>
+<p>Once regulation tracks are built, you can use them when annotating variants with the <code>-reg</code> command line option.
+See <a href="../additionalann/">Additional annotations</a> for details on how to use regulation and motif annotations.</p>
 
 
 

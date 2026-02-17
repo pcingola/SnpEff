@@ -873,9 +873,68 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift GWAS Catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift GWAS Catalog
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    Database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-fields" class="md-nav__link">
+    Output fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,27 +1306,66 @@
 
 
 <h1 id="snpsift-gwas-catalog">SnpSift GWAS Catalog</h1>
-<p>Annotate using <a href="http://www.genome.gov/gwastudies/">GWAS catalog</a>.</p>
-<p>You need the GWAS catalog file (in TXT format), which can be downloaded <a href="https://www.ebi.ac.uk/gwas/api/search/downloads/alternative">here</a>.
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
-1   1005806 rs3934834   C   T   .   PASS    AF=0.091;GWASCAT=Body_mass_index    
-1   2069172 rs425277    C   T   .   PASS    AF=0.400;GWASCAT=Height
-1   2069681 rs3753242   C   T   .   PASS    AF=0.211;GWASCAT=Reasoning  
-1   2392648 rs2477686   G   C   .   PASS    AF=0.745;GWASCAT=Non_obstructive_azoospermia    
-1   2513216 rs734999    C   T   .   PASS    AF=0.547;GWASCAT=Ulcerative_colitis
-1   2526746 rs3748816   A   G   .   PASS    AF=0.489;GWASCAT=Celiac_disease
-1   3083712 rs2651899   T   C   .   PASS    AF=0.467;GWASCAT=Migraine   
-1   3280253 rs6658356   G   A   .   PASS    AF=0.070;GWASCAT=Response_to_statin_therapy
-1   4315204 rs966321    G   T   .   PASS    AF=0.522;GWASCAT=Factor_VII
-1   5170712 rs7513590   A   G   .   PASS    AF=0.256;GWASCAT=Anthropometric_traits  
-1   6279370 rs846111    G   C   .   PASS    AF=0.153;GWASCAT=QT_interval,QT_interval    
-1   6631431 rs11587438  C   T   .   PASS    AF=0.906;GWASCAT=White_blood_cell_types
-1   7879063 rs2797685   C   T   .   PASS    AF=0.186;GWASCAT=Crohn_s_disease    
-1   8021973 rs35675666  G   T   .   PASS    AF=0.093;GWASCAT=Ulcerative_colitis
-1   8046672 rs12727642  C   A   .   PASS    AF=0.101;GWASCAT=Celiac_disease
-1   8422676 rs2252865   T   C   .   PASS    AF=0.771;GWASCAT=Schizophrenia  
-1   8526142 rs4908760   G   A   .   PASS    AF=0.630;GWASCAT=Vitiligo   
-</code></pre></div></p>
+<p>Annotate variants with information from the <a href="https://www.ebi.ac.uk/gwas/">GWAS Catalog</a>.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar gwasCat -genome GRCh37 [-db path/to/gwascatalog.txt] [file.vcf] &gt; output.vcf
+</code></pre></div>
+<p>The command requires a genome version (e.g. <code>-genome GRCh37</code>) and a GWAS Catalog database file.
+The database can be specified via <code>-db</code> or configured in <code>snpEff.config</code>.
+Default VCF input is STDIN.</p>
+<h3 id="database">Database</h3>
+<p>You need the GWAS Catalog file in the "alternative" tab-delimited format, which can be downloaded from <a href="https://www.ebi.ac.uk/gwas/api/search/downloads/alternative">EBI</a>.</p>
+<p>If the database path is configured in <code>snpEff.config</code> (e.g. <code>database.gwascatalog.GRCh37</code>), SnpSift will find it automatically.
+Otherwise, specify the path with <code>-db</code>.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>The GWAS Catalog is loaded into memory and indexed by chromosomal position using an interval tree.
+For each variant in the VCF file, the command matches by <strong>exact genomic position</strong> (chromosome and position), not by rsID.</p>
+<p>Chromosome names are normalized (e.g. 'chr1' and '1' are treated the same).
+Large structural variants are skipped during annotation.</p>
+<h3 id="output-fields">Output fields</h3>
+<p>The command adds up to five INFO fields to matching VCF entries:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GWASCAT_TRAIT</code></td>
+<td>Associated trait (e.g. "Body_mass_index")</td>
+</tr>
+<tr>
+<td><code>GWASCAT_P_VALUE</code></td>
+<td>p-value from the association study</td>
+</tr>
+<tr>
+<td><code>GWASCAT_OR_BETA</code></td>
+<td>Odds ratio or Beta coefficient (only added when &gt; 0)</td>
+</tr>
+<tr>
+<td><code>GWASCAT_REPORTED_GENE</code></td>
+<td>Gene reported in the original study</td>
+</tr>
+<tr>
+<td><code>GWASCAT_PUBMED_ID</code></td>
+<td>PubMed ID of the original paper</td>
+</tr>
+</tbody>
+</table>
+<p>When multiple GWAS Catalog entries match a variant, values are comma-separated.
+All VCF entries are output (both annotated and non-annotated).</p>
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar gwasCat -genome GRCh37 -db gwascatalog.txt test.vcf &gt; test.gwas.vcf
+
+$ grep GWASCAT test.gwas.vcf | head -5
+1   1005806 rs3934834   C   T   .   PASS    AF=0.091;GWASCAT_TRAIT=Body_mass_index;GWASCAT_P_VALUE=1.0E-6;GWASCAT_REPORTED_GENE=AGRN;GWASCAT_PUBMED_ID=25673413
+1   2069172 rs425277    C   T   .   PASS    AF=0.400;GWASCAT_TRAIT=Height;GWASCAT_P_VALUE=2.0E-8;GWASCAT_REPORTED_GENE=PRKCZ;GWASCAT_PUBMED_ID=20881960
+1   2392648 rs2477686   G   C   .   PASS    AF=0.745;GWASCAT_TRAIT=Non_obstructive_azoospermia;GWASCAT_P_VALUE=3.0E-7;GWASCAT_REPORTED_GENE=MORN1;GWASCAT_PUBMED_ID=24532628
+1   2513216 rs734999    C   T   .   PASS    AF=0.547;GWASCAT_TRAIT=Ulcerative_colitis;GWASCAT_P_VALUE=5.0E-13;GWASCAT_REPORTED_GENE=TNFRSF14;GWASCAT_PUBMED_ID=21297633
+1   3083712 rs2651899   T   C   .   PASS    AF=0.467;GWASCAT_TRAIT=Migraine;GWASCAT_P_VALUE=1.0E-11;GWASCAT_REPORTED_GENE=PRDM16;GWASCAT_PUBMED_ID=23793025
+</code></pre></div>
 
 
 

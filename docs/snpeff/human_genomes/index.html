@@ -1313,11 +1313,11 @@
 
 
 <h1 id="human-genomes">Human Genomes</h1>
-<p>There are several version of the human genome supported by SnpEff</p>
+<p>There are several versions of the human genome supported by SnpEff</p>
 <p>Here we explain the subtle differences between each version:</p>
 <h3 id="who-is-who">Who is who</h3>
 <p>Here is a brief explanation of who are the key releases of the Human Genome (all quotes are from their respective web sites, at the time I created this page):</p>
-<p><strong><a href="http://www.ebi.ac.uk/">Ensembl</a>:</strong>:
+<p><strong><a href="http://www.ebi.ac.uk/">Ensembl</a>:</strong>
 - <em>“Ensembl creates, integrates and distributes reference datasets and analysis tools that enable genomics. We are based at EMBL-EBI (European Molecular Biology Laboratory, European Bioinformatics Institute)”</em>
 - <em>“Ensembl transcripts displayed on our website are products of the Ensembl automatic gene annotation system (a collection of gene annotation pipelines), termed the Ensembl annotation process. All Ensembl transcripts are based on experimental evidence and thus the automated pipeline relies on the mRNAs and protein sequences deposited into public databases from the scientific community. Manually-curated transcripts are produced by the HAVANA group.”</em></p>
 <p><strong><a href="https://www.ncbi.nlm.nih.gov/refseq/">RefSeq:</a></strong>
@@ -1326,27 +1326,27 @@
 <p><strong><a href="https://www.gencodegenes.org/">Gencode</a>:</strong>
 - <em>“The goal of the GENCODE project is to identify and classify all gene features in the human and mouse genomes with high accuracy based on biological evidence, and to release these annotations for the benefit of biomedical research and genome interpretation.”</em>
 - <em>“The GENCODE annotation is made by merging the manual gene annotation produced by the Ensembl-Havana team and the Ensembl-genebuild automated gene annotation. … The GENCODE releases coincide with the Ensembl releases…. In practical terms, the GENCODE annotation is essentially identical to the Ensembl annotation.”</em></p>
-<p><strong><a href="[https://www.ncbi.nlm.nih.gov/grc/human]">GRCh</a></strong>: Genome Reference Consortium (human)</p>
+<p><strong><a href="https://www.ncbi.nlm.nih.gov/grc/human">GRCh</a></strong>: Genome Reference Consortium (human)</p>
 <h3 id="human-genome-versions">Human Genome versions</h3>
 <p>Which Human genome version correspond to which genome names:</p>
 <ul>
 <li>
-<p>GRCh38.mane.0.93.ensembl: Human genome GRCh38, using MANE transcripts v0.93, Ensembl IDs. See MANE below for details.</p>
+<p>GRCh38.mane.<em>VERSION</em>.ensembl (e.g. GRCh38.mane.1.2.ensembl): Human genome GRCh38, using MANE transcripts, Ensembl IDs. See MANE below for details. Available versions: 0.95, 1.0, 1.2.</p>
 </li>
 <li>
-<p>GRCh38.mane.0.93.refseq: Human genome GRCh38, using MANE transcripts v0.93, RefSeq IDs. See MANE below for details.</p>
+<p>GRCh38.mane.<em>VERSION</em>.refseq (e.g. GRCh38.mane.1.2.refseq): Human genome GRCh38, using MANE transcripts, RefSeq IDs. See MANE below for details. Available versions: 0.95, 1.0, 1.2.</p>
 </li>
 <li>
 <p>GRCh38.<em>NN</em> (e.g. GRCh38.104): These are genome annotations from ENSEMBL, created from GRCh38/hg38 reference genome sequence.</p>
 </li>
 <li>
-<p>GRCh37.<em>NN</em> (e.g. GRCh37.75): These are the genome annotations from ENSEMBL, created from GRCh37/hg19 reference genome sequence. <strong>WARNING:</strong> Ensembl stopped releasing genomes based on GRCh37/hg19 on February 2014.</p>
+<p>GRCh37.<em>NN</em> (e.g. GRCh37.75): These are the genome annotations from ENSEMBL, created from GRCh37/hg19 reference genome sequence. <strong>WARNING:</strong> Ensembl stopped primary releases based on GRCh37/hg19 in February 2014, though a GRCh37 archive server continued providing some later releases (e.g. GRCh37.87).</p>
 </li>
 <li>
 <p>GRCh38.p<em>NN</em> (e.g. GRCh38.p13): These are RefSeq transcripts from NCBI mapped to GRCh38/hg38 reference genome sequence</p>
 </li>
 <li>
-<p>GRCh37.p<em>NN</em> (e.g. GRCh37.p13): These are RefSeq transcripts from NCBI mapped to GRCh38/hg19 reference genome sequence</p>
+<p>GRCh37.p<em>NN</em> (e.g. GRCh37.p13): These are RefSeq transcripts from NCBI mapped to GRCh37/hg19 reference genome sequence</p>
 </li>
 <li>
 <p>hg38: UCSC genome with RefSeq transcripts mapped to GRCh38/hg38 reference genome sequence</p>
@@ -1371,7 +1371,10 @@
 <p><strong>Canonical is ill-defined:</strong> Everybody has a different definition of what a canonical transcript is (see details in the next section).</p>
 </li>
 <li>
-<p><strong>HGSV requires realignment</strong>: HGVS "sometimes" recommends to shift the variants "right" respect to the transcript, whereas VCF specification requires to always shift left respect to he genome. This can catch off guard many scientist who are unaware of this side effect of using HGVS notation and wonder why the variant annotation software is reporting some variants as if they were aligned to "another location". In order to warn the users that such realignment occurred, an <code>INFO_REALIGN_3_PRIME</code> message is added to annotation in the VCF entry.</p>
+<p><strong>HGVS requires realignment</strong>: HGVS "sometimes" recommends to shift the variants "right" respect to the transcript, whereas VCF specification requires to always shift left respect to the genome. This can catch off guard many scientists who are unaware of this side effect of using HGVS notation and wonder why the variant annotation software is reporting some variants as if they were aligned to "another location". In order to warn the users that such realignment occurred, an <code>INFO_REALIGN_3_PRIME</code> message is added to annotation in the VCF entry.</p>
+</li>
+<li>
+<p><strong>Chromosome name normalization</strong>: SnpEff automatically normalizes chromosome names by stripping common prefixes such as "chr", "chromosome", and "chromo". So <code>chr1</code> and <code>1</code> are treated as equivalent. In most cases, you do not need to manually rename chromosomes in your input files. If you still get <code>ERROR_CHROMOSOME_NOT_FOUND</code>, see the <a href="../faq/">FAQ</a> for details.</p>
 </li>
 </ul>
 <h3 id="important-considerations-refseq">Important considerations: RefSeq</h3>
@@ -1384,10 +1387,10 @@
 <p><strong>RefSeq transcripts differ ~5% respect to the reference genome.</strong> This is a consequence of the previous item. Between 3% to 7% of the transcripts in RefSeq do not exactly match the reference genome, thus the proteins inferred from the genomic CDSs sequences are different than the "real" RefSeq CDS sequences. Most of the time, the difference (if any) is only one amino acid in the whole protein, but sometimes the difference is much larger.</p>
 </li>
 <li>
-<p><strong>Variant annotations using RefSeq may not be precise at the exact loci where the RefSeq transcript doesn't match the genome reference.</strong> This is yet another consequence of the previous items, but since the transcript do not match the reference genome, and variant annotations are based on the reference genome, the variant annotaion predictions might be off at those genomic loci.</p>
+<p><strong>Variant annotations using RefSeq may not be precise at the exact loci where the RefSeq transcript doesn't match the genome reference.</strong> This is yet another consequence of the previous items, but since the transcript do not match the reference genome, and variant annotations are based on the reference genome, the variant annotation predictions might be off at those genomic loci.</p>
 </li>
 <li>
-<p><strong>NCBI's gene IDs are just gene names, simetime with '_1', '_2', ..., etc.</strong> Gene IDs from NCBI genomes (e.g. GRCh38.p13) are just gene names. If a gene is mapped to multiple genomic loci, then the same gene name is used and string is added to make it unique ('_1', for the first duplicate, '_2' for the second and so on). For example, here are the gene IDs for gene 'KIR3DL3' (note the last line is 'KIR3DL3_46', so there are 47 loci for this gene):</p>
+<p><strong>NCBI's gene IDs are just gene names, sometimes with '_1', '_2', ..., etc.</strong> Gene IDs from NCBI genomes (e.g. GRCh38.p13) are just gene names. If a gene is mapped to multiple genomic loci, then the same gene name is used and string is added to make it unique ('_1', for the first duplicate, '_2' for the second and so on). For example, here are the gene IDs for gene 'KIR3DL3' (note the last line is 'KIR3DL3_46', so there are 47 loci for this gene):</p>
 </li>
 </ul>
 <div class="highlight"><pre><span></span><code># Note: Results edited for readability
@@ -1409,7 +1412,7 @@ NT_113949.2 BestRefSeq  gene    139138  151310  .   -   .   gene_id &quot;KIR3DL
 <p><strong>UCSC transcripts (hg19/hg38) are not unique.</strong> Transcript IDs might not be unique. Many assume that IDs are unique, but this is not always true to UCSC's genomic files.</p>
 </li>
 <li>
-<p><strong>A UCSC transcripts (hg19/hg38) can map to multiple loci.</strong> A transcript from hg19/hg39 can map to multiple genomic loci, this is a consequence of transcripts IDs not being unique. For example, transcript NR_110738.1 is mapped to 123 loci:</p>
+<p><strong>A UCSC transcript (hg19/hg38) can map to multiple loci.</strong> A transcript from hg19/hg38 can map to multiple genomic loci, this is a consequence of transcripts IDs not being unique. For example, transcript NR_110738.1 is mapped to 123 loci:</p>
 </li>
 </ul>
 <p><code>$ cat hg38.refseq | cut -f 2 | sort | uniq -c | sort -rn | head
@@ -1424,8 +1427,12 @@ NT_113949.2 BestRefSeq  gene    139138  151310  .   -   .   gene_id &quot;KIR3DL
   53 NM_001360171.1
   52 NM_014512.1</code></p>
 <h3 id="canonical-transcripts">Canonical transcripts</h3>
-<p>You need to be careful because the definition of "Canonical trnascript" changes for each data source and sometimes for each genome version.</p>
-<p>The definition used by SnpEff is: <em>“The canonical transcript is defined as either the longest CDS, if the gene has translated transcripts, or the longest cDNA.”</em> (Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2686571)</p>
+<p>You need to be careful because the definition of "Canonical transcript" changes for each data source and sometimes for each genome version.</p>
+<p>The definition used by SnpEff is: <em>"The canonical transcript is defined as either the longest CDS, if the gene has translated transcripts, or the longest cDNA."</em> (Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2686571). When two transcripts have the same length, the one with the lexicographically smallest ID is chosen.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can override the default canonical transcript selection using the <code>-canonList &lt;file&gt;</code> command line option, where the file contains tab-separated <code>gene_id \t transcript_id</code> entries. This is useful when you want to use a specific transcript for a given gene (e.g. MANE Select transcripts).</p>
+</div>
 <p>Just to show that there are subtle differences, here some of the definitions Canonical from some prominent genomic sources:</p>
 <p><strong>Ensembl</strong> (Ref: http://useast.ensembl.org/Help/Glossary)</p>
 <ol>
@@ -1461,8 +1468,7 @@ Both NCBI and ENSEMBL have been joining efforts in this new initiative to provid
 <li>includes additional transcripts (i.e. more than one per gene) required to report variants of clinical interest, and</li>
 <li>will become the default transcripts shown in Genome Browsers.</li>
 </ul>
-<p>As of this writing, version 0.93 was released in January 2021.
-Furthermore, the upcoming ENSEMBL release 104 is expected to switch the definition of "Canonical Transcript" to favor MANE transcripts.</p>
+<p>SnpEff currently provides MANE databases for versions 0.95, 1.0, and 1.2, available with both Ensembl and RefSeq transcript IDs (e.g. <code>GRCh38.mane.1.2.ensembl</code> and <code>GRCh38.mane.1.2.refseq</code>).</p>
 <p>References:</p>
 <ul>
 <li>https://www.ncbi.nlm.nih.gov/refseq/MANE/</li>

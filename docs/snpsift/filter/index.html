@@ -820,6 +820,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#comments-in-expressions" class="md-nav__link">
+    Comments in expressions
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1410,13 +1417,12 @@ Options:
     -s|--set         : Create a SET using &#39;file&#39;
     --errMissing     : Error is a field is missing. Default: false
     --format         : SnpEff format version: {2, 3}. Default: Auto
-    --galaxy         : Used from Galaxy (expressions have been sanitized).
 </code></pre></div>
 <h3 id="variables">Variables</h3>
 <p>All VCF fields can be used as variables names, as long as they are declared in the VCF header OR they are "standard" VCF fields (as defined by the VCF 4.1 specification).</p>
 <ul>
 <li>
-<p><strong>Fields</strong> names: "CHROM, POS, ID, REF, ALT, QUAL or FILTER". Examples:</p>
+<p><strong>Fields</strong> names: "CHROM, POS, ID, REF, ALT, QUAL, FILTER or FORMAT". Examples:</p>
 <ul>
 <li>
 <p>Any variant in chromosome 1:</p>
@@ -1431,7 +1437,7 @@ Options:
 
 </li>
 <li>
-<p>Has an ID and it matches the regulat expression 'rs':</p>
+<p>Has an ID and it matches the regular expression 'rs':</p>
 <div class="codehilite"><pre><span></span><code>&quot;(exists ID) &amp; ( ID =~ &#39;rs&#39; )&quot;
 </code></pre></div>
 
@@ -1555,7 +1561,7 @@ They are named based on the order used in the command line (e.g. the first one i
 <p>Effect fields (from SnpEff) are accessed using an index (effect number) followed by a sub-field name.</p>
 <p>Available <code>ANN</code> sub-fields are (for details, take a look at the <a href="../../adds/VCFannotationformat_v1.0.pdf">specification</a>):</p>
 <ul>
-<li><code>ALLELE</code> (alias GENOTYPE)</li>
+<li><code>ALLELE</code> (alias GT, GENOTYPE)</li>
 <li><code>EFFECT</code> (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)</li>
 <li><code>IMPACT</code>: { HIGH, MODERATE, LOW, MODIFIER }</li>
 <li><code>GENE</code>: Gene name (e.g. 'PSD3')</li>
@@ -1573,7 +1579,7 @@ They are named based on the order used in the command line (e.g. the first one i
 <li><code>AA_POS</code> (alias POS_AA)</li>
 <li><code>AA_LEN</code> (alias LEN_AA)</li>
 <li><code>DISTANCE</code></li>
-<li><code>ERRORS</code> (alias WARNING, INFOS)</li>
+<li><code>ERRORS</code> (alias WARNINGS, INFOS)</li>
 </ul>
 <p>For example, you may want only the lines where the <strong>first</strong> annotation has <code>missense_variant</code> variant:</p>
 <p><strong>Important</strong> According to the specification, there can be more than one EFFECT separated by &amp; (e.g. 'missense_variant&amp;splice_region_variant', thus using <code>has</code> operator is better than using equality operator (<code>=</code>).
@@ -1637,11 +1643,15 @@ $ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
 <li><code>FUNCLASS</code>: { NONE, SILENT, MISSENSE, NONSENSE }</li>
 <li><code>CODON</code>: Codon change (e.g. 'ggT/ggG')</li>
 <li><code>AA</code>: Amino acid change (e.g. 'G156')</li>
+<li><code>HGVS</code>: HGVS notation</li>
+<li><code>AA_LEN</code>: Amino acid length</li>
 <li><code>GENE</code>: Gene name (e.g. 'PSD3')</li>
 <li><code>BIOTYPE</code>: Gene biotype, as described by the annotations (e.g. 'protein_coding')</li>
 <li><code>CODING</code>: Gene is { CODING, NON_CODING }</li>
 <li><code>TRID</code>: Transcript ID</li>
 <li><code>RANK</code>: Exon or Intron rank (i.e. exon number in a transcript)</li>
+<li><code>GENOTYPE</code> (alias GT, GENOTYPE_NUMBER)</li>
+<li><code>ERRORS</code> (alias WARNINGS, INFOS)</li>
 </ul>
 <p>For example, you may want only the lines where the first effect is a NON_SYNONYMOUS variants:</p>
 <div class="codehilite"><pre><span></span><code>&quot;( EFF[0].EFFECT = &#39;NON_SYNONYMOUS_CODING&#39; )&quot;
@@ -1684,10 +1694,16 @@ $ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
 </thead>
 <tbody>
 <tr>
-<td>=</td>
+<td>=, ==</td>
 <td>Equality test</td>
 <td>FLOAT, INT or STRING</td>
 <td>(REF <strong>=</strong> 'A')</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>Not equal</td>
+<td>FLOAT, INT or STRING</td>
+<td>(REF <strong>!=</strong> 'A')</td>
 </tr>
 <tr>
 <td>&gt;</td>
@@ -1714,28 +1730,64 @@ $ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
 <td>(DP <strong>&le;</strong> 20)</td>
 </tr>
 <tr>
+<td>+</td>
+<td>Addition (or string concatenation)</td>
+<td>FLOAT, INT or STRING</td>
+<td>(DP <strong>+</strong> 1)</td>
+</tr>
+<tr>
+<td>-</td>
+<td>Subtraction</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>-</strong> 1)</td>
+</tr>
+<tr>
+<td>*</td>
+<td>Multiplication</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>*</strong> 2)</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Division</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>/</strong> 2)</td>
+</tr>
+<tr>
+<td>%</td>
+<td>Modulo</td>
+<td>FLOAT or INT</td>
+<td>(DP <strong>%</strong> 2)</td>
+</tr>
+<tr>
 <td>=~</td>
 <td>Match regular expression</td>
 <td>STRING</td>
-<td>(REL <strong>=~</strong> 'AC')</td>
+<td>(REF <strong>=~</strong> 'AC')</td>
 </tr>
 <tr>
 <td>!~</td>
 <td>Does not match regular expression</td>
 <td>STRING</td>
-<td>(REL <strong>!~</strong> 'AC')</td>
+<td>(REF <strong>!~</strong> 'AC')</td>
 </tr>
 <tr>
-<td>&amp;</td>
+<td>&amp;, &amp;&amp;</td>
 <td>AND operator</td>
 <td>Boolean</td>
 <td>(DP &gt; 20) <strong>&amp;</strong> (REF = 'A')</td>
 </tr>
 <tr>
-<td>|</td>
+<td>|, ||</td>
 <td>OR operator</td>
 <td>Boolean</td>
 <td>(DP &gt; 20) <strong>|</strong> (REF = 'A')</td>
+</tr>
+<tr>
+<td>^</td>
+<td>XOR operator</td>
+<td>Boolean or INT</td>
+<td>(A) <strong>^</strong> (B)</td>
 </tr>
 <tr>
 <td>!</td>
@@ -1744,19 +1796,38 @@ $ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
 <td><strong>!</strong> (DP &gt; 20)</td>
 </tr>
 <tr>
+<td>? :</td>
+<td>Ternary conditional</td>
+<td>Any</td>
+<td>(DP &gt; 20) <strong>?</strong> 'high' <strong>:</strong> 'low'</td>
+</tr>
+<tr>
 <td>exists</td>
 <td>The variable exists (not missing)</td>
 <td>Any</td>
 <td>(<strong>exists</strong> INDEL)</td>
 </tr>
 <tr>
+<td>na</td>
+<td>The variable is not available (missing)</td>
+<td>Any</td>
+<td>(<strong>na</strong> FILTER)</td>
+</tr>
+<tr>
+<td>in</td>
+<td>Set membership test</td>
+<td>STRING</td>
+<td>(ID <strong>in</strong> SET[0])</td>
+</tr>
+<tr>
 <td>has</td>
-<td>The right hand side expression is equalt to any of the items in a list consisting of separating the left hand side expression using delimiters: <code>&amp;</code>, <code>+</code>, <code>;</code>, <code>,</code>, <code>:</code>, <code>(', ')</code> ,<code>[', ']</code>. <br> Example: If the expression is: ANN[*].EFFECT <strong>has</strong> 'missense_variant'.<br> If left hand side (ANN[*].EFFECT) has value 'missense_variant&amp;splice_region_variant', then it is transformed to a list: <code>['missense_variant', 'splice_region_variant']</code><br> Since the right hand side ('missense_variant') is in the list, the expression evaluates to 'true'</td>
+<td>True if the right hand side equals any item obtained by splitting the left hand side using delimiters: <code>&amp;</code>, <code>+</code>, <code>\|</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>(</code>, <code>)</code>, <code>[</code>, <code>]</code>. <br> Example: If ANN[*].EFFECT has value 'missense_variant&amp;splice_region_variant', it is split into <code>['missense_variant', 'splice_region_variant']</code>. <br> Since 'missense_variant' is in the list, <code>ANN[*].EFFECT has 'missense_variant'</code> evaluates to true.</td>
 <td>Any</td>
 <td>(ANN[*].EFFECT <strong>has</strong> 'missense_variant')</td>
 </tr>
 </tbody>
 </table>
+<p>The constants <code>NaN</code> and <code>Inf</code> can be used in expressions (e.g. <code>"QUAL != NaN"</code>).</p>
 <table>
 <thead>
 <tr>
@@ -1838,6 +1909,12 @@ This allows to create more readable expressions.</p>
 1       69091  .    A    C,G    .     PASS      AC=1    GT        1/0         2/1
 </code></pre></div>
 <p>Note that we used <code>GEN[Somatic]</code> instead of <code>GEN[1]</code>.</p>
+<h3 id="comments-in-expressions">Comments in expressions</h3>
+<p>When using complex expressions (especially via <code>-e</code>/<code>--exprFile</code>), you can add comments using <code>//</code> (C-style) or <code>#</code> (shell-style). Comments extend to the end of the line.</p>
+<div class="highlight"><pre><span></span><code># Filter high-quality missense variants
+(QUAL &gt;= 30)            // Minimum quality
+&amp; (ANN[*].EFFECT has &#39;missense_variant&#39;)
+</code></pre></div>
 
 
 

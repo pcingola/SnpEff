@@ -1317,56 +1317,96 @@ SnpSift helps to perform this VCF file manipulation and filtering required at th
 </thead>
 <tbody>
 <tr>
-<td><strong>Filter</strong></td>
-<td>You can filter using arbitrary expressions, for instance <code>"(QUAL &gt; 30) | (exists INDEL) | ( countHet() &lt; 2 )"</code>. The actual expressions can be quite complex, so it allows for a lot of flexibility.</td>
+<td><strong><a href="../annotate/">Annotate</a></strong></td>
+<td>Add 'ID' and INFO fields from another VCF database (e.g. dbSnp). Assumes entries are sorted.</td>
 </tr>
 <tr>
-<td><strong>Annotate</strong></td>
-<td>You can add 'ID' and INFO fields from another "VCF database" (e.g.  typically dbSnp database in VCF format).</td>
+<td><strong><a href="../annotate_mem/">Annotate (mem)</a></strong></td>
+<td>Annotate from a database created from a VCF file, loaded into memory.</td>
 </tr>
 <tr>
-<td><strong>CaseControl</strong></td>
-<td>You can compare how many variants are in 'case' and in 'control' groups. Also calculates p-values (Fisher exact test).</td>
+<td><strong><a href="../casecontrol/">CaseControl</a></strong></td>
+<td>Compare how many variants are in 'case' and in 'control' groups; calculate p-values (Fisher exact test).</td>
 </tr>
 <tr>
-<td><strong>Intervals</strong></td>
-<td>Filter variants that intersect with intervals.</td>
+<td><strong><a href="../concordance/">Concordance</a></strong></td>
+<td>Concordance metrics between two VCF files.</td>
 </tr>
 <tr>
-<td><strong>Intervals (intidx)</strong></td>
-<td>Filter variants that intersect with intervals. Index the VCF file using memory mapped I/O to speed up the search. This is intended for huge VCF files and a small number of intervals to retrieve.</td>
+<td><strong><a href="../dbnsfp/">DbNSFP</a></strong></td>
+<td>Annotate using dbNSFP, an integrated database of functional predictions from multiple algorithms (SIFT, Polyphen2, LRT, MutationTaster, PhyloP, GERP++, etc.).</td>
 </tr>
 <tr>
-<td><strong>Join</strong></td>
-<td>Join by generic genomic regions (intersecting or closest).</td>
+<td><strong><a href="../extractfields/">Extract fields</a></strong></td>
+<td>Extract fields from a VCF file into tab-separated format.</td>
 </tr>
 <tr>
-<td><strong>RmRefGen</strong></td>
-<td>Remove reference genotype (i.e. replace '0/0' genotypes by '.')</td>
+<td><strong><a href="../filter/">Filter</a></strong></td>
+<td>Filter using arbitrary expressions, e.g. <code>"(QUAL &gt; 30) | (exists INDEL) | ( countHet() &lt; 2 )"</code>.</td>
 </tr>
 <tr>
-<td><strong>TsTv</strong></td>
-<td>Calculate transition to transversion ratio.</td>
+<td><strong><a href="../genesets/">GeneSets</a></strong></td>
+<td>Annotate using MSigDb gene sets (GO, KEGG, Reactome, BioCarta, etc.).</td>
 </tr>
 <tr>
-<td><strong>Extract fields</strong></td>
-<td>Extract fields from a VCF file to a TXT (tab separated) format.</td>
+<td><strong><a href="../gt/">GT</a></strong></td>
+<td>Compress genotype fields to reduce VCF file size in large sequencing projects.</td>
 </tr>
 <tr>
-<td><strong>Variant type</strong></td>
-<td>Adds SNP/MNP/INS/DEL to info field. It also adds "HOM/HET" if there is only one sample.</td>
-</tr>
-<tr>
-<td><strong>GWAS Catalog</strong></td>
+<td><strong><a href="../gwascatalog/">GWAS Catalog</a></strong></td>
 <td>Annotate using GWAS Catalog.</td>
 </tr>
 <tr>
-<td><strong>DbNSFP</strong></td>
-<td>Annotate using dbNSFP: The dbNSFP is an integrated database of functional predictions from multiple algorithms (SIFT, Polyphen2, LRT and MutationTaster, PhyloP and GERP++, etc.)</td>
+<td><strong><a href="../intersect/">Intersect</a></strong></td>
+<td>Intersect intervals from multiple files to find consensus regions (e.g. ChIP-Seq peaks).</td>
 </tr>
 <tr>
-<td><strong>SplitChr</strong></td>
-<td>Split a VCF file by chromosome</td>
+<td><strong><a href="../intervals/">Intervals</a></strong></td>
+<td>Filter variants that intersect with intervals defined in BED files.</td>
+</tr>
+<tr>
+<td><strong><a href="../intervalsindex/">Intervals Index</a></strong></td>
+<td>Filter variants that intersect with intervals. Uses file indexing for fast random access; intended for huge VCF files and a small number of intervals.</td>
+</tr>
+<tr>
+<td><strong><a href="../join/">Join</a></strong></td>
+<td>Join files by genomic region (intersecting or closest).</td>
+</tr>
+<tr>
+<td><strong><a href="../phastcons/">PhastCons</a></strong></td>
+<td>Annotate using conservation scores (phastCons).</td>
+</tr>
+<tr>
+<td><strong><a href="../private/">Private</a></strong></td>
+<td>Annotate if a variant is private to a family or group.</td>
+</tr>
+<tr>
+<td><strong><a href="../rminfo/">RmInfo</a></strong></td>
+<td>Remove INFO fields from a VCF file.</td>
+</tr>
+<tr>
+<td><strong><a href="../rmrefgen/">RmRefGen</a></strong></td>
+<td>Remove reference genotypes (replace '0/0' genotypes by '.').</td>
+</tr>
+<tr>
+<td><strong><a href="../split/">Split</a></strong></td>
+<td>Split a VCF file by chromosome.</td>
+</tr>
+<tr>
+<td><strong><a href="../tstv/">TsTv</a></strong></td>
+<td>Calculate transition to transversion ratio.</td>
+</tr>
+<tr>
+<td><strong><a href="../varianttype/">Variant type</a></strong></td>
+<td>Annotate variant type (SNP, MNP, INS, DEL, or MIXED). Also adds HOM/HET if there is only one sample.</td>
+</tr>
+<tr>
+<td><strong><a href="../vcfcheck/">VcfCheck</a></strong></td>
+<td>Check that a VCF file is well formed.</td>
+</tr>
+<tr>
+<td><strong><a href="../vcf2ped/">Vcf2Tped</a></strong></td>
+<td>Convert VCF to TPED format.</td>
 </tr>
 </tbody>
 </table>

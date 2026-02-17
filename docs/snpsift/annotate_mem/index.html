@@ -1339,7 +1339,7 @@
 
 
 <h1 id="snpsift-annotatemem-command-documentation">SnpSift <code>annotateMem</code> Command Documentation</h1>
-<p>The <code>annotateMem</code> command is a, high-performance tool for annotating VCF files using pre-built “databases” such as dbSnp, ClinVar, GnomAD, Cosmic, and more. It is optimized to handle large VCF files—annotating over 1 million VCF lines per minute in many cases. This is achieved by converting database VCF files into memory-optimized dataframes indexed by chromosome and variant type.</p>
+<p>The <code>annotateMem</code> command is a high-performance tool for annotating VCF files using pre-built “databases” such as dbSnp, ClinVar, GnomAD, Cosmic, and more. It is optimized to handle large VCF files—annotating over 1 million VCF lines per minute in many cases. This is achieved by converting database VCF files into memory-optimized dataframes indexed by chromosome and variant type.</p>
 <hr />
 <h2 id="overview">Overview</h2>
 <p>The annotation process is divided into <strong>two steps</strong>:</p>
@@ -1379,6 +1379,7 @@ Create a database using ClinVar VCF, incorporating the INFO fields <code>CLNSIG<
 <span class="w">    </span>-dbfile<span class="w"> </span><span class="s1">&#39;db/clinvar.2024-11-03.vcf&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-fields<span class="w"> </span><span class="s1">&#39;CLNSIG,CLNDN,ID&#39;</span>
 </code></pre></div>
+<p><strong>Note:</strong> If the database directory already exists and is non-empty, the command will fail. You must remove the existing database directory before re-creating it.</p>
 <p>When a database is created, it is stored in a dedicated directory named after the original VCF file, with the suffix <code>.snpsift.vardb</code> appended. For example, if your input VCF file is named <code>clinvar.vcf</code>, the resulting database will be saved in a directory called <code>clinvar.vcf.snpsift.vardb</code>.</p>
 <p>Within this directory, the database is partitioned by chromosome. Each chromosome has its own file named following the pattern <code>{chromosomeName}.snpsift.df</code>. These files contain the serialized dataframes that store the selected INFO fields for that specific chromosome, enabling fast and efficient in-memory lookups during the annotation step.</p>
 <p>Example: When creating a database for <code>clinvar.2024-11-03.vcf</code>, the following directory is created
@@ -1408,8 +1409,9 @@ Annotate an input VCF file using multiple databases:</p>
 <span class="w">   </span>&gt;<span class="w"> </span>input.ann.vcf
 </code></pre></div>
 <p>During this annotation step, the required dataframes are loaded into memory on a per-chromosome basis, ensuring efficient processing.</p>
-<p><strong>Note:</strong> If no <code>fields</code> parameter is used in the annotation command, all field in the database are used.</p>
-<p><strong>Note:</strong> If a variant from the input VCF file does not have an entry the database/s, then no INFO field is added.</p>
+<p><strong>Note:</strong> The input VCF file must be sorted by chromosome and position. The command will report an error if unsorted entries are detected.</p>
+<p><strong>Note:</strong> If no <code>fields</code> parameter is used in the annotation command, all fields in the database are used.</p>
+<p><strong>Note:</strong> If a variant from the input VCF file does not have an entry in the database/s, then no INFO field is added.</p>
 <p><strong>Note:</strong> You can specify <code>-addAnnotated</code> to add the <code>ANNOTATED</code> flag to every VCF entry, so downstream processes know the VCF entry was annotated.</p>
 <hr />
 <h2 id="command-options">Command Options</h2>

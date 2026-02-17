@@ -555,22 +555,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#variant-annotaiton-details" class="md-nav__link">
-    Variant annotaiton details
+  <a href="#variant-annotation-details" class="md-nav__link">
+    Variant annotation details
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#details-about-rare-amino-acid-annotaitons" class="md-nav__link">
-    Details about Rare amino acid annotaitons
+  <a href="#details-about-rare-amino-acid-annotations" class="md-nav__link">
+    Details about Rare amino acid annotations
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#details-about-protein-interaction-annotaitons" class="md-nav__link">
-    Details about Protein interaction annotaitons
+  <a href="#details-about-protein-interaction-annotations" class="md-nav__link">
+    Details about Protein interaction annotations
   </a>
   
 </li>
@@ -1421,11 +1421,11 @@ VCF file before annotations
 1   897062  .   C   T   100.0   PASS    AF=0.0005
 </code></pre></div></p>
 <p>VCF file after being annotated using SnpEff
-<div class="highlight"><pre><span></span><code>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-1   889455  .   G   A   100.0   PASS    AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*|749|NOC2L||CODING|NM_015658|)
-1   897062  .   C   T   100.0   PASS    AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
+<div class="highlight"><pre><span></span><code>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO
+1   889455  .   G   A   100.0   PASS    AF=0.0005;ANN=A|stop_gained|HIGH|NOC2L|...|transcript|NM_015658|protein_coding|7/19|c.706C&gt;T|p.Gln236*|...
+1   897062  .   C   T   100.0   PASS    AF=0.0005;ANN=A|stop_gained|HIGH|KLHL17|...|transcript|NM_198317|protein_coding|...|c.421C&gt;T|p.Gln141*|...
 </code></pre></div>
-A you can see, SnpEff added an 'EFF' tag to the INFO field (eight column).</p>
+As you can see, SnpEff added an 'ANN' tag to the INFO field (eighth column). See below for details on the ANN field format.</p>
 <h3 id="vcf-header-lines">VCF Header lines</h3>
 <p>SnpEff updates the header of the VCF file to reflect additional fields.
 This is required by the VCF specification.
@@ -1437,7 +1437,7 @@ SnpEff also adds the command line options used to annotate the file as well as S
 </code></pre></div></p>
 <h3 id="ann-field-vcf-output-files">ANN field (VCF output files)</h3>
 <p>Functional annotations information is added to the INFO field using an <code>ANN</code> tag.</p>
-<p><strong>NOTE:</strong> field. SnpEff implements the <a href="../../adds/VCFannotationformat_v1.0.pdf"><strong>VCF annotation standard 'ANN' field.</strong></a></p>
+<p><strong>NOTE:</strong> SnpEff implements the <a href="../../adds/VCFannotationformat_v1.0.pdf"><strong>VCF annotation standard 'ANN' field.</strong></a></p>
 <p>This format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
 and attempts to:</p>
 <ul>
@@ -1510,7 +1510,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 <li><strong>Rank / total:</strong> Exon or Intron rank / total number of exons or introns.</li>
 <li><strong>HGVS.c:</strong> Variant using HGVS notation (DNA level)</li>
 <li><strong>HGVS.p:</strong> If variant is coding, this field describes the variant using HGVS notation (Protein level). Since transcript ID is already mentioned in 'feature ID', it may be omitted here.</li>
-<li><strong>cDNA_position / cDNA_len:</strong> Position in cDNA and trancript's cDNA length (one based).</li>
+<li><strong>cDNA_position / cDNA_len:</strong> Position in cDNA and transcript's cDNA length (one based).</li>
 <li><strong>CDS_position / CDS_len:</strong> Position and number of coding bases (one based includes START and STOP codons).</li>
 <li><strong>Protein_position / Protein_len:</strong> Position and number of AA (one based, including START, but not STOP).</li>
 <li><strong>Distance to feature:</strong> All items in this field are options, so the field could be empty.<ul>
@@ -1520,7 +1520,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 <li>Distance to closest exon boundary in Intron (+/- up/downstream)</li>
 <li>Distance to first base in MOTIF</li>
 <li>Distance to first base in miRNA</li>
-<li>Distance to exon-intron boundary in splice_site or splice _region</li>
+<li>Distance to exon-intron boundary in splice_site or splice_region</li>
 <li>ChipSeq peak: Distance to summit (or peak center)</li>
 <li>Histone mark / Histone state: Distance to summit (or peak center)</li>
 </ul>
@@ -1529,7 +1529,7 @@ Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq exp
 </ol>
 <p><strong>Consistency between HGVS and functional annotations:</strong></p>
 <p>In some cases there might be inconsistent reporting between 'annotation' and HGVS.
-This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGSV recommends aligning to the "most 3-prime coordinate".
+This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGVS recommends aligning to the "most 3-prime coordinate".
 For instance, an InDel on the edge of an exon, which has an 'intronic' annotation according to VCF alignment recommendation, can lead to a 'stop_gained' when aligned using HGVS's recommendation (using the most 3-prime possible alignment).
 So the 'annotation' sub-field will report 'intron' whereas HGVS sub-field will report a 'stop_gained'.
 This is obviously inconsistent and must be avoided.
@@ -1547,7 +1547,7 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 <ul>
 <li>As of version 4.0, the default output uses Sequence Ontology for 'Effect' names. You can output "old" style effect names by using the <code>-classic</code> command line option.</li>
 <li>When multiple effects are available, they are sorted first by "Effect_Impact", then by "Effect" and finally by "marker's genomic coordinates" (e.g. affected transcript's genomic coordinates).</li>
-<li>Staring from version 4.0, SnpEff outputs HGVS notation in the 'AA' sub-field by default.</li>
+<li>Starting from version 4.0, SnpEff outputs HGVS notation in the 'AA' sub-field by default.</li>
 </ul>
 <p>There can be multiple effects separated by comma. The format for each effect is:
 <div class="highlight"><pre><span></span><code>EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
@@ -1636,7 +1636,7 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 
 </li>
 <li>
-<p>A VCF line can have more then one variant.
+<p>A VCF line can have more than one variant.
       E.g. If reference genome is 'G', but the sample has either 'A' or 'T' (non-biallelic variant), then this will be reported as one VCF line, having multiple alternative variants (notice that there are two ALTs):</p>
 <div class="codehilite"><pre><span></span><code>  #CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO
   1       889455    .    G    A,T      .     .       .
@@ -1664,7 +1664,7 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 <li>Canonical transcript before non-canonical.</li>
 <li>Marker genomic coordinates (e.g. genes starting before first).</li>
 </ul>
-<h3 id="variant-annotaiton-details">Variant annotaiton details</h3>
+<h3 id="variant-annotation-details">Variant annotation details</h3>
 <p>Detailed description of the variant's functional annotation predicted by SnpEff in the <code>Effect</code> and <code>Effect_Impact</code> sub-fields.</p>
 <p>Notes:</p>
 <ul>
@@ -1672,9 +1672,9 @@ As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
 Sequence ontology (<a href="http://www.sequenceontology.org/">SO</a>) allows to standardize terminology used for assessing sequence changes and impact.
 This allows for a common language across all variant annotation programs and makes it easier to communicate using a uniform terminology.
 Starting from version 4.0 VCF output uses SO terms by default.</li>
-<li><strong>Effect (Classic)</strong> This are the "classic" effect names usd by SnpEff, these can be accessed using the <code>-classic</code> command line option.</li>
+<li><strong>Effect (Classic)</strong> These are the "classic" effect names used by SnpEff, these can be accessed using the <code>-classic</code> command line option.</li>
 <li>
-<p><strong>Effect impact</strong> Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. This are pre-defined categories to help users find more significant variants.</p>
+<p><strong>Effect impact</strong> Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. These are pre-defined categories to help users find more significant variants.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Impact categories must be used with care, they were created only to help and simplify the filtering process.
@@ -1700,9 +1700,9 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>MODIFIER</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580">chromosome</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580">chromosome_number_variation</a></td>
 <td><code>CHROMOSOME_LARGE_DELETION</code></td>
-<td>A large parte (over 1%) of the chromosome was deleted.</td>
+<td>A large part (over 1%) of the chromosome was deleted.</td>
 <td><code>HIGH</code></td>
 </tr>
 <tr>
@@ -1724,7 +1724,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>LOW</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001821">inframe_insertion</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001821">conservative_inframe_insertion</a></td>
 <td><code>CODON_INSERTION</code></td>
 <td>One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary</td>
 <td><code>MODERATE</code></td>
@@ -1736,7 +1736,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>MODERATE</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001822">inframe_deletion</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001822">conservative_inframe_deletion</a></td>
 <td><code>CODON_DELETION</code></td>
 <td>One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary</td>
 <td><code>MODERATE</code></td>
@@ -1754,7 +1754,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>MODIFIER</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791">exon_variant</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791">non_coding_transcript_exon_variant</a></td>
 <td><code>EXON</code></td>
 <td>The variant hits an exon (from a non-coding transcript) or a retained intron.</td>
 <td><code>MODIFIER</code></td>
@@ -1798,7 +1798,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <tr>
 <td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001589">frameshift_variant</a></td>
 <td><code>FRAME_SHIFT</code></td>
-<td>Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3</td>
+<td>Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multiple of 3</td>
 <td><code>HIGH</code></td>
 </tr>
 <tr>
@@ -1817,7 +1817,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a></td>
 <td><code>GENE_DUPLICATION</code></td>
 <td>Duplication of a gene.</td>
-<td><code>MODIFIER</code></td>
+<td><code>MODERATE</code></td>
 </tr>
 <tr>
 <td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001565">gene_fusion</a></td>
@@ -1826,7 +1826,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>HIGH</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001565">gene_fusion</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001893">transcript_ablation</a></td>
 <td><code>GENE_FUSION_HALF</code></td>
 <td>Fusion of one gene and an intergenic region.</td>
 <td><code>HIGH</code></td>
@@ -1906,7 +1906,7 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <tr>
 <td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002093">structural_interaction_variant</a></td>
 <td><code>PROTEIN_STRUCTURAL_INTERACTION_LOCUS</code></td>
-<td>Within protein interacion loci (e.g. two AA that are in contact within the same protein, prossibly helping structural conformation).</td>
+<td>Within protein interaction loci (e.g. two AA that are in contact within the same protein, possibly helping structural conformation).</td>
 <td><code>HIGH</code></td>
 </tr>
 <tr>
@@ -1934,15 +1934,15 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>LOW</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630">splice_region_variant</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630">splice_branch_variant</a></td>
 <td><code>SPLICE_SITE_BRANCH</code></td>
-<td>A varaint affective putative (Lariat) branch point, located in the intron.</td>
+<td>A variant affecting putative (Lariat) branch point, located in the intron.</td>
 <td><code>LOW</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630">splice_region_variant</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630">splice_branch_variant</a></td>
 <td><code>SPLICE_SITE_BRANCH_U12</code></td>
-<td>A varaint affective putative (Lariat) branch point from U12 splicing machinery, located in the intron.</td>
+<td>A variant affecting putative (Lariat) branch point from U12 splicing machinery, located in the intron.</td>
 <td><code>MODERATE</code></td>
 </tr>
 <tr>
@@ -1988,9 +1988,9 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td><code>LOW</code></td>
 </tr>
 <tr>
-<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001576">transcript_variant</a></td>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001576">non_coding_transcript_variant</a></td>
 <td><code>TRANSCRIPT</code></td>
-<td>The variant hits a transcript.</td>
+<td>The variant hits a non-coding transcript.</td>
 <td><code>MODIFIER</code></td>
 </tr>
 <tr>
@@ -2041,9 +2041,63 @@ Obviously, there is no way to predict whether a "high impact" or a "low impact" 
 <td>A 'NextProt' based annotation. Details are provided in the 'feature type' sub-field (ANN), or in the effect details (EFF).</td>
 <td><code>MODERATE</code></td>
 </tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a></td>
+<td><code>TRANSCRIPT_DUPLICATION</code></td>
+<td>Duplication of a transcript.</td>
+<td><code>MODERATE</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000036">inversion</a></td>
+<td><code>GENE_INVERSION</code></td>
+<td>Inversion of a gene.</td>
+<td><code>MODERATE</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000036">inversion</a></td>
+<td><code>TRANSCRIPT_INVERSION</code></td>
+<td>Inversion of a transcript.</td>
+<td><code>MODERATE</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002019">start_retained_variant</a></td>
+<td><code>FRAME_SHIFT_BEFORE_CDS_START</code></td>
+<td>Frame shift variant before CDS start (no effect on protein).</td>
+<td><code>MODIFIER</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567">stop_retained_variant</a></td>
+<td><code>FRAME_SHIFT_AFTER_CDS_END</code></td>
+<td>Frame shift variant after CDS end (no effect on protein).</td>
+<td><code>MODIFIER</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001782">TF_binding_site_variant</a></td>
+<td><code>MOTIF</code></td>
+<td>The variant hits a transcription factor binding site.</td>
+<td><code>LOW</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001895">TFBS_ablation</a></td>
+<td><code>MOTIF_DELETED</code></td>
+<td>The variant deletes a transcription factor binding site.</td>
+<td><code>LOW</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001882">feature_fusion</a></td>
+<td><code>FEATURE_FUSION</code></td>
+<td>Fusion of features (e.g. two intergenic regions).</td>
+<td><code>LOW</code></td>
+</tr>
+<tr>
+<td><a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001907">feature_elongation</a></td>
+<td><code>CHROMOSOME_ELONGATION</code></td>
+<td>A sequence variant that causes the extension of a genomic feature.</td>
+<td><code>MODIFIER</code></td>
+</tr>
 </tbody>
 </table>
-<h3 id="details-about-rare-amino-acid-annotaitons">Details about Rare amino acid annotaitons</h3>
+<h3 id="details-about-rare-amino-acid-annotations">Details about Rare amino acid annotations</h3>
 <p>These are amino acids that occurs very rarely in an organism. For instance, humans are supposed to use 20 amino acids, but
 there is also one rare AA. Selenocysteine, single letter code 'U', appears roughly 100 times in the whole genome.
 The amino acid is so rare that usually it does not appear in codon translation tables. It is encoded as UGA, which usually
@@ -2057,7 +2111,7 @@ be paid in these cases.</p>
 <p>When the variant hits a RARE_AMINO_ACID mark, it is likely that the 'old_AA/new_AA' field will be incorrect. This may happen because
 the amino acid is not predictable using a codon table.</p>
 </div>
-<h3 id="details-about-protein-interaction-annotaitons">Details about Protein interaction annotaitons</h3>
+<h3 id="details-about-protein-interaction-annotations">Details about Protein interaction annotations</h3>
 <p>Protein interactions are calculated from <a href="http://www.rcsb.org/">PDB</a> or <a href="https://alphafold.ebi.ac.uk/download">AlphaFold</a>. There are two main types of interactions:</p>
 <ul>
 <li><code>protein_protein_contact:</code> These are "protein-protein" interaction loci. They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids
@@ -2106,7 +2160,7 @@ Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <c
 </tbody>
 </table>
 <h3 id="functional-class">Functional class</h3>
-<p>When a variant is a single nucleotide (SNV) in a protein coding transcript, SnpEff will inferr the "Functional class".</p>
+<p>When a variant is a single nucleotide (SNV) in a protein coding transcript, SnpEff will infer the "Functional class".</p>
 <p>Functional class can be, which is inferred as:</p>
 <table>
 <thead>
@@ -2118,7 +2172,7 @@ Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <c
 <tbody>
 <tr>
 <td><code>SILENT</code></td>
-<td>The condon remains the same after the variant change</td>
+<td>The codon remains the same after the variant change</td>
 </tr>
 <tr>
 <td><code>MISSENSE</code></td>
@@ -2138,7 +2192,7 @@ Some details on how these variants work, can be found in <a href="../../adds/snp
 <p class="admonition-title">Info</p>
 <p>Starting from version 4.0, this option is activated by default.</p>
 </div>
-<p>Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.</p>
+<p>Analyze if a set of effects can create a "Loss Of Function" and "Nonsense mediated decay" effects.</p>
 <p>Needless to say, this is a prediction based on analysis of groups of "putative effects". Proper wet-lab validation is required to infer "real" LOF.</p>
 <p><strong>References:</strong> I used the LOF definition used in the following paper <a href="http://www.sciencemag.org/content/335/6070/823.abstract">A Systematic Survey of Loss-of-Function Variants in Human Protein-Coding Genes</a>.</p>
 <div class="admonition info">
@@ -2160,7 +2214,7 @@ removed from our high-confidence set.</em></p>
 <li>Larger deletions removing either the first exon or more than 50% of the protein-coding sequence of the affected transcript</li>
 </ul>
 <p>Usage example:
-<div class="highlight"><pre><span></span><code># Note: Form version 4.0 onwards, the &#39;-lof&#39; command line option is not required
+<div class="highlight"><pre><span></span><code># Note: From version 4.0 onwards, the &#39;-lof&#39; command line option is not required
 java -Xmx8g -jar snpEff.jar -v \
     -lof \
     GRCh37.75 \
@@ -2233,7 +2287,7 @@ java -Xmx8g -jar snpEff.jar -v \
 </tbody>
 </table>
 <h3 id="errors-and-warnings">Errors and Warnings</h3>
-<p>As mentioned int the previous section, the last sub-field in EFF field shows errors or warnings (if any).
+<p>As mentioned in the previous section, the last sub-field in EFF field shows errors or warnings (if any).
 Here is a description of the errors and warnings:</p>
 <table>
 <thead>
@@ -2245,7 +2299,7 @@ Here is a description of the errors and warnings:</p>
 <tbody>
 <tr>
 <td><code>ERROR_CHROMOSOME_NOT_FOUND</code></td>
-<td>Chromosome does not exits in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this <a href="../faq/#error-chromosome-not-found">FAQ</a> for more details.</td>
+<td>Chromosome does not exist in reference database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference. See this <a href="../faq/#error-chromosome-not-found">FAQ</a> for more details.</td>
 </tr>
 <tr>
 <td><code>ERROR_OUT_OF_CHROMOSOME_RANGE</code></td>
@@ -2289,6 +2343,10 @@ Here is a description of the errors and warnings:</p>
 <td><code>WARNING_TRANSCRIPT_NO_START_CODON</code></td>
 <td>A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL). <br> Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.</td>
 </tr>
+<tr>
+<td><code>WARNING_TRANSCRIPT_NO_STOP_CODON</code></td>
+<td>A protein coding transcript does not have a proper STOP codon. This usually indicates an error in the reference genome or database, but could also be due to a misconfigured codon table.</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -2301,15 +2359,7 @@ Here is a description of the errors and warnings:</p>
 <tbody>
 <tr>
 <td><code>INFO_REALIGN_3_PRIME</code></td>
-<td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.</td>
-</tr>
-<tr>
-<td><code>INFO_COMPOUND_ANNOTATION</code></td>
-<td>This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).</td>
-</tr>
-<tr>
-<td><code>INFO_NON_REFERENCE_ANNOTATION</code></td>
-<td>An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).</td>
+<td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to comply with HGVS specification to always report the most 3-prime annotation.</td>
 </tr>
 </tbody>
 </table>

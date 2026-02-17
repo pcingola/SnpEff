@@ -919,23 +919,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#doenloading" class="md-nav__link">
-    Doenloading
+  <a href="#downloading" class="md-nav__link">
+    Downloading
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dbnsfp-annotation-example" class="md-nav__link">
-    dbNSFP Annotation example
+  <a href="#command-options" class="md-nav__link">
+    Command Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#output-fields" class="md-nav__link">
+    Output fields
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#annotation-examples" class="md-nav__link">
+    Annotation examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#building-dbnsfp-for-developers" class="md-nav__link">
     Building dbNSFP (for developers)
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1307,7 +1327,15 @@ This allows for faster annotations.
 <p><strong>Database:</strong> In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file.
 dbNSFP is large (several GB) so it might take a while to download it.
 The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data <em>.gz file and the </em>.gz.tbi index file).</p>
-<h3 id="doenloading">Doenloading</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>dbNSFP only contains data for SNPs (single nucleotide polymorphisms). Indels and other variant types are silently skipped during annotation.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The input VCF file must be sorted by chromosome and position. The command will fail with an error if unsorted entries are detected.</p>
+</div>
+<h3 id="downloading">Downloading</h3>
 <p>You can download the files from SnpEff's site.</p>
 <p>WARNING: Remember that you need both the database and the index files</p>
 <p>DbNSFP Version 4.5:
@@ -1324,21 +1352,41 @@ The database is compressed (block-gzip) and tabix-indexed, so two files are requ
 * GRCh38 / hg38 (dbNSFP Academic):
     * <a href="https://snpeff-public.s3.amazonaws.com/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz">Database</a>. Save file as <code>dbNSFP.txt.gz</code>
     * <a href="https://snpeff-public.s3.amazonaws.com/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi">Index</a>. Save file as <code>dbNSFP.txt.gz.tbi</code></p>
-<h3 id="dbnsfp-annotation-example">dbNSFP Annotation example</h3>
-<p>Here is a full example how to perform annotations:</p>
-<div class="highlight"><pre><span></span><code># Annotate using dbNSFP
-# Note that the first time you run the command, it will attempt to download the dbNSFP database.
-java -jar SnpSift.jar dbnsfp -v myFile.vcf &gt; myFile.annotated.vcf
-</code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You can now specify which fields you want to use for annotation using the <code>-f</code> command line option followed by a comma separated list of field names.
-Defaults fields are shown when running the command without any arguments <code>java -jar SnpSift.jar dbNSFP</code></p>
-</div>
-<p>If your dbNSFP file is not in the 'default' path (where SnpEff expects it), you can specify the path to your dbNSFP file using the <code>-db</code> command line option:</p>
-<div class="highlight"><pre><span></span><code># Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.9.txt.gz myFile.vcf &gt; myFile.annotated.vcf
-</code></pre></div>
+<hr />
+<h2 id="command-options">Command Options</h2>
+<ul>
+<li><code>-f &lt;field_list&gt;</code> : Comma-separated list of dbNSFP field names to annotate. Default fields are shown when running the command without arguments.</li>
+<li><code>-n</code> : Invert field selection. Use all fields EXCEPT the ones specified with <code>-f</code>.</li>
+<li><code>-db &lt;file&gt;</code> : Path to dbNSFP database file (bgzip + tabix).</li>
+<li><code>-a</code> : Annotate fields even if the database has an empty value (uses '.' for missing). By default, empty fields are skipped.</li>
+<li><code>-m</code> : Annotate fields even when there is no database entry for a variant (uses '.' for all fields). By default, variants not found in dbNSFP are left unchanged.</li>
+<li><code>-collapse</code> : Collapse (deduplicate) repeated values when multiple dbNSFP entries match a variant (e.g., multiple transcripts). Values are comma-separated.</li>
+<li><code>-nocollapse</code> : Disable collapsing of repeated values.</li>
+<li><code>-g &lt;genome&gt;</code> : Genome version (used to locate the database in the config file).</li>
+</ul>
+<hr />
+<h3 id="output-fields">Output fields</h3>
+<p>All annotated fields are added to the VCF INFO column with the prefix <code>dbNSFP_</code>. For example, the dbNSFP field <code>SIFT_pred</code> becomes <code>dbNSFP_SIFT_pred</code> in the output VCF.</p>
+<p>Special characters in field names are sanitized for VCF compatibility (e.g., <code>GERP++_RS</code> becomes <code>dbNSFP_GERP___RS</code> because <code>+</code> is not valid in VCF INFO keys).</p>
+<p>When a variant matches multiple dbNSFP entries (common for genes with multiple transcripts), the values are comma-separated. Use <code>-collapse</code> to deduplicate repeated values across entries.</p>
+<hr />
+<h3 id="annotation-examples">Annotation examples</h3>
+<p>Annotate using default fields:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar dbnsfp -v myFile.vcf &gt; myFile.annotated.vcf
+</code></pre></div></p>
+<p>Annotate specific fields only:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar dbnsfp -f SIFT_pred,Polyphen2_HDIV_pred,CADD_phred myFile.vcf &gt; myFile.annotated.vcf
+</code></pre></div></p>
+<p>Annotate all fields EXCEPT specific ones:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar dbnsfp -n -f Interpro_domain,Uniprot_acc myFile.vcf &gt; myFile.annotated.vcf
+</code></pre></div></p>
+<p>Specify a custom database path:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar dbnsfp -db path/to/dbNSFP4.5c.txt.gz myFile.vcf &gt; myFile.annotated.vcf
+</code></pre></div></p>
+<p>Annotate even when values are missing in the database:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar dbnsfp -a -m myFile.vcf &gt; myFile.annotated.vcf
+</code></pre></div></p>
+<hr />
 <h3 id="building-dbnsfp-for-developers">Building dbNSFP (for developers)</h3>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -1352,28 +1400,28 @@ Two files are required:</p>
 <li>The corresponding tabix index for the database file.</li>
 </ul>
 <p>Creating a file that SnpSift can use is simple, just follow this guideline:
-<div class="highlight"><pre><span></span><code># Download dbNSFP database
-$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.9.zip
+<div class="highlight"><pre><span></span><code># Download dbNSFP database (adjust version as needed)
+$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP4.5c.zip
 
 # Uncompress
-$ unzip dbNSFP2.9.zip
+$ unzip dbNSFP4.5c.zip
 
 # Create a single file version
-$ (head -n 1 dbNSFP2.9_variant.chr1 ; cat dbNSFP2.9_variant.chr* | grep -v &quot;^#&quot; ) &gt; dbNSFP2.9.txt
+$ (head -n 1 dbNSFP4.5c_variant.chr1 ; cat dbNSFP4.5c_variant.chr* | grep -v &quot;^#&quot; ) &gt; dbNSFP4.5c.txt
 
 # Compress using block-gzip algorithm
-bgzip dbNSFP2.9.txt
+bgzip dbNSFP4.5c.txt
 
 # Create tabix index
-tabix -s 1 -b 2 -e 2 dbNSFP2.9.txt.gz
+tabix -s 1 -b 2 -e 2 dbNSFP4.5c.txt.gz
 </code></pre></div></p>
-<p><strong>Building dbNSFP for hg19/GRCh37 using dbNSFP 3.X:</strong></p>
-<p>Latest dbNSFP versions (3.X) are based on GRCh38/hg38 genomic coordinates.
-In order to use the latest dbNSFP databses with GRCh37/hg19 genome versions you need to create a new dbNSFP file with the right coordinates.
-Fortunately, dbNSFP 3.X provides GRCh37/hg19 coordinates, so we only need to swap coordinates and sort by genomic position.
+<p><strong>Building dbNSFP for hg19/GRCh37 using dbNSFP 4.X:</strong></p>
+<p>Latest dbNSFP versions are based on GRCh38/hg38 genomic coordinates.
+In order to use the latest dbNSFP databases with GRCh37/hg19 genome versions you need to create a new dbNSFP file with the right coordinates.
+Fortunately, dbNSFP provides GRCh37/hg19 coordinates, so we only need to swap coordinates and sort by genomic position.
 You can easily do this by using the <code>dbNSFP_sort.pl</code> script (<a href="https://raw.githubusercontent.com/pcingola/SnpEff/master/scripts_build/dbNSFP_sort.pl">you can find it here</a>) by running something like the following command lines:
 <div class="highlight"><pre><span></span><code># Set to your downloaded dbNSFP version
-version=&quot;3.2a&quot;
+version=&quot;4.5c&quot;
 
 # Replace coordinates by columns 7 and 8 (hg19 coordinates) and sort by those coordinates
 cat dbNSFP${version}_variant.chr* \

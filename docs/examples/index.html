@@ -1466,7 +1466,7 @@ unzip snpEff_latest_core.zip
 <p><strong>Notes:</strong></p>
 <ul>
 <li>SnpEff &amp; SnpSift annotation software used in this protocol are under very active development and some command line option may change in the future.</li>
-<li>The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data_dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.</li>
+<li>The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data.dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.</li>
 </ul>
 <p>Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.75) that will be used to annotate our data.
 <div class="highlight"><pre><span></span><code>cd snpEff
@@ -1487,7 +1487,7 @@ The data files come from the publicly available "CEPH_1463" dataset, sequenced b
 cd ~/snpEff
 
 # Download sample data
-curl -v -L `https://datasetsnpeff-public.s3.amazonaws.com/dataset/protocols.zip?sv=2019-10-10&amp;st=2020-09-01T00%3A00%3A00Z&amp;se=2050-09-01T00%3A00%3A00Z&amp;si=prod&amp;sr=c&amp;sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D` &gt; protocols.zip
+curl -v -L &#39;https://datasetsnpeff-public.s3.amazonaws.com/dataset/protocols.zip?sv=2019-10-10&amp;st=2020-09-01T00%3A00%3A00Z&amp;se=2050-09-01T00%3A00%3A00Z&amp;si=prod&amp;sr=c&amp;sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D&#39; &gt; protocols.zip
 unzip protocols.zip
 </code></pre></div></p>
 <p>The goal in this example is to use SnpEff to find a mutation causing a Mendelian recessive trait. This will be done using a dataset of variant calls for chromosome 7 from a pedigree of 17 healthy individuals, sequenced by Complete Genomics, in which a coding variant causing cystic fibrosis was artificially introduced in three siblings (see Materials). For the purpose of this example, we assume that we do not know the causative variant, but that we know that we are dealing with a Mendelian recessive disorder, where the three siblings are affected (cases), but the 14 parents and grandparents are not (controls).</p>
@@ -1896,7 +1896,7 @@ This means that the ID field does not exists (i.e. the value is empty) which is 
 <p>In SnpEff &amp; SnpSift the STDIN is denoted by file name <code>"-"</code></p>
 </div>
 <p>So the previous commands would be:
-<div class="highlight"><pre><span></span><code>java -jar SnpSif.jar annotate -dbsnp file.vcf \
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar annotate -dbsnp file.vcf \
     | java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 - \
     | java -jar SnpSift.jar filter &quot;! exists ID&quot; \
     &gt; file.ann.not_in_dbSnp.vcf
@@ -1946,7 +1946,7 @@ $ java -Xmx1G -jar snpEff.jar build -gff3 sacCer
 </code></pre></div></p>
 <h3 id="step-2-create-custom-annotations-file">Step 2: Create custom annotations file.</h3>
 <p>We need a file that has our features of interest (in this case, the "ARS" features).
-Since those features ara available in the original GFF (saccharomyces_cerevisiae.gff) file, we can filter the file to create our "custom" annotations file.</p>
+Since those features are available in the original GFF (saccharomyces_cerevisiae.gff) file, we can filter the file to create our "custom" annotations file.</p>
 <div class="highlight"><pre><span></span><code>#---
 # Create a features file
 #---

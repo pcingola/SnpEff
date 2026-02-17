@@ -999,9 +999,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift GeneSets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift GeneSets
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-format" class="md-nav__link">
+    Input format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1249,15 +1301,32 @@
 <h1 id="snpsift-genesets">SnpSift GeneSets</h1>
 <p>Annotating GeneSets, such as Gene Ontology (GO), KEGG, Reactome, etc.; can be quite useful to find significant variants.</p>
 <p>Gene set annotations can be added to a SnpEff annotated file using <code>SnpSift geneSets</code> command.
-The VCF file must be annotated using <code>SnpEff</code> before performing Gene Sets annotations.
-This is because we must know which gene the variant affects).</p>
+The VCF file must be annotated using <code>SnpEff</code> before performing Gene Sets annotations, because we must know which gene the variant affects.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar geneSets [-v] msigdb.gmt file.vcf &gt; output.vcf
+</code></pre></div>
+<p>The command takes two positional arguments: the GMT file and the VCF file. Unlike most SnpSift commands, STDIN is not supported for the VCF input.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>You can download MSigDb from <a href="http://www.broadinstitute.org/gsea/msigdb">Broad Institute</a></p>
+<p>You can download MSigDb from <a href="https://www.gsea-msigdb.org/gsea/msigdb/">Broad Institute</a></p>
 </div>
-<p>Usage example:
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar geneSets -v db/msigDb/msigdb.v3.1.symbols.gmt test.ann.vcf &gt; test.eff.geneSets.vcf
-00:00:00.000    Reading MSigDb from file: &#39;db/msigDb/msigdb.v3.1.symbols.gmt&#39;
+<h3 id="input-format">Input format</h3>
+<p>The gene sets file must be in GMT (Gene Matrix Transposed) format: a tab-separated file where each line defines one gene set.
+Each line has the format: <code>gene_set_name &lt;TAB&gt; description &lt;TAB&gt; gene1 &lt;TAB&gt; gene2 &lt;TAB&gt; ...</code></p>
+<p>MSigDb GMT files follow this format and can be used directly.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>For each variant, the command looks at the gene names from SnpEff annotations (the <code>GENE</code> field in <code>ANN</code>).
+For each gene, it finds all gene sets that contain that gene and adds them to the <code>MSigDb</code> INFO field (comma-separated, sorted alphabetically).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Gene names in the GMT file must exactly match the gene names used by SnpEff.
+MSigDb typically uses HGNC gene symbols (e.g. <code>BRCA1</code>).
+If your SnpEff database uses different gene identifiers (e.g. Ensembl gene IDs), the lookup will fail silently.
+Make sure your SnpEff annotations and GMT file use the same gene naming convention.</p>
+</div>
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar geneSets -v db/msigDb/msigdb.v5.1.symbols.gmt test.ann.vcf &gt; test.geneSets.vcf
+00:00:00.000    Reading MSigDb from file: &#39;db/msigDb/msigdb.v5.1.symbols.gmt&#39;
 00:00:01.168    Done. Total:
         8513 gene sets
         31847 genes
@@ -1273,10 +1342,11 @@ This is because we must know which gene the variant affects).</p>
 ...
 #       REACTOME_SIGNALING_BY_GPCR  920 8
 
-$ cat test.eff.geneSets.vcf
+$ cat test.geneSets.vcf
 ## INFO=&lt;ID=MSigDb,Number=.,Type=String,Description=&quot;Gene set from MSigDB database (GSEA)&quot;&gt;
-1   69849   .   G   A   454.73  PASS    AC=33;EFF=STOP_GAINED(HIGH|NONSENSE|tgG/tgA|W253*|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1);MSigDb=ACEVEDO_METHYLATED_IN_LIVER_CANCER_DN,CHR1P36,KEGG_OLFACTORY_TRANSDUCTION,REACTOME_GPCR_DOWNSTREAM_SIGNALING,REACTOME_OLFACTORY_SIGNALING_PATHWAY,REACTOME_SIGNALING_BY_GPCR
-</code></pre></div></p>
+1   69849   .   G   A   454.73  PASS    AC=33;ANN=...;MSigDb=ACEVEDO_METHYLATED_IN_LIVER_CANCER_DN,CHR1P36,KEGG_OLFACTORY_TRANSDUCTION,REACTOME_GPCR_DOWNSTREAM_SIGNALING,REACTOME_OLFACTORY_SIGNALING_PATHWAY,REACTOME_SIGNALING_BY_GPCR
+</code></pre></div>
+<p>The summary (gene set name, size, and number of annotated variants) is printed to STDERR when using <code>-v</code>.</p>
 
 
 

@@ -775,9 +775,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift Intervals
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift Intervals
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    How it works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bed-file-format" class="md-nav__link">
+    BED file format
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,25 +1299,39 @@
 
 
 <h1 id="snpsift-intervals">SnpSift Intervals</h1>
-<p>This is used to extract variants that intersect any interval.</p>
-<p>You must provide intervals as BED files.</p>
-<p>Command line options:</p>
-<ul>
-<li>'-x' : Filter out (exclude) VCF entries that match any interval in the BED files.</li>
-<li>'-i file.vcf' : Specify the input VCF file (default is STDIN).</li>
-</ul>
-<p>E.g.:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">intervals</span><span class="w"> </span><span class="n">my_intervals</span><span class="o">.</span><span class="n">bed</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">variants_intersecting_intervals</span><span class="o">.</span><span class="n">vcf</span>
+<p>Filter VCF entries that intersect (or don't intersect) genomic intervals defined in BED files.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intervals [options] file_1.bed [file_2.bed ... file_N.bed]
+Options:
+    -i &lt;file.vcf&gt; : VCF input file. Default: STDIN
+    -x            : Exclude mode: output VCF entries that do NOT intersect any interval
 </code></pre></div>
-
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>BED file format is tab separated zero-based coordinates "chr \t start \t end " (for this application, all other fields in the BED file are ignored).</p>
+<p>The VCF input must be provided via <code>-i</code> or STDIN. All positional arguments are treated as BED files.
+If you pass a VCF file as a positional argument, it will be incorrectly loaded as a BED file.</p>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If BED file has header lines, they must start with a '#'</p>
-</div>
+<h3 id="how-it-works">How it works</h3>
+<p>All intervals from all BED files are loaded into a single interval forest.
+Each VCF entry is tested for position overlap against this interval set.</p>
+<p>By default, VCF entries that overlap any interval are output.
+With <code>-x</code>, VCF entries that do NOT overlap any interval are output.
+Output is in standard VCF format (with header).</p>
+<h3 id="example">Example</h3>
+<p>Keep only variants in target regions:
+<div class="highlight"><pre><span></span><code>cat variants.vcf | java -jar SnpSift.jar intervals target_regions.bed &gt; variants_on_target.vcf
+</code></pre></div></p>
+<p>Exclude variants in problematic regions:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intervals -x -i variants.vcf blacklist.bed &gt; variants_filtered.vcf
+</code></pre></div></p>
+<p>Multiple BED files can be provided and their intervals are combined:
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar intervals -i variants.vcf peaks_rep1.bed peaks_rep2.bed peaks_rep3.bed &gt; variants_in_peaks.vcf
+</code></pre></div></p>
+<h3 id="bed-file-format">BED file format</h3>
+<p>BED files are tab-separated with 0-based coordinates (end position is exclusive).
+Only the first three columns are used (<code>chr</code>, <code>start</code>, <code>end</code>); additional columns are ignored for filtering purposes.
+A minimum of two columns (<code>chr</code>, <code>start</code>) is required; if <code>end</code> is missing, it defaults to <code>start</code>.
+Header lines must start with <code>#</code>.</p>
 
 
 

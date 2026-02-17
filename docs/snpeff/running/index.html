@@ -499,15 +499,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detailed-examples" class="md-nav__link">
-    Detailed examples
+  <a href="#using-the-wrapper-script" class="md-nav__link">
+    Using the wrapper script
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#specify-a-configuration-file" class="md-nav__link">
-    Specify a configuration file
+  <a href="#detailed-examples" class="md-nav__link">
+    Detailed examples
   </a>
   
 </li>
@@ -529,13 +529,6 @@
         <li class="md-nav__item">
   <a href="#loading-the-database" class="md-nav__link">
     Loading the database
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#command-line-vs-web-interface" class="md-nav__link">
-    Command line vs Web interface
   </a>
   
 </li>
@@ -1329,7 +1322,7 @@
 <h1 id="running-snpeff">Running SnpEff</h1>
 <p>We show some basic examples how to use SnpEff.</p>
 <h3 id="basic-example-installing-snpeff">Basic example: Installing SnpEff</h3>
-<p>Obviously the first step to use the program is to install it (for details, take a look at the <a href="../../download/">download page</a>.
+<p>Obviously the first step to use the program is to install it (for details, take a look at the <a href="../../download/">download page</a>).
 You have to download the core program and then uncompress the ZIP file.
 In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 If you have a Unix or a Mac system, the command line would be:</p>
@@ -1361,44 +1354,37 @@ $ head examples/test.chr22.ann.vcf
 22  17072258    .   C   A   .   .   ANN=A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1183G&gt;T|p.Gly395Cys|1443/2034|1183/1674|395/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;T|||||3721|
 22  17072674    .   G   A   .   .   ANN=A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.767C&gt;T|p.Pro256Leu|1027/2034|767/1674|256/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397C&gt;T|||||3305|
 </code></pre></div>
-<p>As you can see, SnpEff added functional annotations in the <code>ANN</code> info field (eigth column in the VCF output file).</p>
+<p>As you can see, SnpEff added functional annotations in the <code>ANN</code> info field (eighth column in the VCF output file).</p>
 <p>Details about the 'ANN' field format can be found in the <a href="../inputoutput/#ann-field-vcf-output-files">ANN Field</a> section and in <a href="../../adds/VCFannotationformat_v1.0.pdf">VCF annotation about standard 'ANN' field</a>.
 Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the <a href="../inputoutput/#eff-field-vcf-output-files">EFF Field</a> section).</p>
-<p>You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff to show a lot of information which can be useful for debugging.</p>
+<p>You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff show a lot of information which can be useful for debugging.</p>
 <p>Here output is edited for brevity:</p>
 <div class="highlight"><pre><span></span><code>$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 
 00:00:00.000    Reading configuration file &#39;snpEff.config&#39;. Genome: &#39;GRCh37.75&#39;
 00:00:00.434    done
-00:00:00.434    Reading database for genome version &#39;GRCh37.75&#39; from file &#39;/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin&#39; (this might take a while)
+00:00:00.434    Reading database for genome version &#39;GRCh37.75&#39; from file &#39;./data/GRCh37.75/snpEffectPredictor.bin&#39; (this might take a while)
 00:00:00.434    Database not installed
     Attempting to download and install database &#39;GRCh37.75&#39;
 00:00:00.435    Reading configuration file &#39;snpEff.config&#39;. Genome: &#39;GRCh37.75&#39;
 00:00:00.653    done
 00:00:00.654    Downloading database for &#39;GRCh37.75&#39;
-00:00:00.655    Connecting to http://downloads.sourceforge.net/project/snpeff/databases/v4_0/snpEff_v4_0_GRCh37.75.zip
-00:00:01.721    Local file name: &#39;snpEff_v4_0_GRCh37.75.zip&#39;
+00:00:00.655    Downloading from &#39;https://snpeff-public.s3.amazonaws.com/databases/v5_0/snpEff_v5_0_GRCh37.75.zip&#39;
 .............................................
-00:01:31.595    Download finished. Total 177705174 bytes.
-00:01:31.597    Extracting file &#39;data/GRCh37.75/motif.bin&#39; to &#39;/home/pcingola/snpEff_v4_0/./data/GRCh37.75/motif.bin&#39;
-00:01:31.597    Creating local directory: &#39;/home/pcingola/snpEff_v4_0/./data/GRCh37.75&#39;
+00:01:31.595    Download finished.
+00:01:31.597    Extracting file &#39;data/GRCh37.75/motif.bin&#39;
 00:01:31.652    Extracting file &#39;data/GRCh37.75/nextProt.bin&#39;
 00:01:31.707    Extracting file &#39;data/GRCh37.75/pwms.bin&#39;
 00:01:31.707    Extracting file &#39;data/GRCh37.75/regulation_CD4.bin&#39;
 ...
 00:01:32.038    Extracting file &#39;data/GRCh37.75/snpEffectPredictor.bin&#39;
 00:01:32.881    Unzip: OK
-00:01:32.881    Done
 00:01:32.881    Database installed.
 00:01:58.779    done
-00:01:58.813    Reading NextProt database from file &#39;/home/pcingola/snpEff_v4_0/./data/GRCh37.75/nextProt.bin&#39;
+00:01:58.813    Reading NextProt database
 00:02:01.448    NextProt database: 523361 markers loaded.
-00:02:01.448    Adding transcript info to NextProt markers.
-00:02:02.180    NextProt database: 706289 markers added.
 00:02:02.181    Loading Motifs and PWMs
-00:02:02.181        Loading PWMs from : /home/pcingola/snpEff_v4_0/./data/GRCh37.75/pwms.bin
-00:02:02.203        Loading Motifs from file &#39;/home/pcingola/snpEff_v4_0/./data/GRCh37.75/motif.bin&#39;
-00:02:02.973        Motif database: 284122 markers loaded.
+00:02:02.973    Motif database: 284122 markers loaded.
 00:02:02.973    Building interval forest
 00:02:41.857    done.
 00:02:41.858    Genome stats :
@@ -1412,48 +1398,11 @@ Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field forma
 # Transcripts                : 215170
 # Avg. transcripts per gene  : 3.38
 #-----------------------------------------------
-# Checked transcripts        :
-#               AA sequences : 104254 ( 114.79% )
-#              DNA sequences : 179360 ( 83.36% )
-#-----------------------------------------------
 # Protein coding transcripts : 90818
-#              Length errors :  14349 ( 15.80% )
-#  STOP codons in CDS errors :     39 ( 0.04% )
-#         START codon errors :   8721 ( 9.60% )
-#        STOP codon warnings :  21788 ( 23.99% )
-#              UTR sequences :  87724 ( 40.77% )
-#               Total Errors :  21336 ( 23.49% )
 #-----------------------------------------------
 # Cds                        : 792087
 # Exons                      : 1306656
-# Exons with sequence        : 1306656
-# Exons without sequence     : 0
 # Avg. exons per transcript  : 6.07
-# WARNING!                   : Mitochondrion chromosome &#39;MT&#39; does not have a mitochondrion codon table (codon table = &#39;Standard&#39;). You should update the config file.
-#-----------------------------------------------
-# Number of chromosomes      : 297
-# Chromosomes names [sizes]  :
-#       &#39;HG1292_PATCH&#39; [250051446]
-#       &#39;HG1287_PATCH&#39; [249964560]
-#       &#39;HG1473_PATCH&#39; [249272860]
-#       &#39;HG1471_PATCH&#39; [249269426]
-#       &#39;HSCHR1_1_CTG31&#39; [249267852]
-#       &#39;HSCHR1_2_CTG31&#39; [249266025]
-#       &#39;HSCHR1_3_CTG31&#39; [249262108]
-#       &#39;HG999_2_PATCH&#39; [249259300]
-#       &#39;HG989_PATCH&#39; [249257867]
-#       &#39;HG999_1_PATCH&#39; [249257505]
-#       &#39;HG1472_PATCH&#39; [249251918]
-#       &#39;1&#39; [249250621]
-#       &#39;HG1293_PATCH&#39; [249140837]
-#       &#39;HG686_PATCH&#39; [243297375]
-#       &#39;HSCHR2_1_CTG12&#39; [243216362]
-#       &#39;HSCHR2_2_CTG12&#39; [243205453]
-#       &#39;HSCHR2_1_CTG1&#39; [243205406]
-#       &#39;HG953_PATCH&#39; [243199374]
-#       &#39;2&#39; [243199373]
-.....
-.....
 #-----------------------------------------------
 
 00:02:59.416    Predicting variants
@@ -1463,12 +1412,9 @@ Warning type    Number of warnings
 WARNING_TRANSCRIPT_INCOMPLETE   8215
 WARNING_TRANSCRIPT_NO_START_CODON   3483
 
-
 00:03:04.327    Creating summary file: snpEff_summary.html
 00:03:04.891    Creating genes file: snpEff_genes.txt
 00:03:17.334    done.
-00:03:17.336    Logging
-00:03:18.337    Checking for updates...
 </code></pre></div>
 <p>Notice how SnpEff automatically downloads and installs the database.
 Next time SnpEff will use the local version, so the installation step is only done once.</p>
@@ -1480,41 +1426,40 @@ Take a quick look at it.</p>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>We used the java parameter -Xmx8g to increase the memory available to the Java Virtual Machine to 4G.
+<p>We used the java parameter <code>-Xmx8g</code> to increase the memory available to the Java Virtual Machine to 8G.
 SnpEff's human genome database is large and it has to be loaded into memory.
-If your computer doesn't have at least 4G of memory, you probably won't be able to run this example.</p>
+If your computer doesn't have at least 8G of memory, you probably won't be able to run this example.</p>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
-This is done using the '-c' command line option:</p>
+This is done using the <code>-c</code> command line option:</p>
 </div>
 <div class="highlight"><pre><span></span><code>java -Xmx8g -jar snpEff.jar -c path/to/snpEff/snpEff.config -v GRCh37.75 test.chr22.vcf &gt; test.chr22.ann.vcf
 </code></pre></div>
-<h3 id="detailed-examples">Detailed examples</h3>
-<p>Take a look at several detailed examples in our <a href="../../examples/">examples page</a>.</p>
-<h3 id="specify-a-configuration-file">Specify a configuration file</h3>
-<p>Sometimes you need to specify the path to the config file.
-For instance, when you run SnpEff from a different directory than your install directory, you have to
-specify where the config file is located using the '-c' command line option.</p>
-<div class="highlight"><pre><span></span><code>java -Xmx8g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
-</code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Since version 4.1B, you can use the <code>-configOption</code> command line option to override any value in the config file</p>
+<p>You can use the <code>-configOption</code> command line option to override any value in the config file, e.g. <code>-configOption data.dir=/my/data/dir</code>.</p>
 </div>
+<h3 id="using-the-wrapper-script">Using the wrapper script</h3>
+<p>The distribution includes a convenience wrapper script <code>scripts/snpEff</code> that handles Java memory options and the config file path automatically. When using the wrapper, you don't need to specify <code>-jar</code>, <code>-Xmx</code>, or <code>-c</code>:</p>
+<div class="highlight"><pre><span></span><code>./scripts/snpEff GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
+</code></pre></div>
+<p>The wrapper defaults to <code>-Xms1g -Xmx8g</code> and auto-detects the <code>snpEff.config</code> file location. You can override the memory settings by passing <code>-Xmx</code> explicitly.</p>
+<h3 id="detailed-examples">Detailed examples</h3>
+<p>Take a look at several detailed examples in our <a href="../../examples/">examples page</a>.</p>
 <h3 id="java-memory-options">Java memory options</h3>
 <p>By default the amount of memory set by a java process is set too low.
 If you don't assign more memory to the process, you will most likely have an "OutOfMemory" error.</p>
 <p>You should set the amount of memory in your java virtual machine to, at least, 2 Gb.
 This can be easily done using the Java command line option <code>-Xmx</code>.
-E.g. In this example I use 4Gb:</p>
+E.g. In this example we use 4Gb:</p>
 <div class="highlight"><pre><span></span><code># Run using 4 Gb of memory
-java -Xmx8g snpEff.jar hg19 path/to/your/files/snps.vcf
+java -Xmx4g -jar snpEff.jar hg19 path/to/your/files/snps.vcf
 </code></pre></div>
-<p>Note: There is no space between <code>-Xmx</code> and <code>4G</code>.</p>
+<p>Note: There is no space between <code>-Xmx</code> and <code>4g</code>.</p>
 <h3 id="running-snpeff-in-the-cloud">Running SnpEff in the Cloud</h3>
-<p>You can run SnpEff in a "the Cloud" exactly the same way as running it on your local computer.
+<p>You can run SnpEff in the Cloud exactly the same way as running it on your local computer.
 You should not have any problems at all.</p>
 <p>Here is an example of installing it and running it on an Amazon EC2 instance (virtual machine):</p>
 <p><div class="highlight"><pre><span></span><code>$ ssh -i ./aws_amazon/my_secret_key.pem ec2-user@ec2-54-234-14-244.compute-1.amazonaws.com
@@ -1544,10 +1489,6 @@ As you can see, it's very simple.</p>
 Usually it takes from a few seconds to a couple of minutes, depending on database size.
 Complex databases, like human, require more time to load.
 After the database is loaded, SnpEff can analyze thousands of variants per second.</p>
-<h3 id="command-line-vs-web-interface">Command line vs Web interface</h3>
-<p>In order to run SnpEff you need to be comfortable running command from a command line terminal.
-If you are not, then it is probably a good idea to ask you systems administrator to install a <a href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
-You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.</p>
 
 
 

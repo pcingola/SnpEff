@@ -1336,12 +1336,12 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 <p>There are some command line options related to the statistics:</p>
 <ul>
 <li><code>-stats &lt;file&gt;</code>: You can change the default name and location of the HTML file. This also changes the name and location of the "genes" (TXT) file.</li>
-<li><code>-noStats</code>: Do not calculate statisticsm, or create stats (summary) files</li>
+<li><code>-noStats</code>: Do not calculate statistics, or create stats (summary) files</li>
 <li><code>-csvStats &lt;file&gt;</code>: Create the statistics file in CSV format with the specified name.</li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>The "Genes statistics" file path is by default the directory where SnpEff is executed and called <code>snpEff_genes.txt</code>. If you change the summary file name / path by either using <code>-stats</code> or <code>csvStats</code> command line, the "Genes statistics" file path will be the same directory as the summary file and the file name is the same "base name" plus a <code>".genes.txt"</code>.</p>
+<p>The "Genes statistics" file path is by default the directory where SnpEff is executed and called <code>snpEff_genes.txt</code>. If you change the summary file name / path by either using <code>-stats</code> (or <code>-htmlStats</code>) or <code>-csvStats</code> command line option, the "Genes statistics" file path will be the same directory as the summary file and the file name is the same "base name" plus a <code>".genes.txt"</code>.</p>
 </div>
 <h2 id="summary-report">Summary report</h2>
 <p>The summary report consist of several sections:</p>
@@ -1419,7 +1419,7 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 </tr>
 <tr>
 <td>Number of multi-allelic VCF entries</td>
-<td>Variants that have mode then two alleles. Most variants have only two alleles: <code>REF</code> and one <code>ALT</code>. Multi-allelic variants have multiple <code>ALT</code> entries.</td>
+<td>Variants that have more than two alleles. Most variants have only two alleles: <code>REF</code> and one <code>ALT</code>. Multi-allelic variants have multiple <code>ALT</code> entries.</td>
 </tr>
 <tr>
 <td>Number of annotations</td>
@@ -1431,11 +1431,11 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 </tr>
 <tr>
 <td>Genome effective length</td>
-<td>Total length of the chromosomes (in bases). This only counts chromosomes that had varinats</td>
+<td>Total length of the chromosomes (in bases). This only counts chromosomes that had variants</td>
 </tr>
 <tr>
 <td>Variant rate</td>
-<td>Number of variants per genomic length: <code>Number of variants</code> / <code>Genome effeective length</code></td>
+<td>Number of variants per genomic length: <code>Number of variants</code> / <code>Genome effective length</code></td>
 </tr>
 </tbody>
 </table>
@@ -1471,7 +1471,7 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 </tr>
 <tr>
 <td><code>MIXED</code></td>
-<td>A mixed vairant is a combination of SNP / MNP / INS / DEL, for example '</td>
+<td>A mixed variant is a combination of SNP / MNP / INS / DEL, e.g. Reference = 'ATA', Sample = 'GTCAGT'</td>
 </tr>
 <tr>
 <td><code>INV</code></td>
@@ -1487,7 +1487,7 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 </tr>
 <tr>
 <td><code>INTERVAL</code></td>
-<td>An interval marke, e.g. an interval from a BED file</td>
+<td>An interval marker, e.g. an interval from a BED file</td>
 </tr>
 </tbody>
 </table>
@@ -1495,11 +1495,11 @@ You can see the file, by opening it in your browser. SnpEff also creates a "Gene
 <p>E.g.: In the stats file, you can see coverage histogram plots like this one:</p>
 <p><img alt="" src="../../images/coverage_hitogram.png" /></p>
 <h3 id="annotations-region">Annotations &amp; Region</h3>
-<p>SnpEff annotates variants using <a href="../inputoutput/#variant-annotaiton-details">"functional annotaions"</a>, e.g. <code>NON_SYNONYMOUS_CODING</code>, <code>STOP_GAINED</code>, etc..
+<p>SnpEff annotates variants using <a href="../inputoutput/#variant-annotation-details">"functional annotations"</a>, e.g. <code>missense_variant</code>, <code>stop_gained</code>, etc.
 These variants affect regions of the genome (e.g. <code>EXON</code>, <code>INTRON</code>).
-The two tables count how many effects for each type and for each region exists.</p>
-<p>E.g.: In an <code>EXON</code> region, you can have all the following effect types: <code>NON_SYNONYMOUS_CODING</code>, <code>SYNONYMOUS_CODING</code>, <code>FRAME_SHIFT</code>, <code>STOP_GAINED</code>, etc.</p>
-<p>The complicated part is that some annotaitons affect a region that has the same name (yes, I know, this is confusing).</p>
+The two tables count how many effects for each type and for each region exist.</p>
+<p>E.g.: In an <code>EXON</code> region, you can have all the following effect types: <code>missense_variant</code>, <code>synonymous_variant</code>, <code>frameshift_variant</code>, <code>stop_gained</code>, etc.</p>
+<p>The complicated part is that some annotations affect a region that has the same name (yes, I know, this is confusing).</p>
 <p>E.g.: In a <code>UTR_5_PRIME</code> region you can have <code>UTR_5_PRIME</code> and <code>START_GAINED</code> effect type.</p>
 <p>This means that the number of both tables are not exactly the same, because the labels don't mean the same.
 See the next figure as an example:</p>
@@ -1515,11 +1515,11 @@ See the next figure as an example:</p>
 </thead>
 <tbody>
 <tr>
-<td><code>NONE</code>, <code>CHROMOSOME</code>, <code>CUSTOM</code>, <code>CDS</code></td>
-<td><code>NONE</code></td>
+<td><code>NONE</code>, <code>CHROMOSOME</code>, <code>CHROMOSOME_LARGE_DELETION</code>, <code>CHROMOSOME_LARGE_DUPLICATION</code>, <code>CHROMOSOME_LARGE_INVERSION</code>, <code>CHROMOSOME_ELONGATION</code>, <code>CUSTOM</code>, <code>SEQUENCE</code></td>
+<td><code>CHROMOSOME</code></td>
 </tr>
 <tr>
-<td><code>INTERGENIC</code>, <code>INTERGENIC_CONSERVED</code></td>
+<td><code>INTERGENIC</code>, <code>INTERGENIC_CONSERVED</code>, <code>FEATURE_FUSION</code></td>
 <td><code>INTERGENIC</code></td>
 </tr>
 <tr>
@@ -1543,11 +1543,19 @@ See the next figure as an example:</p>
 <td><code>SPLICE_SITE_REGION</code></td>
 </tr>
 <tr>
-<td><code>INTRAGENIC</code>, <code>START_LOST</code>, <code>SYNONYMOUS_START</code>, <code>NON_SYNONYMOUS_START</code>, <code>GENE</code>, <code>TRANSCRIPT</code></td>
-<td><code>EXON</code> or <code>NONE</code></td>
+<td><code>SPLICE_SITE_BRANCH</code>, <code>SPLICE_SITE_BRANCH_U12</code></td>
+<td><code>SPLICE_SITE_BRANCH</code></td>
 </tr>
 <tr>
-<td><code>EXON</code>, <code>EXON_DELETED</code>, <code>NON_SYNONYMOUS_CODING</code>, <code>SYNONYMOUS_CODING</code>, <code>FRAME_SHIFT</code>, <code>CODON_CHANGE</code>, <code>CODON_INSERTION</code>, <code>CODON_CHANGE_PLUS_CODON_INSERTION</code>, <code>CODON_DELETION</code>, <code>CODON_CHANGE_PLUS_CODON_DELETION</code>, <code>STOP_GAINED</code>, <code>SYNONYMOUS_STOP</code>, <code>STOP_LOST</code>, <code>RARE_AMINO_ACID</code></td>
+<td><code>GENE</code>, <code>GENE_DELETED</code>, <code>GENE_DUPLICATION</code>, <code>GENE_FUSION</code>, <code>GENE_FUSION_HALF</code>, <code>GENE_FUSION_REVERSE</code>, <code>GENE_INVERSION</code>, <code>GENE_REARRANGEMENT</code></td>
+<td><code>GENE</code></td>
+</tr>
+<tr>
+<td><code>TRANSCRIPT</code>, <code>TRANSCRIPT_DELETED</code>, <code>TRANSCRIPT_DUPLICATION</code>, <code>TRANSCRIPT_INVERSION</code>, <code>INTRAGENIC</code>, <code>NEXT_PROT</code>, <code>CDS</code></td>
+<td><code>TRANSCRIPT</code></td>
+</tr>
+<tr>
+<td><code>EXON</code>, <code>EXON_DELETED</code>, <code>EXON_DUPLICATION</code>, <code>EXON_INVERSION</code>, <code>NON_SYNONYMOUS_CODING</code>, <code>SYNONYMOUS_CODING</code>, <code>FRAME_SHIFT</code>, <code>FRAME_SHIFT_BEFORE_CDS_START</code>, <code>FRAME_SHIFT_AFTER_CDS_END</code>, <code>CODON_CHANGE</code>, <code>CODON_INSERTION</code>, <code>CODON_CHANGE_PLUS_CODON_INSERTION</code>, <code>CODON_DELETION</code>, <code>CODON_CHANGE_PLUS_CODON_DELETION</code>, <code>START_LOST</code>, <code>STOP_GAINED</code>, <code>SYNONYMOUS_STOP</code>, <code>NON_SYNONYMOUS_STOP</code>, <code>STOP_LOST</code>, <code>NON_SYNONYMOUS_START</code>, <code>SYNONYMOUS_START</code>, <code>RARE_AMINO_ACID</code>, <code>PROTEIN_PROTEIN_INTERACTION_LOCUS</code>, <code>PROTEIN_STRUCTURAL_INTERACTION_LOCUS</code></td>
 <td><code>EXON</code></td>
 </tr>
 <tr>
@@ -1565,6 +1573,14 @@ See the next figure as an example:</p>
 <tr>
 <td><code>REGULATION</code></td>
 <td><code>REGULATION</code></td>
+</tr>
+<tr>
+<td><code>MOTIF</code>, <code>MOTIF_DELETED</code></td>
+<td><code>MOTIF</code></td>
+</tr>
+<tr>
+<td><code>MICRO_RNA</code></td>
+<td><code>MICRO_RNA</code></td>
 </tr>
 </tbody>
 </table>

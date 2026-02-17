@@ -1405,7 +1405,7 @@ and organ systems frequently involved in human disease".
 A <a href="http://www.roadmapepigenomics.org/data">data matrix</a> shows the experimental set ups currently available.</p>
 <p>Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
 They will be available later in the project.
-So, for the time being, data has to be downloaded an pre-processed.
+So, for the time being, data has to be downloaded and pre-processed.
 We'll be processing these information and making it available (as SnpEff databases) as soon as we can.</p>
 <p>The latest Epigenome project processed information, can be found <a href="https://snpeff-public.s3.amazonaws.com/databases/epigenome_latest.tgz/download">here</a>.
 This includes genomic intervals for high confidence peaks in form of <code>BED</code> files.</p>
@@ -1432,7 +1432,7 @@ $ grep CUSTOM test.ann.vcf
 NextProt provides only human data.</p>
 <p>Starting from SnpEff version 4.0, these annotations are automatically added if the database is available for the genome version you are using (in older SnpEff versions
 the <code>-nextprot</code> command line option was used).
-NextProt databases are available by for in some GRCh37 genomes (e.g. file <code>data/GRCh37.75/nextProt.bin</code>).</p>
+NextProt databases are available for some GRCh37 genomes (e.g. file <code>data/GRCh37.75/nextProt.bin</code>).</p>
 <p>Annotations example:
 <div class="highlight"><pre><span></span><code>$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 00:00:00.000    Reading configuration file &#39;snpEff.config&#39;. Genome: &#39;GRCh37.75&#39;

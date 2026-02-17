@@ -831,9 +831,47 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SnpSift TsTv
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SnpSift TsTv
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1247,15 +1285,40 @@
 
 
 <h1 id="snpsift-tstv">SnpSift TsTv</h1>
-<p>Calculate transition vs transversion ratios for each sample.</p>
-<p>Usage example:
-<div class="highlight"><pre><span></span><code>$ java -jar SnpSift.jar tstv hom s.vcf
+<p>Calculate transition/transversion ratios and other variant statistics per sample.</p>
+<h2 id="usage">Usage</h2>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar tstv file.vcf
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Only SNPs are used for Ts/Tv calculations.</p>
+</div>
+<h2 id="output">Output</h2>
+<p>The command outputs four statistics sections, all broken down per sample:</p>
+<ul>
+<li><strong>TS/TV stats</strong>: Transition and transversion counts and ratios per sample</li>
+<li><strong>Hom/Het stats</strong>: Homozygous reference, one ALT, two ALTs, and missing counts</li>
+<li><strong>Variant type stats</strong>: Counts by variant type (SNP, MNP, INS, DEL, MIXED, Multiallelic)</li>
+<li><strong>Allele count stats</strong>: Minor allele count distribution</li>
+</ul>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar tstv s.vcf
 
-Sample        : 1   2   3   4   5   6   7   8   9   10  11  12  Total
-Transitions   : 150488  150464  158752  156674  152936  160356  152276  155314  156484  149276  151182  153468  1847670
-Transversions : 70878   70358   73688   72434   70828   76150   72030   71958   72960   69348   70180   71688   862500
-Ts/Tv         : 2.123   2.139   2.154   2.163   2.159   2.106   2.114   2.158   2.145   2.153   2.154   2.141   2.142
-</code></pre></div></p>
+TS/TV stats:
+Sample ,1,2,3,4,5,6,7,8,9,10,11,12,Total
+Transitions ,150488,150464,158752,156674,152936,160356,152276,155314,156484,149276,151182,153468,1847670
+Transversions ,70878,70358,73688,72434,70828,76150,72030,71958,72960,69348,70180,71688,862500
+Ts/Tv ,2.123,2.139,2.154,2.163,2.159,2.106,2.114,2.158,2.145,2.153,2.154,2.141,2.142
+
+Hom/Het stats:
+...
+
+Variant type stats:
+...
+
+Allele count stats:
+...
+</code></pre></div>
 
 
 

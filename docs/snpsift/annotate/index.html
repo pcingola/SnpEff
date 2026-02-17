@@ -765,16 +765,78 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-1-annotating-id-from-dbsnp" class="md-nav__link">
-    Example 1: Annotating ID from dbSnp
+  <a href="#annotation-strategies" class="md-nav__link">
+    Annotation strategies
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#default-behavior" class="md-nav__link">
+    Default behavior
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-options" class="md-nav__link">
+    Command Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-annotating-id-from-dbsnp" class="md-nav__link">
+    Example 1: Annotating ID from dbSnp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#example-2-annotating-id-and-all-info-fields-from-dbsnp" class="md-nav__link">
     Example 2: Annotating ID and all INFO fields from dbSnp
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-annotating-specific-info-fields" class="md-nav__link">
+    Example 3: Annotating specific INFO fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-using-name-prefix-with-multiple-databases" class="md-nav__link">
+    Example 4: Using -name prefix with multiple databases
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5-checking-variant-existence" class="md-nav__link">
+    Example 5: Checking variant existence
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-6-position-only-matching" class="md-nav__link">
+    Example 6: Position-only matching
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1292,31 +1354,55 @@
 
 
 <h1 id="snpsift-annotate">SnpSift Annotate</h1>
-<p>Annotate using fields from another VCF file (e.g. dbSnp, 1000 Genomes projects, ClinVar, ExAC, etc.).</p>
+<p>Annotate using fields from another VCF file (e.g. dbSnp, ClinVar, ExAC, etc.).</p>
 <h3 id="typical-usage">Typical usage</h3>
 <p>This is typically used to annotate IDs and INFO fields from a 'database' VCF file (e.g. dbSnp).
 Here is an example:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">annotate</span><span class="w"> </span><span class="n">dbSnp132</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">variants_annotated</span><span class="o">.</span><span class="n">vcf</span>
+<div class="codehilite"><pre><span></span><code><span class="n">java</span><span class="w"> </span><span class="o">-</span><span class="n">jar</span><span class="w"> </span><span class="n">SnpSift</span><span class="o">.</span><span class="n">jar</span><span class="w"> </span><span class="n">annotate</span><span class="w"> </span><span class="n">dbSnp</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="n">variants</span><span class="o">.</span><span class="n">vcf</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">variants_annotated</span><span class="o">.</span><span class="n">vcf</span>
 </code></pre></div>
 
-<p>Important: <code>SnpSift annotate</code> command has different strategies depending on the input VCF file:</p>
+<h3 id="annotation-strategies">Annotation strategies</h3>
+<p><code>SnpSift annotate</code> uses different strategies depending on the database VCF file format:</p>
 <ul>
-<li><strong>Uncomressed VCF</strong> If the file is not compressed, it created an index in memory to optimize search. This assumes that both the database and the input VCF files are sorted by position, since it is required by the VCF standard (chromosome sort order can differ between files).</li>
-<li><strong>Compressed, Tabix indexed</strong> It uses the tabix index to speed up annotations.</li>
-<li><strong>Compressed, NOT Tabix indexed</strong> It loads the entire 'database' VCF file into memory, which may be slow or even impractical for large 'database' VCF files.  This allows to annotate using unsorted VCF files.</li>
+<li><strong>Uncompressed VCF (plain text):</strong> SnpSift creates a file-based index (<code>*.sidx</code>) for the database. The index is saved next to the database file and reused on subsequent runs if the database has not changed. Both the database and the input VCF files should be sorted by position.</li>
+<li><strong>Compressed with Tabix index (bgzip + .tbi):</strong> SnpSift uses the tabix index for fast random-access lookups. The database must be compressed with <code>bgzip</code> and indexed with <code>tabix</code>.</li>
 </ul>
-<p>Note:</p>
+<p><strong>Note:</strong> Compressed VCF files without a tabix index are not supported and will produce an error. You must either provide a tabix index or use an uncompressed VCF.</p>
+<h3 id="default-behavior">Default behavior</h3>
 <ul>
-<li>By default it adds ALL database INFO fields.</li>
-<li>You can use the <code>-info</code> command line option if you only want select only a subset of fields from db.vcf file.</li>
-<li>You can use the <code>-id</code> command line option if you only want to add ID fields (no INFO fields will be added).</li>
-<li>Using the <code>-exists</code> command line option, you can annotate entries that exists in the 'database' file.</li>
+<li>By default, both the ID field and ALL INFO fields from the database are added to matching entries.</li>
+<li>By default, variant matching requires chromosome, position, REF, and ALT to match (case-insensitive for REF/ALT).</li>
+<li>If a variant from the input VCF has no match in the database, it is left unchanged.</li>
+<li>Database IDs are appended to the input entry's ID field (duplicates are removed).</li>
+<li>For multi-allelic sites, each ALT allele is queried independently. Per-allele INFO fields (Number=A in the VCF header) get the correct value for each specific allele.</li>
 </ul>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>DbSnp in VCF format can be downloaded <a href="ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606/VCF/00-All.vcf.gz">here</a> (GRCh38 coordinates).
-For other versions, check <a href="ftp://ftp.ncbi.nih.gov/snp/organisms/">this link</a>.</p>
-</div>
+<hr />
+<h2 id="command-options">Command Options</h2>
+<p><strong>Database selection:</strong></p>
+<ul>
+<li><code>database.vcf</code> : Use this VCF file as the annotation database (positional argument). Can be bgzipped and tabix-indexed.</li>
+<li><code>-dbsnp</code> : Use the DbSnp database (downloaded automatically if configured).</li>
+<li><code>-clinvar</code> : Use the ClinVar database (downloaded automatically if configured).</li>
+</ul>
+<p><strong>Annotation control:</strong></p>
+<ul>
+<li><code>-id</code> : Only annotate the ID field (no INFO fields). Default: true.</li>
+<li><code>-info &lt;list&gt;</code> : Annotate using only the specified comma-separated list of INFO fields. Default: ALL.</li>
+<li><code>-noId</code> : Do not annotate the ID field.</li>
+<li><code>-noInfo</code> : Do not annotate INFO fields.</li>
+<li><code>-exists &lt;tag&gt;</code> : Add a FLAG INFO field named <code>&lt;tag&gt;</code> if the variant exists in the database. No INFO values are transferred, only the presence/absence flag.</li>
+<li><code>-a</code> : Annotate fields even when the database has an empty value (uses '.' for missing). By default, empty fields are skipped.</li>
+<li><code>-noAlt</code> : Match variants by coordinates only (chromosome, position), ignoring REF and ALT alleles.</li>
+<li><code>-name &lt;str&gt;</code> : Prepend <code>&lt;str&gt;</code> to all annotated INFO field names. Useful when annotating from multiple databases to avoid field name collisions.</li>
+</ul>
+<p><strong>Method selection (usually auto-detected):</strong></p>
+<ul>
+<li><code>-sorted</code> : Force the sorted/uncompressed VCF strategy (creates <code>.sidx</code> index).</li>
+<li><code>-tabix</code> : Force the tabix strategy.</li>
+<li><code>-maxBlockSize &lt;int&gt;</code> : Set the maximum block size when creating the <code>.sidx</code> index (used with <code>-sorted</code>).</li>
+</ul>
+<hr />
+<h2 id="examples">Examples</h2>
 <h3 id="example-1-annotating-id-from-dbsnp">Example 1: Annotating <code>ID</code> from dbSnp</h3>
 <div class="highlight"><pre><span></span><code>$ cat test.chr22.vcf
 #CHROM  POS         ID           REF  ALT  QUAL   FILTER  INFO
@@ -1329,7 +1415,7 @@ For other versions, check <a href="ftp://ftp.ncbi.nih.gov/snp/organisms/">this l
 22      17072394    .            C    G    0.0    PASS    NS=463
 22      17072411    .            G    T    0.0    PASS    NS=464
 
-$ java -jar SnpSift.jar annotate -id db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf
+$ java -jar SnpSift.jar annotate -id dbSnp.vcf test.chr22.vcf
 #CHROM  POS         ID           REF  ALT  QUAL   FILTER  INFO
 22      16157571    .            T    G    0.0    FAIL    NS=53
 22      16346045    rs56234788   T    C    0.0    FAIL    NS=244
@@ -1353,7 +1439,7 @@ $ java -jar SnpSift.jar annotate -id db/dbSnp/dbSnp137.20120616.vcf test.chr22.v
 22      17072394    .            C    G    0.0    PASS    NS=463
 22      17072411    .            G    T    0.0    PASS    NS=464
 
-$ java -jar SnpSift.jar annotate db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf
+$ java -jar SnpSift.jar annotate dbSnp.vcf test.chr22.vcf
 #CHROM  POS         ID           REF  ALT  QUAL   FILTER  INFO
 22      16157571    .            T    G    0.0    FAIL    NS=53
 22      16346045    rs56234788   T    C    0.0    FAIL    NS=244;RSPOS=16346045;GMAF=0.162248628884826;dbSNPBuildID=129;SSR=0;SAO=0;VP=050100000000000100000100;WGT=0;VC=SNV;SLO;GNO
@@ -1364,6 +1450,23 @@ $ java -jar SnpSift.jar annotate db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf
 22      17072394    .            C    G    0.0    PASS    NS=463
 22      17072411    rs41277596   G    T    0.0    PASS    NS=464;RSPOS=17072411;GMAF=0.00411334552102377;dbSNPBuildID=127;SSR=0;SAO=0;VP=050200000008040010000100;GENEINFO=CCT8L2:150160;WGT=0;VC=SNV;S3D;CFL;VLD;KGPilot123
 </code></pre></div></p>
+<h3 id="example-3-annotating-specific-info-fields">Example 3: Annotating specific INFO fields</h3>
+<p>Annotate only <code>CLNSIG</code> and <code>CLNDN</code> from ClinVar:</p>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar annotate -info CLNSIG,CLNDN clinvar.vcf.gz input.vcf &gt; output.vcf
+</code></pre></div>
+<h3 id="example-4-using-name-prefix-with-multiple-databases">Example 4: Using <code>-name</code> prefix with multiple databases</h3>
+<p>When annotating from multiple databases, use <code>-name</code> to avoid field name collisions:</p>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar annotate -name CLINVAR_ clinvar.vcf.gz input.vcf \
+    | java -jar SnpSift.jar annotate -name DBSNP_ dbSnp.vcf.gz &gt; output.vcf
+</code></pre></div>
+<h3 id="example-5-checking-variant-existence">Example 5: Checking variant existence</h3>
+<p>Add a <code>DB</code> flag to variants found in dbSnp (without adding any INFO fields):</p>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar annotate -exists DB -noInfo dbSnp.vcf.gz input.vcf &gt; output.vcf
+</code></pre></div>
+<h3 id="example-6-position-only-matching">Example 6: Position-only matching</h3>
+<p>Match by coordinates only, ignoring REF and ALT alleles:</p>
+<div class="highlight"><pre><span></span><code>java -jar SnpSift.jar annotate -noAlt database.vcf input.vcf &gt; output.vcf
+</code></pre></div>
 
 
 
