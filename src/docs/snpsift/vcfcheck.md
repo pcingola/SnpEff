@@ -5,7 +5,16 @@ Perform some basic check ups on VCF files to spot common problems.
 `SnpSift vcfCheck` checks for some common problems where VCF files are not following the specification.
 Given that many common VCF problems cause analysis tools and pipelines to behave unexpectedly, this command is intended as a simple debugging tool.
 
-E.g.:
+## Usage
+
+```
+java -jar SnpSift.jar vcfCheck file_1.vcf [file_2.vcf ... file_N.vcf]
+```
+
+One or more VCF files can be provided. Each file is checked independently.
+
+## Example
+
 ```
 $ java -jar SnpSift.jar vcfCheck bad.vcf
 
