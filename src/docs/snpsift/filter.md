@@ -53,14 +53,13 @@ Options:
 	-s|--set         : Create a SET using 'file'
 	--errMissing     : Error is a field is missing. Default: false
 	--format         : SnpEff format version: {2, 3}. Default: Auto
-	--galaxy         : Used from Galaxy (expressions have been sanitized).
 ```
 
 ### Variables
 
 All VCF fields can be used as variables names, as long as they are declared in the VCF header OR they are "standard" VCF fields (as defined by the VCF 4.1 specification).
 
-* **Fields** names: "CHROM, POS, ID, REF, ALT, QUAL or FILTER". Examples:
+* **Fields** names: "CHROM, POS, ID, REF, ALT, QUAL, FILTER or FORMAT". Examples:
 
     * Any variant in chromosome 1:
 
@@ -70,7 +69,7 @@ All VCF fields can be used as variables names, as long as they are declared in t
 
             "( POS > 123456 ) & ( POS < 654321 )"
 
-    * Has an ID and it matches the regulat expression 'rs':
+    * Has an ID and it matches the regular expression 'rs':
 
             "(exists ID) & ( ID =~ 'rs' )"
 
@@ -177,7 +176,7 @@ Effect fields (from SnpEff) are accessed using an index (effect number) followed
 
 Available `ANN` sub-fields are (for details, take a look at the [specification](../adds/VCFannotationformat_v1.0.pdf)):
 
-* `ALLELE` (alias GENOTYPE)
+* `ALLELE` (alias GT, GENOTYPE)
 * `EFFECT` (alias ANNOTATION): Effect in Sequence ontology terms (e.g. 'missense_variant', 'synonymous_variant', 'stop_gained', etc.)
 * `IMPACT`: { HIGH, MODERATE, LOW, MODIFIER }
 * `GENE`: Gene name (e.g. 'PSD3')
@@ -195,7 +194,7 @@ Available `ANN` sub-fields are (for details, take a look at the [specification](
 * `AA_POS` (alias POS_AA)
 * `AA_LEN` (alias LEN_AA)
 * `DISTANCE`
-* `ERRORS` (alias WARNING, INFOS)
+* `ERRORS` (alias WARNINGS, INFOS)
 
 For example, you may want only the lines where the **first** annotation has `missense_variant` variant:
 
@@ -269,11 +268,15 @@ Available `EFF` sub-fields are:
 * `FUNCLASS`: { NONE, SILENT, MISSENSE, NONSENSE }
 * `CODON`: Codon change (e.g. 'ggT/ggG')
 * `AA`: Amino acid change (e.g. 'G156')
+* `HGVS`: HGVS notation
+* `AA_LEN`: Amino acid length
 * `GENE`: Gene name (e.g. 'PSD3')
 * `BIOTYPE`: Gene biotype, as described by the annotations (e.g. 'protein_coding')
 * `CODING`: Gene is { CODING, NON_CODING }
 * `TRID`: Transcript ID
 * `RANK`: Exon or Intron rank (i.e. exon number in a transcript)
+* `GENOTYPE` (alias GT, GENOTYPE_NUMBER)
+* `ERRORS` (alias WARNINGS, INFOS)
 
 For example, you may want only the lines where the first effect is a NON_SYNONYMOUS variants:
 
@@ -311,18 +314,30 @@ The following operators and functions are interpreted by `SnpSift filter`:
 
 Operand | Description   | Data type            | Example
 ------- | ------------- | -------------------- | --------------
- =      | Equality test                     | FLOAT, INT or STRING | (REF **=** 'A')
+ =, ==  | Equality test                     | FLOAT, INT or STRING | (REF **=** 'A')
+ !=     | Not equal                         | FLOAT, INT or STRING | (REF **!=** 'A')
  &gt;   | Greater than                      | FLOAT or INT         | (DP **&gt;** 20)
  &ge;   | Greater or equal than             | FLOAT or INT | (DP **&ge;** 20)
  &lt;   | Less than                         | FLOAT or INT | (DP **&lt;** 20)
  &le;   | Less or equal than                | FLOAT or INT | (DP **&le;** 20)
- =~     | Match regular expression          | STRING  | (REL **=~** 'AC')
- !~     | Does not match regular expression | STRING  | (REL **!~** 'AC')
- &amp;  | AND operator                      | Boolean | (DP &gt; 20) **&amp;** (REF = 'A')
- \|     | OR operator                       | Boolean | (DP &gt; 20) **\|** (REF = 'A')
+ +      | Addition (or string concatenation) | FLOAT, INT or STRING | (DP **+** 1)
+ -      | Subtraction                       | FLOAT or INT | (DP **-** 1)
+ *      | Multiplication                    | FLOAT or INT | (DP **\*** 2)
+ /      | Division                          | FLOAT or INT | (DP **/** 2)
+ %      | Modulo                            | FLOAT or INT | (DP **%** 2)
+ =~     | Match regular expression          | STRING  | (REF **=~** 'AC')
+ !~     | Does not match regular expression | STRING  | (REF **!~** 'AC')
+ &amp;, && | AND operator                   | Boolean | (DP &gt; 20) **&amp;** (REF = 'A')
+ \|, \|\| | OR operator                    | Boolean | (DP &gt; 20) **\|** (REF = 'A')
+ ^      | XOR operator                      | Boolean or INT | (A) **^** (B)
  !      | NOT operator                      | Boolean | **!** (DP &gt; 20)
- exists | The variable exists (not missing) | Any     | (**exists** INDEL)
- has    | The right hand side expression is equalt to any of the items in a list consisting of separating the left hand side expression using delimiters: `&`, `+`, `;`, `,`, `:`, `(', ')` ,`[', ']`. <br> Example: If the expression is: ANN\[\*].EFFECT **has** 'missense_variant'.<br> If left hand side (ANN\[\*].EFFECT) has value 'missense_variant&splice_region_variant', then it is transformed to a list: `['missense_variant', 'splice_region_variant']`<br> Since the right hand side ('missense_variant') is in the list, the expression evaluates to 'true' | Any | (ANN\[\*].EFFECT **has** 'missense_variant')
+ ? :    | Ternary conditional               | Any     | (DP &gt; 20) **?** 'high' **:** 'low'
+ exists | The variable exists (not missing)  | Any     | (**exists** INDEL)
+ na     | The variable is not available (missing) | Any | (**na** FILTER)
+ in     | Set membership test               | STRING  | (ID **in** SET\[0])
+ has    | True if the right hand side equals any item obtained by splitting the left hand side using delimiters: `&`, `+`, `\|`, `,`, `;`, `:`, `(`, `)`, `[`, `]`. <br> Example: If ANN\[\*].EFFECT has value 'missense_variant&splice_region_variant', it is split into `['missense_variant', 'splice_region_variant']`. <br> Since 'missense_variant' is in the list, `ANN[*].EFFECT has 'missense_variant'` evaluates to true. | Any | (ANN\[\*].EFFECT **has** 'missense_variant')
+
+The constants `NaN` and `Inf` can be used in expressions (e.g. `"QUAL != NaN"`).
 
 Function   | Description | Data type | Example
 ---------- | ----------- | --------- | --------
@@ -352,3 +367,13 @@ $ cat cancer.vcf | java -jar SnpSift.jar filter "GEN[Somatic].GT = '2/1'"
 ```
 
 Note that we used `GEN[Somatic]` instead of `GEN[1]`.
+
+### Comments in expressions
+
+When using complex expressions (especially via `-e`/`--exprFile`), you can add comments using `//` (C-style) or `#` (shell-style). Comments extend to the end of the line.
+
+```
+# Filter high-quality missense variants
+(QUAL >= 30)            // Minimum quality
+& (ANN[*].EFFECT has 'missense_variant')
+```

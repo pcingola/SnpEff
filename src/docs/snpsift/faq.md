@@ -1,6 +1,6 @@
 # SnpSift: Frequently Asked Questions
 
-# Corrupted database VCF files: ClinVar
+## Corrupted database VCF files: ClinVar
 
 Some VCF files used as annotation databases can be non-compliant.
 
@@ -45,19 +45,19 @@ Furthermore, section 1.6.1.8 specifies:
 
 #### Finding all ClinVar problems
 
-An easy way to find many of the problems in the VCF file is to use the `SnpSift checkVcf` command:
+An easy way to find many of the problems in the VCF file is to use the `SnpSift vcfCheck` command:
 
 ```
 $ java -jar SnpSift.jar vcfCheck clinvar.vcf.gz 2>&1 | head
 ...WARNING: Malformed VCF entryfile '/home/pcingola/Downloads/clinvar.vcf.gz', line 3655:
 	Entry  : 1	25717365	17708	C	C	.	.	ALLELEID=32747;CLNDISDB=.;CLNDN=RH_E/e_POLYMORPHISM;CLNHGVS=NC_000001.10:g.25717365C=;CLNREVSTAT=no_assertion_criteria_provided;CLNSIG=Benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=OMIM_Allelic_Variant:111700.0001;GENEINFO=RHCE:6006;MC=SO:0001627|intron_variant,SO:0001819|synonymous_variant;ORIGIN=1;RS=609320
 	Errors :
-		INFO filed 'CLNHGVS' has an invalid value 'NC_000001.10:g.25717365C=' (no spaces, tabs, '=' or ';' are allowed)
+		INFO field 'CLNHGVS' has an invalid value 'NC_000001.10:g.25717365C=' (no spaces, tabs, '=' or ';' are allowed)
 
 WARNING: Malformed VCF entryfile '/home/pcingola/Downloads/clinvar.vcf.gz', line 3657:
 	Entry  : 1	25735202	242743	G	G	.	.	ALLELEID=38411;CLNHGVS=NC_000001.10:g.25735202G=;CLNREVSTAT=no_interpretation_for_the_single_variant;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=OMIM_Allelic_Variant:111700.0002;GENEINFO=RHCE:6006;MC=SO:0001819|synonymous_variant;ORIGIN=1;RS=676785;SSR=1;CLNDISDBINCL=.;CLNDNINCL=RH_C/c_POLYMORPHISM;CLNSIGINCL=17709:Benign
 	Errors :
-		INFO filed 'CLNHGVS' has an invalid value 'NC_000001.10:g.25735202G=' (no spaces, tabs, '=' or ';' are allowed)
+		INFO field 'CLNHGVS' has an invalid value 'NC_000001.10:g.25735202G=' (no spaces, tabs, '=' or ';' are allowed)
 ```
 
 OK, it looks like there are quite a few problems, let's count them:
@@ -91,7 +91,7 @@ Let's create a new database without those fields
 
 ```
 $ java -jar SnpSift.jar rmInfo clinvar.vcf.gz CLNHGVS CLNVI > clinvar.fixed_1.vcf
-00:00:00	Reading STDIN
+00:00:00	Reading file 'clinvar.vcf.gz'
 00:00:03	Done
 
 # Let's also compress and index the new file so we can use it as a database
@@ -174,7 +174,7 @@ $ bgzip clinvar.fixed.vcf
 $ tabix clinvar.fixed.vcf.gz 
 ```
 
-We re-check the new
+We re-check the new file:
 ```
 $ java -jar SnpSift.jar vcfCheck clinvar.fixed.vcf.gz 
 ....................................................................................................
