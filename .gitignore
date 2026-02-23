@@ -10,3 +10,5 @@ snpEff_summary.html
 search_index.json
 sitemap.xml.gz
 PROMPT*.md
+galaxy/tool-data/snpEff_genomes.loc
+galaxy/tool-data/snpEff_genomes.loc.sample

@@ -26,11 +26,11 @@ So an example command line would be:
 In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
 The complication is that germline is not always the same as the reference genome, so a typical annotation does not work.
 
-For instance, let's assume that at a given genomic position (e.g. chr1:69091), reference genome is 'A', germline is 'C' and somatic is 'G'.
+For instance, let's assume that at a given genomic position (e.g. chr1:69511), reference genome is 'A', germline is homozygous 'C/C' and somatic is homozygous 'G/G'.
 This should be represented in a VCF file as:
 ```
 #CHROM  POS    ID  REF  ALT    QUAL  FILTER  INFO  FORMAT  Patient_01_Germline  Patient_01_Somatic
-1       69091  .   A    C,G    .     PASS    AC=1  GT      1/0                  2/1
+1       69511  .   A    C,G    .     PASS    AC=1  GT      1/1                  2/2
 ```
 
 !!! warning
@@ -128,48 +128,51 @@ It is important that you understand the meaning of the last one, because you'll 
 
 Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)
 
-For the first line we get (edited for readability):
+For position 69511 we get (edited for readability):
 ```
-$ java -Xmx8g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+$ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
 
-1   69091   .   A   C,G .   PASS    AF=0.1122;
-                  ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
-                 ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
-                 ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
-               GT  1/0 2/1
+1   69511   .   A   C,G .   PASS    AF=0.3580;
+                  ANN=C|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421A>C|p.Thr141Pro|421/918|421/918|141/305||
+                     ,G|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421A>G|p.Thr141Ala|421/918|421/918|141/305||
+                     ,G-C|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421C>G|p.Pro141Ala|421/918|421/918|141/305||
+               GT  1/1 2/2
 ```
 What does it mean:
 
 1. In this case, we have two ALTs = 'C' and 'G'.
-2. Germline sample is heterozygous 'C/A' (GT = '1/0')
-3. Somatic tissue is heterozygous 'G/C' (GT = '2/1')
-4. Change A -> C and A -> G are always calculated by SnpEff (this is the "default mode").
+2. Germline sample is homozygous 'C/C' (GT = '1/1')
+3. Somatic tissue is homozygous 'G/G' (GT = '2/2')
+4. Changes A -> C and A -> G are always calculated by SnpEff (this is the "default mode").
 
     * A -> C produces this effect:
 
-            C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
+            C|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421A>C|p.Thr141Pro|421/918|421/918|141/305||
 
-         Note that the last field (genotype field) is 'C' indicating this is produced by the first ALT.
+         Note that the Allele field is 'C' indicating this is produced by the first ALT.
 
     * A -> G produces this effect:
 
-            G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
+            G|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421A>G|p.Thr141Ala|421/918|421/918|141/305||
 
-         Note that the last field (genotype field) is 'G' indicating this is produced by the second ALT.
+         Note that the Allele field is 'G' indicating this is produced by the second ALT.
 
-5. Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic are heterozygous (GT are '1/0' and '2/1'), there are 4 possible comparisons to make:
-    * G vs C : This is the Somatic vs Germline we are interested in. SnpEff reports this one
-    * G vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
-    * C vs C : This is not a variant, since both of them are '1'. SnpEff skips this one.
-    * C vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
+5. Finally, this is what you were looking for: the cancer comparisons. Germline is homozygous C/C (GT='1/1') and somatic is homozygous G/G (GT='2/2'), so SnpEff compares each somatic allele against each germline allele. There are 2x2=4 possible comparisons:
+    * G vs C : Somatic vs Germline. SnpEff reports this one.
+    * G vs C : Duplicate of the above, so SnpEff skips it.
+    * G vs C : Duplicate again, skipped.
+    * G vs C : Duplicate again, skipped.
 
-    I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
-    So 'C -> G' produces the following effect:
+    Since all four comparisons reduce to the same G vs C, only one cancer annotation is produced.
+    The 'C -> G' somatic mutation produces the following effect:
 
-          G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
+          G-C|missense_variant|MODERATE|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.421C>G|p.Pro141Ala|421/918|421/918|141/305||
 
     !!! warning
-        Notice the genotype field is "G-C" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the variant. So we compare 'G' (ALT) to 'C' (REF).
+        Notice the Allele field is "G-C" meaning we produce a new reference on the fly using ALT 1 ('C') and then use ALT 2 ('G') as the variant. So we compare 'G' (ALT) to 'C' (REF). The HGVS notation `c.421C>G` and `p.Pro141Ala` reflect this somatic change relative to the germline.
+
+!!! info
+    For unphased genotypes (using `/` separator, e.g. `1/0`), SnpEff reports ALL possible somatic-vs-germline allele comparisons (Cartesian product of somatic alleles x germline alleles), after removing duplicates and comparisons already covered by standard annotations. For phased genotypes (using `|` separator, e.g. `1|0`), only position-matched comparisons are made (first somatic allele vs first germline allele, second vs second).
 
 #### Cancer annotations using 'EFF' field (deprecated):
 
@@ -184,12 +187,12 @@ EFF = Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chan
 
 For the previous example, we get (edited for readability):
 ```
-$ java -Xmx8g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+$ java -Xmx8g -jar snpEff.jar -v -classic -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.eff.vcf
 
-1	69091	.	A	C,G	.	PASS	AC=1;
-                     EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)
-                        ,START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G-C)
-                        ,NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|C)
+1	69511	.	A	C,G	.	PASS	AF=0.3580;
+                     EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Cca|T141P|305|OR4F5|protein_coding|CODING|ENST00000335137|1|C)
+                        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Gca|T141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)
+                        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Cca/Gca|P141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G-C)
 ```
 
 The `GenotypeNum` field tells you which effect relates to which genotype.

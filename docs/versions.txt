@@ -1,1 +1,1 @@
-SNPEFF	5.4B	2026-02-16	https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip
+SNPEFF	5.4B	2026-02-17	https://snpeff-public.s3.amazonaws.com/versions/snpEff_latest_core.zip

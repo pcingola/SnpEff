@@ -125,6 +125,85 @@ The project requires Java 21 (specified in pom.xml compiler configuration).
 - Factory pattern: Genome database factories handle different source formats (GTF, GFF, GenBank, EMBL)
 - Serialization: Genome databases are pre-built and serialized to `.bin` files for fast loading
 
+## BDS Automation (make.bds)
+
+The file `src/bds/make.bds` is the main entry point for development tasks: building, testing, downloading genomes, building databases, creating distribution packages, and uploading releases. It uses BDS (BigDataScript), a DSL for running heavyweight pipelines. Run it from `~/snpEff/`:
+
+```bash
+~/snpEff/make.bds [options]
+```
+
+With no arguments, it builds the JAR files (equivalent to `-make`).
+
+### Build and test options
+
+```
+-make                Build JAR files (snpEff.jar and SnpSift.jar)
+-createConfig        Create/regenerate the snpEff.config file
+-createDocs          Build documentation web pages from markdown (uses mkdocs)
+-db                  Build all genome databases
+-dbs <genome ...>    Build specific genome databases by name
+-dbTest              Build databases needed for test cases
+-distro              Create distribution zip files (core + all database zips)
+-distroCore          Create only the core distribution zip
+-test                Run SnpEff and SnpSift test suites
+```
+
+### Download options
+
+```
+-download                              Download all genome datasets
+-downloadSet <set>                     Download one dataset. Sets: ensembl, ensemblBfmpp, ucsc, mane, pdb, dbsnp, dbnsfp, cytobands, jaspar, gwasCatalog, nextprot, clinvar, flybase
+-downloadEnsembl <genome>              Download a specific Ensembl genome (e.g. 'GRCh38.103'), requires -downloadEnsemblSpecies
+-downloadEnsemblSpecies <species>      Ensembl species name (e.g. 'Homo_sapiens'), must match Ensembl capitalization
+-downloadMane                          Download MANE transcripts
+-downloadNcbi <genome>                 Download genome from NCBI (also requires -ncbiId)
+-ncbiId <id>                           NCBI genome ID (used with -downloadNcbi)
+-downloadUcsc <genome>                 Download genome from UCSC
+```
+
+### Upload options (S3)
+
+```
+-uploadCore          Upload core zip package to S3
+-uploadDbs           Upload all database zips from the zip/ directory to S3
+-uploadDbNsfp        Upload dbNSFP databases to S3
+-uploadDev           Upload development version to S3
+-zipGenome <g ...>   Create zip file for specific genome(s)
+```
+
+### AWS/S3 configuration
+
+```
+-awsProfile <name>          AWS profile (default: 'snpeff')
+-s3Bucket <name>            S3 bucket (default: 'snpeff-public')
+-s3DatabasesPath <path>     S3 path for databases
+-s3VersionsPath <path>      S3 path for versioned releases
+-s3HttpUrl <url>            S3 HTTP URL
+```
+
+### Ensembl/MANE/Flybase version options
+
+```
+-ensemblRelease <int>                  Ensembl vertebrate release number (default: 115)
+-ensemblBfmppRelease <int>             Ensembl BFMPP release number (default: 57)
+-maneGenome <string>                   MANE genome (default: 'GRCh38')
+-maneReleases <string ...>             MANE release versions
+-maneSelect                            Use MANE 'select' version
+-maneTrIdTypes <string ...>            Transcript ID types: 'ensembl', 'refseq'
+-flybaseRelease <string>               Flybase release (default: 'FB2022_02')
+-dbCompatibleVersions <string ...>     List of database compatible versions
+```
+
+### Key directories used by make.bds
+
+All paths are relative to `~/snpEff/`:
+- `build/` -- build log files
+- `data/` -- genome data and compiled databases
+- `db/` -- external databases (nextProt, PDB, JASPAR, cytoBands, etc.)
+- `download/` -- downloaded genome files
+- `zip/` -- database zip files for distribution
+
 ## Companion Tool: SnpSift
 
 SnpSift is a companion tool developed in a separate repository but typically distributed together with SnpEff. The build script (`scripts_build/make.sh`) builds both tools.

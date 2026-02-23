@@ -129,10 +129,13 @@ public class GenBank extends Features {
 			// Field start
 			if (!line.startsWith(" ")) {
 				String kv[] = line.split(" ", 2);
-				name = kv[0];
-				value = (kv.length > 1 ? kv[1] : "");
-				if (debug) Log.debug("Line: " + line + "\n\tNAME: " + name + "\tvalue: " + value);
-				fieldLineNum = 0;
+				// A line starting with a number is not a new field (e.g. ORIGIN sequence positions > 99999999)
+				if (Gpr.parseIntSafe(kv[0]) <= 0) {
+					name = kv[0];
+					value = (kv.length > 1 ? kv[1] : "");
+					if (debug) Log.debug("Line: " + line + "\n\tNAME: " + name + "\tvalue: " + value);
+					fieldLineNum = 0;
+				}
 			}
 
 			// Parse field
