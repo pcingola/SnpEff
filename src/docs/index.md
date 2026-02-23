@@ -10,6 +10,10 @@ Latest version 5.4b (2026-02-16)
 
 Now hosted on [**AWS Open Data**](https://aws.amazon.com/opendata/)
 
+**New:** SnpEff and SnpSift are now available as [**Claude Code**](https://claude.ai/code) skills.
+Run variant annotation and filtering through natural language, directly from your terminal.
+[Learn more](snpeff/claude_code.md)
+
 ## SnpEff
 
 Genetic variant annotation, and functional effect prediction toolbox.

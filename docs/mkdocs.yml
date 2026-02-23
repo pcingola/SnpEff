@@ -64,6 +64,7 @@ nav:
      - Building databases. Regulatory and Non-coding: snpeff/build_reg.md
      - Building databases. PDB and AlphaFold: snpeff/build_pdb.md
      - Integration. GATK and Galaxy: snpeff/integration.md
+     - Integration. Claude Code: snpeff/claude_code.md
      - Commands and utilities: snpeff/commands.md
      - Human Genomes: snpeff/human_genomes.md
      - Frequently Asked Questions: snpeff/faq.md
