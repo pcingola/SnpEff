@@ -800,6 +800,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../refseq_mismatches/" class="md-nav__link">
+        RefSeq mismatches (hg19)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../faq/" class="md-nav__link">
         Frequently Asked Questions
       </a>
@@ -1538,6 +1552,10 @@ AP006561.1                                                  SARS coronavirus TWY
 <h3 id="snpeff-download">SnpEff download</h3>
 <p>This command downloads and installs a database.</p>
 <div class="highlight"><pre><span></span><code>Usage: snpEff download [options] {snpeff | genome_version}
+
+Options:
+    -check : Only check if the database is available on the server (do not download).
+             Exit code 0 if available, -1 if not.
 </code></pre></div>
 <p>You can use <code>snpEff download snpeff</code> to download/update SnpEff itself, or specify a genome version to download a pre-built database.</p>
 <div class="admonition warning">
@@ -1546,6 +1564,9 @@ AP006561.1                                                  SARS coronavirus TWY
 </div>
 <p>Example: Download and install C.Elegans genome:
 <div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar download -v WBcel215.69
+</code></pre></div></p>
+<p>Example: Check if a database is available without downloading:
+<div class="highlight"><pre><span></span><code>$ java -jar snpEff.jar download -check GRCh38.mane.1.0.ensembl
 </code></pre></div></p>
 <h3 id="snpeff-dump">SnpEff dump</h3>
 <p>Dump the contents of a database to a text file, a BED file or a tab separated TXT file (that can be loaded into R).</p>

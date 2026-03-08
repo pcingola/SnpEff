@@ -1,0 +1,1871 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift">
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      
+      
+        <link rel="prev" href="../human_genomes/">
+      
+      
+        <link rel="next" href="../faq/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+    
+    
+      
+        <title>RefSeq mismatches (hg19) - SnpEff & SnpSift</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="default" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#why-hg19-refseq-annotations-may-not-match" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-header__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SnpEff & SnpSift
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RefSeq mismatches (hg19)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link md-tabs__link--active">
+        SnpEff
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../snpsift/introduction/" class="md-tabs__link">
+        SnpSift
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../download/" class="md-tabs__link">
+        Download & Install
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        Examples
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        About
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SnpEff &amp; SnpSift" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    SnpEff & SnpSift
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Usage examples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          SnpEff
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          SnpEff
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../running/" class="md-nav__link">
+        Running SnpEff
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commandline/" class="md-nav__link">
+        Commands &amp; command line options
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inputoutput/" class="md-nav__link">
+        Input &amp; output files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cansersamples/" class="md-nav__link">
+        Cancer samples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../additionalann/" class="md-nav__link">
+        Additional annotations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../outputsummary/" class="md-nav__link">
+        Output summary files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_db/" class="md-nav__link">
+        Building databases
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_db_gff_gtf/" class="md-nav__link">
+        Build databses. GTF / GFF details
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_reg/" class="md-nav__link">
+        Building databases. Regulatory and Non-coding
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_pdb/" class="md-nav__link">
+        Building databases. PDB and AlphaFold
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration/" class="md-nav__link">
+        Integration. GATK and Galaxy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude_code/" class="md-nav__link">
+        Integration. Claude Code
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/" class="md-nav__link">
+        Commands and utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../human_genomes/" class="md-nav__link">
+        Human Genomes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          RefSeq mismatches (hg19)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        RefSeq mismatches (hg19)
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-root-cause-refseq-is-not-derived-from-the-reference-genome" class="md-nav__link">
+    The root cause: RefSeq is not derived from the reference genome
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-snpeff-builds-a-genome-database" class="md-nav__link">
+    How SnpEff builds a genome database
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hg19-build-results" class="md-nav__link">
+    hg19 build results
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#categories-of-mismatches-with-real-examples" class="md-nav__link">
+    Categories of mismatches with real examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Categories of mismatches with real examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#category-a-single-nucleotide-polymorphisms-between-genome-and-refseq" class="md-nav__link">
+    Category A: Single-nucleotide polymorphisms between genome and RefSeq
+  </a>
+  
+    <nav class="md-nav" aria-label="Category A: Single-nucleotide polymorphisms between genome and RefSeq">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-nm_000256-mybpc3-chr11-minus-strand-34-exons" class="md-nav__link">
+    Example: NM_000256 (MYBPC3, chr11, minus strand, 34 exons)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#category-b-cds-boundary-disagreement-ucsc-vs-refseq" class="md-nav__link">
+    Category B: CDS boundary disagreement (UCSC vs RefSeq)
+  </a>
+  
+    <nav class="md-nav" aria-label="Category B: CDS boundary disagreement (UCSC vs RefSeq)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-nm_001351299-abcf3-chr3-plus-strand-21-exons" class="md-nav__link">
+    Example: NM_001351299 (ABCF3, chr3, plus strand, 21 exons)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#category-c-completely-wrong-mapping-total-sequence-mismatch" class="md-nav__link">
+    Category C: Completely wrong mapping (total sequence mismatch)
+  </a>
+  
+    <nav class="md-nav" aria-label="Category C: Completely wrong mapping (total sequence mismatch)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-nm_001267550-ttn-chr2-minus-strand-363-exons" class="md-nav__link">
+    Example: NM_001267550 (TTN, chr2, minus strand, 363 exons)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#category-d-broken-reading-frame-cds-length-not-a-multiple-of-3" class="md-nav__link">
+    Category D: Broken reading frame (CDS length not a multiple of 3)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#category-e-premature-stop-codons-and-missing-start-codons" class="md-nav__link">
+    Category E: Premature stop codons and missing start codons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#category-f-frame-correction-failures-cds-too-short" class="md-nav__link">
+    Category F: Frame correction failures (CDS too short)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-how-many-transcripts-are-affected" class="md-nav__link">
+    Summary: how many transcripts are affected
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-solution-use-mane-on-grch38" class="md-nav__link">
+    The solution: use MANE on GRCh38
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-investigate-a-specific-transcript" class="md-nav__link">
+    How to investigate a specific transcript
+  </a>
+  
+    <nav class="md-nav" aria-label="How to investigate a specific transcript">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-check-the-cds-verification-result" class="md-nav__link">
+    Step 1: Check the CDS verification result
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-check-the-gtf-coordinates" class="md-nav__link">
+    Step 2: Check the GTF coordinates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-check-the-refseq-cds-directly" class="md-nav__link">
+    Step 3: Check the RefSeq CDS directly
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-use-snpeff-show-for-a-visual-summary" class="md-nav__link">
+    Step 4: Use snpeff show for a visual summary
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        Frequently Asked Questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          SnpSift
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          SnpSift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/filter/" class="md-nav__link">
+        SnpSift Filter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/annotate/" class="md-nav__link">
+        SnpSift Annotate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/annotate_mem/" class="md-nav__link">
+        SnpSift Annotate Mem
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/casecontrol/" class="md-nav__link">
+        SnpSift CaseControl
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intervals/" class="md-nav__link">
+        SnpSift Intervals
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intervalsindex/" class="md-nav__link">
+        SnpSift Intervals Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/join/" class="md-nav__link">
+        SnpSift Join
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/rmrefgen/" class="md-nav__link">
+        SnpSift RmRefGen
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/tstv/" class="md-nav__link">
+        SnpSift TsTv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/extractfields/" class="md-nav__link">
+        SnpSift Extract Fields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/varianttype/" class="md-nav__link">
+        SnpSift Variant Type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/gwascatalog/" class="md-nav__link">
+        SnpSift GWAS Catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/dbnsfp/" class="md-nav__link">
+        SnpSift dbNSFP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/split/" class="md-nav__link">
+        SnpSift Split
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/phastcons/" class="md-nav__link">
+        SnpSift PhastCons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/concordance/" class="md-nav__link">
+        SnpSift Concordance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/private/" class="md-nav__link">
+        SnpSift Private
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/vcf2ped/" class="md-nav__link">
+        SnpSift Vcf2Tped
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/intersect/" class="md-nav__link">
+        SnpSift Intersect
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/rminfo/" class="md-nav__link">
+        SnpSift RmInfo
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/genesets/" class="md-nav__link">
+        SnpSift GeneSets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/gt/" class="md-nav__link">
+        SnpSift GT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/vcfcheck/" class="md-nav__link">
+        SnpSift VcfCheck
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snpsift/faq/" class="md-nav__link">
+        Frequently asked questions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          Download & Install
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Download & Install
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../download/" class="md-nav__link">
+        Download and install
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          About
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../help/" class="md-nav__link">
+        Help and Bugs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../xiangyi_lu_donate/" class="md-nav__link">
+        In Memory
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="why-hg19-refseq-annotations-may-not-match">Why hg19 RefSeq annotations may not match</h1>
+<p>This page provides an in-depth technical explanation of why RefSeq transcript annotations on hg19 frequently do not match the reference genome, and what practical effect they have on variant annotation. If you are getting unexpected annotations on hg19 RefSeq transcripts, this page will help you understand why.</p>
+<h2 id="the-root-cause-refseq-is-not-derived-from-the-reference-genome">The root cause: RefSeq is not derived from the reference genome</h2>
+<p>RefSeq was designed as a <strong>consensus</strong> of experimentally observed transcript sequences. The sequences in RefSeq come from cDNA sequencing of real biological samples. The reference genome (hg19/GRCh37) is a <strong>mosaic</strong> assembled from multiple individuals. There is no guarantee that the reference genome carries the same alleles as the individuals whose transcripts were sequenced for RefSeq.</p>
+<p>When UCSC (or NCBI) maps RefSeq transcripts onto the reference genome, they are taking transcript sequences that were observed in one set of individuals and projecting them onto a genome assembled from a different set of individuals. The mapping process defines where the exons are on the genome (the coordinates in the GTF file), but the actual nucleotide sequence at those coordinates comes from the genome, not from RefSeq.</p>
+<p>At most positions, the genome and RefSeq agree. But at some positions -- typically common polymorphisms -- they differ. And for some transcripts, the mapping itself is incorrect: the coordinates are wrong, exon boundaries are shifted, or the transcript maps to multiple loci ambiguously.</p>
+<h2 id="how-snpeff-builds-a-genome-database">How SnpEff builds a genome database</h2>
+<p>When you run <code>java -jar snpEff.jar build -v hg19</code>, the database goes through a multi-stage pipeline:</p>
+<ol>
+<li>
+<p><strong>Parse the GTF file.</strong> SnpEff reads <code>data/hg19/genes.gtf</code> (derived from the UCSC refGene table). This file defines the genomic coordinates of each gene, transcript, exon, CDS, and UTR -- but it does not contain actual nucleotide sequences. Here is a real example showing transcript NM_015330 (gene SPECC1L, chr22, plus strand):</p>
+<div class="codehilite"><pre><span></span><code>chr22  refGene  transcript  24666799  24813706  .  +  .  gene_id &quot;SPECC1L&quot;; transcript_id &quot;NM_015330&quot;;
+chr22  refGene  exon        24666799  24666951  .  +  .  ... exon_number &quot;1&quot;; ...
+chr22  refGene  5UTR        24666799  24666951  .  +  .  ... exon_number &quot;1&quot;; ...
+chr22  refGene  exon        24672668  24672771  .  +  .  ... exon_number &quot;2&quot;; ...
+chr22  refGene  5UTR        24672668  24672771  .  +  .  ... exon_number &quot;2&quot;; ...
+chr22  refGene  exon        24698163  24698352  .  +  .  ... exon_number &quot;3&quot;; ...
+chr22  refGene  5UTR        24698163  24698199  .  +  .  ... exon_number &quot;3&quot;; ...
+chr22  refGene  CDS         24698200  24698352  .  +  0  ... exon_number &quot;3&quot;; ...
+</code></pre></div>
+
+<p>Exons 1-2 are entirely 5'UTR. Exon 3 is split: bases 24698163-24698199 are 5'UTR, bases 24698200-24698352 are CDS. The <code>0</code> in column 8 is the reading frame (0 = first base of this CDS segment is the first base of a codon).</p>
+</li>
+<li>
+<p><strong>Infer UTRs from CDS boundaries</strong> (if not explicitly defined in the GTF). Some GTF files include explicit UTR lines (as in the example above). Others only have exon and CDS lines. SnpEff infers UTRs by subtracting the CDS intervals from the exon intervals. Whatever exon sequence remains outside the CDS must be a UTR. To determine whether it is 5'UTR or 3'UTR, SnpEff checks its position relative to the CDS boundaries: for plus-strand genes, intervals before the CDS start are 5'UTR and intervals after the CDS end are 3'UTR; for minus-strand genes, intervals with higher genomic coordinates than the CDS start are 5'UTR (because the 5' end is at higher coordinates on the minus strand). This matters because the UTR boundaries directly determine where the CDS begins and ends when exon sequences are assembled.</p>
+</li>
+<li>
+<p><strong>Frame correction.</strong> The GTF carries frame information for each CDS segment (column 8: 0, 1, or 2). The frame indicates how many bases must be skipped at the start of that CDS segment to reach the first complete codon. SnpEff uses this in two passes. First, if the first coding exon has a non-zero frame, SnpEff creates a small artificial 5'UTR at the start of the coding region to compensate (shifting the effective CDS start by 1-2 bases). Second, for each subsequent coding exon, SnpEff calculates the expected frame from the cumulative CDS length and compares it to the declared frame. If they disagree, the exon boundary is adjusted by 1-2 bases until the frames match. This ensures codons are read in the correct frame across exon-exon junctions. If a CDS segment is too short to absorb the correction, a <code>WARNING_CDS_TOO_SHORT</code> is emitted (see Category F).</p>
+</li>
+<li>
+<p><strong>Extract exon sequences from the reference genome.</strong> SnpEff reads <code>data/genomes/hg19.fa</code> and extracts the nucleotide sequence at each exon's genomic coordinates. Minus-strand exons are reverse-complemented.</p>
+</li>
+<li>
+<p><strong>Assemble the CDS.</strong> All exon sequences are concatenated in transcript order (5' to 3'), then the 5'UTR and 3'UTR portions are trimmed off. The result is the "genome-derived CDS" -- the coding sequence as determined by the reference genome at the coordinates specified by the GTF. <strong>This is the sequence SnpEff uses for all variant effect predictions.</strong> If this sequence differs from what RefSeq expects, annotations will be wrong at the differing positions.</p>
+</li>
+<li>
+<p><strong>Verify against RefSeq's own CDS sequences.</strong> For each protein-coding transcript, SnpEff compares its genome-derived CDS against the RefSeq CDS from <code>data/hg19/cds.fa</code>. The comparison uses a cascade of checks, tried in order until one passes:</p>
+<ul>
+<li><strong>Exact CDS match</strong> -- genome-derived CDS equals RefSeq CDS exactly.</li>
+<li><strong>mRNA match</strong> -- the full mRNA (CDS + UTRs) matches the reference (some <code>cds.fa</code> entries contain the full mRNA, not just the CDS).</li>
+<li><strong>mRNA + poly-A tail</strong> -- mRNA matches if you strip a trailing poly-A tail from the reference.</li>
+<li><strong>Substring match</strong> -- the genome-derived CDS is fully contained within the reference (handles cases where the reference includes extra flanking sequence).</li>
+<li><strong>Mismatch</strong> -- none of the above passed. The transcript is marked as an error (<code>*</code>). SnpEff performs a Smith-Waterman local alignment (for sequences under 33,000 bp) with scoring +1 match, -1 mismatch, -2 gap. The result reports a <code>Score</code>, <code>Max. possible score</code> (length of shorter sequence), and <code>Diff</code> (Max - Score = number of differing positions).</li>
+</ul>
+</li>
+</ol>
+<h2 id="hg19-build-results">hg19 build results</h2>
+<p>During the build, SnpEff also emits warnings about structural issues in the GTF annotations:</p>
+<ul>
+<li><code>WARNING_GENE_COORDINATES</code> -- a gene's coordinates do not fully contain one of its transcripts; SnpEff expands the gene boundaries automatically.</li>
+<li><code>WARNING_GENE_NOT_FOUND</code> -- a transcript is on an alternate haplotype contig but its parent gene was defined on the primary assembly; SnpEff creates a new gene entry.</li>
+<li><code>WARNING_CDS_TOO_SHORT</code> -- a CDS segment is too short to apply frame correction (see Category F below).</li>
+</ul>
+<p>These warnings do not prevent the build from completing, but they indicate annotation quality issues that may affect specific transcripts.</p>
+<p>The hg19 build produces the following summary:</p>
+<div class="highlight"><pre><span></span><code># Genes                      : 33224
+# Protein coding genes       : 22528
+# Transcripts                : 77529
+# Protein coding transcripts : 58834
+#              Length errors  :    157 ( 0.27% )
+#  STOP codons in CDS errors :    100 ( 0.17% )
+#         START codon errors  :    136 ( 0.23% )
+#        STOP codon warnings  :     21 ( 0.04% )
+#               Total Errors  :    342 ( 0.58% )
+# Exons                      : 778789
+# Exons with sequence        : 778789
+# Exons without sequence     : 0
+
+CDS check:  OK: 68791  Warnings: 20112  Not found: 5015  Errors: 3723  Error percentage: 5.13%
+</code></pre></div>
+<p>This output contains results from two separate verification phases:</p>
+<p><strong>Transcript sanity checks</strong> (the upper block, checked during database construction):</p>
+<ul>
+<li><strong>Length errors (157):</strong> CDS length is not a multiple of 3. The reading frame is broken (see Category D).</li>
+<li><strong>STOP codons in CDS (100):</strong> The translated protein contains a premature stop codon before the end (see Category E).</li>
+<li><strong>START codon errors (136):</strong> The first three CDS bases are not a valid start codon, e.g. not ATG (see Category E).</li>
+</ul>
+<p><strong>CDS comparison</strong> (the <code>CDS check</code> line, checked after database construction by comparing each genome-derived CDS against the RefSeq CDS from <code>cds.fa</code>):</p>
+<ul>
+<li><strong>OK (68,791):</strong> The genome-derived CDS matched RefSeq's CDS. These transcripts will produce accurate annotations.</li>
+<li><strong>Warnings (20,112):</strong> The CDS matched RefSeq, but the start or stop codon is not what the codon table expects. SnpEff checks the first 3 bases against valid start codons and the last 3 bases against valid stop codons. Each failed check increments the warning counter, so a single transcript with both a bad start and a bad stop codon contributes 2 warnings. The 20,112 is the total number of individual warnings, not transcripts. Annotations on these transcripts are still largely accurate, but effects at the very start or end of the CDS (e.g., <code>start_lost</code>, <code>stop_gained</code>) may be unreliable.</li>
+<li><strong>Not found (5,015):</strong> The transcript ID from the GTF had no corresponding entry in <code>cds.fa</code>. This is normal for non-coding transcripts (NR_ prefix) which have no CDS by definition.</li>
+<li><strong>Errors (3,723 = 5.13%):</strong> The genome-derived CDS differs from RefSeq's CDS. These are the problematic transcripts where variant annotations may be inaccurate (see Categories A, B, C).</li>
+</ul>
+<h2 id="categories-of-mismatches-with-real-examples">Categories of mismatches with real examples</h2>
+<p>All examples below come from the actual hg19 database build. You can reproduce them by running the build with the <code>-d</code> (debug) flag:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Warning: The output file is huge (~700 MB), because it contains details for every transcript</span>
+java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>build<span class="w"> </span>-d<span class="w"> </span>hg19<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>hg19_build_debug.out
+</code></pre></div>
+<h3 id="category-a-single-nucleotide-polymorphisms-between-genome-and-refseq">Category A: Single-nucleotide polymorphisms between genome and RefSeq</h3>
+<p>This is the most common type of mismatch. The GTF coordinates are correct, the exon structure is correct, but at a handful of positions the hg19 reference genome carries a different allele than the RefSeq consensus sequence. This happens because RefSeq transcripts were sequenced from individuals whose DNA differed from the reference genome at common polymorphic sites.</p>
+<h4 id="example-nm_000256-mybpc3-chr11-minus-strand-34-exons">Example: NM_000256 (MYBPC3, chr11, minus strand, 34 exons)</h4>
+<p>MYBPC3 (cardiac myosin-binding protein C) is clinically important for hypertrophic cardiomyopathy. The debug build log shows:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDSs do not match for transcript NM_000256  Strand:true  Exons: 34
+    SnpEff CDS  (  3825) : &#39;atgcctgagccggggaagaag...&#39;
+    Reference   (  4217) : &#39;agtccctctttgggtgacctg...&#39;
+    Alignment.  Score: 3821  Max. possible score: 3825  Diff: 4
+</code></pre></div>
+<p>The SnpEff genome-derived CDS is 3,825 bp. The RefSeq reference is 4,217 bp because the <code>cds.fa</code> entry for this transcript includes UTR flanking sequence (55 bp of 5'UTR prefix starting with <code>agtccctctttgggtgacctg...</code> and ~337 bp of 3'UTR suffix). The important number is the alignment: 3,821 matches out of 3,825 possible, meaning <strong>exactly 4 nucleotide positions differ</strong> between the genome and RefSeq.</p>
+<p>The GTF defines 34 exons spanning chr11:47352957-47374253. Here is the structure:</p>
+<div class="highlight"><pre><span></span><code>chr11  refGene  transcript  47352957  47374253  .  -  .  gene_id &quot;MYBPC3&quot;; transcript_id &quot;NM_000256&quot;;
+chr11  refGene  exon        47374173  47374253  .  -  .  ... exon_number &quot;1&quot;   &lt;- 5&#39;UTR
+chr11  refGene  start_codon 47374196  47374198  .  -  .  ...
+chr11  refGene  exon        47372789  47373055  .  -  .  ... exon_number &quot;2&quot;   &lt;- partial UTR, partial CDS
+chr11  refGene  CDS         47372789  47373055  .  -  2  ... exon_number &quot;2&quot;
+...                                                          (exons 3-33: all CDS)
+chr11  refGene  exon        47352957  47353266  .  -  .  ... exon_number &quot;34&quot;  &lt;- partial CDS, 3&#39;UTR
+chr11  refGene  stop_codon  47353422  47353424  .  -  .  ...
+</code></pre></div>
+<p>SnpEff extracts the sequence at each exon's coordinates from hg19.fa, reverse-complements (minus strand), concatenates, trims the UTR, and obtains the CDS starting with <code>ATGCCTGAGCCGGGGAAGAAG...</code>.</p>
+<p>The RefSeq CDS for this transcript (from <code>cds.fa</code>) starts with <code>agtccctctttgggtgacctgtgcctgcttcgtgcctggtgtgacgtctctcagg</code> -- 55 bases of UTR -- then <code>ATGCCTGAGCCGGGGAAGAAG...</code> matching the genome. The two sequences are nearly identical, but 4 positions differ. Here is what the alignment looks like at the two mismatch regions:</p>
+<p><strong>Mismatch region 1</strong> (around CDS position ~867):</p>
+<div class="highlight"><pre><span></span><code>SnpEff (genome):    ...CACTGCTGAAAAAGAGGGACAGTTTCCGG...
+                                         *
+RefSeq (cds.fa):    ...CACTGCTGAAAAAGAGAGACAGTTTCCGG...
+</code></pre></div>
+<p>At this position, the hg19 genome has <code>G</code> while RefSeq has <code>A</code>. This is a known common polymorphism (SNP). The RefSeq transcript was sequenced from an individual who carried the <code>A</code> allele. The hg19 reference genome carries the <code>G</code> allele.</p>
+<p><strong>Mismatch region 2</strong> (around CDS position ~1125):</p>
+<div class="highlight"><pre><span></span><code>SnpEff (genome):    ...GCAGCAGGTACATCTTTGAGTCC...
+                            *
+RefSeq (cds.fa):    ...GCAGCAAGTACATCTTTGAGTCC...
+</code></pre></div>
+<p>Again, a G-vs-A difference at a single position.</p>
+<p><strong>What this means for variant annotation:</strong> Suppose a patient has a variant at one of these mismatch positions that changes the genome's <code>G</code> to <code>A</code> (matching RefSeq). SnpEff will annotate this as a missense (or synonymous) variant because from the genome's perspective, the base changed. But from RefSeq's perspective, <code>A</code> is the normal allele -- the variant is actually restoring the "correct" RefSeq base. This creates a false positive for anyone using RefSeq as their ground truth for the normal protein sequence.</p>
+<p>For a clinically important gene like MYBPC3, even a single false-positive missense call could trigger unnecessary follow-up. The 4-position difference means there are 4 genomic sites where this transcript will produce potentially misleading annotations.</p>
+<h3 id="category-b-cds-boundary-disagreement-ucsc-vs-refseq">Category B: CDS boundary disagreement (UCSC vs RefSeq)</h3>
+<p>In this category, the GTF coordinates place the CDS start (or end) at a different position than RefSeq expects. The result is that a large chunk of what RefSeq considers coding sequence is treated as UTR by SnpEff, or vice versa. This typically happens when the UCSC mapping pipeline and RefSeq disagree on where the translation initiation site is.</p>
+<h4 id="example-nm_001351299-abcf3-chr3-plus-strand-21-exons">Example: NM_001351299 (ABCF3, chr3, plus strand, 21 exons)</h4>
+<p>ABCF3 is an ATP-binding cassette transporter. The debug build log shows:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDSs do not match for transcript NM_001351299  Strand:false  Exons: 21
+    SnpEff CDS  (  1401) : &#39;atgacactcctgccctgcag...&#39;
+    Reference   (  2579) : &#39;gcactccgctcctttcctgcg...&#39;
+    Alignment.  Score: 1397  Max. possible score: 1401  Diff: 4
+</code></pre></div>
+<p>SnpEff's genome-derived CDS is only 1,401 bp, while RefSeq's CDS is 2,579 bp -- nearly twice as long. The difference is 1,178 bp of coding sequence that RefSeq includes but the UCSC GTF treats as UTR.</p>
+<p>The GTF defines 21 exons spanning chr3:183903863-183911795. Here is how the exons are classified:</p>
+<div class="highlight"><pre><span></span><code>Exon  1:  chr3:183903863-183904067   frame: .   &lt;- entirely 5&#39;UTR
+Exon  2:  chr3:183904294-183904441   frame: .   &lt;- entirely 5&#39;UTR
+Exon  3:  chr3:183904583-183904662   frame: .   &lt;- entirely 5&#39;UTR
+Exon  4:  chr3:183905184-183905230   frame: .   &lt;- entirely 5&#39;UTR
+Exon  5:  chr3:183905451-183905548   frame: .   &lt;- entirely 5&#39;UTR
+Exon  6:  chr3:183905648-183905770   frame: .   &lt;- entirely 5&#39;UTR
+Exon  7:  chr3:183905928-183906194   frame: .   &lt;- partially 5&#39;UTR, CDS starts at 183906096
+Exon  8:  chr3:183906541-183906628   frame: 2   &lt;- CDS
+Exon  9:  chr3:183906716-183906775   frame: 1   &lt;- CDS
+...
+Exon 21:  chr3:183911327-183911795   frame: 0   &lt;- partial CDS, then 3&#39;UTR from 183911487
+</code></pre></div>
+<p>The GTF places the start codon at chr3:183906096-183906098 (within exon 7). Everything upstream -- exons 1 through 6 and the first part of exon 7 -- is classified as 5'UTR.</p>
+<p>But the RefSeq CDS for NM_001351299 starts with <code>gcactccgctcctttcctgcgtcaccgctacacatgcgccttgcaaggaa...</code> -- this corresponds to sequence from exon 1, which the GTF calls UTR. RefSeq considers translation to begin 1,178 bp upstream of where the UCSC GTF places it.</p>
+<p>Within the 1,401 bp overlap (from the UCSC-defined CDS start to the end), there are also 4 single-nucleotide differences (Score 1397 vs Max 1401). Around CDS position ~100:</p>
+<div class="highlight"><pre><span></span><code>SnpEff (genome):    ...CCCAGATTGCTGCTGGCAGCCTCCAGGGCGGAGGGCTCTGAAG...
+                                               **
+RefSeq (cds.fa):    ...CCCAGATTGCTGCTGGCAGCCACAAGGGCGGAGGGCTCTGAAG...
+</code></pre></div>
+<p>SnpEff has <code>CTCCAG</code> where RefSeq has <code>CACAAG</code> -- two nucleotides differ at this junction.</p>
+<p><strong>What this means for variant annotation:</strong> The protein predicted by SnpEff is truncated: it is missing the N-terminal ~392 amino acids that RefSeq includes. Any variant falling in exons 1-6 (chr3:183903863-183905770) or the 5'UTR portion of exon 7 (chr3:183905928-183906095) will be annotated as <code>5_prime_UTR_variant</code> instead of a coding variant (missense, synonymous, etc.). A pathogenic missense variant in the N-terminal domain of this protein would be completely invisible to coding-level annotation.</p>
+<h3 id="category-c-completely-wrong-mapping-total-sequence-mismatch">Category C: Completely wrong mapping (total sequence mismatch)</h3>
+<p>In the worst cases, the genomic coordinates in the GTF are entirely wrong for a given transcript isoform. The exon positions map to a region of the genome that has nothing to do with the expected gene product. The genome-derived CDS and the RefSeq CDS share zero similarity.</p>
+<h4 id="example-nm_001267550-ttn-chr2-minus-strand-363-exons">Example: NM_001267550 (TTN, chr2, minus strand, 363 exons)</h4>
+<p>TTN is the largest known human gene, with hundreds of exons and multiple complex isoforms. The debug build log shows:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDSs do not match for transcript NM_001267550  Strand:true  Exons: 363
+    SnpEff CDS  (107976) : &#39;atgacaactcaagcaccgacgtttacgcag...&#39;
+    Reference   (109224) : &#39;gagcagtcgtgcattcccagcctcgcctcg...&#39;
+    Alignment.  Score: 0  Max. possible score: 107976  Diff: 107976
+</code></pre></div>
+<p>The alignment score is <strong>zero</strong>. In Smith-Waterman alignment, a score of 0 means no local alignment was found that scores above zero -- the two sequences share no significant similarity at all. The genome-derived CDS (107,976 bp) and RefSeq's CDS (109,224 bp) are both over 100 kb long, yet they are completely unrelated.</p>
+<p>Notice the telling sign in the sequences: the SnpEff CDS starts with <code>atgacaactcaagcaccgacg...</code> (a proper ATG start codon), while the RefSeq CDS starts with <code>gagcagtcgtgcattcccagc...</code> (no ATG). This strongly suggests the <code>cds.fa</code> entry for this transcript contains the wrong sequence or is in the wrong orientation, or that the UCSC coordinates for this particular isoform map to an entirely wrong region of chromosome 2.</p>
+<p>The 363 exons span chr2:179390717-179672150, covering ~281 kb of genomic sequence:</p>
+<div class="highlight"><pre><span></span><code>Exon   1:  chr2:179671938-179672149   frame: .    &lt;- 3&#39;UTR + CDS (minus strand: higher coord = 5&#39; end)
+Exon   2:  chr2:179669278-179669381   frame: .    &lt;- UTR
+...
+Exon  18:  chr2:179647532-179647790   frame: 0    &lt;- CDS
+Exon  19:  chr2:179647265-179647328   frame: 2    &lt;- CDS
+...
+Exon 362:  chr2:179392172-179392474   frame: 2    &lt;- CDS
+Exon 363:  chr2:179390716-179392033   frame: 2    &lt;- CDS + 3&#39;UTR
+</code></pre></div>
+<p>When SnpEff extracts the genome sequence at these 363 exon positions, reverse-complements (minus strand), and concatenates, the result is a 107,976 bp CDS that codes for a protein. But it is the <strong>wrong</strong> protein -- the one encoded by this genomic region is not the TTN isoform that NM_001267550 is supposed to represent.</p>
+<p><strong>What this means for variant annotation:</strong> Every single variant annotated on this transcript will produce incorrect results. The amino acid predictions, the HGVS notation, the effect classification -- all of it is meaningless because the underlying CDS is completely wrong. This is the worst-case scenario for a mismatch. Any variant in the TTN region annotated using this specific transcript isoform on hg19 should be treated with extreme skepticism.</p>
+<h3 id="category-d-broken-reading-frame-cds-length-not-a-multiple-of-3">Category D: Broken reading frame (CDS length not a multiple of 3)</h3>
+<p>The hg19 build reports 157 protein-coding transcripts whose CDS length is not a multiple of 3. Since codons are triplets, a CDS of, say, 1,000 bp (instead of 999 or 1,002) means there is an extra or missing base somewhere. The reading frame is broken and the protein cannot be reliably translated.</p>
+<p>This typically happens when the GTF exon boundaries are slightly off: an exon is one base too long or too short compared to the real splice site. Since the GTF coordinates come from mapping RefSeq transcripts to the genome (an imperfect process, as we have seen), small coordinate errors accumulate. A single misplaced exon boundary shifts the reading frame for the entire downstream CDS.</p>
+<p>These 157 transcripts are detected during database construction as part of the transcript sanity checks. The check is simple: after assembling the CDS from exon sequences (step 5 of the build pipeline), SnpEff checks whether CDS length is divisible by 3. If not, the transcript is counted in the "Length errors" summary line. Unlike the CDS comparison errors (Categories A-C), these errors are not logged per-transcript in the build output -- they appear only as the aggregate count <code>Length errors: 157</code>.</p>
+<p><strong>How SnpEff behaves at annotation time:</strong> When a variant falls on one of these transcripts, SnpEff's sanity check detects the broken reading frame and adds a <code>WARNING_TRANSCRIPT_INCOMPLETE</code> flag to the annotation. The HGVS protein notation becomes <code>p.?</code> (unknown effect) instead of a specific amino acid change like <code>p.Arg123Cys</code>. SnpEff does not attempt to translate a broken-frame CDS to protein, so all protein-level information (amino acid change, protein position, domain) is lost for that transcript. The variant effect is still reported (e.g., <code>missense_variant</code>), but without reliable protein-level detail.</p>
+<h3 id="category-e-premature-stop-codons-and-missing-start-codons">Category E: Premature stop codons and missing start codons</h3>
+<p>Like Category D, these are detected during the transcript sanity checks at build time and reported as aggregate counts. They are not individually logged in the build output.</p>
+<p><strong>Premature stop codons (100 transcripts):</strong> After assembling the CDS and translating it to protein, SnpEff checks whether the protein contains a stop codon (<code>*</code>) before the last position. If it does, the transcript has a premature termination. This typically happens when a single-nucleotide difference between the genome and RefSeq falls within a codon and converts it to a stop. For example, if RefSeq has <code>CAG</code> (Gln) at a position but the hg19 genome has <code>TAG</code> (stop), the genome-derived protein will terminate prematurely at that point. All downstream amino acids are lost -- the protein predicted by SnpEff is truncated compared to the real RefSeq protein.</p>
+<p>SnpEff allows one internal stop codon (to accommodate selenocysteine and other rare amino acids encoded by stop codons in special contexts). Only transcripts with more than one internal stop are flagged.</p>
+<p><strong>How SnpEff behaves at annotation time:</strong> The transcript is flagged with <code>WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS</code>. Any variant on this transcript will carry this warning. SnpEff still attempts to predict the variant effect, but the protein sequence it uses is wrong (truncated at the premature stop), so the amino acid change, protein position, and HGVS protein notation may all be incorrect. For variants downstream of the premature stop, the prediction is meaningless.</p>
+<p><strong>Missing start codons (136 transcripts):</strong> After assembling the CDS, SnpEff checks whether the first three bases are a valid start codon according to the organism's codon table. For the standard genetic code this means <code>ATG</code>. For mitochondrial genes, alternative start codons like <code>ATA</code>, <code>ATC</code>, <code>ATT</code>, <code>GTG</code> are also valid. If the first codon is not a valid start, the transcript is flagged.</p>
+<p>This happens when the CDS start coordinate in the GTF is wrong by one or more bases, or when a polymorphism at the start codon position changes the <code>ATG</code> to something else in the hg19 genome. For example, if RefSeq has <code>ATG</code> but the genome has <code>ACG</code> at the CDS start, SnpEff will see a non-start codon.</p>
+<p><strong>How SnpEff behaves at annotation time:</strong> The transcript is flagged with <code>WARNING_TRANSCRIPT_NO_START_CODON</code>. Annotations are still produced, but the protein translation starts from whatever codon is there (not necessarily methionine), which may differ from the real RefSeq protein. Variants near the start codon may be annotated as synonymous when they should be <code>start_lost</code>, or vice versa.</p>
+<p>There are also 21 transcripts where the CDS <strong>does not end</strong> with a valid stop codon. These are reported as "STOP codon warnings" (not errors) in the build summary. SnpEff flags these with <code>WARNING_TRANSCRIPT_NO_STOP_CODON</code>. The debug build log shows these explicitly, for example:</p>
+<div class="highlight"><pre><span></span><code>WARNING: CDS for transcript &#39;NR_102370&#39; does not start with a start codon:  TGG  TGGAAAAGACAATGATGTTTTATTTC...
+WARNING: CDS for transcript &#39;NR_102370&#39; does not end with a stop codon:     CCA  ...TCTGAGTTGTATGTGTGGACAGCACTGAGACTGAGTCTTTCCA
+</code></pre></div>
+<p>Note that these particular debug-log warnings appear for all transcripts (including NR_ non-coding transcripts that SnpEff treats as coding for verification purposes). The 136 START errors and 100 STOP errors in the build summary count only protein-coding transcripts (NM_ prefix).</p>
+<h3 id="category-f-frame-correction-failures-cds-too-short">Category F: Frame correction failures (CDS too short)</h3>
+<p>During the database build, SnpEff adjusts exon and CDS boundaries to match the reading frame declared in the GTF (step 3 of the build pipeline). For each CDS segment after the first, SnpEff calculates what the frame should be based on the cumulative CDS length so far (frame = (3 - (length % 3)) % 3). If this calculated frame does not match the frame declared in the GTF, SnpEff adjusts the exon's start (or end, for minus-strand genes) by 1 base at a time until the frames agree, shifting the corresponding CDS marker in tandem.</p>
+<p>When a CDS segment is very short (e.g., only 1 base long), the required frame correction may be larger than the CDS itself. For instance, if a 1-bp CDS needs a 1-base correction, there is nothing left after the correction. In that case, the correction cannot be applied and the build emits a warning. The hg19 build log contains 27 instances of this warning across 5 distinct genomic loci:</p>
+<div class="highlight"><pre><span></span><code>WARNING_CDS_TOO_SHORT: CDS too short, cannot correct frame: frame size 1,
+    frame correction 1, CDS: 3  147106645-147106645
+    CDS &#39;STOP_CODON_STOP_CODON_3_147106646_147106646&#39;, frame: 0
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>WARNING_CDS_TOO_SHORT: CDS too short, cannot correct frame: frame size 1,
+    frame correction 1, CDS: 16  89865486-89865486
+    CDS &#39;STOP_CODON_STOP_CODON_16_89865487_89865487&#39;, frame: 0
+</code></pre></div>
+<p>The 5 affected loci are on chr3 (position 147106645), chr10 (126449071), chr13 (99447001), chr16 (89865486), and chr22 (44645564). All show the same pattern: a 1-bp CDS segment (start == end coordinate) derived from a stop codon that cannot absorb even a 1-base frame correction. The warning fires multiple times per locus because multiple transcripts share the same stop codon coordinates.</p>
+<p><strong>How SnpEff behaves at annotation time:</strong> The affected transcripts have uncorrected frame errors. This means the reading frame for exons downstream of the failed correction may be shifted by 1 or 2 bases, producing a completely wrong protein translation from that point onward. Variant effect predictions on these transcripts (amino acid changes, protein position, HGVS notation) will be incorrect for any variant downstream of the failed frame correction. Unlike Categories D and E, there is no specific warning flag added at annotation time -- the transcript appears normal but produces wrong results silently.</p>
+<h2 id="summary-how-many-transcripts-are-affected">Summary: how many transcripts are affected</h2>
+<p>To put the numbers in perspective, here is the full breakdown for the hg19 database. Note that there are two separate verification phases, each catching different problems. A transcript can fail both (e.g., a CDS that does not match RefSeq AND has a broken reading frame), or fail just one.</p>
+<p><strong>Phase 1: Transcript sanity checks</strong> (during database construction). These check the internal consistency of each transcript model built from the GTF coordinates and genome sequence:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Count</th>
+<th>% of protein-coding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CDS length not a multiple of 3 (Category D)</td>
+<td>157</td>
+<td>0.27%</td>
+</tr>
+<tr>
+<td>Premature stop codons in CDS (Category E)</td>
+<td>100</td>
+<td>0.17%</td>
+</tr>
+<tr>
+<td>Missing start codon (Category E)</td>
+<td>136</td>
+<td>0.23%</td>
+</tr>
+<tr>
+<td><strong>Total transcript-level errors</strong></td>
+<td><strong>342</strong></td>
+<td><strong>0.58%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phase 2: CDS comparison</strong> (after database construction). Each transcript's genome-derived CDS is compared against the RefSeq CDS from <code>cds.fa</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Count</th>
+<th>% of protein-coding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CDS matches genome perfectly</td>
+<td>68,791</td>
+<td>~70%</td>
+</tr>
+<tr>
+<td>CDS matches but minor start/stop issues</td>
+<td>20,112</td>
+<td>~20%</td>
+</tr>
+<tr>
+<td>Non-coding (no CDS expected)</td>
+<td>5,015</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><strong>CDS does NOT match genome</strong></td>
+<td><strong>3,723</strong></td>
+<td><strong>~5.1%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The 3,723 CDS-check errors are the transcripts where variant annotations are most likely to be inaccurate. Most are Category A (small SNP differences), but some are Category B (CDS boundary disagreement) or Category C (complete mismatch). Even a single nucleotide difference can affect clinical interpretation at that position.</p>
+<h2 id="the-solution-use-mane-on-grch38">The solution: use MANE on GRCh38</h2>
+<p>All of these problems are resolved by using MANE (Matched Annotation from NCBI and EMBL-EBI) transcripts on the GRCh38 genome. SnpEff provides these databases as <code>GRCh38.mane.1.2.ensembl</code> and <code>GRCh38.mane.1.2.refseq</code>.</p>
+<p>MANE transcripts are specifically designed to solve the genome/transcript mismatch problem. Every MANE transcript's CDS perfectly matches the GRCh38 reference genome (0% error rate). RefSeq and Ensembl agree 100% on coding sequence and UTRs for every MANE transcript. There is one well-supported transcript per protein-coding locus, eliminating ambiguity from multiple isoforms with different mapping quality. The transcript set is jointly curated by NCBI and EMBL-EBI, manually reviewed, versioned, and stable. Both Ensembl and RefSeq transcript IDs are available, so you can use whichever naming convention your pipeline requires.</p>
+<p>To switch:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Download the database (Ensembl IDs)</span>
+java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>download<span class="w"> </span>GRCh38.mane.1.2.ensembl
+
+<span class="c1"># Annotate</span>
+java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>ann<span class="w"> </span>GRCh38.mane.1.2.ensembl<span class="w"> </span>input.vcf<span class="w"> </span>&gt;<span class="w"> </span>annotated.vcf
+</code></pre></div>
+<p>Or with RefSeq IDs:</p>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>download<span class="w"> </span>GRCh38.mane.1.2.refseq
+java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>ann<span class="w"> </span>GRCh38.mane.1.2.refseq<span class="w"> </span>input.vcf<span class="w"> </span>&gt;<span class="w"> </span>annotated.vcf
+</code></pre></div>
+<p>If you must use hg19 for legacy reasons, be aware that approximately 5% of RefSeq transcripts will have CDS mismatches and annotations at those loci may be inaccurate. For clinical-grade annotation, MANE on GRCh38 is strongly recommended.</p>
+<h2 id="how-to-investigate-a-specific-transcript">How to investigate a specific transcript</h2>
+<p>If you suspect a particular transcript has a mismatch, you can check it yourself.</p>
+<h3 id="step-1-check-the-cds-verification-result">Step 1: Check the CDS verification result</h3>
+<p>Rebuild with debug mode to see the CDS comparison for every transcript:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># This produces ~700 MB of output; redirect to a file</span>
+java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>build<span class="w"> </span>-d<span class="w"> </span>hg19<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>hg19_build_debug.out
+
+<span class="c1"># Then search for your transcript</span>
+grep<span class="w"> </span>-A<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="s2">&quot;NM_YOUR_TRANSCRIPT&quot;</span><span class="w"> </span>hg19_build_debug.out
+</code></pre></div>
+<p>The output will show the genome-derived CDS, the RefSeq CDS, the alignment score, and the exact number of mismatches. For example:</p>
+<div class="highlight"><pre><span></span><code>ERROR: CDSs do not match for transcript NM_000256  Strand:true  Exons: 34
+    SnpEff CDS  (  3825) : &#39;atgcctgagccggggaagaag...&#39;
+    Reference   (  4217) : &#39;agtccctctttgggtgacctg...&#39;
+    Alignment.  Score: 3821  Max. possible score: 3825  Diff: 4
+</code></pre></div>
+<p>The <code>Diff</code> value tells you how many positions differ. <code>Diff: 4</code> means 4 mismatches. <code>Diff: 107976</code> (as in the TTN example) means total mismatch.</p>
+<h3 id="step-2-check-the-gtf-coordinates">Step 2: Check the GTF coordinates</h3>
+<div class="highlight"><pre><span></span><code>zcat<span class="w"> </span>data/hg19/genes.gtf.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;NM_000256&quot;</span>
+</code></pre></div>
+<p>This shows you the exon structure, CDS boundaries, start/stop codon positions, and strand. Check whether the exon count and CDS boundaries match what RefSeq expects.</p>
+<h3 id="step-3-check-the-refseq-cds-directly">Step 3: Check the RefSeq CDS directly</h3>
+<div class="highlight"><pre><span></span><code>zcat<span class="w"> </span>data/hg19/cds.fa.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s2">&quot;NM_000256&quot;</span>
+</code></pre></div>
+<p>This shows the RefSeq CDS sequence. Compare the first and last few bases with the genome-derived CDS from the debug output to see where they diverge.</p>
+<h3 id="step-4-use-snpeff-show-for-a-visual-summary">Step 4: Use <code>snpeff show</code> for a visual summary</h3>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-jar<span class="w"> </span>snpEff.jar<span class="w"> </span>show<span class="w"> </span>hg19<span class="w"> </span>NM_000256
+</code></pre></div>
+<p>This displays the transcript structure, exon sequences, CDS, and protein translation in a human-readable format.</p>
+<p>By comparing the GTF coordinates, the genome sequence at those coordinates, and RefSeq's own CDS, you can determine exactly where and why a mismatch occurs for any transcript.</p>
+<p>For more details on the different human genome versions available in SnpEff, see the <a href="../human_genomes/">Human Genomes</a> page.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Pablo Cingolani
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.highlight", "search.suggest", "toc.integrate", "content.tabs.link", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+    
+  </body>
+</html>
