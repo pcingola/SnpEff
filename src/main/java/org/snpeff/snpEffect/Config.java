@@ -88,7 +88,7 @@ public class Config implements Serializable, Iterable<String> {
     Genome genome;
     HashMap<String, Genome> genomeById;
     HashMap<String, String> referenceById;
-    HashMap<String, String> nameById;
+    LinkedHashMap<String, String> nameById;
     HashMap<String, String> bundleByGenomeId;
     SnpEffectPredictor snpEffectPredictor;
     String databaseRepository = "";
@@ -782,7 +782,7 @@ public class Config implements Serializable, Iterable<String> {
         //---
         genomeById = new HashMap<>();
         referenceById = new HashMap<>();
-        nameById = new HashMap<>();
+        nameById = new LinkedHashMap<>();
 
         // Sorted keys
         ArrayList<String> keys = new ArrayList<>();

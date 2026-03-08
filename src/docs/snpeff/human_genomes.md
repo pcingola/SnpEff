@@ -67,6 +67,9 @@ There are some things you need to consider when looking at genomic variants resu
 
 ### Important considerations: RefSeq
 
+!!! warning
+    RefSeq transcripts frequently do not match the reference genome. For a detailed analysis of why this happens, how SnpEff detects it, and what it means for your variant annotations, see [Why hg19 RefSeq annotations may not match](refseq_mismatches.md).
+
 These are some considerations to keep in mind while working with RefSeq transcripts, this includes SnpEff genomes hg19, hg38, GRCh38.p13, GRCh37.p13, etc.
 
 - **RefSeq transcripts may NOT match the reference genome.** This is a surprise for a lot of people, but RefSeq was designed as a consensus of transcript sequences as opposed as predicted from the reference genome. As a result a RefSeq transcript may not match the reference genome.

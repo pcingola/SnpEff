@@ -21,6 +21,8 @@ import java.util.List;
  */
 public class SnpEffCmdDownload extends SnpEff {
 
+    boolean checkAll; // Check all databases in config
+    boolean checkOnly; // Only check if the database exists on the server
     boolean update; // Are we updating SnpEff?
 
     public SnpEffCmdDownload() {
@@ -72,14 +74,16 @@ public class SnpEffCmdDownload extends SnpEff {
         this.args = args;
         for (String arg : args) {
             // Argument starts with '-'?
-            if (isOpt(arg))
-                usage("Unknown option '" + arg + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
-            else if (genomeVer.length() <= 0) genomeVer = arg;
+            if (isOpt(arg)) {
+                if (arg.equalsIgnoreCase("-check")) checkOnly = true;
+                else if (arg.equalsIgnoreCase("-checkall")) checkAll = true;
+                else usage("Unknown option '" + arg + "'");
+            } else if (genomeVer.length() <= 0) genomeVer = arg;
             else usage("Unknown parameter '" + arg + "'");
         }
 
         // Check: Do we have all required parameters?
-        if (genomeVer.isEmpty()) usage("Missing genomer_version parameter");
+        if (!checkAll && genomeVer.isEmpty()) usage("Missing genomer_version parameter");
     }
 
     /**
@@ -87,7 +91,11 @@ public class SnpEffCmdDownload extends SnpEff {
      */
     @Override
     public boolean run() {
-        if (genomeVer.equals("snpeff")) {
+        if (checkAll) {
+            return runCheckAll();
+        } else if (checkOnly) {
+            return runCheckGenome();
+        } else if (genomeVer.equals("snpeff")) {
             // Download SnpEff latest version
             update = true;
             return runDownloadSnpEff();
@@ -95,6 +103,57 @@ public class SnpEffCmdDownload extends SnpEff {
             // Download a genome
             return runDownloadGenome();
         }
+    }
+
+    /**
+     * Check all databases in config for availability on the server
+     */
+    boolean runCheckAll() {
+        genomeVer = "";
+        loadConfig();
+        // Collect and sort genome versions (config iterator order is undefined)
+        var genomes = new java.util.ArrayList<String>();
+        for (String genVer : config)
+            genomes.add(genVer);
+        java.util.Collections.sort(genomes);
+        Download download = new Download();
+        download.setVerbose(verbose);
+        download.setDebug(debug);
+        download.setMaskDownloadException(true);
+        boolean allOk = true;
+        for (String genVer : genomes) {
+            List<URL> urls = config.downloadUrl(genVer);
+            boolean found = false;
+            for (URL url : urls) {
+                if (download.check(url)) {
+                    found = true;
+                    break;
+                }
+            }
+            System.out.println(genVer + ": " + (found ? "OK" : "ERROR"));
+            if (!found) allOk = false;
+        }
+        return allOk;
+    }
+
+    /**
+     * Check if a genome database exists on the server (without downloading)
+     */
+    boolean runCheckGenome() {
+        loadConfig();
+        List<URL> urls = config.downloadUrl(genomeVer);
+        Download download = new Download();
+        download.setVerbose(verbose);
+        download.setDebug(debug);
+        download.setMaskDownloadException(urls.size() > 1);
+        for (URL url : urls) {
+            if (download.check(url)) {
+                System.out.println("Database available: " + genomeVer + " (URL: " + url + ")");
+                return true;
+            }
+        }
+        System.out.println("Database not found on server: " + genomeVer);
+        return false;
     }
 
     /**
@@ -160,6 +219,8 @@ public class SnpEffCmdDownload extends SnpEff {
         if (message != null) System.err.println("Error: " + message + "\n");
         System.err.println("snpEff version " + VERSION);
         System.err.println("Usage: snpEff download [options] {snpeff | genome_version}");
+        System.err.println("\nOptions:");
+        System.err.println("\t-check : Only check if the database is available on the server (do not download). Exit code 0 if available, -1 if not.");
         System.exit(-1);
     }
 }

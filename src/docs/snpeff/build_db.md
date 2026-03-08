@@ -486,6 +486,78 @@ If after all these attempts the protein sequence still do not match, they are co
     The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
 
 
+### How the build pipeline works internally
+
+When you run `java -jar snpEff.jar build -v genome_name`, the database goes through a multi-stage pipeline. Understanding these stages helps diagnose build warnings and interpret the build output.
+
+**1. Parse the gene annotation file.**
+SnpEff reads the GTF/GFF/GenBank file and creates the internal representation of genes, transcripts, exons, CDS segments, and UTRs. The annotation file defines genomic coordinates but does not contain nucleotide sequences.
+
+**2. Infer UTRs from CDS boundaries.**
+Some GTF/GFF files include explicit UTR lines, but many only have exon and CDS lines. When UTRs are not explicitly defined, SnpEff infers them by subtracting the CDS intervals from the exon intervals: whatever exon sequence remains outside the CDS is a UTR. To determine whether it is 5'UTR or 3'UTR, SnpEff checks its position relative to the CDS boundaries: for plus-strand genes, intervals before the CDS start are 5'UTR and intervals after the CDS end are 3'UTR; for minus-strand genes, intervals with higher genomic coordinates than the CDS start are 5'UTR (because the 5' end is at higher coordinates on the minus strand).
+
+**3. Frame correction.**
+The GTF carries frame information for each CDS segment (column 8: 0, 1, or 2), indicating how many bases must be skipped at the start of that segment to reach the first complete codon. SnpEff uses this in two passes. First, if the first coding exon has a non-zero frame, SnpEff creates a small artificial 5'UTR at the start of the coding region to compensate (shifting the effective CDS start by 1-2 bases). Second, for each subsequent coding exon, SnpEff calculates the expected frame from the cumulative CDS length and compares it to the declared frame. If they disagree, the exon boundary is adjusted by 1-2 bases until the frames match. This ensures codons are read in the correct frame across exon-exon junctions. If a CDS segment is too short to absorb the correction, a `WARNING_CDS_TOO_SHORT` is emitted. See also the [Frame correction section in GTF/GFF details](build_db_gff_gtf.md#gtf-frame).
+
+**4. Extract exon sequences from the reference genome.**
+SnpEff reads the genome FASTA file and extracts the nucleotide sequence at each exon's genomic coordinates. Minus-strand exons are reverse-complemented.
+
+**5. Assemble the CDS.**
+All exon sequences are concatenated in transcript order (5' to 3'), then the 5'UTR and 3'UTR portions are trimmed off. The result is the "genome-derived CDS" -- the coding sequence as determined by the reference genome at the coordinates specified by the annotation file. This is the sequence SnpEff uses for all variant effect predictions.
+
+**6. Transcript sanity checks.**
+For each protein-coding transcript, SnpEff checks: (a) whether the CDS length is a multiple of 3, (b) whether the first codon is a valid start codon, and (c) whether the translated protein contains premature stop codons. Failures are counted and reported in the build summary.
+
+**7. CDS and protein verification.**
+SnpEff compares each transcript's genome-derived CDS (and translated protein) against the sequences provided in `cds.fa` and `protein.fa`. See [Checking CDS sequences](#checking-cds-sequences) and [Checking Protein sequences](#checking-protein-sequences) for details.
+
+
+#### Rare amino acids
+
+Some amino acids (selenocysteine `U`, pyrrolysine `O`) are encoded by codons that normally function as stop codons. During the protein verification step, SnpEff handles these by allowing one internal stop codon per transcript -- only transcripts with more than one internal stop are flagged as errors. When comparing protein sequences, SnpEff also tries replacing internal stop characters (`*`) with rare amino acid characters (`U`) to see if the sequences match.
+
+When a `protein.fa` file is provided, SnpEff uses it to identify positions where rare amino acids occur. This information is used during variant annotation: if a variant falls at a position where the reference protein has a selenocysteine (encoded by `UGA`, normally a stop codon), SnpEff can correctly annotate it instead of incorrectly predicting a stop_gained effect.
+
+#### Understanding the build summary output
+
+A typical build summary looks like this:
+
+```
+# Genes                      : 33224
+# Protein coding genes       : 22528
+# Transcripts                : 77529
+# Protein coding transcripts : 58834
+#              Length errors  :    157 ( 0.27% )
+#  STOP codons in CDS errors :    100 ( 0.17% )
+#         START codon errors  :    136 ( 0.23% )
+#        STOP codon warnings  :     21 ( 0.04% )
+#               Total Errors  :    342 ( 0.58% )
+
+CDS check:  OK: 68791  Warnings: 20112  Not found: 5015  Errors: 3723  Error percentage: 5.13%
+```
+
+This output comes from two separate verification phases:
+
+**Transcript sanity checks** (the upper block, checked during database construction):
+
+- **Length errors:** CDS length is not a multiple of 3 -- the reading frame is broken.
+- **STOP codons in CDS:** The translated protein contains a premature stop codon before the end.
+- **START codon errors:** The first three CDS bases are not a valid start codon (e.g. not ATG for the standard codon table, though alternative starts like ATA, ATC, ATT, GTG are valid for mitochondrial genes).
+- **STOP codon warnings:** The CDS does not end with a valid stop codon.
+
+**CDS/Protein comparison** (the `CDS check` / `Protein check` line, checked after database construction):
+
+- **OK:** The genome-derived sequence matched the reference sequence from `cds.fa` or `protein.fa`.
+- **Warnings:** The sequence matched, but the start or stop codon is not standard. Annotations on these transcripts are still largely accurate, but effects at the very start or end of the CDS (e.g., `start_lost`, `stop_gained`) may be unreliable.
+- **Not found:** The transcript ID from the annotation file had no corresponding entry in `cds.fa`/`protein.fa`. This is normal for non-coding transcripts.
+- **Errors:** The genome-derived sequence differs from the reference sequence. Variant annotations on these transcripts may be inaccurate at the differing positions.
+
+!!! warning
+    As a rule of thumb, the error percentage should be below 2-3%. Higher error rates usually indicate a problem with the input files (wrong genome version, mismatched chromosome names, etc.).
+
+!!! info
+    For a detailed analysis of why RefSeq transcripts frequently mismatch the reference genome (particularly on hg19), and what this means for variant annotations, see [Why hg19 RefSeq annotations may not match](refseq_mismatches.md).
+
 ### Example: Building the Human Genome database
 
 This is a full example on how to build the human genome database (using GTF file from ENSEMBL), it includes support for regulatory features, sanity check, rare amino acids, etc..

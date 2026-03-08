@@ -187,6 +187,10 @@ This command downloads and installs a database.
 
 ```
 Usage: snpEff download [options] {snpeff | genome_version}
+
+Options:
+    -check : Only check if the database is available on the server (do not download).
+             Exit code 0 if available, -1 if not.
 ```
 
 You can use `snpEff download snpeff` to download/update SnpEff itself, or specify a genome version to download a pre-built database.
@@ -197,6 +201,11 @@ You can use `snpEff download snpeff` to download/update SnpEff itself, or specif
 Example: Download and install C.Elegans genome:
 ```
 $ java -jar snpEff.jar download -v WBcel215.69
+```
+
+Example: Check if a database is available without downloading:
+```
+$ java -jar snpEff.jar download -check GRCh38.mane.1.0.ensembl
 ```
 
 ### SnpEff dump

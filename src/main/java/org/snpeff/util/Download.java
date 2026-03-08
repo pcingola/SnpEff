@@ -68,6 +68,31 @@ public class Download {
         }
     }
 
+    /**
+     * Check if a URL exists on the server (HTTP HEAD request)
+     * @return true if the URL exists (HTTP 200), false otherwise
+     */
+    public boolean check(URL url) {
+        try {
+            sslSetup();
+            if (verbose) Log.info("Checking URL " + url);
+            URLConnection connection = openConnection(url);
+            if (connection instanceof HttpURLConnection httpConnection) {
+                httpConnection.setRequestMethod("HEAD");
+                httpConnection.setInstanceFollowRedirects(true);
+                int code = httpConnection.getResponseCode();
+                if (verbose) Log.info("Response code: " + code);
+                httpConnection.disconnect();
+                return (code == 200);
+            }
+            return false;
+        } catch (Exception e) {
+            if (verbose) Log.info("ERROR while checking " + url + ": " + e.getMessage());
+            if (!maskDownloadException) throw new RuntimeException(e);
+            return false;
+        }
+    }
+
     public boolean download(String urlString, String localFile) {
         try {
             URL url = new URL(urlString);

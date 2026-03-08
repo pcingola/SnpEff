@@ -67,6 +67,7 @@ nav:
      - Integration. Claude Code: snpeff/claude_code.md
      - Commands and utilities: snpeff/commands.md
      - Human Genomes: snpeff/human_genomes.md
+     - RefSeq mismatches (hg19): snpeff/refseq_mismatches.md
      - Frequently Asked Questions: snpeff/faq.md
   - SnpSift:
      - Introduction: snpsift/introduction.md
