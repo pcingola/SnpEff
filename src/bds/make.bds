@@ -563,8 +563,7 @@ void uploadDbNsfp2S3() {
 #-------------------------------------------------------------------------------
 void uploadDbs2S3() {
 	ver := 'v' + versionUnd()
-	sys ln -s $dirZip $ver || true
-	sys aws s3 cp --profile $awsProfile $ver/ "$s3DatabasesPath/$ver" --recursive
+	sys aws s3 cp --profile $awsProfile $dirZip/ "$s3DatabasesPath/$ver" --recursive
 }
 
 #-------------------------------------------------------------------------------
